@@ -1,0 +1,189 @@
+{
+  "@@locale": "en",
+  "appName": "Zink",
+  "@appName": {
+    "description": "The name of the application"
+  },
+  "appTagline": "AI-Powered Photo Challenges",
+  "@appTagline": {
+    "description": "The tagline of the application"
+  },
+  
+  "continueWithGoogle": "Continue with Google",
+  "@continueWithGoogle": {
+    "description": "Google sign in button text"
+  },
+  "continueWithApple": "Continue with Apple",
+  "@continueWithApple": {
+    "description": "Apple sign in button text"
+  },
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "welcome": "Welcome {name}!",
+  "@welcome": {
+    "description": "Welcome message with user name",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  
+  "home": "Home",
+  "@home": {
+    "description": "Home navigation item"
+  },
+  "noActiveChallenges": "No active challenges right now",
+  "@noActiveChallenges": {
+    "description": "Message when there are no active challenges"
+  },
+  "activeChallenge": "Active Challenge",
+  "@activeChallenge": {
+    "description": "Title for active challenge section"
+  },
+  "pastChallenges": "Past Challenges",
+  "@pastChallenges": {
+    "description": "Title for past challenges section"
+  },
+  "timeRemaining": "Time Remaining: {time}",
+  "@timeRemaining": {
+    "description": "Time remaining for challenge",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "1:30:45"
+      }
+    }
+  },
+  
+  "submitPhoto": "Submit Photo",
+  "@submitPhoto": {
+    "description": "Submit photo button text"
+  },
+  "takePhoto": "Take Photo",
+  "@takePhoto": {
+    "description": "Take photo button text"
+  },
+  "chooseFromGallery": "Choose from Gallery",
+  "@chooseFromGallery": {
+    "description": "Choose from gallery button text"
+  },
+  "submissions": "Submissions",
+  "@submissions": {
+    "description": "Submissions section title"
+  },
+  "likes": "{count, plural, =0{No likes} =1{1 like} other{{count} likes}}",
+  "@likes": {
+    "description": "Like count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "comments": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
+  "@comments": {
+    "description": "Comment count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addComment": "Add a comment...",
+  "@addComment": {
+    "description": "Add comment placeholder text"
+  },
+  
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile navigation item"
+  },
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Edit profile button text"
+  },
+  "username": "Username",
+  "@username": {
+    "description": "Username field label"
+  },
+  "socialLinks": "Social Links",
+  "@socialLinks": {
+    "description": "Social links section title"
+  },
+  "myChallenges": "My Challenges",
+  "@myChallenges": {
+    "description": "My challenges section title"
+  },
+  "totalSubmissions": "{count} Submissions",
+  "@totalSubmissions": {
+    "description": "Total submissions count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "mostPopular": "Most Popular",
+  "@mostPopular": {
+    "description": "Most popular filter option"
+  },
+  "newest": "Newest",
+  "@newest": {
+    "description": "Newest filter option"
+  },
+  "oldest": "Oldest",
+  "@oldest": {
+    "description": "Oldest filter option"
+  },
+  
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error title"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "somethingWentWrong": "Something went wrong",
+  "@somethingWentWrong": {
+    "description": "Generic error message"
+  },
+  
+  "newChallengeAvailable": "New challenge available!",
+  "@newChallengeAvailable": {
+    "description": "New challenge notification title"
+  },
+  "challengeEndingSoon": "Challenge ending soon!",
+  "@challengeEndingSoon": {
+    "description": "Challenge ending soon notification"
+  },
+  "submissionSuccessful": "Photo submitted successfully!",
+  "@submissionSuccessful": {
+    "description": "Submission success message"
+  }
+} 

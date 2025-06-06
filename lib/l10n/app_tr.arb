@@ -1,0 +1,48 @@
+{
+  "@@locale": "tr",
+  "appName": "Zink",
+  "appTagline": "Yapay Zeka Destekli Fotoğraf Görevleri",
+  
+  "continueWithGoogle": "Google ile Devam Et",
+  "continueWithApple": "Apple ile Devam Et",
+  "signOut": "Çıkış Yap",
+  "welcome": "Hoşgeldin {name}!",
+  
+  "home": "Ana Sayfa",
+  "noActiveChallenges": "Şu anda aktif görev bulunmuyor",
+  "activeChallenge": "Aktif Görev",
+  "pastChallenges": "Geçmiş Görevler",
+  "timeRemaining": "Kalan Süre: {time}",
+  
+  "submitPhoto": "Fotoğraf Gönder",
+  "takePhoto": "Fotoğraf Çek",
+  "chooseFromGallery": "Galeriden Seç",
+  "submissions": "Gönderiler",
+  "likes": "{count, plural, =0{Beğeni yok} =1{1 beğeni} other{{count} beğeni}}",
+  "comments": "{count, plural, =0{Yorum yok} =1{1 yorum} other{{count} yorum}}",
+  "addComment": "Yorum ekle...",
+  
+  "profile": "Profil",
+  "editProfile": "Profili Düzenle",
+  "username": "Kullanıcı Adı",
+  "socialLinks": "Sosyal Medya Bağlantıları",
+  "myChallenges": "Görevlerim",
+  "totalSubmissions": "{count} Gönderi",
+  
+  "mostPopular": "En Popüler",
+  "newest": "En Yeni",
+  "oldest": "En Eski",
+  
+  "loading": "Yükleniyor...",
+  "error": "Hata",
+  "retry": "Tekrar Dene",
+  "cancel": "İptal",
+  "save": "Kaydet",
+  "delete": "Sil",
+  "confirm": "Onayla",
+  "somethingWentWrong": "Bir şeyler yanlış gitti",
+  
+  "newChallengeAvailable": "Yeni görev mevcut!",
+  "challengeEndingSoon": "Görev yakında bitiyor!",
+  "submissionSuccessful": "Fotoğraf başarıyla gönderildi!"
+} 

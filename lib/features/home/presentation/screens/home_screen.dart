@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/providers/firebase_providers.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/language_selector.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -11,8 +13,9 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zink'),
+        title: Text(AppLocalizations.of(context)!.appName),
         actions: [
+          const LanguageToggleButton(),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
@@ -32,11 +35,12 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Welcome ${user?.displayName ?? 'User'}!',
+              AppLocalizations.of(context)!
+                  .welcome(user?.displayName ?? 'User'),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
-            const Text('No active challenges right now'),
+            Text(AppLocalizations.of(context)!.noActiveChallenges),
           ],
         ),
       ),
