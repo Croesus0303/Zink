@@ -11,6 +11,7 @@ void main() {
   );
 }
 
+// TODO: Add a splash screen
 class ZinkApp extends StatelessWidget {
   const ZinkApp({super.key});
 
