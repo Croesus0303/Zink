@@ -81,3 +81,9 @@ windows/*.[Cc]ache
 # Others
 .idea/
 *.iml 
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+firebase_app_id_file.json
+.firebaserc
