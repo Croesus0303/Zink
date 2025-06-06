@@ -6,6 +6,8 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 .metadata
+context.txt
+shortcuts.txt
 
 # Android
 android/.gradle/
