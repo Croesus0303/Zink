@@ -3,12 +3,58 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
+import '../../providers/auth_providers.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  bool _isLoading = false;
+
+  Future<void> _signInWithGoogle() async {
+    if (_isLoading) return;
+    
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final result = await authService.signInWithGoogle();
+
+      if (mounted) {
+        if (result.isSuccess) {
+          // Navigation will be handled automatically by the router
+        } else if (result.isCancelled) {
+          // User cancelled, no action needed
+        } else if (result.errorMessage != null) {
+          _showErrorSnackBar(result.errorMessage!);
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -57,27 +103,13 @@ class LoginScreen extends ConsumerWidget {
 
                   // Sign in with Google button
                   _SignInButton(
-                    onPressed: () {
-                      // TODO: Implement Google Sign In
-                    },
+                    onPressed: _isLoading ? null : _signInWithGoogle,
                     icon: Icons.g_mobiledata,
                     label: AppLocalizations.of(context)!.continueWithGoogle,
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black87,
+                    isLoading: _isLoading,
                   ),
-                  const SizedBox(height: 16),
-
-                  // Sign in with Apple button (iOS only)
-                  if (Theme.of(context).platform == TargetPlatform.iOS)
-                    _SignInButton(
-                      onPressed: () {
-                        // TODO: Implement Apple Sign In
-                      },
-                      icon: Icons.apple,
-                      label: AppLocalizations.of(context)!.continueWithApple,
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                    ),
                 ],
               ),
             ),
@@ -89,11 +121,12 @@ class LoginScreen extends ConsumerWidget {
 }
 
 class _SignInButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final IconData icon;
   final String label;
   final Color backgroundColor;
   final Color foregroundColor;
+  final bool isLoading;
 
   const _SignInButton({
     required this.onPressed,
@@ -101,6 +134,7 @@ class _SignInButton extends StatelessWidget {
     required this.label,
     required this.backgroundColor,
     required this.foregroundColor,
+    this.isLoading = false,
   });
 
   @override
@@ -120,10 +154,20 @@ class _SignInButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 24),
+          if (isLoading)
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+              ),
+            )
+          else
+            Icon(icon, size: 24),
           const SizedBox(width: 12),
           Text(
-            label,
+            isLoading ? 'Signing in...' : label,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

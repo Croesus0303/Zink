@@ -43,6 +43,8 @@ dependencies:
   cloud_firestore: ^4.13.6
   firebase_storage: ^11.5.6
   firebase_messaging: ^14.7.9
+  # Authentication
+  google_sign_in: ^6.1.6
   # UI Components
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.9

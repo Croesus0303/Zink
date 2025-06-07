@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../../core/providers/firebase_providers.dart';
+import '../../../auth/providers/auth_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
 
@@ -16,11 +16,38 @@ class HomeScreen extends ConsumerWidget {
         title: Text(AppLocalizations.of(context)!.appName),
         actions: [
           const LanguageToggleButton(),
-          IconButton(
+          PopupMenuButton<String>(
             icon: const Icon(Icons.person),
-            onPressed: () {
-              // Navigate to profile
+            onSelected: (value) async {
+              if (value == 'signOut') {
+                final authService = ref.read(authServiceProvider);
+                await authService.signOut();
+              } else if (value == 'profile') {
+                // Navigate to profile
+              }
             },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    const Icon(Icons.person),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.profile),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'signOut',
+                child: Row(
+                  children: [
+                    const Icon(Icons.logout),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.signOut),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
