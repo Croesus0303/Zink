@@ -145,4 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submissionSuccessful => 'Photo submitted successfully!';
+
+  @override
+  String get submit => 'Submit';
 }

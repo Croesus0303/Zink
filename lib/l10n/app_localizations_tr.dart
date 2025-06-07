@@ -145,4 +145,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get submissionSuccessful => 'Fotoğraf başarıyla gönderildi!';
+
+  @override
+  String get submit => 'Gönder';
 }

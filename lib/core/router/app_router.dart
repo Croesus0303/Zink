@@ -4,6 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/events/presentation/screens/event_detail_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/submissions/presentation/screens/photo_submission_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -44,32 +47,20 @@ class AppRouter {
       name: 'eventDetail',
       builder: (context, state) {
         final eventId = state.pathParameters['eventId']!;
-        return Scaffold(
-          body: Center(
-            child: Text('Event Detail: $eventId'),
-          ),
-        );
+        return EventDetailScreen(eventId: eventId);
       },
     ),
     GoRoute(
       path: '/profile',
       name: 'profile',
-      builder: (context, state) => const Scaffold(
-        body: Center(
-          child: Text('Profile Screen'),
-        ),
-      ),
+      builder: (context, state) => const ProfileScreen(),
       routes: [
         GoRoute(
           path: ':userId',
           name: 'userProfile',
           builder: (context, state) {
             final userId = state.pathParameters['userId']!;
-            return Scaffold(
-              body: Center(
-                child: Text('User Profile: $userId'),
-              ),
-            );
+            return ProfileScreen(userId: userId);
           },
         ),
       ],
@@ -79,11 +70,7 @@ class AppRouter {
       name: 'submitPhoto',
       builder: (context, state) {
         final eventId = state.pathParameters['eventId']!;
-        return Scaffold(
-          body: Center(
-            child: Text('Submit Photo for Event: $eventId'),
-          ),
-        );
+        return PhotoSubmissionScreen(eventId: eventId);
       },
     ),
   ];

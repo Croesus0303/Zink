@@ -185,5 +185,9 @@
   "submissionSuccessful": "Photo submitted successfully!",
   "@submissionSuccessful": {
     "description": "Submission success message"
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Submit button text"
   }
 } 

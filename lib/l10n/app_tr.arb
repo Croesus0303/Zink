@@ -44,5 +44,6 @@
   
   "newChallengeAvailable": "Yeni görev mevcut!",
   "challengeEndingSoon": "Görev yakında bitiyor!",
-  "submissionSuccessful": "Fotoğraf başarıyla gönderildi!"
+  "submissionSuccessful": "Fotoğraf başarıyla gönderildi!",
+  "submit": "Gönder"
 } 
