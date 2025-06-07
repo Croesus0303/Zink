@@ -6,7 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
+import '../../../submissions/data/services/submissions_service.dart';
+import '../../../auth/providers/auth_providers.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/logger.dart';
 
 class PhotoSubmissionScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -17,7 +20,8 @@ class PhotoSubmissionScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PhotoSubmissionScreen> createState() => _PhotoSubmissionScreenState();
+  ConsumerState<PhotoSubmissionScreen> createState() =>
+      _PhotoSubmissionScreenState();
 }
 
 class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
@@ -69,26 +73,39 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       return;
     }
 
+    final currentUser = ref.read(currentUserProvider);
+    if (currentUser == null) {
+      _showErrorSnackBar('User not authenticated');
+      return;
+    }
+
     setState(() {
       _isSubmitting = true;
     });
 
     try {
-      // TODO: Implement actual photo upload to Firebase Storage
-      // and create submission document in Firestore
-      
-      // Simulate upload delay
-      await Future.delayed(const Duration(seconds: 2));
-      
+      final submissionsService = ref.read(submissionsServiceProvider);
+
+      AppLogger.d('Starting photo submission for event ${widget.eventId}');
+
+      final submission = await submissionsService.createSubmission(
+        eventId: widget.eventId,
+        userId: currentUser.uid,
+        imageFile: _selectedImage!,
+      );
+
+      AppLogger.i('Photo submitted successfully: ${submission.id}');
+
       if (mounted) {
         _showSuccessSnackBar(
           AppLocalizations.of(context)!.submissionSuccessful,
         );
-        
+
         // Navigate back to event detail
         context.pop();
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to submit photo', e, stackTrace);
       _showErrorSnackBar('Failed to submit photo: $e');
     } finally {
       if (mounted) {
@@ -417,7 +434,8 @@ class _PhotoSection extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onChooseFromGallery,
                     icon: const Icon(Icons.photo_library),
-                    label: Text(AppLocalizations.of(context)!.chooseFromGallery),
+                    label:
+                        Text(AppLocalizations.of(context)!.chooseFromGallery),
                   ),
                 ),
               ],
@@ -468,7 +486,8 @@ class _PhotoSection extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onChooseFromGallery,
                     icon: const Icon(Icons.photo_library),
-                    label: Text(AppLocalizations.of(context)!.chooseFromGallery),
+                    label:
+                        Text(AppLocalizations.of(context)!.chooseFromGallery),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
@@ -516,7 +535,8 @@ class _GuidelinesSection extends StatelessWidget {
                   const SizedBox(height: 8),
                   _GuidelineItem(
                     icon: Icons.check_circle,
-                    text: 'Original photos only - no screenshots or downloaded images',
+                    text:
+                        'Original photos only - no screenshots or downloaded images',
                   ),
                   const SizedBox(height: 8),
                   _GuidelineItem(

@@ -7,6 +7,7 @@ import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
+import '../../../../core/utils/logger.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -89,9 +90,32 @@ class HomeScreen extends ConsumerWidget {
 class _ActiveChallengeSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeEvent = ref.watch(activeEventProvider);
+    final activeEventAsync = ref.watch(firebaseActiveEventProvider);
     final user = ref.watch(currentUserProvider);
 
+    return activeEventAsync.when(
+      data: (activeEvent) => _buildContent(context, activeEvent, user),
+      loading: () => const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading active event', error, stack);
+        // Fallback to mock data
+        final mockEvent = ref.read(activeEventProvider);
+        return _buildContent(context, mockEvent, user);
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context, EventModel? activeEvent, dynamic user) {
     if (activeEvent == null) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -288,8 +312,28 @@ class _TimeRemainingWidget extends StatelessWidget {
 class _PastChallengesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pastEvents = ref.watch(pastEventsProvider);
+    final pastEventsAsync = ref.watch(firebasePastEventsProvider);
 
+    return pastEventsAsync.when(
+      data: (pastEvents) => _buildList(context, pastEvents),
+      loading: () => const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.all(32.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading past events', error, stack);
+        // Fallback to mock data
+        final mockEvents = ref.read(pastEventsProvider);
+        return _buildList(context, mockEvents);
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<EventModel> pastEvents) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {

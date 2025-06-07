@@ -6,7 +6,11 @@ import '../../providers/events_providers.dart';
 import '../../data/models/event_model.dart';
 import '../../../submissions/data/models/submission_model.dart';
 import '../../../auth/data/models/user_model.dart';
+import '../../../auth/providers/auth_providers.dart';
+import '../../../social/presentation/widgets/like_button.dart';
+import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/logger.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -310,9 +314,29 @@ class _SubmissionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final submissions = ref.watch(filteredSubmissionsProvider(eventId));
+    final submissionsAsync = ref.watch(firebaseFilteredSubmissionsProvider(eventId));
     final users = ref.watch(mockUsersProvider);
 
+    return submissionsAsync.when(
+      data: (submissions) => _buildSubmissionsList(context, submissions, users),
+      loading: () => const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.all(32.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading submissions', error, stack);
+        // Fallback to mock data
+        final mockSubmissions = ref.read(filteredSubmissionsProvider(eventId));
+        return _buildSubmissionsList(context, mockSubmissions, users);
+      },
+    );
+  }
+
+  Widget _buildSubmissionsList(BuildContext context, List<SubmissionModel> submissions, Map<String, UserModel> users) {
     if (submissions.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
@@ -370,6 +394,10 @@ class _SubmissionCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
+    final likeStatusAsync = currentUser != null 
+        ? ref.watch(likeStatusProvider((submissionId: submission.id, userId: currentUser.uid)))
+        : const AsyncValue.data(false);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
@@ -439,34 +467,54 @@ class _SubmissionCard extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        size: 20,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.likes(submission.likeCount),
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
+                  likeStatusAsync.when(
+                    data: (isLiked) => LikeButton(
+                      submissionId: submission.id,
+                      initialLikeCount: submission.likeCount,
+                      initialIsLiked: isLiked,
+                    ),
+                    loading: () => LikeButton(
+                      submissionId: submission.id,
+                      initialLikeCount: submission.likeCount,
+                      initialIsLiked: false,
+                    ),
+                    error: (_, __) => LikeButton(
+                      submissionId: submission.id,
+                      initialLikeCount: submission.likeCount,
+                      initialIsLiked: false,
+                    ),
                   ),
                   const SizedBox(width: 16),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.comment_outlined,
-                        size: 20,
-                        color: Colors.grey[600],
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => CommentSheet(
+                          submissionId: submission.id,
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.comment_outlined,
+                            size: 20,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Comments',
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.comments(2), // Mock comment count
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),

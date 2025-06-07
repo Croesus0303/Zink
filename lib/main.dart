@@ -9,6 +9,7 @@ import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/utils/logger.dart';
 import 'core/providers/locale_provider.dart';
+import 'core/services/notification_service.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -38,11 +39,39 @@ void main() async {
 }
 
 // TODO: Add a splash screen
-class ZinkApp extends ConsumerWidget {
+class ZinkApp extends ConsumerStatefulWidget {
   const ZinkApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ZinkApp> createState() => _ZinkAppState();
+}
+
+class _ZinkAppState extends ConsumerState<ZinkApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize notifications after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeNotifications();
+    });
+  }
+
+  Future<void> _initializeNotifications() async {
+    try {
+      final notificationService = ref.read(notificationServiceProvider);
+      await notificationService.initialize();
+      
+      // Subscribe to general app notifications
+      await notificationService.subscribeToTopic('all_users');
+      
+      AppLogger.i('Notifications initialized successfully');
+    } catch (e) {
+      AppLogger.e('Failed to initialize notifications', e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
 
