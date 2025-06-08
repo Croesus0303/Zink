@@ -15,20 +15,22 @@ class CommentModel {
     required this.createdAt,
   });
 
-  factory CommentModel.fromFirestore(DocumentSnapshot doc) {
+  factory CommentModel.fromFirestore(DocumentSnapshot doc, String eventId, String submissionId) {
     final data = doc.data() as Map<String, dynamic>;
     return CommentModel(
       id: doc.id,
-      submissionId: data['submissionId'] ?? '',
+      submissionId: submissionId,
       uid: data['uid'] ?? '',
       text: data['text'] ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
+  static String getCollectionPath(String eventId, String submissionId) => 
+      'events/$eventId/submissions/$submissionId/comments';
+
   Map<String, dynamic> toFirestore() {
     return {
-      'submissionId': submissionId,
       'uid': uid,
       'text': text,
       'createdAt': FieldValue.serverTimestamp(),

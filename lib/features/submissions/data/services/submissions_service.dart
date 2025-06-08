@@ -13,14 +13,13 @@ class SubmissionsService {
 
   Stream<List<SubmissionModel>> getSubmissionsStream(String eventId) {
     return _firestore
-        .collection('submissions')
-        .where('eventId', isEqualTo: eventId)
+        .collection(SubmissionModel.getCollectionPath(eventId))
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
       AppLogger.d('Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
       return snapshot.docs
-          .map((doc) => SubmissionModel.fromFirestore(doc))
+          .map((doc) => SubmissionModel.fromFirestore(doc, eventId))
           .toList();
     }).handleError((error) {
       AppLogger.e('Error fetching submissions for event $eventId from Firebase', error);
@@ -31,14 +30,13 @@ class SubmissionsService {
   Future<List<SubmissionModel>> getSubmissions(String eventId) async {
     try {
       final snapshot = await _firestore
-          .collection('submissions')
-          .where('eventId', isEqualTo: eventId)
+          .collection(SubmissionModel.getCollectionPath(eventId))
           .orderBy('createdAt', descending: true)
           .get();
       
       AppLogger.d('Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
       return snapshot.docs
-          .map((doc) => SubmissionModel.fromFirestore(doc))
+          .map((doc) => SubmissionModel.fromFirestore(doc, eventId))
           .toList();
     } catch (e) {
       AppLogger.e('Error fetching submissions for event $eventId from Firebase', e);
@@ -49,24 +47,27 @@ class SubmissionsService {
   Future<List<SubmissionModel>> getUserSubmissions(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('submissions')
+          .collectionGroup('submissions')
           .where('uid', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
           .get();
       
       AppLogger.d('Fetched ${snapshot.docs.length} submissions for user $userId from Firebase');
-      return snapshot.docs
-          .map((doc) => SubmissionModel.fromFirestore(doc))
-          .toList();
+      final submissions = <SubmissionModel>[];
+      for (final doc in snapshot.docs) {
+        final eventId = doc.reference.parent.parent!.id;
+        submissions.add(SubmissionModel.fromFirestore(doc, eventId));
+      }
+      return submissions;
     } catch (e) {
       AppLogger.e('Error fetching submissions for user $userId from Firebase', e);
       rethrow;
     }
   }
 
-  Future<SubmissionModel?> getSubmission(String submissionId) async {
+  Future<SubmissionModel?> getSubmission(String eventId, String submissionId) async {
     try {
-      final doc = await _firestore.collection('submissions').doc(submissionId).get();
+      final doc = await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).get();
       
       if (!doc.exists) {
         AppLogger.w('Submission $submissionId not found in Firebase');
@@ -74,7 +75,7 @@ class SubmissionsService {
       }
       
       AppLogger.d('Fetched submission $submissionId from Firebase');
-      return SubmissionModel.fromFirestore(doc);
+      return SubmissionModel.fromFirestore(doc, eventId);
     } catch (e) {
       AppLogger.e('Error fetching submission $submissionId from Firebase', e);
       rethrow;
@@ -131,11 +132,11 @@ class SubmissionsService {
         'likeCount': 0,
       };
 
-      final docRef = await _firestore.collection('submissions').add(submissionData);
+      final docRef = await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).add(submissionData);
       
       // Return the created submission
       final doc = await docRef.get();
-      final submission = SubmissionModel.fromFirestore(doc);
+      final submission = SubmissionModel.fromFirestore(doc, eventId);
       
       AppLogger.i('Created submission ${submission.id} for event $eventId');
       return submission;
@@ -145,9 +146,9 @@ class SubmissionsService {
     }
   }
 
-  Future<void> updateSubmission(String submissionId, Map<String, dynamic> updates) async {
+  Future<void> updateSubmission(String eventId, String submissionId, Map<String, dynamic> updates) async {
     try {
-      await _firestore.collection('submissions').doc(submissionId).update(updates);
+      await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).update(updates);
       AppLogger.i('Updated submission: $submissionId');
     } catch (e) {
       AppLogger.e('Error updating submission $submissionId', e);
@@ -155,12 +156,12 @@ class SubmissionsService {
     }
   }
 
-  Future<void> deleteSubmission(String submissionId) async {
+  Future<void> deleteSubmission(String eventId, String submissionId) async {
     try {
       // Get submission to get image URL for deletion
-      final doc = await _firestore.collection('submissions').doc(submissionId).get();
+      final doc = await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).get();
       if (doc.exists) {
-        final submission = SubmissionModel.fromFirestore(doc);
+        final submission = SubmissionModel.fromFirestore(doc, eventId);
         
         // Delete image from storage
         try {
@@ -173,7 +174,7 @@ class SubmissionsService {
       }
       
       // Delete submission document
-      await _firestore.collection('submissions').doc(submissionId).delete();
+      await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).delete();
       AppLogger.i('Deleted submission: $submissionId');
     } catch (e) {
       AppLogger.e('Error deleting submission $submissionId', e);
@@ -184,8 +185,7 @@ class SubmissionsService {
   Future<int> getSubmissionCount(String eventId) async {
     try {
       final snapshot = await _firestore
-          .collection('submissions')
-          .where('eventId', isEqualTo: eventId)
+          .collection(SubmissionModel.getCollectionPath(eventId))
           .count()
           .get();
       
@@ -199,7 +199,7 @@ class SubmissionsService {
   Future<int> getUserSubmissionCount(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('submissions')
+          .collectionGroup('submissions')
           .where('uid', isEqualTo: userId)
           .count()
           .get();

@@ -18,6 +18,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get continueWithGoogle => 'Google ile Devam Et';
 
   @override
+  String get signInOrSignUp => 'Giriş Yap veya Kayıt Ol';
+
+  @override
+  String get newUserPrompt => 'Zink\'te yeni misin? Google hesabınla kayıt ol';
+
+  @override
+  String get existingUserPrompt =>
+      'Zaten hesabın var mı? Devam etmek için giriş yap';
+
+  @override
   String get continueWithApple => 'Apple ile Devam Et';
 
   @override
@@ -148,4 +158,54 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get submit => 'Gönder';
+
+  @override
+  String get welcomeToZink => 'Zink\'e Hoşgeldin!';
+
+  @override
+  String get onboardingSubtitle => 'Başlamak için profilini ayarlayalım';
+
+  @override
+  String get chooseUsername => 'Kullanıcı adı seç';
+
+  @override
+  String get enterUsername => 'Kullanıcı adını gir';
+
+  @override
+  String get whatsYourAge => 'Yaşın kaç?';
+
+  @override
+  String get enterAge => 'Yaşını gir';
+
+  @override
+  String get completeSetup => 'Kurulumu Tamamla';
+
+  @override
+  String get usernameRequired => 'Kullanıcı adı gerekli';
+
+  @override
+  String get usernameTooShort => 'Kullanıcı adı en az 3 karakter olmalı';
+
+  @override
+  String get usernameTooLong => 'Kullanıcı adı 20 karakterden az olmalı';
+
+  @override
+  String get usernameInvalidChars =>
+      'Kullanıcı adı sadece harf, rakam ve alt çizgi içerebilir';
+
+  @override
+  String get ageRequired => 'Yaş gerekli';
+
+  @override
+  String get enterValidNumber => 'Lütfen geçerli bir sayı girin';
+
+  @override
+  String get ageTooYoung => 'En az 13 yaşında olmalısınız';
+
+  @override
+  String get enterValidAge => 'Lütfen geçerli bir yaş girin';
+
+  @override
+  String get privacyNote =>
+      'Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır.';
 }

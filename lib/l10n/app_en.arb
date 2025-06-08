@@ -13,6 +13,18 @@
   "@continueWithGoogle": {
     "description": "Google sign in button text"
   },
+  "signInOrSignUp": "Sign in or Sign up",
+  "@signInOrSignUp": {
+    "description": "Sign in or sign up header text"
+  },
+  "newUserPrompt": "New to Zink? Sign up with your Google account",
+  "@newUserPrompt": {
+    "description": "Prompt for new users"
+  },
+  "existingUserPrompt": "Already have an account? Sign in to continue",
+  "@existingUserPrompt": {
+    "description": "Prompt for existing users"
+  },
   "continueWithApple": "Continue with Apple",
   "@continueWithApple": {
     "description": "Apple sign in button text"
@@ -189,5 +201,70 @@
   "submit": "Submit",
   "@submit": {
     "description": "Submit button text"
+  },
+  
+  "welcomeToZink": "Welcome to Zink!",
+  "@welcomeToZink": {
+    "description": "Welcome title on onboarding screen"
+  },
+  "onboardingSubtitle": "Let's set up your profile to get started",
+  "@onboardingSubtitle": {
+    "description": "Subtitle on onboarding screen"
+  },
+  "chooseUsername": "Choose a username",
+  "@chooseUsername": {
+    "description": "Username field label on onboarding"
+  },
+  "enterUsername": "Enter your username",
+  "@enterUsername": {
+    "description": "Username field placeholder"
+  },
+  "whatsYourAge": "What's your age?",
+  "@whatsYourAge": {
+    "description": "Age field label on onboarding"
+  },
+  "enterAge": "Enter your age",
+  "@enterAge": {
+    "description": "Age field placeholder"
+  },
+  "completeSetup": "Complete Setup",
+  "@completeSetup": {
+    "description": "Complete setup button text"
+  },
+  "usernameRequired": "Username is required",
+  "@usernameRequired": {
+    "description": "Username validation error"
+  },
+  "usernameTooShort": "Username must be at least 3 characters",
+  "@usernameTooShort": {
+    "description": "Username too short validation error"
+  },
+  "usernameTooLong": "Username must be less than 20 characters",
+  "@usernameTooLong": {
+    "description": "Username too long validation error"
+  },
+  "usernameInvalidChars": "Username can only contain letters, numbers, and underscores",
+  "@usernameInvalidChars": {
+    "description": "Username invalid characters validation error"
+  },
+  "ageRequired": "Age is required",
+  "@ageRequired": {
+    "description": "Age validation error"
+  },
+  "enterValidNumber": "Please enter a valid number",
+  "@enterValidNumber": {
+    "description": "Age invalid number validation error"
+  },
+  "ageTooYoung": "You must be at least 13 years old",
+  "@ageTooYoung": {
+    "description": "Age too young validation error"
+  },
+  "enterValidAge": "Please enter a valid age",
+  "@enterValidAge": {
+    "description": "Age too old validation error"
+  },
+  "privacyNote": "By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.",
+  "@privacyNote": {
+    "description": "Privacy note text on onboarding"
   }
 } 

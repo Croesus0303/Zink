@@ -18,6 +18,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueWithGoogle => 'Continue with Google';
 
   @override
+  String get signInOrSignUp => 'Sign in or Sign up';
+
+  @override
+  String get newUserPrompt => 'New to Zink? Sign up with your Google account';
+
+  @override
+  String get existingUserPrompt =>
+      'Already have an account? Sign in to continue';
+
+  @override
   String get continueWithApple => 'Continue with Apple';
 
   @override
@@ -148,4 +158,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submit => 'Submit';
+
+  @override
+  String get welcomeToZink => 'Welcome to Zink!';
+
+  @override
+  String get onboardingSubtitle => 'Let\'s set up your profile to get started';
+
+  @override
+  String get chooseUsername => 'Choose a username';
+
+  @override
+  String get enterUsername => 'Enter your username';
+
+  @override
+  String get whatsYourAge => 'What\'s your age?';
+
+  @override
+  String get enterAge => 'Enter your age';
+
+  @override
+  String get completeSetup => 'Complete Setup';
+
+  @override
+  String get usernameRequired => 'Username is required';
+
+  @override
+  String get usernameTooShort => 'Username must be at least 3 characters';
+
+  @override
+  String get usernameTooLong => 'Username must be less than 20 characters';
+
+  @override
+  String get usernameInvalidChars =>
+      'Username can only contain letters, numbers, and underscores';
+
+  @override
+  String get ageRequired => 'Age is required';
+
+  @override
+  String get enterValidNumber => 'Please enter a valid number';
+
+  @override
+  String get ageTooYoung => 'You must be at least 13 years old';
+
+  @override
+  String get enterValidAge => 'Please enter a valid age';
+
+  @override
+  String get privacyNote =>
+      'By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.';
 }

@@ -46,9 +46,19 @@ class AuthRepository {
       AppLogger.i(
           'Google Sign In successful for user: ${userCredential.user?.uid}');
 
-      // Create or update user document in Firestore
+      // Check if this is a new user (first-time sign-up)
       if (userCredential.user != null) {
-        await _createOrUpdateUserDocument(userCredential.user!);
+        final userDoc = await _firestore
+            .collection(UserModel.collectionPath)
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          AppLogger.i('New user detected, will require onboarding');
+          // Don't create document here - let onboarding handle it
+        } else {
+          AppLogger.i('Existing user signed in');
+        }
       }
 
       return userCredential;
@@ -57,7 +67,6 @@ class AuthRepository {
       rethrow;
     }
   }
-
 
   Future<void> signOut() async {
     try {
@@ -75,54 +84,15 @@ class AuthRepository {
     }
   }
 
-  Future<void> _createOrUpdateUserDocument(User user) async {
-    try {
-      final userDoc = _firestore.collection('users').doc(user.uid);
-      final userSnapshot = await userDoc.get();
-
-      String displayName = user.displayName ??
-          user.email?.split('@').first ??
-          'User';
-
-      final userData = UserModel(
-        uid: user.uid,
-        displayName: displayName,
-        photoURL: user.photoURL,
-        socialLinks: {},
-        createdAt: userSnapshot.exists
-            ? (userSnapshot.data()?['createdAt'] as Timestamp?)?.toDate() ??
-                DateTime.now()
-            : DateTime.now(),
-      );
-
-      if (userSnapshot.exists) {
-        // Update existing user, preserve social links
-        final existingData = userSnapshot.data() as Map<String, dynamic>;
-        final existingUser = UserModel.fromFirestore(userSnapshot);
-
-        await userDoc.update({
-          'displayName': displayName,
-          'photoURL': user.photoURL,
-          'socialLinks': existingUser.socialLinks,
-        });
-      } else {
-        // Create new user document
-        await userDoc.set(userData.toFirestore());
-      }
-
-      AppLogger.i('User document created/updated successfully');
-    } catch (e, stackTrace) {
-      AppLogger.e('Failed to create/update user document', e, stackTrace);
-      rethrow;
-    }
-  }
-
   Future<UserModel?> getCurrentUserData() async {
     try {
       final user = currentUser;
       if (user == null) return null;
 
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      final userDoc = await _firestore
+          .collection(UserModel.collectionPath)
+          .doc(user.uid)
+          .get();
       if (!userDoc.exists) return null;
 
       return UserModel.fromFirestore(userDoc);
@@ -132,6 +102,81 @@ class AuthRepository {
     }
   }
 
+  Future<void> completeUserOnboarding({
+    required String username,
+    required int age,
+  }) async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
+      // Check if username is already taken
+      final usernameQuery = await _firestore
+          .collection(UserModel.collectionPath)
+          .where('username', isEqualTo: username)
+          .get();
+
+      if (usernameQuery.docs.isNotEmpty) {
+        throw Exception('Username is already taken');
+      }
+
+      // Create the complete user document
+      final userData = {
+        'uid': user.uid,
+        'username': username,
+        'age': age,
+        'createdAt': FieldValue.serverTimestamp(),
+        'displayName':
+            user.displayName ?? user.email?.split('@').first ?? 'User',
+        'photoURL': user.photoURL,
+        'socialLinks': {},
+        'isOnboardingComplete': true,
+      };
+
+      await _firestore
+          .collection(UserModel.collectionPath)
+          .doc(user.uid)
+          .set(userData);
+
+      AppLogger.i(
+          'User onboarding completed and document created for user: ${user.uid}');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to complete user onboarding', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<bool> isUsernameAvailable(String username) async {
+    try {
+      final query = await _firestore
+          .collection(UserModel.collectionPath)
+          .where('username', isEqualTo: username)
+          .get();
+
+      return query.docs.isEmpty;
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to check username availability', e, stackTrace);
+      return false;
+    }
+  }
+
+  Future<UserModel?> getUserData(String userId) async {
+    try {
+      final userDoc = await _firestore
+          .collection(UserModel.collectionPath)
+          .doc(userId)
+          .get();
+      
+      if (!userDoc.exists) return null;
+      
+      return UserModel.fromFirestore(userDoc);
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to get user data for $userId', e, stackTrace);
+      return null;
+    }
+  }
 }
 
 // Providers

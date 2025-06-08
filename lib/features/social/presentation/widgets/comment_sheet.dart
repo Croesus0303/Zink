@@ -10,10 +10,12 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 
 class CommentSheet extends ConsumerStatefulWidget {
+  final String eventId;
   final String submissionId;
 
   const CommentSheet({
     super.key,
+    required this.eventId,
     required this.submissionId,
   });
 
@@ -51,6 +53,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
       final socialService = ref.read(socialServiceProvider);
       
       await socialService.addComment(
+        eventId: widget.eventId,
         submissionId: widget.submissionId,
         userId: currentUser.uid,
         text: text,
@@ -60,7 +63,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
       AppLogger.d('Comment added to submission ${widget.submissionId}');
       
       // Refresh comments by invalidating the provider
-      ref.invalidate(commentsStreamProvider(widget.submissionId));
+      ref.invalidate(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
     } catch (e) {
       AppLogger.e('Error adding comment to submission ${widget.submissionId}', e);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,8 +80,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final commentsAsync = ref.watch(commentsStreamProvider(widget.submissionId));
-    final users = ref.watch(mockUsersProvider);
+    final commentsAsync = ref.watch(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -160,30 +162,26 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
                             final comment = comments[index];
-                            final user = users[comment.uid];
                             return _CommentItem(
                               comment: comment,
-                              user: user,
                             );
                           },
                         ),
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (error, stack) {
                     AppLogger.e('Error loading comments', error, stack);
-                    // Fallback to mock data
-                    final mockComments = ref.read(mockCommentsProvider(widget.submissionId));
-                    return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: mockComments.length,
-                      itemBuilder: (context, index) {
-                        final comment = mockComments[index];
-                        final user = users[comment.uid];
-                        return _CommentItem(
-                          comment: comment,
-                          user: user,
-                        );
-                      },
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Error loading comments: $error'),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => ref.refresh(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId))),
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -238,17 +236,25 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
   }
 }
 
-class _CommentItem extends StatelessWidget {
+class _CommentItem extends ConsumerWidget {
   final CommentModel comment;
-  final UserModel? user;
 
   const _CommentItem({
     required this.comment,
-    required this.user,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userDataAsync = ref.watch(userDataProvider(comment.uid));
+    
+    return userDataAsync.when(
+      data: (user) => _buildCommentItem(context, user),
+      loading: () => _buildCommentItem(context, null),
+      error: (error, stack) => _buildCommentItem(context, null),
+    );
+  }
+  
+  Widget _buildCommentItem(BuildContext context, UserModel? user) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(

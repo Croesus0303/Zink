@@ -10,11 +10,10 @@ class SocialService {
   SocialService(this._firestore);
 
   // LIKES
-  Stream<List<LikeModel>> getLikesStream(String submissionId) {
+  Stream<List<LikeModel>> getLikesStream(String eventId, String submissionId) {
     return _firestore
-        .collection('likes')
-        .where('submissionId', isEqualTo: submissionId)
-        .orderBy('createdAt', descending: true)
+        .collection(LikeModel.getCollectionPath(eventId, submissionId))
+        .orderBy('likedAt', descending: true)
         .snapshots()
         .map((snapshot) {
       AppLogger.d('Fetched ${snapshot.docs.length} likes for submission $submissionId from Firebase');
@@ -27,10 +26,9 @@ class SocialService {
     });
   }
 
-  Future<bool> isLikedByUser(String submissionId, String userId) async {
+  Future<bool> isLikedByUser(String eventId, String submissionId, String userId) async {
     try {
-      final likeId = '${submissionId}_$userId';
-      final doc = await _firestore.collection('likes').doc(likeId).get();
+      final doc = await _firestore.collection(LikeModel.getCollectionPath(eventId, submissionId)).doc(userId).get();
       return doc.exists;
     } catch (e) {
       AppLogger.e('Error checking if submission $submissionId is liked by user $userId', e);
@@ -38,23 +36,21 @@ class SocialService {
     }
   }
 
-  Future<void> likeSubmission(String submissionId, String userId) async {
+  Future<void> likeSubmission(String eventId, String submissionId, String userId) async {
     final batch = _firestore.batch();
     
     try {
       // Create like document
-      final likeId = '${submissionId}_$userId';
-      final likeRef = _firestore.collection('likes').doc(likeId);
+      final likeRef = _firestore.collection(LikeModel.getCollectionPath(eventId, submissionId)).doc(userId);
       final like = LikeModel(
-        submissionId: submissionId,
         uid: userId,
-        createdAt: DateTime.now(),
+        likedAt: DateTime.now(),
       );
       
       batch.set(likeRef, like.toFirestore());
       
       // Increment like count on submission
-      final submissionRef = _firestore.collection('submissions').doc(submissionId);
+      final submissionRef = _firestore.collection('events').doc(eventId).collection('submissions').doc(submissionId);
       batch.update(submissionRef, {
         'likeCount': FieldValue.increment(1),
       });
@@ -67,17 +63,16 @@ class SocialService {
     }
   }
 
-  Future<void> unlikeSubmission(String submissionId, String userId) async {
+  Future<void> unlikeSubmission(String eventId, String submissionId, String userId) async {
     final batch = _firestore.batch();
     
     try {
       // Delete like document
-      final likeId = '${submissionId}_$userId';
-      final likeRef = _firestore.collection('likes').doc(likeId);
+      final likeRef = _firestore.collection(LikeModel.getCollectionPath(eventId, submissionId)).doc(userId);
       batch.delete(likeRef);
       
       // Decrement like count on submission
-      final submissionRef = _firestore.collection('submissions').doc(submissionId);
+      final submissionRef = _firestore.collection('events').doc(eventId).collection('submissions').doc(submissionId);
       batch.update(submissionRef, {
         'likeCount': FieldValue.increment(-1),
       });
@@ -90,11 +85,10 @@ class SocialService {
     }
   }
 
-  Future<int> getLikeCount(String submissionId) async {
+  Future<int> getLikeCount(String eventId, String submissionId) async {
     try {
       final snapshot = await _firestore
-          .collection('likes')
-          .where('submissionId', isEqualTo: submissionId)
+          .collection(LikeModel.getCollectionPath(eventId, submissionId))
           .count()
           .get();
       
@@ -106,16 +100,15 @@ class SocialService {
   }
 
   // COMMENTS
-  Stream<List<CommentModel>> getCommentsStream(String submissionId) {
+  Stream<List<CommentModel>> getCommentsStream(String eventId, String submissionId) {
     return _firestore
-        .collection('comments')
-        .where('submissionId', isEqualTo: submissionId)
+        .collection(CommentModel.getCollectionPath(eventId, submissionId))
         .orderBy('createdAt', descending: false)
         .snapshots()
         .map((snapshot) {
       AppLogger.d('Fetched ${snapshot.docs.length} comments for submission $submissionId from Firebase');
       return snapshot.docs
-          .map((doc) => CommentModel.fromFirestore(doc))
+          .map((doc) => CommentModel.fromFirestore(doc, eventId, submissionId))
           .toList();
     }).handleError((error) {
       AppLogger.e('Error fetching comments for submission $submissionId from Firebase', error);
@@ -123,17 +116,16 @@ class SocialService {
     });
   }
 
-  Future<List<CommentModel>> getComments(String submissionId) async {
+  Future<List<CommentModel>> getComments(String eventId, String submissionId) async {
     try {
       final snapshot = await _firestore
-          .collection('comments')
-          .where('submissionId', isEqualTo: submissionId)
+          .collection(CommentModel.getCollectionPath(eventId, submissionId))
           .orderBy('createdAt', descending: false)
           .get();
       
       AppLogger.d('Fetched ${snapshot.docs.length} comments for submission $submissionId from Firebase');
       return snapshot.docs
-          .map((doc) => CommentModel.fromFirestore(doc))
+          .map((doc) => CommentModel.fromFirestore(doc, eventId, submissionId))
           .toList();
     } catch (e) {
       AppLogger.e('Error fetching comments for submission $submissionId from Firebase', e);
@@ -142,23 +134,23 @@ class SocialService {
   }
 
   Future<CommentModel> addComment({
+    required String eventId,
     required String submissionId,
     required String userId,
     required String text,
   }) async {
     try {
       final commentData = {
-        'submissionId': submissionId,
         'uid': userId,
         'text': text,
         'createdAt': FieldValue.serverTimestamp(),
       };
 
-      final docRef = await _firestore.collection('comments').add(commentData);
+      final docRef = await _firestore.collection(CommentModel.getCollectionPath(eventId, submissionId)).add(commentData);
       
       // Return the created comment
       final doc = await docRef.get();
-      final comment = CommentModel.fromFirestore(doc);
+      final comment = CommentModel.fromFirestore(doc, eventId, submissionId);
       
       AppLogger.i('User $userId added comment to submission $submissionId');
       return comment;
@@ -168,9 +160,9 @@ class SocialService {
     }
   }
 
-  Future<void> updateComment(String commentId, String newText) async {
+  Future<void> updateComment(String eventId, String submissionId, String commentId, String newText) async {
     try {
-      await _firestore.collection('comments').doc(commentId).update({
+      await _firestore.collection(CommentModel.getCollectionPath(eventId, submissionId)).doc(commentId).update({
         'text': newText,
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -181,9 +173,9 @@ class SocialService {
     }
   }
 
-  Future<void> deleteComment(String commentId) async {
+  Future<void> deleteComment(String eventId, String submissionId, String commentId) async {
     try {
-      await _firestore.collection('comments').doc(commentId).delete();
+      await _firestore.collection(CommentModel.getCollectionPath(eventId, submissionId)).doc(commentId).delete();
       AppLogger.i('Deleted comment $commentId');
     } catch (e) {
       AppLogger.e('Error deleting comment $commentId', e);
@@ -191,11 +183,10 @@ class SocialService {
     }
   }
 
-  Future<int> getCommentCount(String submissionId) async {
+  Future<int> getCommentCount(String eventId, String submissionId) async {
     try {
       final snapshot = await _firestore
-          .collection('comments')
-          .where('submissionId', isEqualTo: submissionId)
+          .collection(CommentModel.getCollectionPath(eventId, submissionId))
           .count()
           .get();
       
@@ -210,7 +201,7 @@ class SocialService {
   Future<int> getUserLikeCount(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('likes')
+          .collectionGroup('likes')
           .where('uid', isEqualTo: userId)
           .count()
           .get();
@@ -225,7 +216,7 @@ class SocialService {
   Future<int> getUserCommentCount(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('comments')
+          .collectionGroup('comments')
           .where('uid', isEqualTo: userId)
           .count()
           .get();

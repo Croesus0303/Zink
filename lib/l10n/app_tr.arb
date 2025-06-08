@@ -4,6 +4,9 @@
   "appTagline": "Yapay Zeka Destekli Fotoğraf Görevleri",
   
   "continueWithGoogle": "Google ile Devam Et",
+  "signInOrSignUp": "Giriş Yap veya Kayıt Ol",
+  "newUserPrompt": "Zink'te yeni misin? Google hesabınla kayıt ol",
+  "existingUserPrompt": "Zaten hesabın var mı? Devam etmek için giriş yap",
   "continueWithApple": "Apple ile Devam Et",
   "signOut": "Çıkış Yap",
   "welcome": "Hoşgeldin {name}!",
@@ -45,5 +48,22 @@
   "newChallengeAvailable": "Yeni görev mevcut!",
   "challengeEndingSoon": "Görev yakında bitiyor!",
   "submissionSuccessful": "Fotoğraf başarıyla gönderildi!",
-  "submit": "Gönder"
+  "submit": "Gönder",
+  
+  "welcomeToZink": "Zink'e Hoşgeldin!",
+  "onboardingSubtitle": "Başlamak için profilini ayarlayalım",
+  "chooseUsername": "Kullanıcı adı seç",
+  "enterUsername": "Kullanıcı adını gir",
+  "whatsYourAge": "Yaşın kaç?",
+  "enterAge": "Yaşını gir",
+  "completeSetup": "Kurulumu Tamamla",
+  "usernameRequired": "Kullanıcı adı gerekli",
+  "usernameTooShort": "Kullanıcı adı en az 3 karakter olmalı",
+  "usernameTooLong": "Kullanıcı adı 20 karakterden az olmalı",
+  "usernameInvalidChars": "Kullanıcı adı sadece harf, rakam ve alt çizgi içerebilir",
+  "ageRequired": "Yaş gerekli",
+  "enterValidNumber": "Lütfen geçerli bir sayı girin",
+  "ageTooYoung": "En az 13 yaşında olmalısınız",
+  "enterValidAge": "Lütfen geçerli bir yaş girin",
+  "privacyNote": "Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır."
 } 

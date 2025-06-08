@@ -27,11 +27,51 @@ class EventDetailScreen extends ConsumerStatefulWidget {
 class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final events = ref.watch(mockEventsProvider);
-    final event = events.firstWhere(
-      (e) => e.id == widget.eventId,
-      orElse: () => throw Exception('Event not found'),
+    final eventsAsync = ref.watch(eventsProvider);
+    
+    return eventsAsync.when(
+      data: (events) {
+        try {
+          final event = events.firstWhere(
+            (e) => e.id == widget.eventId,
+            orElse: () => throw Exception('Event not found'),
+          );
+          return _buildEventDetail(event);
+        } catch (e) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Event Not Found')),
+            body: const Center(
+              child: Text('Event not found'),
+            ),
+          );
+        }
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading event details', error, stack);
+        return Scaffold(
+          appBar: AppBar(title: const Text('Error')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Error loading event: $error'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(eventsProvider),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+  
+  Widget _buildEventDetail(EventModel event) {
 
     return Scaffold(
       body: CustomScrollView(
@@ -314,11 +354,10 @@ class _SubmissionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final submissionsAsync = ref.watch(firebaseFilteredSubmissionsProvider(eventId));
-    final users = ref.watch(mockUsersProvider);
+    final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
 
     return submissionsAsync.when(
-      data: (submissions) => _buildSubmissionsList(context, submissions, users),
+      data: (submissions) => _buildSubmissionsList(context, submissions),
       loading: () => const SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.all(32.0),
@@ -329,14 +368,26 @@ class _SubmissionsList extends ConsumerWidget {
       ),
       error: (error, stack) {
         AppLogger.e('Error loading submissions', error, stack);
-        // Fallback to mock data
-        final mockSubmissions = ref.read(filteredSubmissionsProvider(eventId));
-        return _buildSubmissionsList(context, mockSubmissions, users);
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              children: [
+                Text('Error loading submissions: $error'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(submissionsProvider(eventId)),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
 
-  Widget _buildSubmissionsList(BuildContext context, List<SubmissionModel> submissions, Map<String, UserModel> users) {
+  Widget _buildSubmissionsList(BuildContext context, List<SubmissionModel> submissions) {
     if (submissions.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
@@ -370,11 +421,9 @@ class _SubmissionsList extends ConsumerWidget {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final submission = submissions[index];
-          final user = users[submission.uid];
           
           return _SubmissionCard(
             submission: submission,
-            user: user,
           );
         },
         childCount: submissions.length,
@@ -385,19 +434,27 @@ class _SubmissionsList extends ConsumerWidget {
 
 class _SubmissionCard extends ConsumerWidget {
   final SubmissionModel submission;
-  final UserModel? user;
 
   const _SubmissionCard({
     required this.submission,
-    required this.user,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(currentUserProvider);
+    final userDataAsync = ref.watch(userDataProvider(submission.uid));
     final likeStatusAsync = currentUser != null 
-        ? ref.watch(likeStatusProvider((submissionId: submission.id, userId: currentUser.uid)))
+        ? ref.watch(likeStatusProvider((eventId: submission.eventId, submissionId: submission.id, userId: currentUser.uid)))
         : const AsyncValue.data(false);
+        
+    return userDataAsync.when(
+      data: (user) => _buildCard(context, ref, user, currentUser, likeStatusAsync),
+      loading: () => _buildCard(context, ref, null, currentUser, likeStatusAsync),
+      error: (error, stack) => _buildCard(context, ref, null, currentUser, likeStatusAsync),
+    );
+  }
+  
+  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user, dynamic currentUser, AsyncValue<bool> likeStatusAsync) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
@@ -469,16 +526,19 @@ class _SubmissionCard extends ConsumerWidget {
                 children: [
                   likeStatusAsync.when(
                     data: (isLiked) => LikeButton(
+                      eventId: submission.eventId,
                       submissionId: submission.id,
                       initialLikeCount: submission.likeCount,
                       initialIsLiked: isLiked,
                     ),
                     loading: () => LikeButton(
+                      eventId: submission.eventId,
                       submissionId: submission.id,
                       initialLikeCount: submission.likeCount,
                       initialIsLiked: false,
                     ),
                     error: (_, __) => LikeButton(
+                      eventId: submission.eventId,
                       submissionId: submission.id,
                       initialLikeCount: submission.likeCount,
                       initialIsLiked: false,
@@ -492,6 +552,7 @@ class _SubmissionCard extends ConsumerWidget {
                         isScrollControlled: true,
                         backgroundColor: Colors.transparent,
                         builder: (context) => CommentSheet(
+                          eventId: submission.eventId,
                           submissionId: submission.id,
                         ),
                       );

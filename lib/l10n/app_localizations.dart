@@ -116,6 +116,24 @@ abstract class AppLocalizations {
   /// **'Continue with Google'**
   String get continueWithGoogle;
 
+  /// Sign in or sign up header text
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in or Sign up'**
+  String get signInOrSignUp;
+
+  /// Prompt for new users
+  ///
+  /// In en, this message translates to:
+  /// **'New to Zink? Sign up with your Google account'**
+  String get newUserPrompt;
+
+  /// Prompt for existing users
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign in to continue'**
+  String get existingUserPrompt;
+
   /// Apple sign in button text
   ///
   /// In en, this message translates to:
@@ -331,6 +349,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit'**
   String get submit;
+
+  /// Welcome title on onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Zink!'**
+  String get welcomeToZink;
+
+  /// Subtitle on onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s set up your profile to get started'**
+  String get onboardingSubtitle;
+
+  /// Username field label on onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a username'**
+  String get chooseUsername;
+
+  /// Username field placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your username'**
+  String get enterUsername;
+
+  /// Age field label on onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your age?'**
+  String get whatsYourAge;
+
+  /// Age field placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your age'**
+  String get enterAge;
+
+  /// Complete setup button text
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Setup'**
+  String get completeSetup;
+
+  /// Username validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get usernameRequired;
+
+  /// Username too short validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least 3 characters'**
+  String get usernameTooShort;
+
+  /// Username too long validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be less than 20 characters'**
+  String get usernameTooLong;
+
+  /// Username invalid characters validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Username can only contain letters, numbers, and underscores'**
+  String get usernameInvalidChars;
+
+  /// Age validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Age is required'**
+  String get ageRequired;
+
+  /// Age invalid number validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get enterValidNumber;
+
+  /// Age too young validation error
+  ///
+  /// In en, this message translates to:
+  /// **'You must be at least 13 years old'**
+  String get ageTooYoung;
+
+  /// Age too old validation error
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid age'**
+  String get enterValidAge;
+
+  /// Privacy note text on onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.'**
+  String get privacyNote;
 }
 
 class _AppLocalizationsDelegate

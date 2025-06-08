@@ -1,33 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LikeModel {
-  final String submissionId;
   final String uid;
-  final DateTime createdAt;
+  final DateTime likedAt;
 
   LikeModel({
-    required this.submissionId,
     required this.uid,
-    required this.createdAt,
+    required this.likedAt,
   });
 
   factory LikeModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return LikeModel(
-      submissionId: data['submissionId'] ?? '',
-      uid: data['uid'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      uid: doc.id,
+      likedAt: (data['likedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
+  static String getCollectionPath(String eventId, String submissionId) => 
+      'events/$eventId/submissions/$submissionId/likes';
+
   Map<String, dynamic> toFirestore() {
     return {
-      'submissionId': submissionId,
-      'uid': uid,
-      'createdAt': FieldValue.serverTimestamp(),
+      'likedAt': FieldValue.serverTimestamp(),
     };
   }
-
-  // Create a composite ID for the like document
-  String get id => '${submissionId}_$uid';
 }

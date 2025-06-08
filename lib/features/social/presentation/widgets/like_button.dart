@@ -5,6 +5,7 @@ import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 
 class LikeButton extends ConsumerStatefulWidget {
+  final String eventId;
   final String submissionId;
   final int initialLikeCount;
   final bool initialIsLiked;
@@ -12,6 +13,7 @@ class LikeButton extends ConsumerStatefulWidget {
 
   const LikeButton({
     super.key,
+    required this.eventId,
     required this.submissionId,
     required this.initialLikeCount,
     this.initialIsLiked = false,
@@ -53,14 +55,14 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
       final socialService = ref.read(socialServiceProvider);
       
       if (_isLiked) {
-        await socialService.unlikeSubmission(widget.submissionId, currentUser.uid);
+        await socialService.unlikeSubmission(widget.eventId, widget.submissionId, currentUser.uid);
         setState(() {
           _isLiked = false;
           _likeCount = (_likeCount - 1).clamp(0, double.infinity).toInt();
         });
         AppLogger.d('Unliked submission ${widget.submissionId}');
       } else {
-        await socialService.likeSubmission(widget.submissionId, currentUser.uid);
+        await socialService.likeSubmission(widget.eventId, widget.submissionId, currentUser.uid);
         setState(() {
           _isLiked = true;
           _likeCount++;

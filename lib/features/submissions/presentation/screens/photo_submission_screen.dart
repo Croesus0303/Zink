@@ -136,11 +136,51 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final events = ref.watch(mockEventsProvider);
-    final event = events.firstWhere(
-      (e) => e.id == widget.eventId,
-      orElse: () => throw Exception('Event not found'),
+    final eventsAsync = ref.watch(eventsProvider);
+    
+    return eventsAsync.when(
+      data: (events) {
+        try {
+          final event = events.firstWhere(
+            (e) => e.id == widget.eventId,
+            orElse: () => throw Exception('Event not found'),
+          );
+          return _buildSubmissionScreen(context, event);
+        } catch (e) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Event Not Found')),
+            body: const Center(
+              child: Text('Event not found'),
+            ),
+          );
+        }
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading event for submission', error, stack);
+        return Scaffold(
+          appBar: AppBar(title: const Text('Error')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Error loading event: $error'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(eventsProvider),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+  }
+  
+  Widget _buildSubmissionScreen(BuildContext context, EventModel event) {
 
     return Scaffold(
       appBar: AppBar(

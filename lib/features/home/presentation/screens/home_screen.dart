@@ -90,7 +90,7 @@ class HomeScreen extends ConsumerWidget {
 class _ActiveChallengeSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeEventAsync = ref.watch(firebaseActiveEventProvider);
+    final activeEventAsync = ref.watch(activeEventProvider);
     final user = ref.watch(currentUserProvider);
 
     return activeEventAsync.when(
@@ -108,9 +108,7 @@ class _ActiveChallengeSection extends ConsumerWidget {
       ),
       error: (error, stack) {
         AppLogger.e('Error loading active event', error, stack);
-        // Fallback to mock data
-        final mockEvent = ref.read(activeEventProvider);
-        return _buildContent(context, mockEvent, user);
+        return _buildContent(context, null, user);
       },
     );
   }
@@ -312,7 +310,7 @@ class _TimeRemainingWidget extends StatelessWidget {
 class _PastChallengesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pastEventsAsync = ref.watch(firebasePastEventsProvider);
+    final pastEventsAsync = ref.watch(pastEventsProvider);
 
     return pastEventsAsync.when(
       data: (pastEvents) => _buildList(context, pastEvents),
@@ -326,9 +324,21 @@ class _PastChallengesList extends ConsumerWidget {
       ),
       error: (error, stack) {
         AppLogger.e('Error loading past events', error, stack);
-        // Fallback to mock data
-        final mockEvents = ref.read(pastEventsProvider);
-        return _buildList(context, mockEvents);
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              children: [
+                Text('Error loading past events: $error'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(pastEventsProvider),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

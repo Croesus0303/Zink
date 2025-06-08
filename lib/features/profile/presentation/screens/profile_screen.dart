@@ -3,7 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
+import '../../../auth/data/models/user_model.dart';
 import '../../../events/providers/events_providers.dart';
+import '../../../events/data/models/event_model.dart';
+import '../../../submissions/data/models/submission_model.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -38,10 +41,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
     final isOwnProfile = widget.userId == null || widget.userId == currentUser?.uid;
+    final targetUserId = widget.userId ?? currentUser?.uid;
     
-    // For demo purposes, use current user data
-    final user = ref.watch(mockUsersProvider)['user1']; // Mock user
+    if (targetUserId == null) {
+      return const Scaffold(
+        body: Center(child: Text('User not found')),
+      );
+    }
     
+    final userDataAsync = ref.watch(userDataProvider(targetUserId));
+    
+    return userDataAsync.when(
+      data: (user) => _buildProfile(context, ref, user, isOwnProfile),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error loading profile: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.refresh(userDataProvider(targetUserId)),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildProfile(BuildContext context, WidgetRef ref, UserModel? user, bool isOwnProfile) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -108,7 +142,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               controller: _tabController,
               children: [
                 _ChallengesTab(),
-                _SubmissionsTab(userId: widget.userId ?? currentUser?.uid ?? 'user1'),
+                _SubmissionsTab(userId: widget.userId ?? user?.uid ?? ''),
               ],
             ),
           ),
@@ -327,7 +361,28 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
 class _ChallengesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(mockEventsProvider);
+    final eventsAsync = ref.watch(eventsProvider);
+    
+    return eventsAsync.when(
+      data: (events) => _buildEventsList(context, events),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error loading events: $error'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => ref.refresh(eventsProvider),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildEventsList(BuildContext context, List<EventModel> events) {
     
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
@@ -419,36 +474,22 @@ class _SubmissionsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final submissions = ref.watch(mockSubmissionsProvider('1')); // Mock submissions
+    if (userId.isEmpty) {
+      return const Center(
+        child: Text('No user selected'),
+      );
+    }
     
-    return GridView.builder(
-      padding: const EdgeInsets.all(16.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
+    // For now, show a placeholder since we need event-specific submissions
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.photo_library_outlined, size: 64, color: Colors.grey),
+          SizedBox(height: 16),
+          Text('User submissions coming soon'),
+        ],
       ),
-      itemCount: submissions.length,
-      itemBuilder: (context, index) {
-        final submission = submissions[index];
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
-            imageUrl: submission.imageURL,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: Colors.grey[300],
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              color: Colors.grey[300],
-              child: const Icon(Icons.error),
-            ),
-          ),
-        );
-      },
     );
   }
 }

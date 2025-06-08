@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/providers/firebase_providers.dart';
+import '../../providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 
 class AuthWrapper extends ConsumerWidget {
@@ -14,7 +14,8 @@ class AuthWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateChangesProvider);
+    final authState = ref.watch(authStateProvider);
+    final currentUserData = ref.watch(currentUserDataProvider);
 
     return authState.when(
       data: (user) {
@@ -30,8 +31,42 @@ class AuthWrapper extends ConsumerWidget {
             ),
           );
         }
-        // User is logged in, show the requested page
-        return child;
+        
+        // User is authenticated, check onboarding status
+        return currentUserData.when(
+          data: (userData) {
+            if (userData == null || !userData.isOnboardingComplete) {
+              // User needs onboarding
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                context.go('/onboarding');
+              });
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            // User is fully set up, show the requested page
+            return child;
+          },
+          loading: () => const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (error, stack) {
+            AppLogger.e('User data error', error, stack);
+            // On error, redirect to onboarding
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.go('/onboarding');
+            });
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          },
+        );
       },
       loading: () => const Scaffold(
         body: Center(

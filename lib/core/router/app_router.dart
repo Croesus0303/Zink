@@ -4,12 +4,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../features/auth/providers/auth_providers.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/user_onboarding_screen.dart';
 import '../../features/events/presentation/screens/event_detail_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/submissions/presentation/screens/photo_submission_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
+  final currentUserDataAsync = ref.watch(currentUserDataProvider);
 
   return GoRouter(
     initialLocation: '/',
@@ -17,13 +19,42 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isAuth = authState.valueOrNull != null;
       final isAuthRoute = state.matchedLocation == '/login';
-
+      final isOnboardingRoute = state.matchedLocation == '/onboarding';
+      
+      // If not authenticated, redirect to login (except if already on login)
       if (!isAuth && !isAuthRoute) {
         return '/login';
       }
-      if (isAuth && isAuthRoute) {
-        return '/';
+      
+      // If authenticated, check user data for onboarding status
+      if (isAuth) {
+        return currentUserDataAsync.when(
+          data: (userData) {
+            if (userData == null) {
+              // User authenticated but no Firestore document - needs onboarding
+              return isOnboardingRoute ? null : '/onboarding';
+            }
+            
+            // Check if user needs onboarding
+            if (!userData.isOnboardingComplete) {
+              return isOnboardingRoute ? null : '/onboarding';
+            }
+            
+            // User is fully set up, don't allow login or onboarding pages
+            if (isAuthRoute || isOnboardingRoute) {
+              return '/';
+            }
+            
+            return null;
+          },
+          loading: () => null, // Let loading state handle itself
+          error: (error, stack) {
+            // On error, redirect to onboarding to be safe
+            return isOnboardingRoute ? null : '/onboarding';
+          },
+        );
       }
+      
       return null;
     },
     routes: AppRouter.routes,
@@ -41,6 +72,11 @@ class AppRouter {
       path: '/login',
       name: 'login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/onboarding',
+      name: 'onboarding',
+      builder: (context, state) => const UserOnboardingScreen(),
     ),
     GoRoute(
       path: '/event/:eventId',

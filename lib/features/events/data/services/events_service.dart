@@ -10,7 +10,7 @@ class EventsService {
 
   Stream<List<EventModel>> getEventsStream() {
     return _firestore
-        .collection('events')
+        .collection(EventModel.collectionPath)
         .orderBy('startTime', descending: true)
         .snapshots()
         .map((snapshot) {
@@ -27,7 +27,7 @@ class EventsService {
   Future<List<EventModel>> getEvents() async {
     try {
       final snapshot = await _firestore
-          .collection('events')
+          .collection(EventModel.collectionPath)
           .orderBy('startTime', descending: true)
           .get();
       
@@ -43,7 +43,7 @@ class EventsService {
 
   Future<EventModel?> getEvent(String eventId) async {
     try {
-      final doc = await _firestore.collection('events').doc(eventId).get();
+      final doc = await _firestore.collection(EventModel.collectionPath).doc(eventId).get();
       
       if (!doc.exists) {
         AppLogger.w('Event $eventId not found in Firebase');
@@ -62,7 +62,7 @@ class EventsService {
     try {
       final now = Timestamp.now();
       final snapshot = await _firestore
-          .collection('events')
+          .collection(EventModel.collectionPath)
           .where('startTime', isLessThanOrEqualTo: now)
           .where('endTime', isGreaterThan: now)
           .orderBy('endTime', descending: false)
@@ -86,7 +86,7 @@ class EventsService {
     try {
       final now = Timestamp.now();
       final snapshot = await _firestore
-          .collection('events')
+          .collection(EventModel.collectionPath)
           .where('endTime', isLessThan: now)
           .orderBy('endTime', descending: true)
           .get();
@@ -103,7 +103,7 @@ class EventsService {
 
   Future<void> createEvent(EventModel event) async {
     try {
-      await _firestore.collection('events').add(event.toFirestore());
+      await _firestore.collection(EventModel.collectionPath).add(event.toFirestore());
       AppLogger.i('Created event: ${event.title}');
     } catch (e) {
       AppLogger.e('Error creating event', e);
@@ -113,7 +113,7 @@ class EventsService {
 
   Future<void> updateEvent(String eventId, Map<String, dynamic> updates) async {
     try {
-      await _firestore.collection('events').doc(eventId).update(updates);
+      await _firestore.collection(EventModel.collectionPath).doc(eventId).update(updates);
       AppLogger.i('Updated event: $eventId');
     } catch (e) {
       AppLogger.e('Error updating event $eventId', e);
@@ -123,7 +123,7 @@ class EventsService {
 
   Future<void> deleteEvent(String eventId) async {
     try {
-      await _firestore.collection('events').doc(eventId).delete();
+      await _firestore.collection(EventModel.collectionPath).doc(eventId).delete();
       AppLogger.i('Deleted event: $eventId');
     } catch (e) {
       AppLogger.e('Error deleting event $eventId', e);

@@ -17,11 +17,11 @@ class SubmissionModel {
     this.likeCount = 0,
   });
 
-  factory SubmissionModel.fromFirestore(DocumentSnapshot doc) {
+  factory SubmissionModel.fromFirestore(DocumentSnapshot doc, String eventId) {
     final data = doc.data() as Map<String, dynamic>;
     return SubmissionModel(
       id: doc.id,
-      eventId: data['eventId'] ?? '',
+      eventId: eventId,
       uid: data['uid'] ?? '',
       imageURL: data['imageURL'] ?? '',
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -29,9 +29,10 @@ class SubmissionModel {
     );
   }
 
+  static String getCollectionPath(String eventId) => 'events/$eventId/submissions';
+
   Map<String, dynamic> toFirestore() {
     return {
-      'eventId': eventId,
       'uid': uid,
       'imageURL': imageURL,
       'createdAt': FieldValue.serverTimestamp(),

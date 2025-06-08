@@ -29,6 +29,8 @@ class EventModel {
     );
   }
 
+  static String get collectionPath => 'events';
+
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,
