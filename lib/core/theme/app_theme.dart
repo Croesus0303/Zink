@@ -25,7 +25,6 @@ class AppTheme {
         error: errorColor,
         brightness: Brightness.light,
         surface: surfaceColor,
-        background: backgroundColor,
       ),
       textTheme: GoogleFonts.interTextTheme(
         Theme.of(context).textTheme,
@@ -56,7 +55,6 @@ class AppTheme {
         error: errorColor,
         brightness: Brightness.dark,
         surface: darkSurfaceColor,
-        background: darkBackgroundColor,
       ),
       textTheme: GoogleFonts.interTextTheme(
         Theme.of(context).textTheme.apply(

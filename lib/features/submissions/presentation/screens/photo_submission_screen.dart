@@ -136,7 +136,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
   @override
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
-    
+
     return eventsAsync.when(
       data: (events) {
         try {
@@ -178,9 +178,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       },
     );
   }
-  
-  Widget _buildSubmissionScreen(BuildContext context, EventModel event) {
 
+  Widget _buildSubmissionScreen(BuildContext context, EventModel event) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.submitPhoto),
@@ -235,7 +234,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha(25),
                     blurRadius: 8,
                     offset: const Offset(0, -2),
                   ),
@@ -556,9 +555,9 @@ class _GuidelinesSection extends StatelessWidget {
                 ),
           ),
           const SizedBox(height: 12),
-          Card(
+          const Card(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -566,18 +565,18 @@ class _GuidelinesSection extends StatelessWidget {
                     icon: Icons.check_circle,
                     text: 'Make sure your photo matches the challenge theme',
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   _GuidelineItem(
                     icon: Icons.check_circle,
                     text: 'Use good lighting and clear focus',
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   _GuidelineItem(
                     icon: Icons.check_circle,
                     text:
                         'Original photos only - no screenshots or downloaded images',
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                   _GuidelineItem(
                     icon: Icons.check_circle,
                     text: 'Keep content appropriate for all audiences',

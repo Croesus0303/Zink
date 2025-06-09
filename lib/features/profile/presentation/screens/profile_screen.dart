@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../events/providers/events_providers.dart';
-import '../../../events/data/models/event_model.dart';
 import '../../../submissions/data/models/submission_model.dart';
 import '../../../submissions/presentation/screens/single_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -168,7 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 controller: _tabController,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.submissions),
-                  Tab(text: 'Likes'),
+                  const Tab(text: 'Likes'),
                 ],
               ),
             ),
@@ -280,7 +279,8 @@ class _SocialLinksSection extends StatelessWidget {
             return Chip(
               avatar: _getSocialIcon(entry.key),
               label: Text(entry.value),
-              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
             );
           }).toList(),
         ),
@@ -637,7 +637,7 @@ class _LikedSubmissionGridItem extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withAlpha(179),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(

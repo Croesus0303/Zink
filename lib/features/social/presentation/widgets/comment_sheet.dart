@@ -51,7 +51,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
     try {
       final socialService = ref.read(socialServiceProvider);
-      
+
       await socialService.addComment(
         eventId: widget.eventId,
         submissionId: widget.submissionId,
@@ -61,11 +61,14 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
       _commentController.clear();
       AppLogger.d('Comment added to submission ${widget.submissionId}');
-      
+
       // Refresh comments by invalidating the provider
-      ref.invalidate(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
+      ref.invalidate(commentsStreamProvider(
+          (eventId: widget.eventId, submissionId: widget.submissionId)));
     } catch (e) {
-      AppLogger.e('Error adding comment to submission ${widget.submissionId}', e);
+      AppLogger.e(
+          'Error adding comment to submission ${widget.submissionId}', e);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to add comment')),
       );
@@ -80,7 +83,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final commentsAsync = ref.watch(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
+    final commentsAsync = ref.watch(commentsStreamProvider(
+        (eventId: widget.eventId, submissionId: widget.submissionId)));
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -182,7 +186,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             );
                           },
                         ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (error, stack) {
                     AppLogger.e('Error loading comments', error, stack);
                     return Center(
@@ -192,7 +197,11 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           Text('Error loading comments: $error'),
                           const SizedBox(height: 16),
                           ElevatedButton(
-                            onPressed: () => ref.refresh(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId))),
+                            onPressed: () => ref.refresh(
+                                commentsStreamProvider((
+                              eventId: widget.eventId,
+                              submissionId: widget.submissionId
+                            ))),
                             child: const Text('Retry'),
                           ),
                         ],
@@ -224,7 +233,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         textCapitalization: TextCapitalization.sentences,
                         textInputAction: TextInputAction.send,
                         enabled: !_isSubmitting,
-                        onSubmitted: _isSubmitting ? null : (_) => _addComment(),
+                        onSubmitted:
+                            _isSubmitting ? null : (_) => _addComment(),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -263,14 +273,14 @@ class _CommentItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userDataAsync = ref.watch(userDataProvider(comment.uid));
-    
+
     return userDataAsync.when(
       data: (user) => _buildCommentItem(context, user),
       loading: () => _buildCommentItem(context, null),
       error: (error, stack) => _buildCommentItem(context, null),
     );
   }
-  
+
   Widget _buildCommentItem(BuildContext context, UserModel? user) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),

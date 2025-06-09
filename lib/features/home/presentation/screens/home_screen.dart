@@ -16,8 +16,6 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(currentUserProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appName),
@@ -31,7 +29,8 @@ class HomeScreen extends ConsumerWidget {
                   AppLogger.i('Starting sign out from HomeScreen');
                   final authService = ref.read(authServiceProvider);
                   await authService.signOut();
-                  AppLogger.i('Sign out completed, navigation will happen automatically');
+                  AppLogger.i(
+                      'Sign out completed, navigation will happen automatically');
                 } catch (e) {
                   AppLogger.e('Sign out error', e);
                   if (context.mounted) {
@@ -251,7 +250,8 @@ class _ActiveChallengeSection extends ConsumerWidget {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => PhotoSubmissionScreen(eventId: activeEvent.id),
+                                  builder: (context) => PhotoSubmissionScreen(
+                                      eventId: activeEvent.id),
                                 ),
                               );
                             },
@@ -266,7 +266,8 @@ class _ActiveChallengeSection extends ConsumerWidget {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => EventDetailScreen(eventId: activeEvent.id),
+                                builder: (context) =>
+                                    EventDetailScreen(eventId: activeEvent.id),
                               ),
                             );
                           },
@@ -413,7 +414,8 @@ class _PastChallengesList extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => EventDetailScreen(eventId: event.id),
+                      builder: (context) =>
+                          EventDetailScreen(eventId: event.id),
                     ),
                   );
                 },

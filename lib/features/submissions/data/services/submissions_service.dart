@@ -17,12 +17,14 @@ class SubmissionsService {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      AppLogger.d('Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
+      AppLogger.d(
+          'Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
       return snapshot.docs
           .map((doc) => SubmissionModel.fromFirestore(doc, eventId))
           .toList();
     }).handleError((error) {
-      AppLogger.e('Error fetching submissions for event $eventId from Firebase', error);
+      AppLogger.e(
+          'Error fetching submissions for event $eventId from Firebase', error);
       throw error;
     });
   }
@@ -33,13 +35,15 @@ class SubmissionsService {
           .collection(SubmissionModel.getCollectionPath(eventId))
           .orderBy('createdAt', descending: true)
           .get();
-      
-      AppLogger.d('Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
+
+      AppLogger.d(
+          'Fetched ${snapshot.docs.length} submissions for event $eventId from Firebase');
       return snapshot.docs
           .map((doc) => SubmissionModel.fromFirestore(doc, eventId))
           .toList();
     } catch (e) {
-      AppLogger.e('Error fetching submissions for event $eventId from Firebase', e);
+      AppLogger.e(
+          'Error fetching submissions for event $eventId from Firebase', e);
       rethrow;
     }
   }
@@ -51,8 +55,9 @@ class SubmissionsService {
           .where('uid', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
           .get();
-      
-      AppLogger.d('Fetched ${snapshot.docs.length} submissions for user $userId from Firebase');
+
+      AppLogger.d(
+          'Fetched ${snapshot.docs.length} submissions for user $userId from Firebase');
       final submissions = <SubmissionModel>[];
       for (final doc in snapshot.docs) {
         final eventId = doc.reference.parent.parent!.id;
@@ -60,20 +65,25 @@ class SubmissionsService {
       }
       return submissions;
     } catch (e) {
-      AppLogger.e('Error fetching submissions for user $userId from Firebase', e);
+      AppLogger.e(
+          'Error fetching submissions for user $userId from Firebase', e);
       rethrow;
     }
   }
 
-  Future<SubmissionModel?> getSubmission(String eventId, String submissionId) async {
+  Future<SubmissionModel?> getSubmission(
+      String eventId, String submissionId) async {
     try {
-      final doc = await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).get();
-      
+      final doc = await _firestore
+          .collection(SubmissionModel.getCollectionPath(eventId))
+          .doc(submissionId)
+          .get();
+
       if (!doc.exists) {
         AppLogger.w('Submission $submissionId not found in Firebase');
         return null;
       }
-      
+
       AppLogger.d('Fetched submission $submissionId from Firebase');
       return SubmissionModel.fromFirestore(doc, eventId);
     } catch (e) {
@@ -82,13 +92,14 @@ class SubmissionsService {
     }
   }
 
-  Future<String> uploadImage(File imageFile, String eventId, String userId) async {
+  Future<String> uploadImage(
+      File imageFile, String eventId, String userId) async {
     try {
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${userId}.jpg';
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}_$userId.jpg';
       final ref = _storage.ref().child('submissions/$eventId/$fileName');
-      
+
       AppLogger.d('Starting image upload: $fileName');
-      
+
       final uploadTask = ref.putFile(
         imageFile,
         SettableMetadata(
@@ -103,7 +114,7 @@ class SubmissionsService {
 
       final snapshot = await uploadTask;
       final downloadUrl = await snapshot.ref.getDownloadURL();
-      
+
       AppLogger.i('Image uploaded successfully: $downloadUrl');
       return downloadUrl;
     } catch (e) {
@@ -119,15 +130,17 @@ class SubmissionsService {
   }) async {
     try {
       AppLogger.d('Creating submission for event $eventId by user $userId');
-      
+
       // Upload image first
       final imageUrl = await uploadImage(imageFile, eventId, userId);
-      
+
       // Use batch to create both submission and user reference
       final batch = _firestore.batch();
-      
+
       // Create submission document
-      final submissionRef = _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc();
+      final submissionRef = _firestore
+          .collection(SubmissionModel.getCollectionPath(eventId))
+          .doc();
       final submissionData = {
         'eventId': eventId,
         'uid': userId,
@@ -136,7 +149,7 @@ class SubmissionsService {
         'likeCount': 0,
       };
       batch.set(submissionRef, submissionData);
-      
+
       // Create user submission reference
       final userSubmissionRef = _firestore
           .collection('users')
@@ -150,15 +163,16 @@ class SubmissionsService {
         'createdAt': FieldValue.serverTimestamp(),
       };
       batch.set(userSubmissionRef, userSubmissionData);
-      
+
       // Commit batch
       await batch.commit();
-      
+
       // Return the created submission
       final doc = await submissionRef.get();
       final submission = SubmissionModel.fromFirestore(doc, eventId);
-      
-      AppLogger.i('Created submission ${submission.id} for event $eventId with user reference');
+
+      AppLogger.i(
+          'Created submission ${submission.id} for event $eventId with user reference');
       return submission;
     } catch (e) {
       AppLogger.e('Error creating submission', e);
@@ -166,9 +180,13 @@ class SubmissionsService {
     }
   }
 
-  Future<void> updateSubmission(String eventId, String submissionId, Map<String, dynamic> updates) async {
+  Future<void> updateSubmission(
+      String eventId, String submissionId, Map<String, dynamic> updates) async {
     try {
-      await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).update(updates);
+      await _firestore
+          .collection(SubmissionModel.getCollectionPath(eventId))
+          .doc(submissionId)
+          .update(updates);
       AppLogger.i('Updated submission: $submissionId');
     } catch (e) {
       AppLogger.e('Error updating submission $submissionId', e);
@@ -179,16 +197,19 @@ class SubmissionsService {
   Future<void> deleteSubmission(String eventId, String submissionId) async {
     try {
       // Get submission to get image URL and user ID for deletion
-      final doc = await _firestore.collection(SubmissionModel.getCollectionPath(eventId)).doc(submissionId).get();
+      final doc = await _firestore
+          .collection(SubmissionModel.getCollectionPath(eventId))
+          .doc(submissionId)
+          .get();
       if (doc.exists) {
         final submission = SubmissionModel.fromFirestore(doc, eventId);
-        
+
         // Use batch to delete both submission and user reference
         final batch = _firestore.batch();
-        
+
         // Delete submission document
         batch.delete(doc.reference);
-        
+
         // Delete user submission reference
         final userSubmissionRef = _firestore
             .collection('users')
@@ -196,7 +217,7 @@ class SubmissionsService {
             .collection('submissions')
             .doc(submissionId);
         batch.delete(userSubmissionRef);
-        
+
         // Delete all likes for this submission
         final likesQuery = await _firestore
             .collection('events')
@@ -205,7 +226,7 @@ class SubmissionsService {
             .doc(submissionId)
             .collection('likes')
             .get();
-        
+
         for (final likeDoc in likesQuery.docs) {
           batch.delete(likeDoc.reference);
           // Also delete from user's likes collection
@@ -216,7 +237,7 @@ class SubmissionsService {
               .doc(submissionId);
           batch.delete(userLikeRef);
         }
-        
+
         // Delete all comments for this submission
         final commentsQuery = await _firestore
             .collection('events')
@@ -225,24 +246,25 @@ class SubmissionsService {
             .doc(submissionId)
             .collection('comments')
             .get();
-            
+
         for (final commentDoc in commentsQuery.docs) {
           batch.delete(commentDoc.reference);
         }
-        
+
         // Commit batch
         await batch.commit();
-        
+
         // Delete image from storage
         try {
           final ref = _storage.refFromURL(submission.imageURL);
           await ref.delete();
           AppLogger.d('Deleted image for submission $submissionId');
         } catch (e) {
-          AppLogger.w('Could not delete image for submission $submissionId: $e');
+          AppLogger.w(
+              'Could not delete image for submission $submissionId: $e');
         }
       }
-      
+
       AppLogger.i('Deleted submission: $submissionId with all references');
     } catch (e) {
       AppLogger.e('Error deleting submission $submissionId', e);
@@ -256,7 +278,7 @@ class SubmissionsService {
           .collection(SubmissionModel.getCollectionPath(eventId))
           .count()
           .get();
-      
+
       return snapshot.count ?? 0;
     } catch (e) {
       AppLogger.e('Error getting submission count for event $eventId', e);
@@ -272,7 +294,7 @@ class SubmissionsService {
           .collection('submissions')
           .count()
           .get();
-      
+
       return snapshot.count ?? 0;
     } catch (e) {
       AppLogger.e('Error getting submission count for user $userId', e);
@@ -280,7 +302,8 @@ class SubmissionsService {
     }
   }
 
-  Future<List<SubmissionModel>> getUserSubmissionsFromUserCollection(String userId) async {
+  Future<List<SubmissionModel>> getUserSubmissionsFromUserCollection(
+      String userId) async {
     try {
       final snapshot = await _firestore
           .collection('users')
@@ -288,15 +311,16 @@ class SubmissionsService {
           .collection('submissions')
           .orderBy('createdAt', descending: true)
           .get();
-      
-      AppLogger.d('Fetched ${snapshot.docs.length} submissions from user collection for user $userId');
+
+      AppLogger.d(
+          'Fetched ${snapshot.docs.length} submissions from user collection for user $userId');
       final submissions = <SubmissionModel>[];
-      
+
       for (final doc in snapshot.docs) {
         final data = doc.data();
         final eventId = data['eventId'] as String;
         final submissionId = data['submissionId'] as String;
-        
+
         // Fetch the actual submission data
         try {
           final submissionDoc = await _firestore
@@ -305,18 +329,21 @@ class SubmissionsService {
               .collection('submissions')
               .doc(submissionId)
               .get();
-              
+
           if (submissionDoc.exists) {
-            submissions.add(SubmissionModel.fromFirestore(submissionDoc, eventId));
+            submissions
+                .add(SubmissionModel.fromFirestore(submissionDoc, eventId));
           }
         } catch (e) {
           AppLogger.w('Could not fetch submission $submissionId: $e');
         }
       }
-      
+
       return submissions;
     } catch (e) {
-      AppLogger.e('Error fetching user submissions from user collection for $userId', e);
+      AppLogger.e(
+          'Error fetching user submissions from user collection for $userId',
+          e);
       rethrow;
     }
   }

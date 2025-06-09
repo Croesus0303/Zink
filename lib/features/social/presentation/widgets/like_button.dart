@@ -85,6 +85,7 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
     } catch (e) {
       AppLogger.e(
           'Error toggling like for submission ${widget.submissionId}', e);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Failed to ${_isLiked ? 'unlike' : 'like'} photo')),

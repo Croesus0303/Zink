@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
 import '../../providers/auth_providers.dart';
@@ -238,12 +237,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: 8),
                         Text(
                           AppLocalizations.of(context)!.appTagline,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
                           textAlign: TextAlign.center,
                         ),
                       ],

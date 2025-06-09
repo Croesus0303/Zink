@@ -7,7 +7,6 @@ import '../../../auth/data/models/user_model.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../social/presentation/widgets/like_button.dart';
 import '../../../social/presentation/widgets/comment_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 
@@ -24,14 +23,16 @@ class SingleSubmissionScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<SingleSubmissionScreen> createState() => _SingleSubmissionScreenState();
+  ConsumerState<SingleSubmissionScreen> createState() =>
+      _SingleSubmissionScreenState();
 }
 
-class _SingleSubmissionScreenState extends ConsumerState<SingleSubmissionScreen> {
+class _SingleSubmissionScreenState
+    extends ConsumerState<SingleSubmissionScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshSocialData();
     });
@@ -40,20 +41,29 @@ class _SingleSubmissionScreenState extends ConsumerState<SingleSubmissionScreen>
   void _refreshSocialData() {
     final currentUser = ref.read(currentUserProvider);
     if (currentUser != null) {
-      ref.invalidate(likesStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
-      ref.invalidate(commentsStreamProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
-      ref.invalidate(likeStatusProvider((eventId: widget.eventId, submissionId: widget.submissionId, userId: currentUser.uid)));
-      ref.invalidate(likeCountProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
-      ref.invalidate(commentCountProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
+      ref.invalidate(likesStreamProvider(
+          (eventId: widget.eventId, submissionId: widget.submissionId)));
+      ref.invalidate(commentsStreamProvider(
+          (eventId: widget.eventId, submissionId: widget.submissionId)));
+      ref.invalidate(likeStatusProvider((
+        eventId: widget.eventId,
+        submissionId: widget.submissionId,
+        userId: currentUser.uid
+      )));
+      ref.invalidate(likeCountProvider(
+          (eventId: widget.eventId, submissionId: widget.submissionId)));
+      ref.invalidate(commentCountProvider(
+          (eventId: widget.eventId, submissionId: widget.submissionId)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final submissionAsync = ref.watch(submissionProvider((eventId: widget.eventId, submissionId: widget.submissionId)));
-    
+    final submissionAsync = ref.watch(submissionProvider(
+        (eventId: widget.eventId, submissionId: widget.submissionId)));
+
     return submissionAsync.when(
-      data: (submission) => submission != null 
+      data: (submission) => submission != null
           ? _buildSubmissionDetail(submission)
           : _buildNotFound(),
       loading: () => const Scaffold(
@@ -68,7 +78,10 @@ class _SingleSubmissionScreenState extends ConsumerState<SingleSubmissionScreen>
               Text('Error loading submission: $error'),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => ref.refresh(submissionProvider((eventId: widget.eventId, submissionId: widget.submissionId))),
+                onPressed: () => ref.refresh(submissionProvider((
+                  eventId: widget.eventId,
+                  submissionId: widget.submissionId
+                ))),
                 child: const Text('Retry'),
               ),
             ],
@@ -160,26 +173,31 @@ class _SubmissionInfo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(currentUserProvider);
     final userDataAsync = ref.watch(userDataProvider(submission.uid));
-    final likesStreamAsync = ref.watch(likesStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
-    
+    final likesStreamAsync = ref.watch(likesStreamProvider(
+        (eventId: submission.eventId, submissionId: submission.id)));
+
     bool isLikedByCurrentUser = false;
     int currentLikeCount = submission.likeCount;
-    
+
     likesStreamAsync.whenData((likes) {
       currentLikeCount = likes.length;
       if (currentUser != null) {
         isLikedByCurrentUser = likes.any((like) => like.uid == currentUser.uid);
       }
     });
-    
+
     return userDataAsync.when(
-      data: (user) => _buildInfo(context, ref, user, currentUser, isLikedByCurrentUser, currentLikeCount),
-      loading: () => _buildInfo(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
-      error: (error, stack) => _buildInfo(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
+      data: (user) => _buildInfo(context, ref, user, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
+      loading: () => _buildInfo(context, ref, null, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
+      error: (error, stack) => _buildInfo(context, ref, null, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
     );
   }
-  
-  Widget _buildInfo(BuildContext context, WidgetRef ref, UserModel? user, dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
+
+  Widget _buildInfo(BuildContext context, WidgetRef ref, UserModel? user,
+      dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -227,7 +245,8 @@ class _SubmissionInfo extends ConsumerWidget {
                 PopupMenuButton<String>(
                   onSelected: (value) async {
                     if (value == 'delete') {
-                      await _showDeleteConfirmationDialog(context, ref, submission);
+                      await _showDeleteConfirmationDialog(
+                          context, ref, submission);
                     }
                   },
                   itemBuilder: (context) => [
@@ -278,7 +297,8 @@ class _SubmissionInfo extends ConsumerWidget {
                 },
                 borderRadius: BorderRadius.circular(20),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -290,7 +310,11 @@ class _SubmissionInfo extends ConsumerWidget {
                       const SizedBox(width: 4),
                       Consumer(
                         builder: (context, ref, child) {
-                          final commentsAsync = ref.watch(commentsStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
+                          final commentsAsync = ref.watch(
+                              commentsStreamProvider((
+                            eventId: submission.eventId,
+                            submissionId: submission.id
+                          )));
                           return commentsAsync.when(
                             data: (comments) => Text(
                               comments.length.toString(),
@@ -340,12 +364,14 @@ class _SubmissionInfo extends ConsumerWidget {
     }
   }
 
-  Future<void> _showDeleteConfirmationDialog(BuildContext context, WidgetRef ref, SubmissionModel submission) async {
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, WidgetRef ref, SubmissionModel submission) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Post'),
-        content: const Text('Are you sure you want to delete this post? This action cannot be undone.'),
+        content: const Text(
+            'Are you sure you want to delete this post? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -363,8 +389,9 @@ class _SubmissionInfo extends ConsumerWidget {
     if (confirmed == true) {
       try {
         final submissionsService = ref.read(submissionsServiceProvider);
-        await submissionsService.deleteSubmission(submission.eventId, submission.id);
-        
+        await submissionsService.deleteSubmission(
+            submission.eventId, submission.id);
+
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Post deleted successfully')),
