@@ -41,16 +41,22 @@ final routerProvider = Provider<GoRouter>((ref) {
               return isOnboardingRoute ? null : '/onboarding';
             }
             
-            // User is fully set up, don't allow login or onboarding pages
+            // User is fully set up, redirect to home if on auth/onboarding pages
             if (isAuthRoute || isOnboardingRoute) {
               return '/';
             }
             
             return null;
           },
-          loading: () => null, // Let loading state handle itself
+          loading: () {
+            // While loading user data, stay on current page unless it's an auth page
+            if (isAuthRoute) {
+              return null; // Let the login page show while loading
+            }
+            return null;
+          },
           error: (error, stack) {
-            // On error, redirect to onboarding to be safe
+            // On error, redirect to onboarding to be safe (unless already there)
             return isOnboardingRoute ? null : '/onboarding';
           },
         );

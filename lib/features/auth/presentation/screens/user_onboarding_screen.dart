@@ -47,9 +47,11 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
 
       AppLogger.i('User onboarding completed successfully');
 
-      if (mounted) {
-        context.go('/home');
-      }
+      // Invalidate the current user data provider to refresh the router
+      ref.invalidate(currentUserDataProvider);
+      
+      // Let the router handle the navigation automatically
+      // The router will detect that onboarding is complete and redirect to home
     } catch (e) {
       AppLogger.e('Error completing user onboarding', e);
       if (mounted) {

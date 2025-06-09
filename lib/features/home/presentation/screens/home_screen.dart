@@ -25,8 +25,35 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.person),
             onSelected: (value) async {
               if (value == 'signOut') {
-                final authService = ref.read(authServiceProvider);
-                await authService.signOut();
+                try {
+                  // Show loading indicator
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                  
+                  final authService = ref.read(authServiceProvider);
+                  await authService.signOut();
+                  
+                  // Close loading dialog - navigation will happen automatically
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                } catch (e) {
+                  // Close loading dialog
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Sign out failed: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               } else if (value == 'profile') {
                 context.push('/profile');
               }

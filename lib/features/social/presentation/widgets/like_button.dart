@@ -70,7 +70,6 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
             widget.eventId, widget.submissionId, currentUser.uid);
         setState(() {
           _isLiked = false;
-          _likeCount = (_likeCount - 1).clamp(0, double.infinity).toInt();
         });
         AppLogger.d('Unliked submission ${widget.submissionId}');
       } else {

@@ -72,12 +72,24 @@ class AuthRepository {
     try {
       AppLogger.i('Starting sign out');
 
+      // Sign out from all authentication providers
       await Future.wait([
         _firebaseAuth.signOut(),
         _googleSignIn.signOut(),
       ]);
 
-      AppLogger.i('Sign out successful');
+      // Also disconnect from Google to clear cached credentials
+      // Catch disconnect errors as they're not critical for sign out
+      try {
+        await _googleSignIn.disconnect();
+        AppLogger.i('Google disconnect successful');
+      } catch (disconnectError) {
+        AppLogger.w(
+            'Google disconnect failed (non-critical): $disconnectError');
+        // Continue with sign out even if disconnect fails
+      }
+
+      AppLogger.i('Sign out completed successfully');
     } catch (e, stackTrace) {
       AppLogger.e('Sign out failed', e, stackTrace);
       rethrow;
@@ -168,13 +180,120 @@ class AuthRepository {
           .collection(UserModel.collectionPath)
           .doc(userId)
           .get();
-      
+
       if (!userDoc.exists) return null;
-      
+
       return UserModel.fromFirestore(userDoc);
     } catch (e, stackTrace) {
       AppLogger.e('Failed to get user data for $userId', e, stackTrace);
       return null;
+    }
+  }
+
+  // Email/Password Authentication Methods
+  Future<UserCredential?> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      AppLogger.i('Starting email/password sign in for email: $email');
+
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      AppLogger.i(
+          'Email/password sign in successful for user: ${userCredential.user?.uid}');
+
+      // Check if user document exists
+      if (userCredential.user != null) {
+        final userDoc = await _firestore
+            .collection(UserModel.collectionPath)
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          AppLogger.i('User document not found, will require onboarding');
+        } else {
+          AppLogger.i('Existing user signed in');
+        }
+      }
+
+      return userCredential;
+    } catch (e, stackTrace) {
+      AppLogger.e('Email/password sign in failed', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<UserCredential?> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      AppLogger.i('Starting email/password sign up for email: $email');
+
+      final UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      AppLogger.i(
+          'Email/password sign up successful for user: ${userCredential.user?.uid}');
+
+      // New user created, will require onboarding
+      if (userCredential.user != null) {
+        AppLogger.i('New user created, will require onboarding');
+      }
+
+      return userCredential;
+    } catch (e, stackTrace) {
+      AppLogger.e('Email/password sign up failed', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      AppLogger.i('Sending password reset email to: $email');
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      AppLogger.i('Password reset email sent successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to send password reset email', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
+      AppLogger.i('Updating password for user: ${user.uid}');
+      await user.updatePassword(newPassword);
+      AppLogger.i('Password updated successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to update password', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> reauthenticateWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      await user.reauthenticateWithCredential(credential);
+      AppLogger.i('Re-authentication successful');
+    } catch (e, stackTrace) {
+      AppLogger.e('Re-authentication failed', e, stackTrace);
+      rethrow;
     }
   }
 }

@@ -12,8 +12,61 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   bool _isLoading = false;
+
+  // Email/Password form controllers
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _signInFormKey = GlobalKey<FormState>();
+  final _signUpFormKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+    
+    // Clear form when screen is initialized (in case user logged out)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _clearAllFields();
+    });
+  }
+
+  void _clearAllFields() {
+    _emailController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    
+    // Reset form validations
+    _signInFormKey.currentState?.reset();
+    _signUpFormKey.currentState?.reset();
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) {
+      // Clear form fields when switching tabs
+      _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      
+      // Reset form validations
+      _signInFormKey.currentState?.reset();
+      _signUpFormKey.currentState?.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
@@ -44,6 +97,91 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _signInWithEmailPassword() async {
+    if (!_signInFormKey.currentState!.validate() || _isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final result = await authService.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (mounted) {
+        if (result.isSuccess) {
+          // Navigation will be handled automatically by the router
+        } else if (result.errorMessage != null) {
+          _showErrorSnackBar(result.errorMessage!);
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _signUpWithEmailPassword() async {
+    if (!_signUpFormKey.currentState!.validate() || _isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final result = await authService.signUpWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      if (mounted) {
+        if (result.isSuccess) {
+          // Navigation will be handled automatically by the router
+        } else if (result.errorMessage != null) {
+          _showErrorSnackBar(result.errorMessage!);
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _sendPasswordReset() async {
+    if (_emailController.text.trim().isEmpty) {
+      _showErrorSnackBar('Please enter your email address');
+      return;
+    }
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      await authService.sendPasswordResetEmail(_emailController.text.trim());
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password reset email sent! Check your inbox.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorSnackBar('Failed to send password reset email: ${e.toString()}');
+      }
+    }
+  }
+
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -69,80 +207,279 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Logo/Icon
-                  Icon(
-                    Icons.camera_alt_rounded,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 24),
-
-                  // App Name
-                  Text(
-                    AppLocalizations.of(context)!.appName,
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  // Logo/Icon and App Info
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.camera_alt_rounded,
+                          size: 80,
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Tagline
-                  Text(
-                    AppLocalizations.of(context)!.appTagline,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.grey[600],
+                        const SizedBox(height: 24),
+                        Text(
+                          AppLocalizations.of(context)!.appName,
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                          textAlign: TextAlign.center,
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 48),
-
-                  // Sign in or Sign up header
-                  Text(
-                    AppLocalizations.of(context)!.signInOrSignUp,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.appTagline,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: Colors.grey[600],
+                              ),
+                          textAlign: TextAlign.center,
                         ),
-                    textAlign: TextAlign.center,
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // New user prompt
-                  Text(
-                    AppLocalizations.of(context)!.newUserPrompt,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[700],
+                  
+                  // Auth Forms
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      children: [
+                        // Tab Bar
+                        TabBar(
+                          controller: _tabController,
+                          tabs: const [
+                            Tab(text: 'Sign In'),
+                            Tab(text: 'Sign Up'),
+                          ],
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Existing user prompt
-                  Text(
-                    AppLocalizations.of(context)!.existingUserPrompt,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[700],
+                        const SizedBox(height: 24),
+                        
+                        // Tab Bar View
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              _buildSignInTab(),
+                              _buildSignUpTab(),
+                            ],
+                          ),
                         ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Sign in with Google button
-                  _SignInButton(
-                    onPressed: _isLoading ? null : _signInWithGoogle,
-                    icon: Icons.g_mobiledata,
-                    label: AppLocalizations.of(context)!.continueWithGoogle,
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black87,
-                    isLoading: _isLoading,
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignInTab() {
+    return Form(
+      key: _signInFormKey,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          // Email field
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              prefixIcon: Icon(Icons.email_outlined),
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          
+          // Password field
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              prefixIcon: Icon(Icons.lock_outlined),
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 8),
+          
+          // Forgot password link
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: _sendPasswordReset,
+              child: const Text('Forgot Password?'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // Sign in button
+          _SignInButton(
+            onPressed: _isLoading ? null : _signInWithEmailPassword,
+            icon: Icons.login,
+            label: 'Sign In',
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+            isLoading: _isLoading,
+          ),
+          const SizedBox(height: 16),
+          
+          // Divider
+          const Row(
+            children: [
+              Expanded(child: Divider()),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('OR'),
+              ),
+              Expanded(child: Divider()),
+            ],
+          ),
+          const SizedBox(height: 16),
+          
+          // Google sign in button
+          _SignInButton(
+            onPressed: _isLoading ? null : _signInWithGoogle,
+            icon: Icons.g_mobiledata,
+            label: AppLocalizations.of(context)!.continueWithGoogle,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black87,
+            isLoading: _isLoading,
+          ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpTab() {
+    return Form(
+      key: _signUpFormKey,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          // Email field
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              prefixIcon: Icon(Icons.email_outlined),
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          
+          // Password field
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              prefixIcon: Icon(Icons.lock_outlined),
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          
+          // Confirm password field
+          TextFormField(
+            controller: _confirmPasswordController,
+            obscureText: true,
+            decoration: const InputDecoration(
+              labelText: 'Confirm Password',
+              hintText: 'Re-enter your password',
+              prefixIcon: Icon(Icons.lock_outlined),
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              if (value != _passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 24),
+          
+          // Sign up button
+          _SignInButton(
+            onPressed: _isLoading ? null : _signUpWithEmailPassword,
+            icon: Icons.person_add,
+            label: 'Sign Up',
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+            isLoading: _isLoading,
+          ),
+          const SizedBox(height: 16),
+          
+          // Divider
+          const Row(
+            children: [
+              Expanded(child: Divider()),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('OR'),
+              ),
+              Expanded(child: Divider()),
+            ],
+          ),
+          const SizedBox(height: 16),
+          
+          // Google sign in button
+          _SignInButton(
+            onPressed: _isLoading ? null : _signInWithGoogle,
+            icon: Icons.g_mobiledata,
+            label: AppLocalizations.of(context)!.continueWithGoogle,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black87,
+            isLoading: _isLoading,
+          ),
           ],
         ),
       ),
