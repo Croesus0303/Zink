@@ -85,7 +85,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.3,
-      maxChildSize: 0.9,
+      maxChildSize: 0.95,
+      expand: false,
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
@@ -221,7 +222,9 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         ),
                         maxLines: null,
                         textCapitalization: TextCapitalization.sentences,
+                        textInputAction: TextInputAction.send,
                         enabled: !_isSubmitting,
+                        onSubmitted: _isSubmitting ? null : (_) => _addComment(),
                       ),
                     ),
                     const SizedBox(width: 8),

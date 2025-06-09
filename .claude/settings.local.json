@@ -4,7 +4,11 @@
       "Bash(ls:*)",
       "Bash(flutter analyze:*)",
       "Bash(dart analyze:*)",
-      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze)"
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze)",
+      "Bash(rg:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

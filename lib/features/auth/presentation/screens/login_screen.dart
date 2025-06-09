@@ -4,6 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
 import '../../providers/auth_providers.dart';
+import '../../../../core/utils/logger.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -29,7 +30,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabChanged);
-    
+
     // Clear form when screen is initialized (in case user logged out)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _clearAllFields();
@@ -40,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     _emailController.clear();
     _passwordController.clear();
     _confirmPasswordController.clear();
-    
+
     // Reset form validations
     _signInFormKey.currentState?.reset();
     _signUpFormKey.currentState?.reset();
@@ -52,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       _emailController.clear();
       _passwordController.clear();
       _confirmPasswordController.clear();
-      
+
       // Reset form validations
       _signInFormKey.currentState?.reset();
       _signUpFormKey.currentState?.reset();
@@ -166,7 +167,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     try {
       final authService = ref.read(authServiceProvider);
       await authService.sendPasswordResetEmail(_emailController.text.trim());
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -177,7 +178,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       }
     } catch (e) {
       if (mounted) {
-        _showErrorSnackBar('Failed to send password reset email: ${e.toString()}');
+        _showErrorSnackBar(
+            'Failed to send password reset email: ${e.toString()}');
       }
     }
   }
@@ -193,7 +195,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    AppLogger.i('LoginScreen build called');
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: [
@@ -204,13 +208,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: LanguageToggleButton(),
             ),
             // Main content
-            Padding(
+            SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 children: [
                   // Logo/Icon and App Info
-                  Expanded(
-                    flex: 2,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -222,7 +226,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: 24),
                         Text(
                           AppLocalizations.of(context)!.appName,
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -231,7 +238,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         const SizedBox(height: 8),
                         Text(
                           AppLocalizations.of(context)!.appTagline,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
                                 color: Colors.grey[600],
                               ),
                           textAlign: TextAlign.center,
@@ -239,34 +249,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       ],
                     ),
                   ),
-                  
+
                   // Auth Forms
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      children: [
-                        // Tab Bar
-                        TabBar(
+                  Column(
+                    children: [
+                      // Tab Bar
+                      TabBar(
+                        controller: _tabController,
+                        tabs: const [
+                          Tab(text: 'Sign In'),
+                          Tab(text: 'Sign Up'),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Tab Bar View
+                      SizedBox(
+                        height: 400, // Fixed height for TabBarView
+                        child: TabBarView(
                           controller: _tabController,
-                          tabs: const [
-                            Tab(text: 'Sign In'),
-                            Tab(text: 'Sign Up'),
+                          children: [
+                            _buildSignInTab(),
+                            _buildSignUpTab(),
                           ],
                         ),
-                        const SizedBox(height: 24),
-                        
-                        // Tab Bar View
-                        Expanded(
-                          child: TabBarView(
-                            controller: _tabController,
-                            children: [
-                              _buildSignInTab(),
-                              _buildSignUpTab(),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -284,90 +292,91 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-          // Email field
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          
-          // Password field
-          TextFormField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 8),
-          
-          // Forgot password link
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: _sendPasswordReset,
-              child: const Text('Forgot Password?'),
-            ),
-          ),
-          const SizedBox(height: 16),
-          
-          // Sign in button
-          _SignInButton(
-            onPressed: _isLoading ? null : _signInWithEmailPassword,
-            icon: Icons.login,
-            label: 'Sign In',
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Colors.white,
-            isLoading: _isLoading,
-          ),
-          const SizedBox(height: 16),
-          
-          // Divider
-          const Row(
-            children: [
-              Expanded(child: Divider()),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('OR'),
+            // Email field
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'Enter your email',
+                prefixIcon: Icon(Icons.email_outlined),
+                border: OutlineInputBorder(),
               ),
-              Expanded(child: Divider()),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Google sign in button
-          _SignInButton(
-            onPressed: _isLoading ? null : _signInWithGoogle,
-            icon: Icons.g_mobiledata,
-            label: AppLocalizations.of(context)!.continueWithGoogle,
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black87,
-            isLoading: _isLoading,
-          ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                    .hasMatch(value.trim())) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Password field
+            TextFormField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                prefixIcon: Icon(Icons.lock_outlined),
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 8),
+
+            // Forgot password link
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: _sendPasswordReset,
+                child: const Text('Forgot Password?'),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Sign in button
+            _SignInButton(
+              onPressed: _isLoading ? null : _signInWithEmailPassword,
+              icon: Icons.login,
+              label: 'Sign In',
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+
+            // Divider
+            const Row(
+              children: [
+                Expanded(child: Divider()),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('OR'),
+                ),
+                Expanded(child: Divider()),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Google sign in button
+            _SignInButton(
+              onPressed: _isLoading ? null : _signInWithGoogle,
+              icon: Icons.g_mobiledata,
+              label: AppLocalizations.of(context)!.continueWithGoogle,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black87,
+              isLoading: _isLoading,
+            ),
           ],
         ),
       ),
@@ -381,105 +390,106 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-          // Email field
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
-              prefixIcon: Icon(Icons.email_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          
-          // Password field
-          TextFormField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
-              if (value.length < 6) {
-                return 'Password must be at least 6 characters';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          
-          // Confirm password field
-          TextFormField(
-            controller: _confirmPasswordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Confirm Password',
-              hintText: 'Re-enter your password',
-              prefixIcon: Icon(Icons.lock_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
-              }
-              if (value != _passwordController.text) {
-                return 'Passwords do not match';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 24),
-          
-          // Sign up button
-          _SignInButton(
-            onPressed: _isLoading ? null : _signUpWithEmailPassword,
-            icon: Icons.person_add,
-            label: 'Sign Up',
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Colors.white,
-            isLoading: _isLoading,
-          ),
-          const SizedBox(height: 16),
-          
-          // Divider
-          const Row(
-            children: [
-              Expanded(child: Divider()),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('OR'),
+            // Email field
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'Enter your email',
+                prefixIcon: Icon(Icons.email_outlined),
+                border: OutlineInputBorder(),
               ),
-              Expanded(child: Divider()),
-            ],
-          ),
-          const SizedBox(height: 16),
-          
-          // Google sign in button
-          _SignInButton(
-            onPressed: _isLoading ? null : _signInWithGoogle,
-            icon: Icons.g_mobiledata,
-            label: AppLocalizations.of(context)!.continueWithGoogle,
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black87,
-            isLoading: _isLoading,
-          ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                    .hasMatch(value.trim())) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Password field
+            TextFormField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                prefixIcon: Icon(Icons.lock_outlined),
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Confirm password field
+            TextFormField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Confirm Password',
+                hintText: 'Re-enter your password',
+                prefixIcon: Icon(Icons.lock_outlined),
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please confirm your password';
+                }
+                if (value != _passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 24),
+
+            // Sign up button
+            _SignInButton(
+              onPressed: _isLoading ? null : _signUpWithEmailPassword,
+              icon: Icons.person_add,
+              label: 'Sign Up',
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+
+            // Divider
+            const Row(
+              children: [
+                Expanded(child: Divider()),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('OR'),
+                ),
+                Expanded(child: Divider()),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Google sign in button
+            _SignInButton(
+              onPressed: _isLoading ? null : _signInWithGoogle,
+              icon: Icons.g_mobiledata,
+              label: AppLocalizations.of(context)!.continueWithGoogle,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black87,
+              isLoading: _isLoading,
+            ),
           ],
         ),
       ),

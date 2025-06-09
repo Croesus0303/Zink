@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../events/providers/events_providers.dart';
@@ -102,7 +101,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         );
 
         // Navigate back to event detail
-        context.pop();
+        Navigator.of(context).pop();
       }
     } catch (e, stackTrace) {
       AppLogger.e('Failed to submit photo', e, stackTrace);

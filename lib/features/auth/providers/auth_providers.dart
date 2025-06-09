@@ -23,7 +23,7 @@ final currentUserDataProvider = FutureProvider<UserModel?>((ref) {
   // Watch the auth state to ensure this provider refreshes when user changes
   final authState = ref.watch(authStateProvider);
   final authRepository = ref.watch(authRepositoryProvider);
-  
+
   // Return null if not authenticated
   return authState.when(
     data: (user) {
@@ -40,7 +40,6 @@ final authServiceProvider = Provider<AuthService>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return AuthService(authRepository, ref);
 });
-
 
 class AuthService {
   final AuthRepository _authRepository;
@@ -61,10 +60,10 @@ class AuthService {
       return AuthResult.failure(_getErrorMessage(e));
     } catch (e) {
       AppLogger.e('Unexpected error during Google Sign In', e);
-      return AuthResult.failure('An unexpected error occurred. Please try again.');
+      return AuthResult.failure(
+          'An unexpected error occurred. Please try again.');
     }
   }
-
 
   Future<AuthResult> signInWithEmailAndPassword({
     required String email,
@@ -85,7 +84,8 @@ class AuthService {
       return AuthResult.failure(_getErrorMessage(e));
     } catch (e) {
       AppLogger.e('Unexpected error during email/password sign in', e);
-      return AuthResult.failure('An unexpected error occurred. Please try again.');
+      return AuthResult.failure(
+          'An unexpected error occurred. Please try again.');
     }
   }
 
@@ -108,7 +108,8 @@ class AuthService {
       return AuthResult.failure(_getErrorMessage(e));
     } catch (e) {
       AppLogger.e('Unexpected error during email/password sign up', e);
-      return AuthResult.failure('An unexpected error occurred. Please try again.');
+      return AuthResult.failure(
+          'An unexpected error occurred. Please try again.');
     }
   }
 
@@ -119,15 +120,15 @@ class AuthService {
   Future<void> signOut() async {
     try {
       AppLogger.i('Starting comprehensive sign out process');
-      
-      // Sign out from Firebase and Google
+
+      // Sign out from Firebase and Google first
       await _authRepository.signOut();
-      
+
       // Invalidate all auth-related providers to clear cached data
       _ref.invalidate(authStateProvider);
       _ref.invalidate(currentUserProvider);
       _ref.invalidate(currentUserDataProvider);
-      
+
       // Invalidate user-specific data providers
       _ref.invalidate(submissionFilterProvider);
       _ref.invalidate(userSubmissionsProvider);
@@ -140,11 +141,11 @@ class AuthService {
       _ref.invalidate(userLikeCountProvider);
       _ref.invalidate(userCommentCountProvider);
       _ref.invalidate(likeStatusProvider);
-      
+
       // Invalidate notification providers
       _ref.invalidate(fcmTokenProvider);
       _ref.invalidate(notificationSettingsProvider);
-      
+
       // Invalidate general data providers that may have user context
       _ref.invalidate(submissionsStreamProvider);
       _ref.invalidate(submissionsProvider);
@@ -160,7 +161,7 @@ class AuthService {
       _ref.invalidate(likeCountProvider);
       _ref.invalidate(commentCountProvider);
       _ref.invalidate(submissionCountProvider);
-      
+
       AppLogger.i('All user-specific providers invalidated after sign out');
       AppLogger.i('Sign out process completed successfully');
     } catch (e, stackTrace) {

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
+import '../../../events/presentation/screens/event_detail_screen.dart';
+import '../../../submissions/presentation/screens/photo_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
 import '../../../../core/utils/logger.dart';
@@ -26,26 +28,13 @@ class HomeScreen extends ConsumerWidget {
             onSelected: (value) async {
               if (value == 'signOut') {
                 try {
-                  // Show loading indicator
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                  
+                  AppLogger.i('Starting sign out from HomeScreen');
                   final authService = ref.read(authServiceProvider);
                   await authService.signOut();
-                  
-                  // Close loading dialog - navigation will happen automatically
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
+                  AppLogger.i('Sign out completed, navigation will happen automatically');
                 } catch (e) {
-                  // Close loading dialog
+                  AppLogger.e('Sign out error', e);
                   if (context.mounted) {
-                    Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Sign out failed: ${e.toString()}'),
@@ -55,7 +44,11 @@ class HomeScreen extends ConsumerWidget {
                   }
                 }
               } else if (value == 'profile') {
-                context.push('/profile');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
               }
             },
             itemBuilder: (context) => [
@@ -140,7 +133,8 @@ class _ActiveChallengeSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, EventModel? activeEvent, dynamic user) {
+  Widget _buildContent(
+      BuildContext context, EventModel? activeEvent, dynamic user) {
     if (activeEvent == null) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -206,9 +200,8 @@ class _ActiveChallengeSection extends ConsumerWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: activeEvent.isActive
-                          ? Colors.green
-                          : Colors.orange,
+                      color:
+                          activeEvent.isActive ? Colors.green : Colors.orange,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -256,7 +249,11 @@ class _ActiveChallengeSection extends ConsumerWidget {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              context.push('/submit/${activeEvent.id}');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => PhotoSubmissionScreen(eventId: activeEvent.id),
+                                ),
+                              );
                             },
                             child: Text(
                               AppLocalizations.of(context)!.submitPhoto,
@@ -267,7 +264,11 @@ class _ActiveChallengeSection extends ConsumerWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            context.push('/event/${activeEvent.id}');
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => EventDetailScreen(eventId: activeEvent.id),
+                              ),
+                            );
                           },
                           child: Text(
                             AppLocalizations.of(context)!.submissions,
@@ -376,7 +377,8 @@ class _PastChallengesList extends ConsumerWidget {
         (context, index) {
           final event = pastEvents[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
             child: Card(
               child: ListTile(
                 leading: ClipRRect(
@@ -409,7 +411,11 @@ class _PastChallengesList extends ConsumerWidget {
                 ),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  context.push('/event/${event.id}');
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailScreen(eventId: event.id),
+                    ),
+                  );
                 },
               ),
             ),

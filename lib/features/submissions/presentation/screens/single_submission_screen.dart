@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../submissions/data/models/submission_model.dart';
@@ -264,9 +263,16 @@ class _SubmissionInfo extends ConsumerWidget {
                     context: context,
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => CommentSheet(
-                      eventId: submission.eventId,
-                      submissionId: submission.id,
+                    useSafeArea: true,
+                    enableDrag: true,
+                    builder: (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: CommentSheet(
+                        eventId: submission.eventId,
+                        submissionId: submission.id,
+                      ),
                     ),
                   );
                 },
@@ -364,7 +370,7 @@ class _SubmissionInfo extends ConsumerWidget {
             const SnackBar(content: Text('Post deleted successfully')),
           );
           // Go back to profile or previous screen
-          context.pop();
+          Navigator.of(context).pop();
         }
       } catch (e) {
         AppLogger.e('Error deleting submission ${submission.id}', e);

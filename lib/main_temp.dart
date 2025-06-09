@@ -9,7 +9,6 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/logger.dart';
 import 'core/providers/locale_provider.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/auth/presentation/screens/user_onboarding_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
 import 'features/auth/providers/auth_providers.dart';
 import 'l10n/app_localizations.dart';
@@ -84,37 +83,7 @@ class AuthGate extends ConsumerWidget {
         if (user == null) {
           return const LoginScreen();
         } else {
-          // User is authenticated, now check if onboarding is complete
-          final userDataAsync = ref.watch(currentUserDataProvider);
-          return userDataAsync.when(
-            data: (userData) {
-              AppLogger.i('User data: ${userData?.isOnboardingComplete ?? 'null'}');
-              if (userData == null || !userData.isOnboardingComplete) {
-                // User needs onboarding
-                return const UserOnboardingScreen();
-              } else {
-                // User is fully set up
-                return const HomeScreen();
-              }
-            },
-            loading: () => const Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading user data...'),
-                  ],
-                ),
-              ),
-            ),
-            error: (error, stack) {
-              AppLogger.e('User data error', error, stack);
-              // On error, assume user needs onboarding
-              return const UserOnboardingScreen();
-            },
-          );
+          return const HomeScreen();
         }
       },
       loading: () => const Scaffold(

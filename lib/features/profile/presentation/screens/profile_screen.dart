@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../submissions/data/models/submission_model.dart';
+import '../../../submissions/presentation/screens/single_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -29,7 +29,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     // Reload profile data when entering the screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshProfileData();
@@ -39,7 +39,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   void _refreshProfileData() {
     final currentUser = ref.read(currentUserProvider);
     final targetUserId = widget.userId ?? currentUser?.uid;
-    
+
     if (targetUserId != null) {
       // Invalidate all profile-related providers to force reload
       ref.invalidate(userDataProvider(targetUserId));
@@ -116,26 +116,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       // TODO: Navigate to edit profile
                     } else if (value == 'signOut') {
                       try {
-                        // Show loading indicator
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                        
                         final authService = ref.read(authServiceProvider);
                         await authService.signOut();
-                        
-                        // Close loading dialog - navigation will happen automatically
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
-                        }
                       } catch (e) {
-                        // Close loading dialog
                         if (context.mounted) {
-                          Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Sign out failed: ${e.toString()}'),
@@ -515,7 +499,8 @@ class _LikesTab extends ConsumerWidget {
       );
     }
 
-    final likedSubmissionsAsync = ref.watch(userLikedSubmissionsProvider(userId));
+    final likedSubmissionsAsync =
+        ref.watch(userLikedSubmissionsProvider(userId));
 
     return likedSubmissionsAsync.when(
       data: (likedSubmissions) => likedSubmissions.isEmpty
@@ -574,7 +559,15 @@ class _SubmissionGridItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Navigate to single submission view for user's own posts
-        context.push('/submission/${submission.eventId}/${submission.id}?fromProfile=true');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SingleSubmissionScreen(
+              eventId: submission.eventId,
+              submissionId: submission.id,
+              fromProfile: true,
+            ),
+          ),
+        );
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -607,7 +600,15 @@ class _LikedSubmissionGridItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Navigate to single submission view for liked posts
-        context.push('/submission/${submissionData['eventId']}/${submissionData['submissionId']}?fromProfile=true');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SingleSubmissionScreen(
+              eventId: submissionData['eventId'],
+              submissionId: submissionData['submissionId'],
+              fromProfile: true,
+            ),
+          ),
+        );
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),

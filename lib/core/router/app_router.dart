@@ -9,6 +9,7 @@ import '../../features/events/presentation/screens/event_detail_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/submissions/presentation/screens/photo_submission_screen.dart';
 import '../../features/submissions/presentation/screens/single_submission_screen.dart';
+import '../utils/logger.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -17,52 +18,71 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: true,
+    errorBuilder: AppRouter.errorPageBuilder,
     redirect: (context, state) {
-      final isAuth = authState.valueOrNull != null;
-      final isAuthRoute = state.matchedLocation == '/login';
+      final isLoginRoute = state.matchedLocation == '/login';
       final isOnboardingRoute = state.matchedLocation == '/onboarding';
-      
-      // If not authenticated, redirect to login (except if already on login)
-      if (!isAuth && !isAuthRoute) {
-        return '/login';
-      }
-      
-      // If authenticated, check user data for onboarding status
-      if (isAuth) {
-        return currentUserDataAsync.when(
-          data: (userData) {
-            if (userData == null) {
-              // User authenticated but no Firestore document - needs onboarding
-              return isOnboardingRoute ? null : '/onboarding';
+
+      AppLogger.i(
+          'Router redirect: ${state.matchedLocation}, isLogin: $isLoginRoute');
+
+      return authState.when(
+        data: (user) {
+          AppLogger.i('Auth state data: user = ${user?.uid ?? 'null'}');
+          // User is not authenticated
+          if (user == null) {
+            if (isLoginRoute) {
+              AppLogger.i('Already on login route, no redirect needed');
+              return null;
+            } else {
+              AppLogger.i(
+                  'User null, redirecting to login from ${state.matchedLocation}');
+              return '/login';
             }
-            
-            // Check if user needs onboarding
-            if (!userData.isOnboardingComplete) {
-              return isOnboardingRoute ? null : '/onboarding';
-            }
-            
-            // User is fully set up, redirect to home if on auth/onboarding pages
-            if (isAuthRoute || isOnboardingRoute) {
-              return '/';
-            }
-            
-            return null;
-          },
-          loading: () {
-            // While loading user data, stay on current page unless it's an auth page
-            if (isAuthRoute) {
-              return null; // Let the login page show while loading
-            }
-            return null;
-          },
-          error: (error, stack) {
-            // On error, redirect to onboarding to be safe (unless already there)
-            return isOnboardingRoute ? null : '/onboarding';
-          },
-        );
-      }
-      
-      return null;
+          }
+
+          // User is authenticated, check onboarding status
+          return currentUserDataAsync.when(
+            data: (userData) {
+              AppLogger.i(
+                  'User data: ${userData?.isOnboardingComplete ?? 'null'}');
+              // User needs onboarding
+              if (userData == null || !userData.isOnboardingComplete) {
+                final redirect = isOnboardingRoute ? null : '/onboarding';
+                AppLogger.i('Needs onboarding, redirecting to: $redirect');
+                return redirect;
+              }
+
+              // User is fully set up, redirect from auth pages
+              if (isLoginRoute || isOnboardingRoute) {
+                AppLogger.i('User authenticated, redirecting to home');
+                return '/';
+              }
+
+              AppLogger.i('No redirect needed');
+              return null; // No redirect needed
+            },
+            loading: () {
+              AppLogger.i('User data loading, staying on current page');
+              return null; // Stay on current page while loading
+            },
+            error: (_, __) {
+              final redirect = isOnboardingRoute ? null : '/onboarding';
+              AppLogger.i('User data error, redirecting to: $redirect');
+              return redirect;
+            },
+          );
+        },
+        loading: () {
+          AppLogger.i('Auth state loading, staying on current page');
+          return null; // Stay on current page while loading
+        },
+        error: (_, __) {
+          final redirect = isLoginRoute ? null : '/login';
+          AppLogger.i('Auth state error, redirecting to: $redirect');
+          return redirect;
+        },
+      );
     },
     routes: AppRouter.routes,
   );
@@ -131,4 +151,26 @@ class AppRouter {
       },
     ),
   ];
+
+  // Add error page widget
+  static Widget errorPageBuilder(BuildContext context, GoRouterState state) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Error')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text('Page not found: ${state.matchedLocation}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Go Home'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

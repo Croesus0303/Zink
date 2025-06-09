@@ -613,9 +613,16 @@ class _SubmissionCard extends ConsumerWidget {
                         context: context,
                         isScrollControlled: true,
                         backgroundColor: Colors.transparent,
-                        builder: (context) => CommentSheet(
-                          eventId: submission.eventId,
-                          submissionId: submission.id,
+                        useSafeArea: true,
+                        enableDrag: true,
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: CommentSheet(
+                            eventId: submission.eventId,
+                            submissionId: submission.id,
+                          ),
                         ),
                       );
                     },
