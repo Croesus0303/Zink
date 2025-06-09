@@ -36,6 +36,17 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
     _likeCount = widget.initialLikeCount;
   }
 
+  @override
+  void didUpdateWidget(LikeButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialIsLiked != widget.initialIsLiked) {
+      _isLiked = widget.initialIsLiked;
+    }
+    if (oldWidget.initialLikeCount != widget.initialLikeCount) {
+      _likeCount = widget.initialLikeCount;
+    }
+  }
+
   Future<void> _toggleLike() async {
     final currentUser = ref.read(currentUserProvider);
     if (currentUser == null) {
@@ -53,28 +64,31 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
 
     try {
       final socialService = ref.read(socialServiceProvider);
-      
+
       if (_isLiked) {
-        await socialService.unlikeSubmission(widget.eventId, widget.submissionId, currentUser.uid);
+        await socialService.unlikeSubmission(
+            widget.eventId, widget.submissionId, currentUser.uid);
         setState(() {
           _isLiked = false;
           _likeCount = (_likeCount - 1).clamp(0, double.infinity).toInt();
         });
         AppLogger.d('Unliked submission ${widget.submissionId}');
       } else {
-        await socialService.likeSubmission(widget.eventId, widget.submissionId, currentUser.uid);
+        await socialService.likeSubmission(
+            widget.eventId, widget.submissionId, currentUser.uid);
         setState(() {
           _isLiked = true;
-          _likeCount++;
         });
         AppLogger.d('Liked submission ${widget.submissionId}');
       }
 
       widget.onLikeChanged?.call();
     } catch (e) {
-      AppLogger.e('Error toggling like for submission ${widget.submissionId}', e);
+      AppLogger.e(
+          'Error toggling like for submission ${widget.submissionId}', e);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to ${_isLiked ? 'unlike' : 'like'} photo')),
+        SnackBar(
+            content: Text('Failed to ${_isLiked ? 'unlike' : 'like'} photo')),
       );
     } finally {
       if (mounted) {

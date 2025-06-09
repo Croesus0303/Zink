@@ -103,7 +103,7 @@ class SocialService {
   Stream<List<CommentModel>> getCommentsStream(String eventId, String submissionId) {
     return _firestore
         .collection(CommentModel.getCollectionPath(eventId, submissionId))
-        .orderBy('createdAt', descending: false)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
       AppLogger.d('Fetched ${snapshot.docs.length} comments for submission $submissionId from Firebase');
@@ -120,7 +120,7 @@ class SocialService {
     try {
       final snapshot = await _firestore
           .collection(CommentModel.getCollectionPath(eventId, submissionId))
-          .orderBy('createdAt', descending: false)
+          .orderBy('createdAt', descending: true)
           .get();
       
       AppLogger.d('Fetched ${snapshot.docs.length} comments for submission $submissionId from Firebase');

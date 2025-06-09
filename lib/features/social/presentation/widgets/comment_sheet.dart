@@ -109,11 +109,25 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    Text(
-                      'Comments',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                    commentsAsync.when(
+                      data: (comments) => Text(
+                        'Comments (${comments.length})',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      loading: () => Text(
+                        'Comments',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      error: (_, __) => Text(
+                        'Comments',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
                     ),
                     const Spacer(),
                     IconButton(

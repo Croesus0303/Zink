@@ -3,7 +3,8 @@
     "allow": [
       "Bash(ls:*)",
       "Bash(flutter analyze:*)",
-      "Bash(dart analyze:*)"
+      "Bash(dart analyze:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze)"
     ],
     "deny": []
   }

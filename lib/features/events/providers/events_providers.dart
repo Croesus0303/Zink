@@ -4,6 +4,7 @@ import '../data/services/events_service.dart';
 import '../../submissions/data/models/submission_model.dart';
 import '../../submissions/data/services/submissions_service.dart';
 import '../../social/data/models/comment_model.dart';
+import '../../social/data/models/like_model.dart';
 import '../../social/data/services/social_service.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/data/repositories/auth_repository.dart';
@@ -74,6 +75,12 @@ final commentsProvider = FutureProvider.family<List<CommentModel>, ({String even
 final likeStatusProvider = FutureProvider.family<bool, ({String eventId, String submissionId, String userId})>((ref, params) async {
   final socialService = ref.watch(socialServiceProvider);
   return await socialService.isLikedByUser(params.eventId, params.submissionId, params.userId);
+});
+
+// Likes stream provider
+final likesStreamProvider = StreamProvider.family<List<LikeModel>, ({String eventId, String submissionId})>((ref, params) {
+  final socialService = ref.watch(socialServiceProvider);
+  return socialService.getLikesStream(params.eventId, params.submissionId);
 });
 
 // Like count provider

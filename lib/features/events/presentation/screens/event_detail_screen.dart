@@ -26,6 +26,31 @@ class EventDetailScreen extends ConsumerStatefulWidget {
 
 class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
+  void initState() {
+    super.initState();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshSocialData();
+    });
+  }
+
+  void _refreshSocialData() {
+    final currentUser = ref.read(currentUserProvider);
+    if (currentUser != null) {
+      final submissionsAsync = ref.read(submissionsProvider(widget.eventId));
+      submissionsAsync.whenData((submissions) {
+        for (final submission in submissions) {
+          ref.invalidate(likesStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(commentsStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(likeStatusProvider((eventId: submission.eventId, submissionId: submission.id, userId: currentUser.uid)));
+          ref.invalidate(likeCountProvider((eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(commentCountProvider((eventId: submission.eventId, submissionId: submission.id)));
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
     
@@ -443,18 +468,26 @@ class _SubmissionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(currentUserProvider);
     final userDataAsync = ref.watch(userDataProvider(submission.uid));
-    final likeStatusAsync = currentUser != null 
-        ? ref.watch(likeStatusProvider((eventId: submission.eventId, submissionId: submission.id, userId: currentUser.uid)))
-        : const AsyncValue.data(false);
+    final likesStreamAsync = ref.watch(likesStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
+    
+    bool isLikedByCurrentUser = false;
+    int currentLikeCount = submission.likeCount;
+    
+    likesStreamAsync.whenData((likes) {
+      currentLikeCount = likes.length;
+      if (currentUser != null) {
+        isLikedByCurrentUser = likes.any((like) => like.uid == currentUser.uid);
+      }
+    });
         
     return userDataAsync.when(
-      data: (user) => _buildCard(context, ref, user, currentUser, likeStatusAsync),
-      loading: () => _buildCard(context, ref, null, currentUser, likeStatusAsync),
-      error: (error, stack) => _buildCard(context, ref, null, currentUser, likeStatusAsync),
+      data: (user) => _buildCard(context, ref, user, currentUser, isLikedByCurrentUser, currentLikeCount),
+      loading: () => _buildCard(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
+      error: (error, stack) => _buildCard(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
     );
   }
   
-  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user, dynamic currentUser, AsyncValue<bool> likeStatusAsync) {
+  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user, dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
@@ -524,25 +557,11 @@ class _SubmissionCard extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  likeStatusAsync.when(
-                    data: (isLiked) => LikeButton(
-                      eventId: submission.eventId,
-                      submissionId: submission.id,
-                      initialLikeCount: submission.likeCount,
-                      initialIsLiked: isLiked,
-                    ),
-                    loading: () => LikeButton(
-                      eventId: submission.eventId,
-                      submissionId: submission.id,
-                      initialLikeCount: submission.likeCount,
-                      initialIsLiked: false,
-                    ),
-                    error: (_, __) => LikeButton(
-                      eventId: submission.eventId,
-                      submissionId: submission.id,
-                      initialLikeCount: submission.likeCount,
-                      initialIsLiked: false,
-                    ),
+                  LikeButton(
+                    eventId: submission.eventId,
+                    submissionId: submission.id,
+                    initialLikeCount: currentLikeCount,
+                    initialIsLiked: isLikedByCurrentUser,
                   ),
                   const SizedBox(width: 16),
                   InkWell(
