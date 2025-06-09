@@ -11,6 +11,7 @@ import '../../../social/presentation/widgets/like_button.dart';
 import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../submissions/data/services/submissions_service.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -28,7 +29,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshSocialData();
     });
@@ -40,11 +41,19 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       final submissionsAsync = ref.read(submissionsProvider(widget.eventId));
       submissionsAsync.whenData((submissions) {
         for (final submission in submissions) {
-          ref.invalidate(likesStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
-          ref.invalidate(commentsStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
-          ref.invalidate(likeStatusProvider((eventId: submission.eventId, submissionId: submission.id, userId: currentUser.uid)));
-          ref.invalidate(likeCountProvider((eventId: submission.eventId, submissionId: submission.id)));
-          ref.invalidate(commentCountProvider((eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(likesStreamProvider(
+              (eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(commentsStreamProvider(
+              (eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(likeStatusProvider((
+            eventId: submission.eventId,
+            submissionId: submission.id,
+            userId: currentUser.uid
+          )));
+          ref.invalidate(likeCountProvider(
+              (eventId: submission.eventId, submissionId: submission.id)));
+          ref.invalidate(commentCountProvider(
+              (eventId: submission.eventId, submissionId: submission.id)));
         }
       });
     }
@@ -53,7 +62,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
-    
+
     return eventsAsync.when(
       data: (events) {
         try {
@@ -95,9 +104,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       },
     );
   }
-  
-  Widget _buildEventDetail(EventModel event) {
 
+  Widget _buildEventDetail(EventModel event) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -233,7 +241,8 @@ class _EventInfoSection extends StatelessWidget {
                       Text(
                         _formatTimeRemaining(event.endTime),
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                         ),
@@ -412,7 +421,8 @@ class _SubmissionsList extends ConsumerWidget {
     );
   }
 
-  Widget _buildSubmissionsList(BuildContext context, List<SubmissionModel> submissions) {
+  Widget _buildSubmissionsList(
+      BuildContext context, List<SubmissionModel> submissions) {
     if (submissions.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
@@ -446,7 +456,7 @@ class _SubmissionsList extends ConsumerWidget {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final submission = submissions[index];
-          
+
           return _SubmissionCard(
             submission: submission,
           );
@@ -468,26 +478,31 @@ class _SubmissionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(currentUserProvider);
     final userDataAsync = ref.watch(userDataProvider(submission.uid));
-    final likesStreamAsync = ref.watch(likesStreamProvider((eventId: submission.eventId, submissionId: submission.id)));
-    
+    final likesStreamAsync = ref.watch(likesStreamProvider(
+        (eventId: submission.eventId, submissionId: submission.id)));
+
     bool isLikedByCurrentUser = false;
     int currentLikeCount = submission.likeCount;
-    
+
     likesStreamAsync.whenData((likes) {
       currentLikeCount = likes.length;
       if (currentUser != null) {
         isLikedByCurrentUser = likes.any((like) => like.uid == currentUser.uid);
       }
     });
-        
+
     return userDataAsync.when(
-      data: (user) => _buildCard(context, ref, user, currentUser, isLikedByCurrentUser, currentLikeCount),
-      loading: () => _buildCard(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
-      error: (error, stack) => _buildCard(context, ref, null, currentUser, isLikedByCurrentUser, currentLikeCount),
+      data: (user) => _buildCard(context, ref, user, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
+      loading: () => _buildCard(context, ref, null, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
+      error: (error, stack) => _buildCard(context, ref, null, currentUser,
+          isLikedByCurrentUser, currentLikeCount),
     );
   }
-  
-  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user, dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
+
+  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
+      dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
@@ -507,7 +522,8 @@ class _SubmissionCard extends ConsumerWidget {
                         : null,
                     child: user?.photoURL == null
                         ? Text(
-                            user?.displayName.substring(0, 1).toUpperCase() ?? '?',
+                            user?.displayName.substring(0, 1).toUpperCase() ??
+                                '?',
                             style: const TextStyle(fontSize: 14),
                           )
                         : null,
@@ -531,24 +547,51 @@ class _SubmissionCard extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  // Show delete option if current user owns the submission
+                  if (currentUser != null && currentUser.uid == submission.uid)
+                    PopupMenuButton<String>(
+                      onSelected: (value) async {
+                        if (value == 'delete') {
+                          await _showDeleteConfirmationDialog(
+                              context, ref, submission);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem<String>(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text('Delete',
+                                  style: TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                        ),
+                      ],
+                      child: const Icon(Icons.more_vert),
+                    ),
                 ],
               ),
             ),
             // Submission image
             AspectRatio(
               aspectRatio: 1,
-              child: CachedNetworkImage(
-                imageUrl: submission.imageURL,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
-                  child: const Center(
-                    child: CircularProgressIndicator(),
+              child: GestureDetector(
+                onTap: () => _showFullScreenImage(context, submission.imageURL),
+                child: CachedNetworkImage(
+                  imageUrl: submission.imageURL,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.error),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error),
+                  ),
                 ),
               ),
             ),
@@ -578,7 +621,8 @@ class _SubmissionCard extends ConsumerWidget {
                     },
                     borderRadius: BorderRadius.circular(20),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -616,5 +660,102 @@ class _SubmissionCard extends ConsumerWidget {
     } else {
       return '${difference.inDays}d ago';
     }
+  }
+
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, WidgetRef ref, SubmissionModel submission) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Post'),
+        content: const Text(
+            'Are you sure you want to delete this post? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        final submissionsService = ref.read(submissionsServiceProvider);
+        await submissionsService.deleteSubmission(
+            submission.eventId, submission.id);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Post deleted successfully')),
+          );
+        }
+
+        // Refresh the submissions list
+        ref.invalidate(submissionsProvider(submission.eventId));
+        ref.invalidate(submissionsStreamProvider(submission.eventId));
+      } catch (e) {
+        AppLogger.e('Error deleting submission ${submission.id}', e);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete post')),
+          );
+        }
+      }
+    }
+  }
+
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
+      ),
+    );
+  }
+}
+
+class _FullScreenImageViewer extends StatelessWidget {
+  final String imageUrl;
+
+  const _FullScreenImageViewer({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.close),
+        ),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          panEnabled: true,
+          scaleEnabled: true,
+          minScale: 0.5,
+          maxScale: 3.0,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.contain,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+            errorWidget: (context, url, error) => const Center(
+              child: Icon(Icons.error, color: Colors.white, size: 64),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

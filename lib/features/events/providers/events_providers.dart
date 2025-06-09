@@ -150,3 +150,33 @@ final userDataProvider = FutureProvider.family<UserModel?, String>((ref, userId)
   final authRepository = ref.watch(authRepositoryProvider);
   return await authRepository.getUserData(userId);
 });
+
+// User submissions from user collection provider
+final userSubmissionsFromUserCollectionProvider = FutureProvider.family<List<SubmissionModel>, String>((ref, userId) async {
+  final submissionsService = ref.watch(submissionsServiceProvider);
+  return await submissionsService.getUserSubmissionsFromUserCollection(userId);
+});
+
+// User liked submission IDs provider
+final userLikedSubmissionIdsProvider = FutureProvider.family<List<String>, String>((ref, userId) async {
+  final socialService = ref.watch(socialServiceProvider);
+  return await socialService.getUserLikedSubmissionIds(userId);
+});
+
+// User like count from user collection provider
+final userLikeCountFromUserCollectionProvider = FutureProvider.family<int, String>((ref, userId) async {
+  final socialService = ref.watch(socialServiceProvider);
+  return await socialService.getUserLikeCountFromUserCollection(userId);
+});
+
+// User liked submissions provider
+final userLikedSubmissionsProvider = FutureProvider.family<List<Map<String, dynamic>>, String>((ref, userId) async {
+  final socialService = ref.watch(socialServiceProvider);
+  return await socialService.getUserLikedSubmissions(userId);
+});
+
+// Single submission provider
+final submissionProvider = FutureProvider.family<SubmissionModel?, ({String eventId, String submissionId})>((ref, params) async {
+  final submissionsService = ref.watch(submissionsServiceProvider);
+  return await submissionsService.getSubmission(params.eventId, params.submissionId);
+});

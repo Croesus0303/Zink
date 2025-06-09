@@ -8,6 +8,7 @@ import '../../features/auth/presentation/screens/user_onboarding_screen.dart';
 import '../../features/events/presentation/screens/event_detail_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/submissions/presentation/screens/photo_submission_screen.dart';
+import '../../features/submissions/presentation/screens/single_submission_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -107,6 +108,20 @@ class AppRouter {
       builder: (context, state) {
         final eventId = state.pathParameters['eventId']!;
         return PhotoSubmissionScreen(eventId: eventId);
+      },
+    ),
+    GoRoute(
+      path: '/submission/:eventId/:submissionId',
+      name: 'singleSubmission',
+      builder: (context, state) {
+        final eventId = state.pathParameters['eventId']!;
+        final submissionId = state.pathParameters['submissionId']!;
+        final fromProfile = state.uri.queryParameters['fromProfile'] == 'true';
+        return SingleSubmissionScreen(
+          eventId: eventId,
+          submissionId: submissionId,
+          fromProfile: fromProfile,
+        );
       },
     ),
   ];
