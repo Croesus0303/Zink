@@ -7,6 +7,8 @@ import '../../../events/providers/events_providers.dart';
 import '../../../submissions/data/models/submission_model.dart';
 import '../../../submissions/presentation/screens/single_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'edit_profile_screen.dart';
+import 'storage_test_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -112,7 +114,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 PopupMenuButton<String>(
                   onSelected: (value) async {
                     if (value == 'editProfile') {
-                      // TODO: Navigate to edit profile
+                      if (user != null) {
+                        Navigator.of(context)
+                            .push(
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(user: user),
+                          ),
+                        )
+                            .then((_) {
+                          // Refresh profile data when returning from edit screen
+                          _refreshProfileData();
+                        });
+                      }
+                    } else if (value == 'testStorage') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const StorageTestScreen(),
+                        ),
+                      );
                     } else if (value == 'signOut') {
                       try {
                         final authService = ref.read(authServiceProvider);
@@ -140,6 +159,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         ],
                       ),
                     ),
+                    const PopupMenuItem<String>(
+                      value: 'testStorage',
+                      child: Row(
+                        children: [
+                          Icon(Icons.storage),
+                          SizedBox(width: 8),
+                          Text('Test Storage'),
+                        ],
+                      ),
+                    ),
                     PopupMenuItem<String>(
                       value: 'signOut',
                       child: Row(
@@ -155,7 +184,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ],
           ),
           SliverToBoxAdapter(
-            child: _ProfileHeader(user: user, isOwnProfile: isOwnProfile),
+            child: _ProfileHeader(
+                user: user,
+                isOwnProfile: isOwnProfile,
+                onProfileEdited: _refreshProfileData),
           ),
           SliverToBoxAdapter(
             child: _ProfileStats(userId: targetUserId),
@@ -190,10 +222,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 class _ProfileHeader extends StatelessWidget {
   final dynamic user;
   final bool isOwnProfile;
+  final VoidCallback? onProfileEdited;
 
   const _ProfileHeader({
     required this.user,
     required this.isOwnProfile,
+    this.onProfileEdited,
   });
 
   @override
@@ -243,7 +277,18 @@ class _ProfileHeader extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // TODO: Navigate to edit profile
+                  if (user != null) {
+                    Navigator.of(context)
+                        .push(
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(user: user),
+                      ),
+                    )
+                        .then((_) {
+                      // Refresh profile data when returning from edit screen
+                      if (onProfileEdited != null) onProfileEdited!();
+                    });
+                  }
                 },
                 icon: const Icon(Icons.edit),
                 label: Text(AppLocalizations.of(context)!.editProfile),

@@ -65,5 +65,16 @@
   "enterValidNumber": "Lütfen geçerli bir sayı girin",
   "ageTooYoung": "En az 13 yaşında olmalısınız",
   "enterValidAge": "Lütfen geçerli bir yaş girin",
-  "privacyNote": "Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır."
+  "privacyNote": "Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır.",
+  
+  "profilePicture": "Profil Fotoğrafı",
+  "changeProfilePicture": "Profil Fotoğrafını Değiştir",
+  "displayName": "Görünen Ad",
+  "basicInformation": "Temel Bilgiler",
+  "socialMediaLinks": "Sosyal Medya Bağlantıları",
+  "instagram": "Instagram",
+  "twitter": "Twitter",
+  "facebook": "Facebook",
+  "linkedin": "LinkedIn",
+  "website": "Web Sitesi"
 } 

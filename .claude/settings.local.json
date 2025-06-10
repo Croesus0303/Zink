@@ -8,7 +8,11 @@
       "Bash(rg:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter gen-l10n)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter pub:*)"
     ],
     "deny": []
   }

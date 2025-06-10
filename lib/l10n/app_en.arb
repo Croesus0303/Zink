@@ -266,5 +266,46 @@
   "privacyNote": "By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.",
   "@privacyNote": {
     "description": "Privacy note text on onboarding"
+  },
+  
+  "profilePicture": "Profile Picture",
+  "@profilePicture": {
+    "description": "Profile picture label"
+  },
+  "changeProfilePicture": "Change Profile Picture",
+  "@changeProfilePicture": {
+    "description": "Change profile picture button text"
+  },
+  "displayName": "Display Name",
+  "@displayName": {
+    "description": "Display name field label"
+  },
+  "basicInformation": "Basic Information",
+  "@basicInformation": {
+    "description": "Basic information section title"
+  },
+  "socialMediaLinks": "Social Media Links",
+  "@socialMediaLinks": {
+    "description": "Social media links section title"
+  },
+  "instagram": "Instagram",
+  "@instagram": {
+    "description": "Instagram social media platform"
+  },
+  "twitter": "Twitter",
+  "@twitter": {
+    "description": "Twitter social media platform"
+  },
+  "facebook": "Facebook",
+  "@facebook": {
+    "description": "Facebook social media platform"
+  },
+  "linkedin": "LinkedIn",
+  "@linkedin": {
+    "description": "LinkedIn social media platform"
+  },
+  "website": "Website",
+  "@website": {
+    "description": "Website field label"
   }
 } 

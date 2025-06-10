@@ -208,4 +208,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacyNote =>
       'By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.';
+
+  @override
+  String get profilePicture => 'Profile Picture';
+
+  @override
+  String get changeProfilePicture => 'Change Profile Picture';
+
+  @override
+  String get displayName => 'Display Name';
+
+  @override
+  String get basicInformation => 'Basic Information';
+
+  @override
+  String get socialMediaLinks => 'Social Media Links';
+
+  @override
+  String get instagram => 'Instagram';
+
+  @override
+  String get twitter => 'Twitter';
+
+  @override
+  String get facebook => 'Facebook';
+
+  @override
+  String get linkedin => 'LinkedIn';
+
+  @override
+  String get website => 'Website';
 }

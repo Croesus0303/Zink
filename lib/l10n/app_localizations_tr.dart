@@ -208,4 +208,34 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get privacyNote =>
       'Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır.';
+
+  @override
+  String get profilePicture => 'Profil Fotoğrafı';
+
+  @override
+  String get changeProfilePicture => 'Profil Fotoğrafını Değiştir';
+
+  @override
+  String get displayName => 'Görünen Ad';
+
+  @override
+  String get basicInformation => 'Temel Bilgiler';
+
+  @override
+  String get socialMediaLinks => 'Sosyal Medya Bağlantıları';
+
+  @override
+  String get instagram => 'Instagram';
+
+  @override
+  String get twitter => 'Twitter';
+
+  @override
+  String get facebook => 'Facebook';
+
+  @override
+  String get linkedin => 'LinkedIn';
+
+  @override
+  String get website => 'Web Sitesi';
 }

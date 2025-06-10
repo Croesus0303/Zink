@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:io';
 import '../../../../core/utils/logger.dart';
 import '../models/user_model.dart';
 
@@ -9,14 +11,17 @@ class AuthRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore;
+  final FirebaseStorage _storage;
 
   AuthRepository({
     required FirebaseAuth firebaseAuth,
     required GoogleSignIn googleSignIn,
     required FirebaseFirestore firestore,
+    required FirebaseStorage storage,
   })  : _firebaseAuth = firebaseAuth,
         _googleSignIn = googleSignIn,
-        _firestore = firestore;
+        _firestore = firestore,
+        _storage = storage;
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
@@ -296,6 +301,89 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<void> updateUserProfile({
+    Map<String, String>? socialLinks,
+    File? profileImage,
+  }) async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
+      AppLogger.i('Updating user profile for user: ${user.uid}');
+
+      // Prepare update data
+      final updateData = <String, dynamic>{};
+
+      if (socialLinks != null) {
+        updateData['socialLinks'] = socialLinks;
+      }
+
+      // Handle profile image upload if provided
+      if (profileImage != null) {
+        AppLogger.i('Starting profile image upload for user: ${user.uid}');
+        final imageUrl = await _uploadProfileImage(profileImage, user.uid);
+        updateData['photoURL'] = imageUrl;
+
+        // Also update Firebase Auth profile photo
+        await user.updatePhotoURL(imageUrl);
+        AppLogger.i('Profile image upload completed successfully');
+      }
+
+      // Update Firestore document if there's data to update
+      if (updateData.isNotEmpty) {
+        await _firestore
+            .collection(UserModel.collectionPath)
+            .doc(user.uid)
+            .update(updateData);
+      }
+
+      AppLogger.i('User profile updated successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to update user profile', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<String> _uploadProfileImage(File imageFile, String userId) async {
+    try {
+      AppLogger.i('Starting image upload to Firebase Storage for user: $userId');
+      AppLogger.i('Image file path: ${imageFile.path}');
+      AppLogger.i('Image file exists: ${imageFile.existsSync()}');
+      
+      // Create a reference to the location where we want to upload the file
+      final storageRef = _storage.ref().child('profile_images/$userId.jpg');
+      AppLogger.i('Storage reference created: ${storageRef.fullPath}');
+
+      // Upload the file
+      AppLogger.i('Starting file upload...');
+      final uploadTask = storageRef.putFile(
+        imageFile,
+        SettableMetadata(
+          contentType: 'image/jpeg',
+          customMetadata: {
+            'uploadedBy': userId,
+            'uploadedAt': DateTime.now().toIso8601String(),
+          },
+        ),
+      );
+
+      // Wait for upload to complete
+      AppLogger.i('Waiting for upload to complete...');
+      final snapshot = await uploadTask;
+      AppLogger.i('Upload completed, getting download URL...');
+
+      // Get the download URL
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      AppLogger.i('Profile image uploaded successfully: $downloadUrl');
+      return downloadUrl;
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to upload profile image', e, stackTrace);
+      rethrow;
+    }
+  }
 }
 
 // Providers
@@ -308,5 +396,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     firebaseAuth: FirebaseAuth.instance,
     googleSignIn: ref.watch(googleSignInProvider),
     firestore: FirebaseFirestore.instance,
+    storage: FirebaseStorage.instance,
   );
 });
