@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/logger.dart';
 import 'core/providers/locale_provider.dart';
+import 'core/router/app_router.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/user_onboarding_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
@@ -48,8 +49,9 @@ class ZinkApp extends ConsumerWidget {
     AppLogger.i('ZinkApp build() called');
     
     final locale = ref.watch(localeProvider);
+    final router = ref.watch(routerProvider);
     
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Zink',
       theme: AppTheme.lightTheme(context),
       darkTheme: AppTheme.darkTheme(context),
@@ -66,91 +68,8 @@ class ZinkApp extends ConsumerWidget {
         Locale('en'), // English
         Locale('tr'), // Turkish
       ],
-      home: const AuthGate(),
+      routerConfig: router,
     );
   }
 }
 
-class AuthGate extends ConsumerWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-    
-    return authState.when(
-      data: (user) {
-        AppLogger.i('Auth state: ${user?.uid ?? 'null'}');
-        if (user == null) {
-          return const LoginScreen();
-        } else {
-          // User is authenticated, now check if onboarding is complete
-          final userDataAsync = ref.watch(currentUserDataProvider);
-          return userDataAsync.when(
-            data: (userData) {
-              AppLogger.i('User data: ${userData?.isOnboardingComplete ?? 'null'}');
-              if (userData == null || !userData.isOnboardingComplete) {
-                // User needs onboarding
-                return const UserOnboardingScreen();
-              } else {
-                // User is fully set up
-                return const HomeScreen();
-              }
-            },
-            loading: () => const Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading user data...'),
-                  ],
-                ),
-              ),
-            ),
-            error: (error, stack) {
-              AppLogger.e('User data error', error, stack);
-              // On error, assume user needs onboarding
-              return const UserOnboardingScreen();
-            },
-          );
-        }
-      },
-      loading: () => const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Loading...'),
-            ],
-          ),
-        ),
-      ),
-      error: (error, stack) {
-        AppLogger.e('Auth state error', error, stack);
-        return Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error, size: 64, color: Colors.red),
-                const SizedBox(height: 16),
-                const Text('Authentication Error'),
-                const SizedBox(height: 8),
-                Text(error.toString()),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => ref.invalidate(authStateProvider),
-                  child: const Text('Retry'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}

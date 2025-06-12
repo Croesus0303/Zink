@@ -191,16 +191,26 @@ final userLikedSubmissionIdsProvider =
 // User like count from user collection provider
 final userLikeCountFromUserCollectionProvider =
     FutureProvider.family<int, String>((ref, userId) async {
-  final socialService = ref.watch(socialServiceProvider);
-  return await socialService.getUserLikeCountFromUserCollection(userId);
+  try {
+    final socialService = ref.watch(socialServiceProvider);
+    return await socialService.getUserLikeCountFromUserCollection(userId);
+  } catch (e) {
+    // Return 0 instead of throwing to prevent UI errors
+    return 0;
+  }
 });
 
 // User liked submissions provider
 final userLikedSubmissionsProvider =
     FutureProvider.family<List<Map<String, dynamic>>, String>(
         (ref, userId) async {
-  final socialService = ref.watch(socialServiceProvider);
-  return await socialService.getUserLikedSubmissions(userId);
+  try {
+    final socialService = ref.watch(socialServiceProvider);
+    return await socialService.getUserLikedSubmissions(userId);
+  } catch (e) {
+    // Return empty list instead of throwing to prevent UI errors
+    return <Map<String, dynamic>>[];
+  }
 });
 
 // Single submission provider

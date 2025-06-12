@@ -266,68 +266,108 @@ class SocialService {
   }
 
   Future<int> getUserLikeCountFromUserCollection(String userId) async {
-    try {
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('likes')
-          .count()
-          .get();
-      
-      return snapshot.count ?? 0;
-    } catch (e) {
-      AppLogger.e('Error getting like count from user collection for $userId', e);
-      return 0;
+    const int maxRetries = 5;
+    const Duration baseDelay = Duration(milliseconds: 500);
+    
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        final snapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('likes')
+            .count()
+            .get();
+        
+        return snapshot.count ?? 0;
+      } catch (e) {
+        final errorString = e.toString().toLowerCase();
+        final isRetryableError = errorString.contains('unavailable') || 
+                                errorString.contains('deadline') ||
+                                errorString.contains('timeout') ||
+                                errorString.contains('internal') ||
+                                errorString.contains('cancelled');
+        
+        if (attempt == maxRetries || !isRetryableError) {
+          AppLogger.w('Failed to get like count for $userId after $attempt attempts, returning 0');
+          return 0;
+        }
+        
+        final delay = Duration(milliseconds: baseDelay.inMilliseconds * (1 << (attempt - 1)));
+        AppLogger.w('Retrying getUserLikeCountFromUserCollection for $userId (attempt $attempt/$maxRetries) after ${delay.inMilliseconds}ms delay');
+        await Future.delayed(delay);
+      }
     }
+    
+    return 0;
   }
 
   Future<List<Map<String, dynamic>>> getUserLikedSubmissions(String userId) async {
-    try {
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('likes')
-          .orderBy('likedAt', descending: true)
-          .get();
-      
-      final likedSubmissions = <Map<String, dynamic>>[];
-      
-      for (final doc in snapshot.docs) {
-        final data = doc.data();
-        final eventId = data['eventId'] as String;
-        final submissionId = data['submissionId'] as String;
+    const int maxRetries = 5;
+    const Duration baseDelay = Duration(milliseconds: 500);
+    
+    for (int attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        final snapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('likes')
+            .orderBy('likedAt', descending: true)
+            .get();
         
-        // Fetch the actual submission data
-        try {
-          final submissionDoc = await _firestore
-              .collection('events')
-              .doc(eventId)
-              .collection('submissions')
-              .doc(submissionId)
-              .get();
-              
-          if (submissionDoc.exists) {
-            final submissionData = submissionDoc.data()!;
-            likedSubmissions.add({
-              'submissionId': submissionId,
-              'eventId': eventId,
-              'imageURL': submissionData['imageURL'],
-              'uid': submissionData['uid'],
-              'likeCount': submissionData['likeCount'] ?? 0,
-              'createdAt': submissionData['createdAt'],
-              'likedAt': data['likedAt'],
-            });
+        final likedSubmissions = <Map<String, dynamic>>[];
+        
+        for (final doc in snapshot.docs) {
+          final data = doc.data();
+          final eventId = data['eventId'] as String;
+          final submissionId = data['submissionId'] as String;
+          
+          // Fetch the actual submission data
+          try {
+            final submissionDoc = await _firestore
+                .collection('events')
+                .doc(eventId)
+                .collection('submissions')
+                .doc(submissionId)
+                .get();
+                
+            if (submissionDoc.exists) {
+              final submissionData = submissionDoc.data()!;
+              likedSubmissions.add({
+                'submissionId': submissionId,
+                'eventId': eventId,
+                'imageURL': submissionData['imageURL'],
+                'uid': submissionData['uid'],
+                'likeCount': submissionData['likeCount'] ?? 0,
+                'createdAt': submissionData['createdAt'],
+                'likedAt': data['likedAt'],
+              });
+            }
+          } catch (e) {
+            AppLogger.w('Could not fetch liked submission $submissionId: $e');
           }
-        } catch (e) {
-          AppLogger.w('Could not fetch liked submission $submissionId: $e');
         }
+        
+        return likedSubmissions;
+      } catch (e) {
+        final errorString = e.toString().toLowerCase();
+        final isRetryableError = errorString.contains('unavailable') || 
+                                errorString.contains('deadline') ||
+                                errorString.contains('timeout') ||
+                                errorString.contains('internal') ||
+                                errorString.contains('cancelled');
+        
+        if (attempt == maxRetries || !isRetryableError) {
+          AppLogger.w('Failed to get liked submissions for $userId after $attempt attempts, returning empty list');
+          return [];
+        }
+        
+        final delay = Duration(milliseconds: baseDelay.inMilliseconds * (1 << (attempt - 1)));
+        AppLogger.w('Retrying getUserLikedSubmissions for $userId (attempt $attempt/$maxRetries) after ${delay.inMilliseconds}ms delay');
+        await Future.delayed(delay);
       }
-      
-      return likedSubmissions;
-    } catch (e) {
-      AppLogger.e('Error fetching user liked submissions for $userId', e);
-      return [];
     }
+    
+    return [];
   }
 }
 

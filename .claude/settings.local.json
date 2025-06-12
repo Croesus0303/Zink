@@ -12,7 +12,10 @@
       "Bash(flutter gen-l10n:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter gen-l10n)",
       "Bash(flutter clean:*)",
-      "Bash(flutter pub:*)"
+      "Bash(flutter pub:*)",
+      "Bash(npm i:*)",
+      "Bash(sudo npm i -g @anthropic-ai/claude-code)",
+      "Bash(npx:*)"
     ],
     "deny": []
   }

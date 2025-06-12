@@ -12,6 +12,7 @@ import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
+import '../../../../shared/widgets/clickable_user_avatar.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -515,26 +516,19 @@ class _SubmissionCard extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  CircleAvatar(
+                  ClickableUserAvatar(
+                    user: user,
+                    userId: submission.uid,
                     radius: 16,
-                    backgroundImage: user?.photoURL != null
-                        ? CachedNetworkImageProvider(user!.photoURL!)
-                        : null,
-                    child: user?.photoURL == null
-                        ? Text(
-                            user?.displayName.substring(0, 1).toUpperCase() ??
-                                '?',
-                            style: const TextStyle(fontSize: 14),
-                          )
-                        : null,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          user?.displayName ?? 'Unknown User',
+                        ClickableUserName(
+                          user: user,
+                          userId: submission.uid,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         Text(

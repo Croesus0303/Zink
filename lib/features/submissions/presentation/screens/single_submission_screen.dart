@@ -9,6 +9,7 @@ import '../../../social/presentation/widgets/like_button.dart';
 import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
+import '../../../../shared/widgets/clickable_user_avatar.dart';
 
 class SingleSubmissionScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -206,25 +207,19 @@ class _SubmissionInfo extends ConsumerWidget {
           // User info
           Row(
             children: [
-              CircleAvatar(
+              ClickableUserAvatar(
+                user: user,
+                userId: submission.uid,
                 radius: 20,
-                backgroundImage: user?.photoURL != null
-                    ? CachedNetworkImageProvider(user!.photoURL!)
-                    : null,
-                child: user?.photoURL == null
-                    ? Text(
-                        user?.displayName.substring(0, 1).toUpperCase() ?? '?',
-                        style: const TextStyle(fontSize: 16),
-                      )
-                    : null,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      user?.displayName ?? 'Unknown User',
+                    ClickableUserName(
+                      user: user,
+                      userId: submission.uid,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
