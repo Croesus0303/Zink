@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../events/providers/events_providers.dart';
@@ -20,6 +21,13 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.appName),
         actions: [
+          IconButton(
+            onPressed: () {
+              context.push('/chats');
+            },
+            icon: const Icon(Icons.message),
+            tooltip: 'Messages',
+          ),
           const LanguageToggleButton(),
           PopupMenuButton<String>(
             icon: const Icon(Icons.person),

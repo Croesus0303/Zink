@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../auth/data/models/user_model.dart';
@@ -110,6 +111,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 ? AppLocalizations.of(context)!.profile
                 : user?.displayName ?? 'Profile'),
             actions: [
+              if (!isOwnProfile)
+                IconButton(
+                  onPressed: () {
+                    context.push('/chat/$targetUserId');
+                  },
+                  icon: const Icon(Icons.message),
+                  tooltip: 'Send Message',
+                ),
               if (isOwnProfile)
                 PopupMenuButton<String>(
                   onSelected: (value) async {

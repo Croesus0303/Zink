@@ -9,6 +9,8 @@ import '../../features/events/presentation/screens/event_detail_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/submissions/presentation/screens/photo_submission_screen.dart';
 import '../../features/submissions/presentation/screens/single_submission_screen.dart';
+import '../../features/messaging/presentation/screens/chat_screen.dart';
+import '../../features/messaging/presentation/screens/chats_list_screen.dart';
 import '../utils/logger.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -148,6 +150,19 @@ class AppRouter {
           submissionId: submissionId,
           fromProfile: fromProfile,
         );
+      },
+    ),
+    GoRoute(
+      path: '/chats',
+      name: 'chats',
+      builder: (context, state) => const ChatsListScreen(),
+    ),
+    GoRoute(
+      path: '/chat/:userId',
+      name: 'chat',
+      builder: (context, state) {
+        final userId = state.pathParameters['userId']!;
+        return ChatScreen(otherUserId: userId);
       },
     ),
   ];
