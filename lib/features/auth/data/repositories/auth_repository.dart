@@ -384,6 +384,76 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  // Account Deletion Methods
+  Future<void> deleteAccount() async {
+    try {
+      final user = currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
+      AppLogger.i('Starting account deletion for user: ${user.uid}');
+
+      // Delete user data from Firestore
+      await _deleteUserData(user.uid);
+
+      // Delete user's profile image from Storage
+      await _deleteUserStorage(user.uid);
+
+      // Finally, delete the Firebase Auth account
+      await user.delete();
+
+      AppLogger.i('Account deletion completed successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to delete account', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _deleteUserData(String userId) async {
+    try {
+      AppLogger.i('Deleting user data from Firestore for user: $userId');
+      
+      // Delete user document
+      await _firestore
+          .collection(UserModel.collectionPath)
+          .doc(userId)
+          .delete();
+
+      // TODO: Delete user's submissions, likes, comments, and other related data
+      // This would require querying collections where the user has data
+      // For now, we're just deleting the main user document
+
+      AppLogger.i('User data deleted from Firestore');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to delete user data from Firestore', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _deleteUserStorage(String userId) async {
+    try {
+      AppLogger.i('Deleting user storage files for user: $userId');
+      
+      // Delete profile image
+      final profileImageRef = _storage.ref().child('profile_images/$userId.jpg');
+      try {
+        await profileImageRef.delete();
+        AppLogger.i('Profile image deleted successfully');
+      } catch (e) {
+        AppLogger.w('Profile image not found or already deleted: $e');
+      }
+
+      // TODO: Delete other user-related files if they exist
+      // This could include submission images, etc.
+
+      AppLogger.i('User storage files deletion completed');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to delete user storage files', e, stackTrace);
+      // Don't rethrow here as storage deletion is not critical
+    }
+  }
 }
 
 // Providers

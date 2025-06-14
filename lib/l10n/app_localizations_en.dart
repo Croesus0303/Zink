@@ -238,4 +238,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get website => 'Website';
+
+  @override
+  String get settings => 'Settings';
 }

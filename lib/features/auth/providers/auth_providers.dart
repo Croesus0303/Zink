@@ -170,6 +170,45 @@ class AuthService {
     }
   }
 
+  Future<void> reauthenticateWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authRepository.reauthenticateWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        throw Exception(_getErrorMessage(e));
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      AppLogger.i('Starting account deletion process');
+      
+      // Delete account using repository
+      await _authRepository.deleteAccount();
+      
+      // Invalidate all providers after account deletion
+      _ref.invalidate(authStateProvider);
+      _ref.invalidate(currentUserProvider);
+      _ref.invalidate(currentUserDataProvider);
+      
+      AppLogger.i('Account deletion completed successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to delete account', e, stackTrace);
+      if (e is FirebaseAuthException) {
+        throw Exception(_getErrorMessage(e));
+      }
+      rethrow;
+    }
+  }
+
   String _getErrorMessage(FirebaseAuthException e) {
     switch (e.code) {
       case 'account-exists-with-different-credential':

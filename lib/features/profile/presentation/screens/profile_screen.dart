@@ -141,6 +141,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           builder: (context) => const StorageTestScreen(),
                         ),
                       );
+                    } else if (value == 'settings') {
+                      context.push('/settings');
                     } else if (value == 'signOut') {
                       try {
                         final authService = ref.read(authServiceProvider);
@@ -175,6 +177,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           Icon(Icons.storage),
                           SizedBox(width: 8),
                           Text('Test Storage'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.settings),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.settings),
                         ],
                       ),
                     ),

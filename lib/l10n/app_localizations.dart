@@ -505,6 +505,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Website'**
   String get website;
+
+  /// Settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 }
 
 class _AppLocalizationsDelegate

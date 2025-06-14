@@ -307,5 +307,10 @@
   "website": "Website",
   "@website": {
     "description": "Website field label"
+  },
+
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings screen title"
   }
 } 

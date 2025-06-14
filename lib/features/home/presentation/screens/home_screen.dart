@@ -9,7 +9,6 @@ import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../events/presentation/screens/event_detail_screen.dart';
 import '../../../submissions/presentation/screens/photo_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/widgets/language_selector.dart';
 import '../../../../core/utils/logger.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -28,7 +27,6 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.message),
             tooltip: 'Messages',
           ),
-          const LanguageToggleButton(),
           PopupMenuButton<String>(
             icon: const Icon(Icons.person),
             onSelected: (value) async {

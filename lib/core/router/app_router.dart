@@ -11,6 +11,7 @@ import '../../features/submissions/presentation/screens/photo_submission_screen.
 import '../../features/submissions/presentation/screens/single_submission_screen.dart';
 import '../../features/messaging/presentation/screens/chat_screen.dart';
 import '../../features/messaging/presentation/screens/chats_list_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../utils/logger.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -164,6 +165,11 @@ class AppRouter {
         final userId = state.pathParameters['userId']!;
         return ChatScreen(otherUserId: userId);
       },
+    ),
+    GoRoute(
+      path: '/settings',
+      name: 'settings',
+      builder: (context, state) => const SettingsScreen(),
     ),
   ];
 
