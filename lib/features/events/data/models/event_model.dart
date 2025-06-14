@@ -24,9 +24,21 @@ class EventModel {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       referenceImageURL: data['referenceImageURL'] ?? '',
-      startTime: (data['startTime'] as Timestamp).toDate(),
-      endTime: (data['endTime'] as Timestamp).toDate(),
+      startTime: _parseTimestamp(data['startTime']),
+      endTime: _parseTimestamp(data['endTime']),
     );
+  }
+
+  static DateTime _parseTimestamp(dynamic timestamp) {
+    if (timestamp is Timestamp) {
+      return timestamp.toDate();
+    } else if (timestamp is String) {
+      return DateTime.parse(timestamp);
+    } else if (timestamp is int) {
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    } else {
+      throw ArgumentError('Invalid timestamp format: $timestamp');
+    }
   }
 
   static String get collectionPath => 'events';

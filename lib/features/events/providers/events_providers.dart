@@ -39,7 +39,7 @@ final activeEventProvider = FutureProvider<EventModel?>((ref) async {
 // Past events provider
 final pastEventsProvider = FutureProvider<List<EventModel>>((ref) async {
   final eventsService = ref.watch(eventsServiceProvider);
-  return await eventsService.getPastEvents();
+  return await eventsService.getAllPastEvents();
 });
 
 // Submissions providers

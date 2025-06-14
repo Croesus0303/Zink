@@ -101,6 +101,25 @@ class EventsService {
     }
   }
 
+  Future<List<EventModel>> getAllPastEvents() async {
+    try {
+      final now = Timestamp.now();
+      final snapshot = await _firestore
+          .collection(EventModel.collectionPath)
+          .where('endTime', isLessThan: now)
+          .orderBy('endTime', descending: true)
+          .get();
+      
+      AppLogger.d('Fetched ${snapshot.docs.length} all past events from Firebase');
+      return snapshot.docs
+          .map((doc) => EventModel.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      AppLogger.e('Error fetching all past events from Firebase', e);
+      rethrow;
+    }
+  }
+
   Future<void> createEvent(EventModel event) async {
     try {
       await _firestore.collection(EventModel.collectionPath).add(event.toFirestore());
