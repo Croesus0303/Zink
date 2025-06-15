@@ -10,6 +10,10 @@ import '../../../submissions/presentation/screens/single_submission_screen.dart'
 import '../../../../l10n/app_localizations.dart';
 import 'edit_profile_screen.dart';
 import 'storage_test_screen.dart';
+import '../../../../shared/widgets/crystal_scaffold.dart';
+import '../../../../shared/widgets/crystal_container.dart';
+import '../../../../shared/widgets/crystal_button.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -77,20 +81,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return userDataAsync.when(
       data: (user) =>
           _buildProfile(context, ref, user, isOwnProfile, targetUserId),
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      loading: () => CrystalScaffold(
+        appBarTitle: 'Loading...',
+        body: const Center(
+          child: CircularProgressIndicator(color: AppColors.primaryCyan),
+        ),
       ),
-      error: (error, stack) => Scaffold(
-        appBar: AppBar(title: const Text('Error')),
+      error: (error, stack) => CrystalScaffold(
+        appBarTitle: 'Error',
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Error loading profile: $error'),
+              Text(
+                'Error loading profile: $error',
+                style: const TextStyle(color: AppColors.textPrimary),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 16),
-              ElevatedButton(
+              CrystalButton(
+                text: 'Retry',
                 onPressed: () => ref.refresh(userDataProvider(targetUserId)),
-                child: const Text('Retry'),
+                icon: Icons.refresh,
               ),
             ],
           ),
@@ -101,203 +113,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildProfile(BuildContext context, WidgetRef ref, UserModel? user,
       bool isOwnProfile, String targetUserId) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 120,
-            pinned: true,
-            title: Text(isOwnProfile
-                ? AppLocalizations.of(context)!.profile
-                : user?.displayName ?? 'Profile'),
-            actions: [
-              if (!isOwnProfile)
-                IconButton(
-                  onPressed: () {
-                    context.push('/chat/$targetUserId');
-                  },
-                  icon: const Icon(Icons.message),
-                  tooltip: 'Send Message',
-                ),
-              if (isOwnProfile)
-                PopupMenuButton<String>(
-                  onSelected: (value) async {
-                    if (value == 'editProfile') {
-                      if (user != null) {
-                        Navigator.of(context)
-                            .push(
-                          MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(user: user),
-                          ),
-                        )
-                            .then((_) {
-                          // Refresh profile data when returning from edit screen
-                          _refreshProfileData();
-                        });
-                      }
-                    } else if (value == 'testStorage') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const StorageTestScreen(),
-                        ),
-                      );
-                    } else if (value == 'settings') {
-                      context.push('/settings');
-                    } else if (value == 'signOut') {
-                      try {
-                        final authService = ref.read(authServiceProvider);
-                        await authService.signOut();
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Sign out failed: ${e.toString()}'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem<String>(
-                      value: 'editProfile',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.edit),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.editProfile),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'testStorage',
-                      child: Row(
-                        children: [
-                          Icon(Icons.storage),
-                          SizedBox(width: 8),
-                          Text('Test Storage'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'settings',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.settings),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.settings),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem<String>(
-                      value: 'signOut',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.logout),
-                          const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.signOut),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-          SliverToBoxAdapter(
-            child: _ProfileHeader(
-                user: user,
-                isOwnProfile: isOwnProfile,
-                onProfileEdited: _refreshProfileData),
-          ),
-          SliverToBoxAdapter(
-            child: _ProfileStats(userId: targetUserId),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _TabBarDelegate(
-              tabBar: TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(text: AppLocalizations.of(context)!.submissions),
-                  const Tab(text: 'Likes'),
-                ],
-              ),
+    return CrystalScaffold(
+      appBarTitle: isOwnProfile
+          ? AppLocalizations.of(context)!.profile
+          : user?.displayName ?? 'Profile',
+      appBarActions: [
+        if (!isOwnProfile)
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              color: AppColors.cyanWithOpacity,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryCyan, width: 1),
+            ),
+            child: IconButton(
+              onPressed: () => context.push('/chat/$targetUserId'),
+              icon: const Icon(Icons.message, color: AppColors.primaryCyan),
+              tooltip: 'Send Message',
             ),
           ),
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _SubmissionsTab(userId: widget.userId ?? user?.uid ?? ''),
-                _LikesTab(userId: widget.userId ?? user?.uid ?? ''),
-              ],
+        if (isOwnProfile)
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color: AppColors.orangeWithOpacity,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryOrange, width: 1),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileHeader extends StatelessWidget {
-  final dynamic user;
-  final bool isOwnProfile;
-  final VoidCallback? onProfileEdited;
-
-  const _ProfileHeader({
-    required this.user,
-    required this.isOwnProfile,
-    this.onProfileEdited,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          // Profile picture
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: user?.photoURL != null
-                ? CachedNetworkImageProvider(user!.photoURL!)
-                : null,
-            child: user?.photoURL == null
-                ? Text(
-                    user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                    style: const TextStyle(fontSize: 32),
-                  )
-                : null,
-          ),
-          const SizedBox(height: 16),
-          // Name
-          Text(
-            user?.displayName ?? 'Unknown User',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 8),
-          // Username or email
-          Text(
-            '@${user?.displayName?.toLowerCase().replaceAll(' ', '') ?? 'user'}',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Social links
-          if (user?.socialLinks != null && user!.socialLinks.isNotEmpty)
-            _SocialLinksSection(socialLinks: user!.socialLinks),
-          const SizedBox(height: 16),
-          // Edit profile button
-          if (isOwnProfile)
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: AppColors.primaryOrange),
+              onSelected: (value) async {
+                if (value == 'editProfile') {
                   if (user != null) {
                     Navigator.of(context)
                         .push(
@@ -306,416 +152,422 @@ class _ProfileHeader extends StatelessWidget {
                       ),
                     )
                         .then((_) {
-                      // Refresh profile data when returning from edit screen
-                      if (onProfileEdited != null) onProfileEdited!();
+                      _refreshProfileData();
                     });
                   }
-                },
-                icon: const Icon(Icons.edit),
-                label: Text(AppLocalizations.of(context)!.editProfile),
-              ),
+                } else if (value == 'testStorage') {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const StorageTestScreen(),
+                    ),
+                  );
+                } else if (value == 'settings') {
+                  context.push('/settings');
+                } else if (value == 'signOut') {
+                  try {
+                    final authService = ref.read(authServiceProvider);
+                    await authService.signOut();
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Sign out failed: ${e.toString()}'),
+                          backgroundColor: AppColors.errorColor,
+                        ),
+                      );
+                    }
+                  }
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem<String>(
+                  value: 'editProfile',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.edit, color: AppColors.primaryCyan),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.editProfile,
+                        style: const TextStyle(color: AppColors.textPrimary),
+                      ),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'testStorage',
+                  child: Row(
+                    children: [
+                      Icon(Icons.storage, color: AppColors.primaryCyan),
+                      SizedBox(width: 8),
+                      Text(
+                        'Test Storage',
+                        style: TextStyle(color: AppColors.textPrimary),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'settings',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.settings, color: AppColors.primaryCyan),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.settings,
+                        style: const TextStyle(color: AppColors.textPrimary),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'signOut',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.logout, color: AppColors.primaryOrange),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.signOut,
+                        style: const TextStyle(color: AppColors.textPrimary),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          ),
+      ],
+      body: CustomScrollView(
+        slivers: [
+          _buildProfileHeader(context, user, isOwnProfile),
+          _buildTabBar(context),
+          _buildTabContent(context, ref, targetUserId, isOwnProfile),
         ],
       ),
     );
   }
-}
 
-class _SocialLinksSection extends StatelessWidget {
-  final Map<String, String> socialLinks;
-
-  const _SocialLinksSection({required this.socialLinks});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppLocalizations.of(context)!.socialLinks,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+  Widget _buildProfileHeader(
+      BuildContext context, UserModel? user, bool isOwnProfile) {
+    return SliverToBoxAdapter(
+      child: CrystalContainer(
+        margin: const EdgeInsets.all(16),
+        useCyanAccent: true,
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: AppColors.primaryCyan,
+              backgroundImage: user?.photoURL != null
+                  ? CachedNetworkImageProvider(user!.photoURL!)
+                  : null,
+              child: user?.photoURL == null
+                  ? const Icon(Icons.person, size: 50, color: Colors.white)
+                  : null,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              user?.displayName ?? 'Unknown User',
+              style: const TextStyle(
+                color: AppColors.primaryCyan,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: socialLinks.entries.map((entry) {
-            return Chip(
-              avatar: _getSocialIcon(entry.key),
-              label: Text(entry.value),
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _getSocialIcon(String platform) {
-    switch (platform.toLowerCase()) {
-      case 'instagram':
-        return const Icon(Icons.camera_alt, size: 18);
-      case 'twitter':
-        return const Icon(Icons.alternate_email, size: 18);
-      case 'facebook':
-        return const Icon(Icons.facebook, size: 18);
-      default:
-        return const Icon(Icons.link, size: 18);
-    }
-  }
-}
-
-class _ProfileStats extends ConsumerWidget {
-  final String userId;
-
-  const _ProfileStats({required this.userId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final submissionCountAsync = ref.watch(userSubmissionCountProvider(userId));
-    final likeCountAsync =
-        ref.watch(userLikeCountFromUserCollectionProvider(userId));
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              submissionCountAsync.when(
-                data: (count) => _StatItem(
-                  label: AppLocalizations.of(context)!
-                      .totalSubmissions(count)
-                      .split(' ')[0],
-                  value: count.toString(),
+            ),
+            if (user?.username != null && user!.username!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                '@${user!.username!}',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16,
                 ),
-                loading: () => _StatItem(
-                  label: AppLocalizations.of(context)!
-                      .totalSubmissions(0)
-                      .split(' ')[0],
-                  value: '-',
-                ),
-                error: (_, __) => _StatItem(
-                  label: AppLocalizations.of(context)!
-                      .totalSubmissions(0)
-                      .split(' ')[0],
-                  value: '0',
-                ),
-              ),
-              likeCountAsync.when(
-                data: (count) => _StatItem(
-                  label: 'Likes',
-                  value: count.toString(),
-                ),
-                loading: () => const _StatItem(
-                  label: 'Likes',
-                  value: '-',
-                ),
-                error: (_, __) => const _StatItem(
-                  label: 'Likes',
-                  value: '0',
-                ),
+                textAlign: TextAlign.center,
               ),
             ],
-          ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildStatItem('Posts', '0'),
+                _buildStatItem('Likes', '0'),
+                _buildStatItem('Rank', '#-'),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _StatItem({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStatItem(String label, String value) {
     return Column(
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: const TextStyle(
+            color: AppColors.primaryOrange,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14,
           ),
         ),
       ],
     );
   }
-}
 
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-
-  _TabBarDelegate({required this.tabBar});
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: tabBar,
+  Widget _buildTabBar(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: AppColors.cardDark.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: TabBar(
+          controller: _tabController,
+          indicator: BoxDecoration(
+            color: AppColors.primaryCyan,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          labelColor: Colors.white,
+          unselectedLabelColor: AppColors.textSecondary,
+          tabs: const [
+            Tab(text: 'Posts'),
+            Tab(text: 'Liked'),
+          ],
+        ),
+      ),
     );
   }
 
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) {
-    return false;
+  Widget _buildTabContent(BuildContext context, WidgetRef ref,
+      String targetUserId, bool isOwnProfile) {
+    return SliverFillRemaining(
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildUserSubmissions(context, ref, targetUserId),
+          _buildLikedSubmissions(context, ref, targetUserId),
+        ],
+      ),
+    );
   }
-}
 
-class _SubmissionsTab extends ConsumerWidget {
-  final String userId;
-
-  const _SubmissionsTab({required this.userId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (userId.isEmpty) {
-      return const Center(
-        child: Text('No user selected'),
-      );
-    }
-
+  Widget _buildUserSubmissions(
+      BuildContext context, WidgetRef ref, String targetUserId) {
     final submissionsAsync =
-        ref.watch(userSubmissionsFromUserCollectionProvider(userId));
+        ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
 
     return submissionsAsync.when(
-      data: (submissions) => submissions.isEmpty
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.photo_library_outlined,
-                      size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No submissions yet'),
-                ],
-              ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1,
-              ),
-              itemCount: submissions.length,
-              itemBuilder: (context, index) {
-                final submission = submissions[index];
-                return _SubmissionGridItem(submission: submission);
-              },
-            ),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      data: (submissions) => _buildSubmissionGrid(submissions),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.primaryCyan),
+      ),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Error loading submissions: $error'),
+            Text(
+              'Error loading submissions',
+              style: const TextStyle(color: AppColors.textPrimary),
+            ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => ref
-                  .refresh(userSubmissionsFromUserCollectionProvider(userId)),
-              child: const Text('Retry'),
+            CrystalButton(
+              text: 'Retry',
+              onPressed: () => ref.refresh(
+                  userSubmissionsFromUserCollectionProvider(targetUserId)),
+              icon: Icons.refresh,
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class _LikesTab extends ConsumerWidget {
-  final String userId;
+  Widget _buildLikedSubmissions(
+      BuildContext context, WidgetRef ref, String targetUserId) {
+    final likedSubmissionsAsync =
+        ref.watch(userLikedSubmissionsProvider(targetUserId));
 
-  const _LikesTab({required this.userId});
+    return likedSubmissionsAsync.when(
+      data: (submissions) => _buildLikedSubmissionGrid(submissions),
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.primaryCyan),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Error loading liked submissions',
+              style: const TextStyle(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            CrystalButton(
+              text: 'Retry',
+              onPressed: () =>
+                  ref.refresh(userLikedSubmissionsProvider(targetUserId)),
+              icon: Icons.refresh,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (userId.isEmpty) {
+  Widget _buildSubmissionGrid(List<SubmissionModel> submissions) {
+    if (submissions.isEmpty) {
       return const Center(
-        child: Text('No user selected'),
+        child: Text(
+          'No submissions yet',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+        ),
       );
     }
 
-    final likedSubmissionsAsync =
-        ref.watch(userLikedSubmissionsProvider(userId));
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemCount: submissions.length,
+      itemBuilder: (context, index) {
+        final submission = submissions[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SingleSubmissionScreen(
+                  eventId: submission.eventId,
+                  submissionId: submission.id,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryCyan.withOpacity(0.3)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: submission.imageURL,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: AppColors.cardDark.withOpacity(0.3),
+                  child: const Icon(
+                    Icons.image,
+                    color: AppColors.primaryCyan,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: AppColors.cardDark.withOpacity(0.3),
+                  child: const Icon(
+                    Icons.error,
+                    color: AppColors.primaryOrange,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-    return likedSubmissionsAsync.when(
-      data: (likedSubmissions) => likedSubmissions.isEmpty
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildLikedSubmissionGrid(List<Map<String, dynamic>> submissions) {
+    if (submissions.isEmpty) {
+      return const Center(
+        child: Text(
+          'No liked submissions yet',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemCount: submissions.length,
+      itemBuilder: (context, index) {
+        final submissionData = submissions[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SingleSubmissionScreen(
+                  eventId: submissionData['eventId'] ?? '',
+                  submissionId: submissionData['submissionId'] ?? '',
+                  fromProfile: true,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryOrange.withOpacity(0.3)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
                 children: [
-                  Icon(Icons.favorite_border, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No liked posts yet'),
+                  CachedNetworkImage(
+                    imageUrl: submissionData['imageURL'] ?? '',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    placeholder: (context, url) => Container(
+                      color: AppColors.cardDark.withOpacity(0.3),
+                      child: const Icon(
+                        Icons.image,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: AppColors.cardDark.withOpacity(0.3),
+                      child: const Icon(
+                        Icons.error,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ),
+                  ),
+                  // Like indicator in the top right corner
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.favorite,
+                        color: AppColors.primaryOrange,
+                        size: 16,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1,
-              ),
-              itemCount: likedSubmissions.length,
-              itemBuilder: (context, index) {
-                final likedSubmission = likedSubmissions[index];
-                return _LikedSubmissionGridItem(
-                  submissionData: likedSubmission,
-                );
-              },
-            ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Error loading likes: $error'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () =>
-                  ref.refresh(userLikedSubmissionsProvider(userId)),
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SubmissionGridItem extends StatelessWidget {
-  final SubmissionModel submission;
-
-  const _SubmissionGridItem({required this.submission});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to single submission view for user's own posts
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SingleSubmissionScreen(
-              eventId: submission.eventId,
-              submissionId: submission.id,
-              fromProfile: true,
             ),
           ),
         );
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: submission.imageURL,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            color: Colors.grey[300],
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.grey[300],
-            child: const Icon(Icons.error),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LikedSubmissionGridItem extends StatelessWidget {
-  final Map<String, dynamic> submissionData;
-
-  const _LikedSubmissionGridItem({required this.submissionData});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to single submission view for liked posts
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SingleSubmissionScreen(
-              eventId: submissionData['eventId'],
-              submissionId: submissionData['submissionId'],
-              fromProfile: true,
-            ),
-          ),
-        );
-      },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Stack(
-          children: [
-            CachedNetworkImage(
-              imageUrl: submissionData['imageURL'],
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              placeholder: (context, url) => Container(
-                color: Colors.grey[300],
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.error),
-              ),
-            ),
-            // Like indicator in the top right corner
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(179),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                  size: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

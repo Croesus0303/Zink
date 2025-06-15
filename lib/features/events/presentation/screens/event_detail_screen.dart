@@ -13,6 +13,10 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
+import '../../../../shared/widgets/crystal_scaffold.dart';
+import '../../../../shared/widgets/crystal_container.dart';
+import '../../../../shared/widgets/crystal_button.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -73,30 +77,41 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           );
           return _buildEventDetail(event);
         } catch (e) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Event Not Found')),
+          return CrystalScaffold(
+            appBarTitle: 'Event Not Found',
             body: const Center(
-              child: Text('Event not found'),
+              child: Text(
+                'Event not found',
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
             ),
           );
         }
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      loading: () => CrystalScaffold(
+        appBarTitle: 'Loading...',
+        body: const Center(
+          child: CircularProgressIndicator(color: AppColors.primaryCyan),
+        ),
       ),
       error: (error, stack) {
         AppLogger.e('Error loading event details', error, stack);
-        return Scaffold(
-          appBar: AppBar(title: const Text('Error')),
+        return CrystalScaffold(
+          appBarTitle: 'Error',
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Error loading event: $error'),
+                Text(
+                  'Error loading event: $error',
+                  style: const TextStyle(color: AppColors.textPrimary),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                CrystalButton(
+                  text: 'Retry',
                   onPressed: () => ref.refresh(eventsProvider),
-                  child: const Text('Retry'),
+                  icon: Icons.refresh,
                 ),
               ],
             ),
@@ -107,10 +122,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   Widget _buildEventDetail(EventModel event) {
-    return Scaffold(
+    return CrystalScaffold(
+      appBarTitle: event.title,
       body: CustomScrollView(
         slivers: [
-          _EventDetailAppBar(event: event),
+          _EventHeaderSection(event: event),
           SliverToBoxAdapter(
             child: _EventInfoSection(event: event),
           ),
@@ -124,64 +140,76 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 }
 
-class _EventDetailAppBar extends StatelessWidget {
+class _EventHeaderSection extends StatelessWidget {
   final EventModel event;
 
-  const _EventDetailAppBar({required this.event});
+  const _EventHeaderSection({required this.event});
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: 250,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
+    return SliverToBoxAdapter(
+      child: CrystalContainer(
+        margin: const EdgeInsets.all(16),
+        useCyanAccent: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CachedNetworkImage(
-              imageUrl: event.referenceImageURL,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: Colors.grey[300],
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.error),
-              ),
-            ),
-            // Gradient overlay
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black54],
+            // Event image with crystal styling
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Stack(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: event.referenceImageURL,
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: AppColors.cardDark.withOpacity(0.3),
+                        child: const Center(
+                          child: CircularProgressIndicator(color: AppColors.primaryCyan),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: AppColors.cardDark.withOpacity(0.3),
+                        child: const Icon(Icons.error, color: AppColors.primaryOrange),
+                      ),
+                    ),
+                    // Crystal gradient overlay
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            AppColors.backgroundDark.withOpacity(0.7),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Submit button overlay
+                    if (event.isActive)
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: CrystalButton(
+                          text: 'Submit Photo',
+                          onPressed: () => context.push('/submit/${event.id}'),
+                          icon: Icons.camera_alt,
+                          isOrange: true,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
           ],
         ),
       ),
-      actions: [
-        if (event.isActive)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ElevatedButton.icon(
-              onPressed: () {
-                context.push('/submit/${event.id}');
-              },
-              icon: const Icon(Icons.camera_alt, size: 18),
-              label: const Text('Submit'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
@@ -193,8 +221,9 @@ class _EventInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return CrystalContainer(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      useOrangeAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -207,8 +236,15 @@ class _EventInfoSection extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: event.isActive ? Colors.green : Colors.grey,
+                  color: event.isActive ? AppColors.primaryCyan : AppColors.textSecondary,
                   borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: (event.isActive ? AppColors.primaryCyan : AppColors.textSecondary).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Text(
                   event.isActive ? 'Active' : 'Ended',
@@ -227,23 +263,23 @@ class _EventInfoSection extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: AppColors.orangeWithOpacity,
                     borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.primaryOrange, width: 1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.access_time,
                         size: 16,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        color: AppColors.primaryOrange,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         _formatTimeRemaining(event.endTime),
-                        style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        style: const TextStyle(
+                          color: AppColors.primaryOrange,
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                         ),
@@ -257,30 +293,31 @@ class _EventInfoSection extends StatelessWidget {
           // Title
           Text(
             event.title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: const TextStyle(
+              color: AppColors.primaryOrange,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           // Description
           Text(
             event.description,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 16),
           // Submit button (if active)
           if (event.isActive)
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  context.push('/submit/${event.id}');
-                },
-                icon: const Icon(Icons.camera_alt),
-                label: Text(AppLocalizations.of(context)!.submitPhoto),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
+              child: CrystalButton(
+                text: AppLocalizations.of(context)!.submitPhoto,
+                onPressed: () => context.push('/submit/${event.id}'),
+                icon: Icons.camera_alt,
+                isOrange: true,
               ),
             ),
         ],
@@ -308,16 +345,19 @@ class _FilterSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentFilter = ref.watch(submissionFilterProvider);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    return CrystalContainer(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      useCyanAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             AppLocalizations.of(context)!.submissions,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: const TextStyle(
+              color: AppColors.primaryCyan,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 12),
           SingleChildScrollView(
@@ -372,12 +412,36 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (_) => onSelected(),
-      selectedColor: Theme.of(context).colorScheme.primaryContainer,
-      checkmarkColor: Theme.of(context).colorScheme.onPrimaryContainer,
+    return GestureDetector(
+      onTap: onSelected,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primaryCyan : AppColors.cyanWithOpacity,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.primaryCyan,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.primaryCyan,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            fontSize: 14,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -397,22 +461,28 @@ class _SubmissionsList extends ConsumerWidget {
         child: Padding(
           padding: EdgeInsets.all(32.0),
           child: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: AppColors.primaryCyan),
           ),
         ),
       ),
       error: (error, stack) {
         AppLogger.e('Error loading submissions', error, stack);
         return SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
+          child: CrystalContainer(
+            margin: const EdgeInsets.all(16),
+            useCyanAccent: true,
             child: Column(
               children: [
-                Text('Error loading submissions: $error'),
+                Text(
+                  'Error loading submissions: $error',
+                  style: const TextStyle(color: AppColors.textPrimary),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                CrystalButton(
+                  text: 'Retry',
                   onPressed: () => ref.refresh(submissionsProvider(eventId)),
-                  child: const Text('Retry'),
+                  icon: Icons.refresh,
                 ),
               ],
             ),
@@ -426,26 +496,32 @@ class _SubmissionsList extends ConsumerWidget {
       BuildContext context, List<SubmissionModel> submissions) {
     if (submissions.isEmpty) {
       return SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
+        child: CrystalContainer(
+          margin: const EdgeInsets.all(16),
+          useCyanAccent: true,
           child: Column(
             children: [
               Icon(
                 Icons.photo_library_outlined,
                 size: 64,
-                color: Colors.grey[400],
+                color: AppColors.primaryCyan,
               ),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 'No submissions yet',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                style: TextStyle(
+                  color: AppColors.primaryCyan,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'Be the first to submit a photo!',
-                style: TextStyle(color: Colors.grey[600]),
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16,
+                ),
               ),
             ],
           ),
@@ -504,46 +580,54 @@ class _SubmissionCard extends ConsumerWidget {
 
   Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
       dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // User info header
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  ClickableUserAvatar(
-                    user: user,
-                    userId: submission.uid,
-                    radius: 16,
+    return CrystalContainer(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      useOrangeAccent: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // User info header
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                ClickableUserAvatar(
+                  user: user,
+                  userId: submission.uid,
+                  radius: 16,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClickableUserName(
+                        user: user,
+                        userId: submission.uid,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                      Text(
+                        _formatSubmissionTime(submission.createdAt),
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClickableUserName(
-                          user: user,
-                          userId: submission.uid,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          _formatSubmissionTime(submission.createdAt),
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+                ),
+                // Show delete option if current user owns the submission
+                if (currentUser != null && currentUser.uid == submission.uid)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.orangeWithOpacity,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.primaryOrange, width: 1),
                     ),
-                  ),
-                  // Show delete option if current user owns the submission
-                  if (currentUser != null && currentUser.uid == submission.uid)
-                    PopupMenuButton<String>(
+                    child: PopupMenuButton<String>(
                       onSelected: (value) async {
                         if (value == 'delete') {
                           await _showDeleteConfirmationDialog(
@@ -563,13 +647,16 @@ class _SubmissionCard extends ConsumerWidget {
                           ),
                         ),
                       ],
-                      child: const Icon(Icons.more_vert),
+                      child: const Icon(Icons.more_vert, color: AppColors.primaryOrange),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-            // Submission image
-            AspectRatio(
+          ),
+          // Submission image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
               aspectRatio: 1,
               child: GestureDetector(
                 onTap: () => _showFullScreenImage(context, submission.imageURL),
@@ -577,75 +664,82 @@ class _SubmissionCard extends ConsumerWidget {
                   imageUrl: submission.imageURL,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: Colors.grey[300],
+                    color: AppColors.cardDark.withOpacity(0.3),
                     child: const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: AppColors.primaryOrange),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.error),
+                    color: AppColors.cardDark.withOpacity(0.3),
+                    child: const Icon(Icons.error, color: AppColors.primaryOrange),
                   ),
                 ),
               ),
             ),
-            // Actions
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  LikeButton(
-                    eventId: submission.eventId,
-                    submissionId: submission.id,
-                    initialLikeCount: currentLikeCount,
-                    initialIsLiked: isLikedByCurrentUser,
-                  ),
-                  const SizedBox(width: 16),
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        useSafeArea: true,
-                        enableDrag: true,
-                        builder: (context) => Padding(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child: CommentSheet(
-                            eventId: submission.eventId,
-                            submissionId: submission.id,
+          ),
+          // Actions
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                LikeButton(
+                  eventId: submission.eventId,
+                  submissionId: submission.id,
+                  initialLikeCount: currentLikeCount,
+                  initialIsLiked: isLikedByCurrentUser,
+                ),
+                const SizedBox(width: 16),
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      useSafeArea: true,
+                      enableDrag: true,
+                      builder: (context) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: CommentSheet(
+                          eventId: submission.eventId,
+                          submissionId: submission.id,
+                        ),
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.orangeWithOpacity,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.primaryOrange, width: 1),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.comment_outlined,
+                          size: 20,
+                          color: AppColors.primaryOrange,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'Comments',
+                          style: TextStyle(
+                            color: AppColors.primaryOrange,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.comment_outlined,
-                            size: 20,
-                            color: Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Comments',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -668,13 +762,22 @@ class _SubmissionCard extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Post'),
+        backgroundColor: AppColors.cardDark,
+        title: const Text(
+          'Delete Post',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: const Text(
-            'Are you sure you want to delete this post? This action cannot be undone.'),
+          'Are you sure you want to delete this post? This action cannot be undone.',
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.primaryCyan),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -729,14 +832,22 @@ class _FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.primaryCyan,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close),
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.cyanWithOpacity,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryCyan, width: 1),
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close, color: AppColors.primaryCyan),
+          ),
         ),
       ),
       body: Center(
@@ -749,10 +860,10 @@ class _FullScreenImageViewer extends StatelessWidget {
             imageUrl: imageUrl,
             fit: BoxFit.contain,
             placeholder: (context, url) => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+              child: CircularProgressIndicator(color: AppColors.primaryCyan),
             ),
             errorWidget: (context, url, error) => const Center(
-              child: Icon(Icons.error, color: Colors.white, size: 64),
+              child: Icon(Icons.error, color: AppColors.primaryOrange, size: 64),
             ),
           ),
         ),

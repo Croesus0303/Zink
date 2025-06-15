@@ -4,6 +4,11 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/language_selector.dart';
 import '../../providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/crystal_scaffold.dart';
+import '../../../../shared/widgets/crystal_container.dart';
+import '../../../../shared/widgets/crystal_button.dart';
+import '../../../../shared/widgets/crystal_text_field.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -195,8 +200,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   @override
   Widget build(BuildContext context) {
     AppLogger.i('LoginScreen build called');
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
+    return CrystalScaffold(
+      showBackButton: false,
       body: SafeArea(
         child: Stack(
           children: [
@@ -217,30 +222,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.camera_alt_rounded,
-                          size: 80,
-                          color: Theme.of(context).colorScheme.primary,
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [AppColors.primaryCyan, AppColors.primaryCyanDark],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryCyan.withOpacity(0.3),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 60,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: 24),
                         Text(
                           AppLocalizations.of(context)!.appName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryCyan,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           AppLocalizations.of(context)!.appTagline,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -248,30 +270,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   ),
 
                   // Auth Forms
-                  Column(
-                    children: [
-                      // Tab Bar
-                      TabBar(
-                        controller: _tabController,
-                        tabs: const [
-                          Tab(text: 'Sign In'),
-                          Tab(text: 'Sign Up'),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Tab Bar View
-                      SizedBox(
-                        height: 400, // Fixed height for TabBarView
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            _buildSignInTab(),
-                            _buildSignUpTab(),
-                          ],
+                  CrystalContainer(
+                    useCyanAccent: true,
+                    child: Column(
+                      children: [
+                        // Tab Bar
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.cardDark.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TabBar(
+                            controller: _tabController,
+                            indicator: BoxDecoration(
+                              color: AppColors.primaryCyan,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            labelColor: Colors.white,
+                            unselectedLabelColor: AppColors.textSecondary,
+                            tabs: const [
+                              Tab(text: 'Sign In'),
+                              Tab(text: 'Sign Up'),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 24),
+
+                        // Tab Bar View
+                        SizedBox(
+                          height: 400,
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              _buildSignInTab(),
+                              _buildSignUpTab(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -290,15 +327,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Email field
-            TextFormField(
+            CrystalTextField(
               controller: _emailController,
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              prefixIcon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your email',
-                prefixIcon: Icon(Icons.email_outlined),
-                border: OutlineInputBorder(),
-              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter your email';
@@ -313,15 +347,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             const SizedBox(height: 16),
 
             // Password field
-            TextFormField(
+            CrystalTextField(
               controller: _passwordController,
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              prefixIcon: Icons.lock_outlined,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                prefixIcon: Icon(Icons.lock_outlined),
-                border: OutlineInputBorder(),
-              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
@@ -336,43 +367,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: _sendPasswordReset,
-                child: const Text('Forgot Password?'),
+                child: const Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: AppColors.primaryCyan),
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
             // Sign in button
-            _SignInButton(
-              onPressed: _isLoading ? null : _signInWithEmailPassword,
-              icon: Icons.login,
-              label: 'Sign In',
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-              isLoading: _isLoading,
+            CrystalButton(
+              text: _isLoading ? 'Signing in...' : 'Sign In',
+              onPressed: _isLoading ? () {} : _signInWithEmailPassword,
+              icon: _isLoading ? null : Icons.login,
             ),
             const SizedBox(height: 16),
 
             // Divider
-            const Row(
+            Row(
               children: [
-                Expanded(child: Divider()),
+                Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR'),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('OR', style: TextStyle(color: AppColors.textSecondary)),
                 ),
-                Expanded(child: Divider()),
+                Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
               ],
             ),
             const SizedBox(height: 16),
 
             // Google sign in button
-            _SignInButton(
-              onPressed: _isLoading ? null : _signInWithGoogle,
+            CrystalButton(
+              text: AppLocalizations.of(context)!.continueWithGoogle,
+              onPressed: _isLoading ? () {} : _signInWithGoogle,
               icon: Icons.g_mobiledata,
-              label: AppLocalizations.of(context)!.continueWithGoogle,
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black87,
-              isLoading: _isLoading,
+              isOutlined: true,
             ),
           ],
         ),
@@ -388,15 +417,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Email field
-            TextFormField(
+            CrystalTextField(
               controller: _emailController,
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              prefixIcon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your email',
-                prefixIcon: Icon(Icons.email_outlined),
-                border: OutlineInputBorder(),
-              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter your email';
@@ -411,15 +437,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             const SizedBox(height: 16),
 
             // Password field
-            TextFormField(
+            CrystalTextField(
               controller: _passwordController,
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              prefixIcon: Icons.lock_outlined,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                prefixIcon: Icon(Icons.lock_outlined),
-                border: OutlineInputBorder(),
-              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
@@ -433,15 +456,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             const SizedBox(height: 16),
 
             // Confirm password field
-            TextFormField(
+            CrystalTextField(
               controller: _confirmPasswordController,
+              labelText: 'Confirm Password',
+              hintText: 'Re-enter your password',
+              prefixIcon: Icons.lock_outlined,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Confirm Password',
-                hintText: 'Re-enter your password',
-                prefixIcon: Icon(Icons.lock_outlined),
-                border: OutlineInputBorder(),
-              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please confirm your password';
@@ -455,99 +475,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             const SizedBox(height: 24),
 
             // Sign up button
-            _SignInButton(
-              onPressed: _isLoading ? null : _signUpWithEmailPassword,
-              icon: Icons.person_add,
-              label: 'Sign Up',
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-              isLoading: _isLoading,
+            CrystalButton(
+              text: _isLoading ? 'Signing up...' : 'Sign Up',
+              onPressed: _isLoading ? () {} : _signUpWithEmailPassword,
+              icon: _isLoading ? null : Icons.person_add,
             ),
             const SizedBox(height: 16),
 
             // Divider
-            const Row(
+            Row(
               children: [
-                Expanded(child: Divider()),
+                Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR'),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text('OR', style: TextStyle(color: AppColors.textSecondary)),
                 ),
-                Expanded(child: Divider()),
+                Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
               ],
             ),
             const SizedBox(height: 16),
 
             // Google sign in button
-            _SignInButton(
-              onPressed: _isLoading ? null : _signInWithGoogle,
+            CrystalButton(
+              text: AppLocalizations.of(context)!.continueWithGoogle,
+              onPressed: _isLoading ? () {} : _signInWithGoogle,
               icon: Icons.g_mobiledata,
-              label: AppLocalizations.of(context)!.continueWithGoogle,
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black87,
-              isLoading: _isLoading,
+              isOutlined: true,
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _SignInButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final IconData icon;
-  final String label;
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final bool isLoading;
-
-  const _SignInButton({
-    required this.onPressed,
-    required this.icon,
-    required this.label,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    this.isLoading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        foregroundColor: foregroundColor,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey[300]!),
-        ),
-        elevation: 0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (isLoading)
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
-              ),
-            )
-          else
-            Icon(icon, size: 24),
-          const SizedBox(width: 12),
-          Text(
-            isLoading ? 'Signing in...' : label,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }

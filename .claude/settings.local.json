@@ -15,7 +15,8 @@
       "Bash(flutter pub:*)",
       "Bash(npm i:*)",
       "Bash(sudo npm i -g @anthropic-ai/claude-code)",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --version)"
     ],
     "deny": []
   }
