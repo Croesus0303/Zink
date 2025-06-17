@@ -16,7 +16,13 @@
       "Bash(npm i:*)",
       "Bash(sudo npm i -g @anthropic-ai/claude-code)",
       "Bash(npx:*)",
-      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --version)"
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --version)",
+      "Bash(flutter:*)",
+      "Bash(pod repo update:*)",
+      "Bash(gem pristine:*)",
+      "Bash(sudo gem pristine:*)",
+      "Bash(brew install:*)",
+      "Bash(pod:*)"
     ],
     "deny": []
   }
