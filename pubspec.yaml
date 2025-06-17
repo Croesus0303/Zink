@@ -46,6 +46,7 @@ dependencies:
   firebase_database: ^11.2.5
   # Authentication
   google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.2
   # UI Components
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.15

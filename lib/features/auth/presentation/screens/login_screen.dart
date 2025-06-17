@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -83,6 +84,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     try {
       final authService = ref.read(authServiceProvider);
       final result = await authService.signInWithGoogle();
+
+      if (mounted) {
+        if (result.isSuccess) {
+          // Navigation will be handled automatically by the router
+        } else if (result.isCancelled) {
+          // User cancelled, no action needed
+        } else if (result.errorMessage != null) {
+          _showErrorSnackBar(result.errorMessage!);
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _signInWithApple() async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final result = await authService.signInWithApple();
 
       if (mounted) {
         if (result.isSuccess) {
@@ -403,6 +433,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               icon: Icons.g_mobiledata,
               isOutlined: true,
             ),
+            
+            // Apple sign in button (only on iOS)
+            if (Platform.isIOS) ...[
+              const SizedBox(height: 12),
+              CrystalButton(
+                text: AppLocalizations.of(context)!.continueWithApple,
+                onPressed: _isLoading ? () {} : _signInWithApple,
+                icon: Icons.apple,
+                isOutlined: true,
+              ),
+            ],
           ],
         ),
       ),
@@ -502,6 +543,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               icon: Icons.g_mobiledata,
               isOutlined: true,
             ),
+            
+            // Apple sign in button (only on iOS)
+            if (Platform.isIOS) ...[
+              const SizedBox(height: 12),
+              CrystalButton(
+                text: AppLocalizations.of(context)!.continueWithApple,
+                onPressed: _isLoading ? () {} : _signInWithApple,
+                icon: Icons.apple,
+                isOutlined: true,
+              ),
+            ],
           ],
         ),
       ),

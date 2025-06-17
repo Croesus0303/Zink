@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -69,6 +70,68 @@ class AuthRepository {
       return userCredential;
     } catch (e, stackTrace) {
       AppLogger.e('Google Sign In failed', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<UserCredential?> signInWithApple() async {
+    // Check if Sign in with Apple is available
+    if (!Platform.isIOS) {
+      throw Exception('Sign in with Apple is only available on iOS');
+    }
+
+    if (!await SignInWithApple.isAvailable()) {
+      throw Exception('Sign in with Apple is not available on this device');
+    }
+
+    try {
+      AppLogger.i('Starting Apple Sign In');
+
+      // Request Apple ID credentials
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Create an OAuthCredential from the Apple credentials
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      // Sign in to Firebase with the Apple credentials
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(oauthCredential);
+
+      AppLogger.i(
+          'Apple Sign In successful for user: ${userCredential.user?.uid}');
+
+      // Check if this is a new user (first-time sign-up)
+      if (userCredential.user != null) {
+        final userDoc = await _firestore
+            .collection(UserModel.collectionPath)
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          AppLogger.i('New Apple user detected, will require onboarding');
+          // Update the user's display name if provided by Apple
+          if (appleCredential.givenName != null || appleCredential.familyName != null) {
+            final displayName = '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
+            if (displayName.isNotEmpty) {
+              await userCredential.user!.updateDisplayName(displayName);
+            }
+          }
+        } else {
+          AppLogger.i('Existing Apple user signed in');
+        }
+      }
+
+      return userCredential;
+    } catch (e, stackTrace) {
+      AppLogger.e('Apple Sign In failed', e, stackTrace);
       rethrow;
     }
   }

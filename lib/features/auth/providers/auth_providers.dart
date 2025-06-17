@@ -65,6 +65,23 @@ class AuthService {
     }
   }
 
+  Future<AuthResult> signInWithApple() async {
+    try {
+      final result = await _authRepository.signInWithApple();
+      if (result != null) {
+        return AuthResult.success();
+      } else {
+        return AuthResult.cancelled();
+      }
+    } on FirebaseAuthException catch (e) {
+      AppLogger.e('Firebase Auth Exception during Apple Sign In', e);
+      return AuthResult.failure(_getErrorMessage(e));
+    } catch (e) {
+      AppLogger.e('Unexpected error during Apple Sign In', e);
+      return AuthResult.failure(e.toString());
+    }
+  }
+
   Future<AuthResult> signInWithEmailAndPassword({
     required String email,
     required String password,
