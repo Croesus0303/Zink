@@ -48,11 +48,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           return currentUserDataAsync.when(
             data: (userData) {
               AppLogger.i(
-                  'User data: ${userData?.isOnboardingComplete ?? 'null'}');
+                  'Router decision - User data: ${userData?.isOnboardingComplete ?? 'null'}, Current path: ${state.matchedLocation}');
               // User needs onboarding
-              if (userData == null || !userData.isOnboardingComplete) {
+              if (userData == null || userData.isOnboardingComplete != true) {
                 final redirect = isOnboardingRoute ? null : '/onboarding';
-                AppLogger.i('Needs onboarding, redirecting to: $redirect');
+                AppLogger.i('User needs onboarding, redirecting from ${state.matchedLocation} to: $redirect');
                 return redirect;
               }
 

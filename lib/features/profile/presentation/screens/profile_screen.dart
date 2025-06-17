@@ -14,6 +14,7 @@ import '../../../../shared/widgets/crystal_scaffold.dart';
 import '../../../../shared/widgets/crystal_container.dart';
 import '../../../../shared/widgets/crystal_button.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../core/utils/logger.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -66,11 +67,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
+    final authState = ref.watch(authStateProvider);
     final isOwnProfile =
         widget.userId == null || widget.userId == currentUser?.uid;
     final targetUserId = widget.userId ?? currentUser?.uid;
 
+    // Debug logging
+    AppLogger.i('ProfileScreen: currentUser?.uid = ${currentUser?.uid}, widget.userId = ${widget.userId}, targetUserId = $targetUserId');
+    AppLogger.i('ProfileScreen: authState = ${authState.toString()}');
+
     if (targetUserId == null) {
+      AppLogger.w('ProfileScreen: targetUserId is null, showing user not found');
       return const Scaffold(
         body: Center(child: Text('User not found')),
       );
@@ -113,6 +120,60 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildProfile(BuildContext context, WidgetRef ref, UserModel? user,
       bool isOwnProfile, String targetUserId) {
+    // Handle case where user document doesn't exist (new users before onboarding)
+    if (user == null) {
+      if (isOwnProfile) {
+        return CrystalScaffold(
+          appBarTitle: 'Profile',
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.person_outline,
+                  size: 64,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Profile not set up yet',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Please complete your profile setup',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                CrystalButton(
+                  text: 'Complete Setup',
+                  onPressed: () => context.go('/onboarding'),
+                  icon: Icons.edit,
+                ),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return const CrystalScaffold(
+          appBarTitle: 'Profile',
+          body: Center(
+            child: Text(
+              'User not found',
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
+          ),
+        );
+      }
+    }
+
     return CrystalScaffold(
       appBarTitle: isOwnProfile
           ? AppLocalizations.of(context)!.profile

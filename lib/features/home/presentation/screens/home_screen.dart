@@ -42,11 +42,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ProfileScreen(),
-                ),
-              );
+              context.push('/profile');
             },
             icon: const Icon(Icons.person_outline, color: AppColors.primaryOrange),
           ),
