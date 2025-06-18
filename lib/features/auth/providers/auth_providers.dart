@@ -14,8 +14,11 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 // Current user provider
 final currentUserProvider = Provider<User?>((ref) {
-  final authRepository = ref.watch(authRepositoryProvider);
-  return authRepository.currentUser;
+  final authState = ref.watch(authStateProvider);
+  return authState.maybeWhen(
+    data: (user) => user,
+    orElse: () => null,
+  );
 });
 
 // Current user data provider (Firestore document)
