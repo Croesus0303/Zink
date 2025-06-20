@@ -116,7 +116,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           // Messages list
           Expanded(
             child: _chatId != null 
-                ? _buildMessagesList(currentUser)
+                ? otherUserAsync.when(
+                    data: (otherUser) => _buildMessagesList(currentUser, otherUser),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (_, __) => _buildMessagesList(currentUser, null),
+                  )
                 : const Center(child: CircularProgressIndicator()),
           ),
           // Message input
@@ -153,7 +157,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  Widget _buildMessagesList(dynamic currentUser) {
+  Widget _buildMessagesList(dynamic currentUser, UserModel? otherUser) {
     final messagesAsync = ref.watch(chatMessagesProvider(_chatId!));
 
     return messagesAsync.when(
@@ -210,7 +214,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               message: message,
               isMe: isMe,
               showAvatar: showAvatar && !isMe,
-              otherUser: widget.otherUser,
+              otherUser: otherUser,
             );
           },
         );

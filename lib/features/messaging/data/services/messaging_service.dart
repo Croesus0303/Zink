@@ -99,9 +99,11 @@ class MessagingService {
           for (final entry in messagesData.entries) {
             try {
               final messageData = Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
-              messages.add(MessageModel.fromMap(entry.key.toString(), messageData));
+              final message = MessageModel.fromMap(entry.key.toString(), messageData);
+              AppLogger.d('Parsed message: ${message.text} from ${message.senderId}');
+              messages.add(message);
             } catch (e) {
-              AppLogger.w('Error parsing message ${entry.key}: $e');
+              AppLogger.e('Error parsing message ${entry.key}: $e, data: ${entry.value}');
             }
           }
         }
