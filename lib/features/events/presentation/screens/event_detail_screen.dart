@@ -138,6 +138,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         color: AppColors.primaryCyan,
         onRefresh: _onRefresh,
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             _EventHeaderSection(event: event),
             SliverToBoxAdapter(
