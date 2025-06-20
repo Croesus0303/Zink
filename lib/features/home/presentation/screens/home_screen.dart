@@ -51,6 +51,7 @@ class HomeScreen extends ConsumerWidget {
       body: RefreshIndicator(
         color: AppColors.primaryCyan,
         onRefresh: () async {
+          ref.refresh(activeEventProvider);
           ref.refresh(pastEventsProvider);
           await Future.delayed(const Duration(seconds: 1));
         },
