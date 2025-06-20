@@ -36,11 +36,16 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshSocialData();
+      _refreshEventData();
     });
   }
 
-  void _refreshSocialData() {
+  void _refreshEventData() {
+    // Refresh event data
+    ref.refresh(eventsProvider);
+    ref.refresh(submissionsProvider(widget.eventId));
+    
+    // Refresh social data
     final currentUser = ref.read(currentUserProvider);
     if (currentUser != null) {
       final submissionsAsync = ref.read(submissionsProvider(widget.eventId));
@@ -62,6 +67,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         }
       });
     }
+  }
+
+  Future<void> _onRefresh() async {
+    _refreshEventData();
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
@@ -124,17 +134,21 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   Widget _buildEventDetail(EventModel event) {
     return CrystalScaffold(
       appBarTitle: event.title,
-      body: CustomScrollView(
-        slivers: [
-          _EventHeaderSection(event: event),
-          SliverToBoxAdapter(
-            child: _EventInfoSection(event: event),
-          ),
-          SliverToBoxAdapter(
-            child: _FilterSection(),
-          ),
-          _SubmissionsList(eventId: widget.eventId),
-        ],
+      body: RefreshIndicator(
+        color: AppColors.primaryCyan,
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          slivers: [
+            _EventHeaderSection(event: event),
+            SliverToBoxAdapter(
+              child: _EventInfoSection(event: event),
+            ),
+            SliverToBoxAdapter(
+              child: _FilterSection(),
+            ),
+            _SubmissionsList(eventId: widget.eventId),
+          ],
+        ),
       ),
     );
   }
