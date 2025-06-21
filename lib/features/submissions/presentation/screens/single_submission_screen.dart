@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../submissions/data/models/submission_model.dart';
 import '../../../auth/data/models/user_model.dart';
@@ -109,7 +110,7 @@ class _SingleSubmissionScreenState
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            onPressed: () => _showFullScreen(submission.imageURL),
+            onPressed: () => _showFullScreen(submission.imageURL, submission.eventId),
             icon: const Icon(Icons.fullscreen),
           ),
         ],
@@ -121,25 +122,38 @@ class _SingleSubmissionScreenState
             // Main image
             Expanded(
               child: GestureDetector(
-                onTap: () => _showFullScreen(submission.imageURL),
+                onTap: () => _showFullScreen(submission.imageURL, submission.eventId),
                 child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.all(16),
-                  child: CachedNetworkImage(
-                    imageUrl: submission.imageURL,
-                    fit: BoxFit.contain,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey[900],
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
+                  child: Stack(
+                    children: [
+                      // Main image
+                      CachedNetworkImage(
+                        imageUrl: submission.imageURL,
+                        fit: BoxFit.contain,
+                        width: double.infinity,
+                        height: double.infinity,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[900],
+                          child: const Center(
+                            child: CircularProgressIndicator(color: Colors.white),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[900],
+                          child: const Center(
+                            child: Icon(Icons.error, color: Colors.white, size: 64),
+                          ),
+                        ),
                       ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[900],
-                      child: const Center(
-                        child: Icon(Icons.error, color: Colors.white, size: 64),
+                      // Event information overlay in bottom right
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: _EventInfoOverlay(eventId: submission.eventId),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -155,12 +169,106 @@ class _SingleSubmissionScreenState
     );
   }
 
-  void _showFullScreen(String imageUrl) {
+  void _showFullScreen(String imageUrl, String eventId) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
+        builder: (context) => _FullScreenImageViewer(
+          imageUrl: imageUrl,
+          eventId: eventId,
+        ),
       ),
+    );
+  }
+}
+
+class _EventInfoOverlay extends ConsumerWidget {
+  final String eventId;
+
+  const _EventInfoOverlay({required this.eventId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventAsync = ref.watch(eventProvider(eventId));
+
+    return eventAsync.when(
+      data: (event) => event != null
+          ? GestureDetector(
+              onTap: () {
+                // Navigate to event detail screen
+                context.push('/event/${event.id}');
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.event,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 150),
+                      child: Text(
+                        event.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : const SizedBox.shrink(),
+      loading: () => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.7),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 12,
+              height: 12,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Loading...',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+      error: (error, stack) => const SizedBox.shrink(),
     );
   }
 }
@@ -408,8 +516,12 @@ class _SubmissionInfo extends ConsumerWidget {
 
 class _FullScreenImageViewer extends StatelessWidget {
   final String imageUrl;
+  final String eventId;
 
-  const _FullScreenImageViewer({required this.imageUrl});
+  const _FullScreenImageViewer({
+    required this.imageUrl,
+    required this.eventId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -424,23 +536,33 @@ class _FullScreenImageViewer extends StatelessWidget {
           icon: const Icon(Icons.close),
         ),
       ),
-      body: Center(
-        child: InteractiveViewer(
-          panEnabled: true,
-          scaleEnabled: true,
-          minScale: 0.5,
-          maxScale: 3.0,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.contain,
-            placeholder: (context, url) => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            ),
-            errorWidget: (context, url, error) => const Center(
-              child: Icon(Icons.error, color: Colors.white, size: 64),
+      body: Stack(
+        children: [
+          Center(
+            child: InteractiveViewer(
+              panEnabled: true,
+              scaleEnabled: true,
+              minScale: 0.5,
+              maxScale: 3.0,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.contain,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+                errorWidget: (context, url, error) => const Center(
+                  child: Icon(Icons.error, color: Colors.white, size: 64),
+                ),
+              ),
             ),
           ),
-        ),
+          // Event information overlay in bottom right
+          Positioned(
+            bottom: 32,
+            right: 16,
+            child: _EventInfoOverlay(eventId: eventId),
+          ),
+        ],
       ),
     );
   }

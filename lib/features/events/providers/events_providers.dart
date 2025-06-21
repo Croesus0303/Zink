@@ -42,6 +42,12 @@ final pastEventsProvider = FutureProvider<List<EventModel>>((ref) async {
   return await eventsService.getAllPastEvents();
 });
 
+final eventProvider =
+    FutureProvider.family<EventModel?, String>((ref, eventId) async {
+  final eventsService = ref.watch(eventsServiceProvider);
+  return await eventsService.getEvent(eventId);
+});
+
 // Submissions providers
 final submissionsStreamProvider =
     StreamProvider.family<List<SubmissionModel>, String>((ref, eventId) {
