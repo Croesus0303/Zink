@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../events/providers/events_providers.dart';
@@ -346,6 +347,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
             ],
             const SizedBox(height: 16),
+            _buildSocialMediaLinks(user),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -630,5 +633,340 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         );
       },
     );
+  }
+
+  Widget _buildSocialMediaLinks(UserModel? user) {
+    if (user?.socialLinks.isEmpty ?? true) {
+      return const SizedBox.shrink();
+    }
+
+    // Filter out only valid social links
+    final validSocialLinks = user!.socialLinks.entries
+        .where((entry) => _isValidURL(entry.value))
+        .toList();
+
+    // If no valid social links, don't show the section
+    if (validSocialLinks.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.cyanWithOpacity,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primaryCyan.withOpacity(0.3), width: 1),
+      ),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 8,
+        alignment: WrapAlignment.center,
+        children: validSocialLinks.map((entry) {
+          return _buildSocialMediaButton(entry.key, entry.value);
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildSocialMediaButton(String platform, String url) {
+    final socialData = _getSocialMediaData(platform);
+    
+    return GestureDetector(
+      onTap: () => _launchURL(url, platform),
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: socialData['gradient'] as List<Color>,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: (socialData['gradient'] as List<Color>)[0].withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(
+          socialData['icon'] as IconData,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+    );
+  }
+  
+  bool _isValidURL(String url) {
+    url = url.trim();
+    
+    // Check minimum length
+    if (url.length < 1) return false;
+    
+    // Check if it's a proper URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return true;
+    }
+    
+    // Check if it contains a domain-like structure
+    if (url.contains('.') && url.contains('/')) {
+      return true;
+    }
+    
+    // Check if it's a domain without path
+    if (url.contains('.') && !url.contains(' ') && url.split('.').length >= 2) {
+      return true;
+    }
+    
+    // Check if it's an email
+    if (url.contains('@') && !url.contains('/')) {
+      return true;
+    }
+    
+    // Allow social media usernames (common case)
+    // Most social media usernames are alphanumeric with underscores/dots/dashes
+    if (RegExp(r'^[a-zA-Z0-9._-]+$').hasMatch(url) && url.length >= 1) {
+      return true;
+    }
+    
+    // Allow Twitter-style handles
+    if (url.startsWith('@') && url.length > 1) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  Map<String, dynamic> _getSocialMediaData(String platform) {
+    switch (platform.toLowerCase()) {
+      case 'instagram':
+        return {
+          'icon': Icons.camera_alt,
+          'gradient': [
+            const Color(0xFF833AB4),
+            const Color(0xFFE1306C),
+            const Color(0xFFFD1D1D),
+            const Color(0xFFF77737),
+          ],
+        };
+      case 'twitter':
+      case 'x':
+        return {
+          'icon': Icons.alternate_email,
+          'gradient': [
+            const Color(0xFF1DA1F2),
+            const Color(0xFF0084B4),
+          ],
+        };
+      case 'linkedin':
+        return {
+          'icon': Icons.work,
+          'gradient': [
+            const Color(0xFF0077B5),
+            const Color(0xFF005885),
+          ],
+        };
+      case 'github':
+        return {
+          'icon': Icons.code,
+          'gradient': [
+            const Color(0xFF333333),
+            const Color(0xFF000000),
+          ],
+        };
+      case 'youtube':
+        return {
+          'icon': Icons.play_arrow,
+          'gradient': [
+            const Color(0xFFFF0000),
+            const Color(0xFFCC0000),
+          ],
+        };
+      case 'facebook':
+        return {
+          'icon': Icons.facebook,
+          'gradient': [
+            const Color(0xFF4267B2),
+            const Color(0xFF365899),
+          ],
+        };
+      case 'tiktok':
+        return {
+          'icon': Icons.music_note,
+          'gradient': [
+            const Color(0xFF000000),
+            const Color(0xFF333333),
+          ],
+        };
+      case 'snapchat':
+        return {
+          'icon': Icons.camera,
+          'gradient': [
+            const Color(0xFFFFFC00),
+            const Color(0xFFCCCA00),
+          ],
+        };
+      case 'discord':
+        return {
+          'icon': Icons.chat,
+          'gradient': [
+            const Color(0xFF7289DA),
+            const Color(0xFF5B6DAE),
+          ],
+        };
+      case 'website':
+      case 'portfolio':
+        return {
+          'icon': Icons.language,
+          'gradient': [
+            AppColors.primaryCyan,
+            AppColors.primaryCyanDark,
+          ],
+        };
+      default:
+        return {
+          'icon': Icons.link,
+          'gradient': [
+            AppColors.primaryOrange,
+            AppColors.primaryOrange.withOpacity(0.8),
+          ],
+        };
+    }
+  }
+
+  Future<void> _launchURL(String url, String platform) async {
+    try {
+      // Validate and format the URL
+      String formattedUrl = _formatURL(url, platform);
+      AppLogger.i('Attempting to launch URL: $formattedUrl');
+      
+      final uri = Uri.parse(formattedUrl);
+      
+      // Validate the URI
+      if (!uri.hasScheme || (uri.scheme != 'http' && uri.scheme != 'https' && uri.scheme != 'mailto')) {
+        throw FormatException('Invalid URL scheme: ${uri.scheme}');
+      }
+      
+      bool launched = false;
+      
+      // Try external application mode first (preferred for social media)
+      try {
+        await launchUrl(
+          uri, 
+          mode: LaunchMode.externalApplication,
+          webViewConfiguration: const WebViewConfiguration(
+            enableJavaScript: true,
+            enableDomStorage: true,
+          ),
+        );
+        launched = true;
+        AppLogger.i('Successfully launched URL in external app: $formattedUrl');
+      } catch (e) {
+        AppLogger.w('External application launch failed: $e');
+        
+        // Fallback to platform default
+        try {
+          await launchUrl(uri, mode: LaunchMode.platformDefault);
+          launched = true;
+          AppLogger.i('Successfully launched URL with platform default: $formattedUrl');
+        } catch (e2) {
+          AppLogger.w('Platform default launch failed: $e2');
+          
+          // Last resort: in-app web view
+          try {
+            await launchUrl(
+              uri, 
+              mode: LaunchMode.inAppWebView,
+              webViewConfiguration: const WebViewConfiguration(
+                enableJavaScript: true,
+                enableDomStorage: true,
+              ),
+            );
+            launched = true;
+            AppLogger.i('Successfully launched URL in web view: $formattedUrl');
+          } catch (e3) {
+            AppLogger.e('All launch modes failed: $e3');
+          }
+        }
+      }
+      
+      if (!launched) {
+        throw Exception('Failed to launch URL with all available methods');
+      }
+      
+    } catch (e) {
+      AppLogger.e('Error launching URL: $url', e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Opening link in browser...'),
+            backgroundColor: AppColors.primaryCyan,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
+  String _formatURL(String url, String platform) {
+    // Remove whitespace
+    url = url.trim();
+    
+    // If the URL is too short or obviously invalid, don't try to launch it
+    if (url.length < 1) {
+      throw FormatException('URL too short: $url');
+    }
+    
+    // If it already has a scheme, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // Special handling for email
+    if (url.contains('@') && !url.contains('/')) {
+      return 'mailto:$url';
+    }
+    
+    // Platform-specific URL generation for usernames
+    switch (platform.toLowerCase()) {
+      case 'instagram':
+        return 'https://instagram.com/${_cleanUsername(url)}';
+      case 'twitter':
+      case 'x':
+        return 'https://twitter.com/${_cleanUsername(url)}';
+      case 'facebook':
+        return 'https://facebook.com/${_cleanUsername(url)}';
+      case 'linkedin':
+        return 'https://linkedin.com/in/${_cleanUsername(url)}';
+      case 'github':
+        return 'https://github.com/${_cleanUsername(url)}';
+      case 'youtube':
+        return 'https://youtube.com/@${_cleanUsername(url)}';
+      case 'tiktok':
+        return 'https://tiktok.com/@${_cleanUsername(url)}';
+      case 'snapchat':
+        return 'https://snapchat.com/add/${_cleanUsername(url)}';
+      case 'discord':
+        // Discord doesn't have direct profile URLs, return as-is
+        return 'https://$url';
+      case 'website':
+      case 'portfolio':
+        // For websites, add https if no scheme
+        return 'https://$url';
+      default:
+        // For unknown platforms, add https
+        return 'https://$url';
+    }
+  }
+  
+  String _cleanUsername(String username) {
+    // Remove @ symbol if present (common for Twitter handles)
+    if (username.startsWith('@')) {
+      username = username.substring(1);
+    }
+    return username;
   }
 }
