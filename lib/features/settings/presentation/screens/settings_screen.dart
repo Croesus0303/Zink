@@ -71,13 +71,8 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.notifications),
             title: const Text('Notifications'),
             subtitle: const Text('Manage notification preferences'),
-            trailing: Switch(
-              value: true, // TODO: Implement notification settings
-              onChanged: (value) {
-                // TODO: Handle notification toggle
-                AppLogger.i('Notification toggle: $value');
-              },
-            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showNotificationSettings(context),
           ),
         ],
       ),
@@ -102,10 +97,7 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Theme'),
             subtitle: const Text('System default'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // TODO: Implement theme selection
-              AppLogger.i('Theme selection tapped');
-            },
+            onTap: () => _showThemeDialog(context),
           ),
         ],
       ),
@@ -130,20 +122,14 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy Policy'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // TODO: Open privacy policy
-              AppLogger.i('Privacy policy tapped');
-            },
+            onTap: () => _showPrivacyPolicy(context),
           ),
           const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.help),
             title: const Text('Help & Support'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              // TODO: Open help section
-              AppLogger.i('Help & Support tapped');
-            },
+            onTap: () => _showHelpAndSupport(context),
           ),
         ],
       ),
@@ -244,6 +230,345 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         const Text('A social photo sharing app for events and moments.'),
       ],
+    );
+  }
+
+  void _showPrivacyPolicy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Privacy Policy'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 400,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Zink Privacy Policy',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Last updated: ${DateTime.now().year}',
+                  style: const TextStyle(fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 16),
+                _buildPrivacySection(
+                  'Information We Collect',
+                  'We collect information you provide directly to us, such as when you create an account, post photos, or communicate with others through our service.',
+                ),
+                _buildPrivacySection(
+                  'How We Use Your Information', 
+                  'We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.',
+                ),
+                _buildPrivacySection(
+                  'Information Sharing',
+                  'We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.',
+                ),
+                _buildPrivacySection(
+                  'Data Security',
+                  'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
+                ),
+                _buildPrivacySection(
+                  'Your Rights',
+                  'You have the right to access, update, or delete your personal information. You can do this through your account settings or by contacting us.',
+                ),
+                _buildPrivacySection(
+                  'Contact Us',
+                  'If you have any questions about this Privacy Policy, please contact us through the Help & Support section.',
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrivacySection(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            content,
+            style: const TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showNotificationSettings(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          // TODO: Replace with actual notification settings from a provider
+          bool pushNotifications = true;
+          bool eventNotifications = true;
+          bool messageNotifications = true;
+          bool likeNotifications = false;
+          bool commentNotifications = true;
+
+          return AlertDialog(
+            title: const Text('Notification Settings'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SwitchListTile(
+                    title: const Text('Push Notifications'),
+                    subtitle: const Text('Enable all push notifications'),
+                    value: pushNotifications,
+                    onChanged: (value) {
+                      setState(() {
+                        pushNotifications = value;
+                        // If disabling push notifications, disable all others
+                        if (!value) {
+                          eventNotifications = false;
+                          messageNotifications = false;
+                          likeNotifications = false;
+                          commentNotifications = false;
+                        }
+                      });
+                      AppLogger.i('Push notifications: $value');
+                    },
+                  ),
+                  const Divider(),
+                  SwitchListTile(
+                    title: const Text('Event Updates'),
+                    subtitle: const Text('New events and event changes'),
+                    value: eventNotifications,
+                    onChanged: pushNotifications ? (value) {
+                      setState(() {
+                        eventNotifications = value;
+                      });
+                      AppLogger.i('Event notifications: $value');
+                    } : null,
+                  ),
+                  SwitchListTile(
+                    title: const Text('Messages'),
+                    subtitle: const Text('New chat messages'),
+                    value: messageNotifications,
+                    onChanged: pushNotifications ? (value) {
+                      setState(() {
+                        messageNotifications = value;
+                      });
+                      AppLogger.i('Message notifications: $value');
+                    } : null,
+                  ),
+                  SwitchListTile(
+                    title: const Text('Likes'),
+                    subtitle: const Text('When someone likes your posts'),
+                    value: likeNotifications,
+                    onChanged: pushNotifications ? (value) {
+                      setState(() {
+                        likeNotifications = value;
+                      });
+                      AppLogger.i('Like notifications: $value');
+                    } : null,
+                  ),
+                  SwitchListTile(
+                    title: const Text('Comments'),
+                    subtitle: const Text('When someone comments on your posts'),
+                    value: commentNotifications,
+                    onChanged: pushNotifications ? (value) {
+                      setState(() {
+                        commentNotifications = value;
+                      });
+                      AppLogger.i('Comment notifications: $value');
+                    } : null,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // TODO: Save notification settings to provider/storage
+                  AppLogger.i('Saving notification settings...');
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Notification settings saved'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showHelpAndSupport(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Help & Support'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 350,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHelpSection(
+                  context,
+                  'Frequently Asked Questions',
+                  [
+                    'How do I create an account?\nTap the sign up button and follow the prompts to create your account.',
+                    'How do I post a photo?\nTap the camera icon in the events section and select an active event.',
+                    'How do I like a submission?\nTap the heart icon below any photo submission.',
+                    'How do I edit my profile?\nGo to Profile > Menu > Edit Profile.',
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildHelpSection(
+                  context,
+                  'Contact Support',
+                  [
+                    'Email: support@zinkapp.com',
+                    'Response time: 24-48 hours',
+                    'For urgent issues, please include "URGENT" in your subject line.',
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildHelpSection(
+                  context,
+                  'App Version',
+                  [
+                    'Version: 1.0.0',
+                    'Last updated: ${DateTime.now().year}',
+                    'Platform: Mobile App',
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildHelpSection(
+                  context,
+                  'Report a Bug',
+                  [
+                    'If you encounter any issues, please describe:',
+                    '• What you were doing when the problem occurred',
+                    '• Steps to reproduce the issue',
+                    '• Your device model and OS version',
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHelpSection(BuildContext context, String title, List<String> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...items.map((item) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            item,
+            style: const TextStyle(fontSize: 14),
+          ),
+        )),
+      ],
+    );
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<String>(
+              title: const Text('System Default'),
+              subtitle: const Text('Follow device theme'),
+              value: 'system',
+              groupValue: 'system', // TODO: Add theme provider
+              onChanged: (value) {
+                // TODO: Implement theme switching
+                AppLogger.i('Theme changed to: $value');
+                Navigator.of(context).pop();
+              },
+            ),
+            RadioListTile<String>(
+              title: const Text('Light'),
+              subtitle: const Text('Always use light theme'),
+              value: 'light',
+              groupValue: 'system', // TODO: Add theme provider
+              onChanged: (value) {
+                // TODO: Implement theme switching
+                AppLogger.i('Theme changed to: $value');
+                Navigator.of(context).pop();
+              },
+            ),
+            RadioListTile<String>(
+              title: const Text('Dark'),
+              subtitle: const Text('Always use dark theme'),
+              value: 'dark',
+              groupValue: 'system', // TODO: Add theme provider
+              onChanged: (value) {
+                // TODO: Implement theme switching
+                AppLogger.i('Theme changed to: $value');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 
