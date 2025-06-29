@@ -307,7 +307,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         // Tab Bar
                         Container(
                           decoration: BoxDecoration(
-                            color: AppColors.cardDark.withOpacity(0.3),
+                            color: AppColors.glassMedium,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: TabBar(
