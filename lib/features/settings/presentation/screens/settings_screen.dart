@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/providers/auth_providers.dart';
-import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/providers/locale_provider.dart';
 import '../../../../core/utils/logger.dart';
 import '../widgets/delete_account_dialog.dart';
+import '../../../../shared/widgets/glass_container.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -17,61 +18,106 @@ class SettingsScreen extends ConsumerWidget {
     final currentLocale = ref.watch(localeProvider);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          AppLocalizations.of(context)!.settings,
+          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryCyan.withOpacity(0.2),
+                AppColors.primaryCyan.withOpacity(0.1),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.primaryCyan.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back, color: AppColors.primaryCyan),
+          ),
+        ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildSectionHeader(context, 'Account'),
-          _buildAccountSection(context, ref, currentUser),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'Preferences'),
-          _buildPreferencesSection(context, ref, currentLocale.languageCode),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'App'),
-          _buildAppSection(context, ref),
-          const SizedBox(height: 32),
-          _buildDangerZone(context, ref),
-        ],
+      body: Container(
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 100, 16, 16), // Top padding for app bar
+            children: [
+              _buildSectionHeader(context, 'Account'),
+              _buildAccountSection(context, ref, currentUser),
+              const SizedBox(height: 24),
+              _buildSectionHeader(context, 'Preferences'),
+              _buildPreferencesSection(context, ref, currentLocale.languageCode),
+              const SizedBox(height: 24),
+              _buildSectionHeader(context, 'App'),
+              _buildAppSection(context, ref),
+              const SizedBox(height: 32),
+              _buildDangerZone(context, ref),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColors.primaryCyan,
+          shadows: [
+            Shadow(
+              color: AppColors.primaryCyan.withOpacity(0.3),
+              blurRadius: 8,
             ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAccountSection(
       BuildContext context, WidgetRef ref, currentUser) {
-    return Card(
+    return GlassContainer(
+      borderRadius: 24.0,
+      useCyanAccent: true,
       child: Column(
         children: [
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Profile'),
-            subtitle: Text(currentUser?.email ?? 'Not signed in'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              context.push('/profile');
-            },
+          _buildSettingsListTile(
+            icon: Icons.person,
+            title: 'Profile',
+            subtitle: currentUser?.email ?? 'Not signed in',
+            iconColor: AppColors.primaryCyan,
+            onTap: () => context.push('/profile'),
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            title: const Text('Notifications'),
-            subtitle: const Text('Manage notification preferences'),
-            trailing: const Icon(Icons.chevron_right),
+          Divider(
+            height: 1,
+            color: AppColors.primaryCyan.withOpacity(0.2),
+            indent: 16,
+            endIndent: 16,
+          ),
+          _buildSettingsListTile(
+            icon: Icons.notifications,
+            title: 'Notifications',
+            subtitle: 'Manage notification preferences',
+            iconColor: AppColors.primaryCyan,
             onTap: () => _showNotificationSettings(context),
           ),
         ],
@@ -81,22 +127,29 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildPreferencesSection(
       BuildContext context, WidgetRef ref, String currentLocale) {
-    return Card(
+    return GlassContainer(
+      borderRadius: 24.0,
+      useOrangeAccent: true,
       child: Column(
         children: [
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('Language'),
-            subtitle: Text(_getLanguageDisplayName(currentLocale)),
-            trailing: const Icon(Icons.chevron_right),
+          _buildSettingsListTile(
+            icon: Icons.language,
+            title: 'Language',
+            subtitle: _getLanguageDisplayName(currentLocale),
+            iconColor: AppColors.primaryOrange,
             onTap: () => _showLanguageDialog(context, ref, currentLocale),
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.palette),
-            title: const Text('Theme'),
-            subtitle: const Text('System default'),
-            trailing: const Icon(Icons.chevron_right),
+          Divider(
+            height: 1,
+            color: AppColors.primaryOrange.withOpacity(0.2),
+            indent: 16,
+            endIndent: 16,
+          ),
+          _buildSettingsListTile(
+            icon: Icons.palette,
+            title: 'Theme',
+            subtitle: 'System default',
+            iconColor: AppColors.primaryOrange,
             onTap: () => _showThemeDialog(context),
           ),
         ],
@@ -105,30 +158,42 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildAppSection(BuildContext context, WidgetRef ref) {
-    return Card(
+    return GlassContainer(
+      borderRadius: 24.0,
+      useCyanAccent: true,
       child: Column(
         children: [
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
-            subtitle: const Text('Version 1.0.0'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              _showAboutDialog(context);
-            },
+          _buildSettingsListTile(
+            icon: Icons.info,
+            title: 'About',
+            subtitle: 'Version 1.0.0',
+            iconColor: AppColors.primaryCyan,
+            onTap: () => _showAboutDialog(context),
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.privacy_tip),
-            title: const Text('Privacy Policy'),
-            trailing: const Icon(Icons.chevron_right),
+          Divider(
+            height: 1,
+            color: AppColors.primaryCyan.withOpacity(0.2),
+            indent: 16,
+            endIndent: 16,
+          ),
+          _buildSettingsListTile(
+            icon: Icons.privacy_tip,
+            title: 'Privacy Policy',
+            subtitle: null,
+            iconColor: AppColors.primaryCyan,
             onTap: () => _showPrivacyPolicy(context),
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('Help & Support'),
-            trailing: const Icon(Icons.chevron_right),
+          Divider(
+            height: 1,
+            color: AppColors.primaryCyan.withOpacity(0.2),
+            indent: 16,
+            endIndent: 16,
+          ),
+          _buildSettingsListTile(
+            icon: Icons.help,
+            title: 'Help & Support',
+            subtitle: null,
+            iconColor: AppColors.primaryCyan,
             onTap: () => _showHelpAndSupport(context),
           ),
         ],
@@ -137,32 +202,128 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildDangerZone(BuildContext context, WidgetRef ref) {
-    return Card(
-      color: Colors.red.shade50,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Danger Zone',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Colors.red.shade700,
-                    fontWeight: FontWeight.bold,
+    return GlassContainer(
+      borderRadius: 24.0,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.red.withOpacity(0.1),
+              Colors.red.withOpacity(0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Colors.red.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Danger Zone',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red.shade700,
+                  shadows: [
+                    Shadow(
+                      color: Colors.red.withOpacity(0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            _buildSettingsListTile(
+              icon: Icons.delete_forever,
+              title: 'Delete Account',
+              subtitle: 'Permanently delete your account and all data',
+              iconColor: Colors.red.shade700,
+              titleColor: Colors.red.shade700,
+              onTap: () => _showDeleteAccountDialog(context, ref),
+              showTrailing: false,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsListTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required Color iconColor,
+    Color? titleColor,
+    required VoidCallback onTap,
+    bool showTrailing = true,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      iconColor.withOpacity(0.2),
+                      iconColor.withOpacity(0.1),
+                    ],
                   ),
-            ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: iconColor.withOpacity(0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: titleColor ?? AppColors.textPrimary,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (showTrailing)
+                Icon(
+                  Icons.chevron_right,
+                  color: iconColor.withOpacity(0.6),
+                  size: 24,
+                ),
+            ],
           ),
-          ListTile(
-            leading: Icon(Icons.delete_forever, color: Colors.red.shade700),
-            title: Text(
-              'Delete Account',
-              style: TextStyle(color: Colors.red.shade700),
-            ),
-            subtitle:
-                const Text('Permanently delete your account and all data'),
-            onTap: () => _showDeleteAccountDialog(context, ref),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -183,14 +344,19 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
+        backgroundColor: AppColors.backgroundSecondary,
+        title: const Text(
+          'Select Language',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             RadioListTile<String>(
-              title: const Text('English'),
+              title: const Text('English', style: TextStyle(color: AppColors.textPrimary)),
               value: 'en',
               groupValue: currentLocale,
+              activeColor: AppColors.primaryCyan,
               onChanged: (value) {
                 if (value != null) {
                   ref.read(localeProvider.notifier).setLocale(Locale(value));
@@ -199,9 +365,10 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
             RadioListTile<String>(
-              title: const Text('Türkçe'),
+              title: const Text('Türkçe', style: TextStyle(color: AppColors.textPrimary)),
               value: 'tr',
               groupValue: currentLocale,
+              activeColor: AppColors.primaryCyan,
               onChanged: (value) {
                 if (value != null) {
                   ref.read(localeProvider.notifier).setLocale(Locale(value));
@@ -214,7 +381,10 @@ class SettingsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.primaryCyan),
+            ),
           ),
         ],
       ),
@@ -237,7 +407,11 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Privacy Policy'),
+        backgroundColor: AppColors.backgroundSecondary,
+        title: const Text(
+          'Privacy Policy',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           height: 400,
@@ -247,14 +421,19 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Zink Privacy Policy',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  style: const TextStyle(
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Last updated: ${DateTime.now().year}',
-                  style: const TextStyle(fontStyle: FontStyle.italic),
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _buildPrivacySection(
@@ -306,12 +485,16 @@ class SettingsScreen extends ConsumerWidget {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             content,
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
@@ -331,16 +514,21 @@ class SettingsScreen extends ConsumerWidget {
           bool commentNotifications = true;
 
           return AlertDialog(
-            title: const Text('Notification Settings'),
+            backgroundColor: AppColors.backgroundSecondary,
+            title: const Text(
+              'Notification Settings',
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
             content: SizedBox(
               width: double.maxFinite,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SwitchListTile(
-                    title: const Text('Push Notifications'),
-                    subtitle: const Text('Enable all push notifications'),
+                    title: const Text('Push Notifications', style: TextStyle(color: AppColors.textPrimary)),
+                    subtitle: const Text('Enable all push notifications', style: TextStyle(color: AppColors.textSecondary)),
                     value: pushNotifications,
+                    activeColor: AppColors.primaryCyan,
                     onChanged: (value) {
                       setState(() {
                         pushNotifications = value;
@@ -355,11 +543,12 @@ class SettingsScreen extends ConsumerWidget {
                       AppLogger.i('Push notifications: $value');
                     },
                   ),
-                  const Divider(),
+                  Divider(color: AppColors.primaryCyan.withOpacity(0.2)),
                   SwitchListTile(
-                    title: const Text('Event Updates'),
-                    subtitle: const Text('New events and event changes'),
+                    title: const Text('Event Updates', style: TextStyle(color: AppColors.textPrimary)),
+                    subtitle: const Text('New events and event changes', style: TextStyle(color: AppColors.textSecondary)),
                     value: eventNotifications,
+                    activeColor: AppColors.primaryCyan,
                     onChanged: pushNotifications ? (value) {
                       setState(() {
                         eventNotifications = value;
@@ -368,9 +557,10 @@ class SettingsScreen extends ConsumerWidget {
                     } : null,
                   ),
                   SwitchListTile(
-                    title: const Text('Messages'),
-                    subtitle: const Text('New chat messages'),
+                    title: const Text('Messages', style: TextStyle(color: AppColors.textPrimary)),
+                    subtitle: const Text('New chat messages', style: TextStyle(color: AppColors.textSecondary)),
                     value: messageNotifications,
+                    activeColor: AppColors.primaryCyan,
                     onChanged: pushNotifications ? (value) {
                       setState(() {
                         messageNotifications = value;
@@ -379,9 +569,10 @@ class SettingsScreen extends ConsumerWidget {
                     } : null,
                   ),
                   SwitchListTile(
-                    title: const Text('Likes'),
-                    subtitle: const Text('When someone likes your posts'),
+                    title: const Text('Likes', style: TextStyle(color: AppColors.textPrimary)),
+                    subtitle: const Text('When someone likes your posts', style: TextStyle(color: AppColors.textSecondary)),
                     value: likeNotifications,
+                    activeColor: AppColors.primaryCyan,
                     onChanged: pushNotifications ? (value) {
                       setState(() {
                         likeNotifications = value;
@@ -390,9 +581,10 @@ class SettingsScreen extends ConsumerWidget {
                     } : null,
                   ),
                   SwitchListTile(
-                    title: const Text('Comments'),
-                    subtitle: const Text('When someone comments on your posts'),
+                    title: const Text('Comments', style: TextStyle(color: AppColors.textPrimary)),
+                    subtitle: const Text('When someone comments on your posts', style: TextStyle(color: AppColors.textSecondary)),
                     value: commentNotifications,
+                    activeColor: AppColors.primaryCyan,
                     onChanged: pushNotifications ? (value) {
                       setState(() {
                         commentNotifications = value;
@@ -406,7 +598,10 @@ class SettingsScreen extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
               ),
               TextButton(
                 onPressed: () {
@@ -420,7 +615,10 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   );
                 },
-                child: const Text('Save'),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(color: AppColors.primaryCyan),
+                ),
               ),
             ],
           );
@@ -433,7 +631,11 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Help & Support'),
+        backgroundColor: AppColors.backgroundSecondary,
+        title: const Text(
+          'Help & Support',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: SizedBox(
           width: double.maxFinite,
           height: 350,
@@ -505,6 +707,7 @@ class SettingsScreen extends ConsumerWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 8),
@@ -512,7 +715,10 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
             item,
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+            ),
           ),
         )),
       ],
@@ -523,15 +729,20 @@ class SettingsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Theme'),
+        backgroundColor: AppColors.backgroundSecondary,
+        title: const Text(
+          'Select Theme',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             RadioListTile<String>(
-              title: const Text('System Default'),
-              subtitle: const Text('Follow device theme'),
+              title: const Text('System Default', style: TextStyle(color: AppColors.textPrimary)),
+              subtitle: const Text('Follow device theme', style: TextStyle(color: AppColors.textSecondary)),
               value: 'system',
               groupValue: 'system', // TODO: Add theme provider
+              activeColor: AppColors.primaryOrange,
               onChanged: (value) {
                 // TODO: Implement theme switching
                 AppLogger.i('Theme changed to: $value');
@@ -539,10 +750,11 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
             RadioListTile<String>(
-              title: const Text('Light'),
-              subtitle: const Text('Always use light theme'),
+              title: const Text('Light', style: TextStyle(color: AppColors.textPrimary)),
+              subtitle: const Text('Always use light theme', style: TextStyle(color: AppColors.textSecondary)),
               value: 'light',
               groupValue: 'system', // TODO: Add theme provider
+              activeColor: AppColors.primaryOrange,
               onChanged: (value) {
                 // TODO: Implement theme switching
                 AppLogger.i('Theme changed to: $value');
@@ -550,10 +762,11 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
             RadioListTile<String>(
-              title: const Text('Dark'),
-              subtitle: const Text('Always use dark theme'),
+              title: const Text('Dark', style: TextStyle(color: AppColors.textPrimary)),
+              subtitle: const Text('Always use dark theme', style: TextStyle(color: AppColors.textSecondary)),
               value: 'dark',
               groupValue: 'system', // TODO: Add theme provider
+              activeColor: AppColors.primaryOrange,
               onChanged: (value) {
                 // TODO: Implement theme switching
                 AppLogger.i('Theme changed to: $value');
@@ -565,7 +778,10 @@ class SettingsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.primaryOrange),
+            ),
           ),
         ],
       ),
