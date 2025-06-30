@@ -13,9 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
-import '../../../../shared/widgets/crystal_scaffold.dart';
-import '../../../../shared/widgets/crystal_container.dart';
-import '../../../../shared/widgets/crystal_button.dart';
+import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
@@ -87,43 +85,126 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           );
           return _buildEventDetail(event);
         } catch (e) {
-          return CrystalScaffold(
-            appBarTitle: 'Event Not Found',
-            body: const Center(
-              child: Text(
-                'Event not found',
-                style: TextStyle(color: AppColors.textPrimary),
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text('Event Not Found', style: TextStyle(color: AppColors.textPrimary)),
+              centerTitle: true,
+            ),
+            body: Container(
+              decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+              child: Container(
+                decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+                child: const Center(
+                  child: Text(
+                    'Event not found',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                ),
               ),
             ),
           );
         }
       },
-      loading: () => CrystalScaffold(
-        appBarTitle: 'Loading...',
-        body: const Center(
-          child: CircularProgressIndicator(color: AppColors.primaryCyan),
+      loading: () => Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Loading...', style: TextStyle(color: AppColors.textPrimary)),
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryCyan),
+            ),
+          ),
         ),
       ),
       error: (error, stack) {
         AppLogger.e('Error loading event details', error, stack);
-        return CrystalScaffold(
-          appBarTitle: 'Error',
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Error loading event: $error',
-                  style: const TextStyle(color: AppColors.textPrimary),
-                  textAlign: TextAlign.center,
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('Error', style: TextStyle(color: AppColors.textPrimary)),
+            centerTitle: true,
+          ),
+          body: Container(
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            child: Container(
+              decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Error loading event: $error',
+                      style: const TextStyle(color: AppColors.textPrimary),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: 140,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primaryCyan.withOpacity(0.8),
+                            AppColors.primaryCyanDark.withOpacity(0.9),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppColors.primaryCyan.withOpacity(0.3),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryCyan.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => ref.refresh(eventsProvider),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.refresh, color: Colors.white, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Retry',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                CrystalButton(
-                  text: 'Retry',
-                  onPressed: () => ref.refresh(eventsProvider),
-                  icon: Icons.refresh,
-                ),
-              ],
+              ),
             ),
           ),
         );
@@ -132,23 +213,59 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   Widget _buildEventDetail(EventModel event) {
-    return CrystalScaffold(
-      appBarTitle: event.title,
-      body: RefreshIndicator(
-        color: AppColors.primaryCyan,
-        onRefresh: _onRefresh,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            _EventHeaderSection(event: event),
-            SliverToBoxAdapter(
-              child: _EventInfoSection(event: event),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(event.title, style: const TextStyle(color: AppColors.textPrimary)),
+        centerTitle: true,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryCyan.withOpacity(0.2),
+                AppColors.primaryCyan.withOpacity(0.1),
+              ],
             ),
-            SliverToBoxAdapter(
-              child: _FilterSection(),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.primaryCyan.withOpacity(0.3),
+              width: 1,
             ),
-            _SubmissionsList(eventId: widget.eventId),
-          ],
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back, color: AppColors.primaryCyan),
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+          child: RefreshIndicator(
+            color: AppColors.primaryCyan,
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 100), // Space for app bar
+                ),
+                _EventHeaderSection(event: event),
+                SliverToBoxAdapter(
+                  child: _EventInfoSection(event: event),
+                ),
+                SliverToBoxAdapter(
+                  child: _FilterSection(),
+                ),
+                _SubmissionsList(eventId: widget.eventId),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -163,15 +280,16 @@ class _EventHeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: CrystalContainer(
+      child: GlassContainer(
         margin: const EdgeInsets.all(16),
+        borderRadius: 32.0,
         useCyanAccent: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Event image with crystal styling
+            // Event image with glassmorphism styling
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Stack(
@@ -182,27 +300,43 @@ class _EventHeaderSection extends StatelessWidget {
                       height: double.infinity,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
-                        color: AppColors.cardDark.withOpacity(0.3),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primaryCyan.withOpacity(0.2),
+                              AppColors.primaryOrange.withOpacity(0.1),
+                            ],
+                          ),
+                        ),
                         child: const Center(
                           child: CircularProgressIndicator(color: AppColors.primaryCyan),
                         ),
                       ),
                       errorWidget: (context, url, error) => Container(
-                        color: AppColors.cardDark.withOpacity(0.3),
-                        child: const Icon(Icons.error, color: AppColors.primaryOrange),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primaryOrange.withOpacity(0.2),
+                              AppColors.primaryCyan.withOpacity(0.1),
+                            ],
+                          ),
+                        ),
+                        child: const Icon(Icons.error, color: AppColors.primaryOrange, size: 48),
                       ),
                     ),
-                    // Crystal gradient overlay
+                    // Glassmorphism gradient overlay
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(24),
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            AppColors.backgroundDark.withOpacity(0.7),
+                            AppColors.primaryCyan.withOpacity(0.3),
+                            AppColors.backgroundPrimary.withOpacity(0.8),
                           ],
+                          stops: [0.0, 0.7, 1.0],
                         ),
                       ),
                     ),
@@ -211,11 +345,52 @@ class _EventHeaderSection extends StatelessWidget {
                       Positioned(
                         bottom: 16,
                         right: 16,
-                        child: CrystalButton(
-                          text: 'Submit Photo',
-                          onPressed: () => context.push('/submit/${event.id}'),
-                          icon: Icons.camera_alt,
-                          isOrange: true,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primaryOrange.withOpacity(0.9),
+                                AppColors.primaryOrangeDark.withOpacity(0.8),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: AppColors.primaryOrange.withOpacity(0.3),
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryOrange.withOpacity(0.4),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () => context.push('/submit/${event.id}'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Submit Photo',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                   ],
@@ -236,8 +411,9 @@ class _EventInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CrystalContainer(
+    return GlassContainer(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      borderRadius: 32.0,
       useOrangeAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,8 +427,20 @@ class _EventInfoSection extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: event.isActive ? AppColors.primaryCyan : AppColors.textSecondary,
+                  gradient: LinearGradient(
+                    colors: event.isActive ? [
+                      AppColors.primaryCyan.withOpacity(0.8),
+                      AppColors.primaryCyanDark.withOpacity(0.9),
+                    ] : [
+                      AppColors.textSecondary.withOpacity(0.8),
+                      AppColors.textSecondary.withOpacity(0.6),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: event.isActive ? AppColors.primaryCyan.withOpacity(0.3) : AppColors.textSecondary.withOpacity(0.3),
+                    width: 1,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: (event.isActive ? AppColors.primaryCyan : AppColors.textSecondary).withOpacity(0.3),
@@ -278,9 +466,14 @@ class _EventInfoSection extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.orangeWithOpacity,
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryOrange.withOpacity(0.2),
+                        AppColors.primaryOrange.withOpacity(0.1),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.primaryOrange, width: 1),
+                    border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -308,10 +501,16 @@ class _EventInfoSection extends StatelessWidget {
           // Title
           Text(
             event.title,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.primaryOrange,
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  blurRadius: 8,
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),
@@ -321,18 +520,59 @@ class _EventInfoSection extends StatelessWidget {
             style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 16,
+              height: 1.4,
             ),
           ),
           const SizedBox(height: 16),
           // Submit button (if active)
           if (event.isActive)
-            SizedBox(
+            Container(
               width: double.infinity,
-              child: CrystalButton(
-                text: AppLocalizations.of(context)!.submitPhoto,
-                onPressed: () => context.push('/submit/${event.id}'),
-                icon: Icons.camera_alt,
-                isOrange: true,
+              height: 56,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primaryOrange.withOpacity(0.8),
+                    AppColors.primaryOrangeDark.withOpacity(0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withOpacity(0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => context.push('/submit/${event.id}'),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.submitPhoto,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
         ],
@@ -360,18 +600,25 @@ class _FilterSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentFilter = ref.watch(submissionFilterProvider);
 
-    return CrystalContainer(
+    return GlassContainer(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      borderRadius: 32.0,
       useCyanAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             AppLocalizations.of(context)!.submissions,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.primaryCyan,
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: AppColors.primaryCyan.withOpacity(0.3),
+                  blurRadius: 8,
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
@@ -432,21 +679,37 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryCyan : AppColors.cyanWithOpacity,
+          gradient: isSelected ? LinearGradient(
+            colors: [
+              AppColors.primaryCyan.withOpacity(0.8),
+              AppColors.primaryCyanDark.withOpacity(0.9),
+            ],
+          ) : LinearGradient(
+            colors: [
+              AppColors.primaryCyan.withOpacity(0.2),
+              AppColors.primaryCyan.withOpacity(0.1),
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.primaryCyan,
+            color: AppColors.primaryCyan.withOpacity(isSelected ? 0.6 : 0.4),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: AppColors.primaryCyan.withOpacity(0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: AppColors.primaryCyan.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Text(
           label,
@@ -454,6 +717,12 @@ class _FilterChip extends StatelessWidget {
             color: isSelected ? Colors.white : AppColors.primaryCyan,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
+            shadows: isSelected ? [
+              Shadow(
+                color: AppColors.primaryCyan.withOpacity(0.5),
+                blurRadius: 4,
+              ),
+            ] : null,
           ),
         ),
       ),
@@ -483,8 +752,9 @@ class _SubmissionsList extends ConsumerWidget {
       error: (error, stack) {
         AppLogger.e('Error loading submissions', error, stack);
         return SliverToBoxAdapter(
-          child: CrystalContainer(
+          child: GlassContainer(
             margin: const EdgeInsets.all(16),
+            borderRadius: 32.0,
             useCyanAccent: true,
             child: Column(
               children: [
@@ -494,10 +764,52 @@ class _SubmissionsList extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                CrystalButton(
-                  text: 'Retry',
-                  onPressed: () => ref.refresh(submissionsProvider(eventId)),
-                  icon: Icons.refresh,
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryCyan.withOpacity(0.8),
+                        AppColors.primaryCyanDark.withOpacity(0.9),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryCyan.withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () => ref.refresh(submissionsProvider(eventId)),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.refresh, color: Colors.white, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Retry',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -511,23 +823,50 @@ class _SubmissionsList extends ConsumerWidget {
       BuildContext context, List<SubmissionModel> submissions) {
     if (submissions.isEmpty) {
       return SliverToBoxAdapter(
-        child: CrystalContainer(
+        child: GlassContainer(
           margin: const EdgeInsets.all(16),
+          borderRadius: 32.0,
           useCyanAccent: true,
           child: Column(
             children: [
-              Icon(
-                Icons.photo_library_outlined,
-                size: 64,
-                color: AppColors.primaryCyan,
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primaryCyan.withOpacity(0.8),
+                      AppColors.primaryCyanDark.withOpacity(0.6),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.photo_library_outlined,
+                  size: 40,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'No submissions yet',
                 style: TextStyle(
                   color: AppColors.primaryCyan,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 8),
@@ -595,8 +934,9 @@ class _SubmissionCard extends ConsumerWidget {
 
   Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
       dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
-    return CrystalContainer(
+    return GlassContainer(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      borderRadius: 32.0,
       useOrangeAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -638,9 +978,14 @@ class _SubmissionCard extends ConsumerWidget {
                 if (currentUser != null && currentUser.uid == submission.uid)
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.orangeWithOpacity,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.2),
+                          AppColors.primaryOrange.withOpacity(0.1),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.primaryOrange, width: 1),
+                      border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
                     ),
                     child: PopupMenuButton<String>(
                       onSelected: (value) async {
@@ -679,14 +1024,28 @@ class _SubmissionCard extends ConsumerWidget {
                   imageUrl: submission.imageURL,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: AppColors.cardDark.withOpacity(0.3),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.2),
+                          AppColors.primaryCyan.withOpacity(0.1),
+                        ],
+                      ),
+                    ),
                     child: const Center(
                       child: CircularProgressIndicator(color: AppColors.primaryOrange),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: AppColors.cardDark.withOpacity(0.3),
-                    child: const Icon(Icons.error, color: AppColors.primaryOrange),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.2),
+                          AppColors.primaryCyan.withOpacity(0.1),
+                        ],
+                      ),
+                    ),
+                    child: const Icon(Icons.error, color: AppColors.primaryOrange, size: 48),
                   ),
                 ),
               ),
@@ -727,9 +1086,14 @@ class _SubmissionCard extends ConsumerWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppColors.orangeWithOpacity,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.2),
+                          AppColors.primaryOrange.withOpacity(0.1),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.primaryOrange, width: 1),
+                      border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -777,7 +1141,7 @@ class _SubmissionCard extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.cardDark,
+        backgroundColor: AppColors.backgroundSecondary,
         title: const Text(
           'Delete Post',
           style: TextStyle(color: AppColors.textPrimary),
@@ -847,7 +1211,7 @@ class _FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: AppColors.backgroundPrimary,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: AppColors.primaryCyan,
@@ -855,9 +1219,14 @@ class _FullScreenImageViewer extends StatelessWidget {
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.cyanWithOpacity,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryCyan.withOpacity(0.2),
+                AppColors.primaryCyan.withOpacity(0.1),
+              ],
+            ),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primaryCyan, width: 1),
+            border: Border.all(color: AppColors.primaryCyan.withOpacity(0.3), width: 1),
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),

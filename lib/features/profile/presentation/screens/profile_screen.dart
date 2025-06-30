@@ -11,9 +11,6 @@ import '../../../submissions/presentation/screens/single_submission_screen.dart'
 import '../../../../l10n/app_localizations.dart';
 import 'edit_profile_screen.dart';
 import 'storage_test_screen.dart';
-import '../../../../shared/widgets/crystal_scaffold.dart';
-import '../../../../shared/widgets/crystal_container.dart';
-import '../../../../shared/widgets/crystal_button.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../core/utils/logger.dart';
 
@@ -89,30 +86,84 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return userDataAsync.when(
       data: (user) =>
           _buildProfile(context, ref, user, isOwnProfile, targetUserId),
-      loading: () => CrystalScaffold(
-        appBarTitle: 'Loading...',
-        body: const Center(
-          child: CircularProgressIndicator(color: AppColors.primaryCyan),
+      loading: () => Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Loading...', style: TextStyle(color: AppColors.textPrimary)),
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryCyan),
+            ),
+          ),
         ),
       ),
-      error: (error, stack) => CrystalScaffold(
-        appBarTitle: 'Error',
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Error loading profile: $error',
-                style: const TextStyle(color: AppColors.textPrimary),
-                textAlign: TextAlign.center,
+      error: (error, stack) => Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Error', style: TextStyle(color: AppColors.textPrimary)),
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error loading profile: $error',
+                    style: const TextStyle(color: AppColors.textPrimary),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppColors.primaryCyan.withOpacity(0.8), AppColors.primaryCyanDark],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryCyan.withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => ref.refresh(userDataProvider(targetUserId)),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.refresh, color: Colors.white, size: 20),
+                              SizedBox(width: 8),
+                              Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              CrystalButton(
-                text: 'Retry',
-                onPressed: () => ref.refresh(userDataProvider(targetUserId)),
-                icon: Icons.refresh,
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -124,62 +175,143 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     // Handle case where user document doesn't exist (new users before onboarding)
     if (user == null) {
       if (isOwnProfile) {
-        return CrystalScaffold(
-          appBarTitle: 'Profile',
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.person_outline,
-                  size: 64,
-                  color: AppColors.textSecondary,
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('Profile', style: TextStyle(color: AppColors.textPrimary)),
+            centerTitle: true,
+          ),
+          body: Container(
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            child: Container(
+              decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [AppColors.primaryCyan, AppColors.primaryOrange, AppColors.warmBeige],
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryCyan.withOpacity(0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.person_outline,
+                        size: 64,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Profile not set up yet',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Please complete your profile setup',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [AppColors.primaryOrange.withOpacity(0.8), AppColors.primaryOrangeDark],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryOrange.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => context.go('/onboarding'),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.edit, color: Colors.white, size: 20),
+                                SizedBox(width: 12),
+                                Text('Complete Setup', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Profile not set up yet',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Please complete your profile setup',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                CrystalButton(
-                  text: 'Complete Setup',
-                  onPressed: () => context.go('/onboarding'),
-                  icon: Icons.edit,
-                ),
-              ],
+              ),
             ),
           ),
         );
       } else {
-        return const CrystalScaffold(
-          appBarTitle: 'Profile',
-          body: Center(
-            child: Text(
-              'User not found',
-              style: TextStyle(color: AppColors.textPrimary),
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('Profile', style: TextStyle(color: AppColors.textPrimary)),
+            centerTitle: true,
+          ),
+          body: Container(
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            child: Container(
+              decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+              child: const Center(
+                child: Text(
+                  'User not found',
+                  style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
+                ),
+              ),
             ),
           ),
         );
       }
     }
 
-    return CrystalScaffold(
-      appBarTitle: isOwnProfile
-          ? AppLocalizations.of(context)!.profile
-          : user?.displayName ?? 'Profile',
-      appBarActions: [
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          isOwnProfile
+              ? AppLocalizations.of(context)!.profile
+              : user?.displayName ?? 'Profile',
+          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        actions: [
         if (!isOwnProfile)
           Container(
             margin: const EdgeInsets.only(right: 8),
@@ -298,12 +430,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
           ),
       ],
-      body: CustomScrollView(
-        slivers: [
-          _buildProfileHeader(context, user, isOwnProfile),
-          _buildTabBar(context),
-          _buildTabContent(context, ref, targetUserId, isOwnProfile),
-        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+          child: CustomScrollView(
+            slivers: [
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 100), // Space for app bar
+              ),
+              _buildProfileHeader(context, user, isOwnProfile),
+              _buildTabBar(context),
+              _buildTabContent(context, ref, targetUserId, isOwnProfile),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -311,28 +453,85 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Widget _buildProfileHeader(
       BuildContext context, UserModel? user, bool isOwnProfile) {
     return SliverToBoxAdapter(
-      child: CrystalContainer(
-        margin: const EdgeInsets.all(16),
-        useCyanAccent: true,
+      child: Container(
+        margin: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primaryCyan.withOpacity(0.2),
+              AppColors.primaryOrange.withOpacity(0.15),
+              AppColors.warmBeige.withOpacity(0.1),
+              AppColors.primaryCyanDark.withOpacity(0.12),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: AppColors.primaryCyan.withOpacity(0.3),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryCyan.withOpacity(0.2),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+            BoxShadow(
+              color: AppColors.primaryOrange.withOpacity(0.15),
+              blurRadius: 15,
+              offset: const Offset(5, 5),
+            ),
+          ],
+        ),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: AppColors.primaryCyan,
-              backgroundImage: user?.photoURL != null
-                  ? CachedNetworkImageProvider(user!.photoURL!)
-                  : null,
-              child: user?.photoURL == null
-                  ? const Icon(Icons.person, size: 50, color: Colors.white)
-                  : null,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primaryCyan,
+                    AppColors.primaryOrange,
+                    AppColors.warmBeige,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryCyan.withOpacity(0.4),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(4),
+              child: CircleAvatar(
+                radius: 52,
+                backgroundColor: Colors.transparent,
+                backgroundImage: user?.photoURL != null
+                    ? CachedNetworkImageProvider(user!.photoURL!)
+                    : null,
+                child: user?.photoURL == null
+                    ? const Icon(Icons.person, size: 52, color: Colors.white)
+                    : null,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
               user?.displayName ?? 'Unknown User',
-              style: const TextStyle(
-                color: AppColors.primaryCyan,
-                fontSize: 24,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: AppColors.primaryCyan.withOpacity(0.5),
+                    blurRadius: 8,
+                  ),
+                ],
               ),
             ),
             if (user?.username != null && user!.username!.isNotEmpty) ...[
@@ -388,19 +587,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Widget _buildTabBar(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: AppColors.cardDark.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primaryCyan.withOpacity(0.15),
+              AppColors.primaryOrange.withOpacity(0.1),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.primaryCyan.withOpacity(0.3),
+            width: 1,
+          ),
         ),
         child: TabBar(
           controller: _tabController,
           indicator: BoxDecoration(
-            color: AppColors.primaryCyan,
-            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              colors: [
+                AppColors.primaryCyan.withOpacity(0.8),
+                AppColors.primaryOrange.withOpacity(0.6),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryCyan.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           labelColor: Colors.white,
           unselectedLabelColor: AppColors.textSecondary,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
           tabs: const [
             Tab(text: 'Posts'),
             Tab(text: 'Liked'),
@@ -442,11 +666,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               style: const TextStyle(color: AppColors.textPrimary),
             ),
             const SizedBox(height: 16),
-            CrystalButton(
-              text: 'Retry',
-              onPressed: () => ref.refresh(
-                  userSubmissionsFromUserCollectionProvider(targetUserId)),
-              icon: Icons.refresh,
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.primaryCyan.withOpacity(0.8), AppColors.primaryCyanDark],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => ref.refresh(userSubmissionsFromUserCollectionProvider(targetUserId)),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.refresh, color: Colors.white, size: 20),
+                        SizedBox(width: 8),
+                        Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -473,11 +724,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               style: const TextStyle(color: AppColors.textPrimary),
             ),
             const SizedBox(height: 16),
-            CrystalButton(
-              text: 'Retry',
-              onPressed: () =>
-                  ref.refresh(userLikedSubmissionsProvider(targetUserId)),
-              icon: Icons.refresh,
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.primaryOrange.withOpacity(0.8), AppColors.primaryOrangeDark],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => ref.refresh(userLikedSubmissionsProvider(targetUserId)),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.refresh, color: Colors.white, size: 20),
+                        SizedBox(width: 8),
+                        Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
