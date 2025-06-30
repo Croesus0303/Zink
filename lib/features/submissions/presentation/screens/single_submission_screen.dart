@@ -11,6 +11,7 @@ import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class SingleSubmissionScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -68,25 +69,155 @@ class _SingleSubmissionScreenState
       data: (submission) => submission != null
           ? _buildSubmissionDetail(submission)
           : _buildNotFound(),
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      loading: () => Scaffold(
+        backgroundColor: Colors.black,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black,
+                Colors.grey.shade900,
+              ],
+            ),
+          ),
+          child: const Center(child: CircularProgressIndicator(color: AppColors.primaryCyan)),
+        ),
       ),
       error: (error, stack) => Scaffold(
-        appBar: AppBar(title: const Text('Error')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error loading submission: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.refresh(submissionProvider((
-                  eventId: widget.eventId,
-                  submissionId: widget.submissionId
-                ))),
-                child: const Text('Retry'),
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text('Error', style: TextStyle(color: Colors.white)),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black,
+                Colors.grey.shade900,
+              ],
+            ),
+          ),
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primaryOrange.withOpacity(0.2),
+                    AppColors.primaryOrangeDark.withOpacity(0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
               ),
-            ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.8),
+                          AppColors.primaryOrangeDark.withOpacity(0.6),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryOrange.withOpacity(0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.error,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Error loading submission',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withOpacity(0.8),
+                          AppColors.primaryOrangeDark.withOpacity(0.9),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryOrange.withOpacity(0.4),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => ref.refresh(submissionProvider((
+                          eventId: widget.eventId,
+                          submissionId: widget.submissionId
+                        ))),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.refresh, color: Colors.white, size: 20),
+                              SizedBox(width: 8),
+                              Text(
+                                'Retry',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -95,9 +226,64 @@ class _SingleSubmissionScreenState
 
   Widget _buildNotFound() {
     return Scaffold(
-      appBar: AppBar(title: const Text('Submission Not Found')),
-      body: const Center(
-        child: Text('Submission not found'),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text('Submission Not Found', style: TextStyle(color: Colors.white)),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black,
+              Colors.grey.shade900,
+            ],
+          ),
+        ),
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primaryOrange.withOpacity(0.2),
+                  AppColors.primaryOrangeDark.withOpacity(0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.primaryOrange.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryOrange.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.image_not_supported, size: 64, color: Colors.white),
+                SizedBox(height: 16),
+                Text(
+                  'Submission not found',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -160,7 +346,17 @@ class _SingleSubmissionScreenState
             ),
             // User info and actions
             Container(
-              color: Colors.black,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.8),
+                    Colors.black,
+                  ],
+                ),
+              ),
               child: _SubmissionInfo(submission: submission),
             ),
           ],
@@ -193,21 +389,36 @@ class _EventInfoOverlay extends ConsumerWidget {
 
     return eventAsync.when(
       data: (event) => event != null
-          ? GestureDetector(
-              onTap: () {
-                // Navigate to event detail screen
-                context.push('/event/${event.id}');
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1,
+          ? Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () {
+                  // Navigate to event detail screen
+                  context.push('/event/${event.id}');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryCyan.withOpacity(0.3),
+                        AppColors.primaryOrange.withOpacity(0.2),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.primaryCyan.withOpacity(0.4),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryCyan.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -231,6 +442,7 @@ class _EventInfoOverlay extends ConsumerWidget {
                       ),
                     ),
                   ],
+                  ),
                 ),
               ),
             )
@@ -238,10 +450,15 @@ class _EventInfoOverlay extends ConsumerWidget {
       loading: () => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.backgroundSecondary.withOpacity(0.3),
+              AppColors.backgroundSecondary.withOpacity(0.2),
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
+            color: AppColors.primaryCyan.withOpacity(0.3),
             width: 1,
           ),
         ),
@@ -308,146 +525,190 @@ class _SubmissionInfo extends ConsumerWidget {
   Widget _buildInfo(BuildContext context, WidgetRef ref, UserModel? user,
       dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // User info
-          Row(
-            children: [
-              ClickableUserAvatar(
-                user: user,
-                userId: submission.uid,
-                radius: 20,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primaryCyan.withOpacity(0.2),
+                  AppColors.primaryOrange.withOpacity(0.1),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.primaryCyan.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryCyan.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // User info
+                Row(
                   children: [
-                    ClickableUserName(
+                    ClickableUserAvatar(
                       user: user,
                       userId: submission.uid,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                      radius: 20,
                     ),
-                    Text(
-                      _formatSubmissionTime(submission.createdAt),
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Show delete option if current user owns the submission
-              if (currentUser != null && currentUser.uid == submission.uid)
-                PopupMenuButton<String>(
-                  onSelected: (value) async {
-                    if (value == 'delete') {
-                      await _showDeleteConfirmationDialog(
-                          context, ref, submission);
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem<String>(
-                      value: 'delete',
-                      child: Row(
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.delete, color: Colors.red),
-                          SizedBox(width: 8),
-                          Text('Delete', style: TextStyle(color: Colors.red)),
+                          ClickableUserName(
+                            user: user,
+                            userId: submission.uid,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            _formatSubmissionTime(submission.createdAt),
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ],
-                  child: const Icon(Icons.more_vert, color: Colors.white),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Actions
-          Row(
-            children: [
-              LikeButton(
-                eventId: submission.eventId,
-                submissionId: submission.id,
-                initialLikeCount: currentLikeCount,
-                initialIsLiked: isLikedByCurrentUser,
-              ),
-              const SizedBox(width: 16),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    useSafeArea: true,
-                    enableDrag: true,
-                    builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                    // Show delete option if current user owns the submission
+                    if (currentUser != null && currentUser.uid == submission.uid)
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primaryOrange.withOpacity(0.3),
+                              AppColors.primaryOrange.withOpacity(0.2),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.primaryOrange.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) async {
+                            if (value == 'delete') {
+                              await _showDeleteConfirmationDialog(
+                                  context, ref, submission);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                            ),
+                          ],
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(Icons.more_vert, color: Colors.white),
+                          ),
+                        ),
                       ),
-                      child: CommentSheet(
-                        eventId: submission.eventId,
-                        submissionId: submission.id,
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Actions
+                Row(
+                  children: [
+                    LikeButton(
+                      eventId: submission.eventId,
+                      submissionId: submission.id,
+                      initialLikeCount: currentLikeCount,
+                      initialIsLiked: isLikedByCurrentUser,
+                    ),
+                    const SizedBox(width: 16),
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          useSafeArea: true,
+                          enableDrag: true,
+                          builder: (context) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: CommentSheet(
+                              eventId: submission.eventId,
+                              submissionId: submission.id,
+                            ),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.comment_outlined,
+                              size: 20,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(width: 4),
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final commentsAsync = ref.watch(
+                                    commentsStreamProvider((
+                                  eventId: submission.eventId,
+                                  submissionId: submission.id
+                                )));
+                                return commentsAsync.when(
+                                  data: (comments) => Text(
+                                    comments.length.toString(),
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  loading: () => Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  error: (_, __) => Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.comment_outlined,
-                        size: 20,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(width: 4),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final commentsAsync = ref.watch(
-                              commentsStreamProvider((
-                            eventId: submission.eventId,
-                            submissionId: submission.id
-                          )));
-                          return commentsAsync.when(
-                            data: (comments) => Text(
-                              comments.length.toString(),
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            loading: () => Text(
-                              '0',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            error: (_, __) => Text(
-                              '0',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
