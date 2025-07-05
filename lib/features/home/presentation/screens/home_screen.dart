@@ -94,14 +94,13 @@ class HomeScreen extends ConsumerWidget {
             children: [
               // Logo positioned in the same place as app bar title
               Positioned(
-                top: MediaQuery.of(context).padding.top +
-                    MediaQuery.of(context).size.height * 0.02,
+                top: MediaQuery.of(context).size.height * 0.05,
                 left: 0,
-                right: 0,
+                right: MediaQuery.of(context).size.width * 0.6,
                 child: Center(
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.075,
+                    height: MediaQuery.of(context).size.height * 0.15,
                     child: Image.asset(
                       'assets/app_logo.png',
                       width: MediaQuery.of(context).size.width * 0.5,
