@@ -77,19 +77,12 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-            ],
-            stops: [0.0, 0.4, 0.7, 1.0],
-          ),
+          gradient: AppColors.auroraBackgroundGradient,
         ),
         child: Container(
+          decoration: BoxDecoration(
+            gradient: AppColors.auroraRadialGradient,
+          ),
           child: Stack(
             children: [
               // Logo positioned in the same place as app bar title
@@ -99,12 +92,12 @@ class HomeScreen extends ConsumerWidget {
                 right: MediaQuery.of(context).size.width * 0.6,
                 child: Center(
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.height * 0.10,
                     child: Image.asset(
                       'assets/app_logo.png',
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: MediaQuery.of(context).size.height * 0.075,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      height: MediaQuery.of(context).size.height * 0.035,
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
@@ -139,7 +132,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               // Main content
               RefreshIndicator(
-                color: Color(0xFF87ceeb),
+                color: AppColors.rosyBrown,
                 onRefresh: () async {
                   ref.refresh(activeEventProvider);
                   ref.refresh(pastEventsProvider);
@@ -210,11 +203,29 @@ class _WelcomeSection extends ConsumerWidget {
           ),
         );
       },
-      child: GlassContainer(
+      child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         padding: const EdgeInsets.all(16.0),
-        borderRadius: 32.0,
-        useCyanAccent: true,
+        decoration: BoxDecoration(
+          gradient: AppColors.auroraGlassGradient,
+          borderRadius: BorderRadius.circular(32.0),
+          border: Border.all(
+            color: AppColors.auroraBorder,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.rosyBrown.withOpacity(0.2),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+            BoxShadow(
+              color: AppColors.pineGreen.withOpacity(0.15),
+              blurRadius: 15,
+              offset: const Offset(5, 5),
+            ),
+          ],
+        ),
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.45,
           child: Column(
@@ -226,7 +237,14 @@ class _WelcomeSection extends ConsumerWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(32),
-                    color: Color(0xFF87ceeb).withOpacity(0.2),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.rosyBrown.withOpacity(0.3),
+                        AppColors.pineGreen.withOpacity(0.2),
+                      ],
+                    ),
                   ),
                   child: Container(
                     margin: const EdgeInsets.all(6),
@@ -245,9 +263,9 @@ class _WelcomeSection extends ConsumerWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        AppColors.primaryCyan,
-                                        AppColors.primaryOrange,
-                                        AppColors.warmBeige,
+                                        AppColors.rosyBrown,
+                                        AppColors.pineGreen,
+                                        AppColors.midnightGreen,
                                       ],
                                     ),
                                   ),
@@ -266,9 +284,9 @@ class _WelcomeSection extends ConsumerWidget {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    AppColors.primaryCyan,
-                                    AppColors.primaryOrange,
-                                    AppColors.warmBeige,
+                                    AppColors.rosyBrown,
+                                    AppColors.pineGreen,
+                                    AppColors.midnightGreen,
                                   ],
                                 ),
                               ),
@@ -296,11 +314,11 @@ class _WelcomeSection extends ConsumerWidget {
                         letterSpacing: 0.5,
                         shadows: [
                           Shadow(
-                            color: AppColors.primaryCyan.withOpacity(0.4),
+                            color: AppColors.rosyBrown.withOpacity(0.6),
                             blurRadius: 12,
                           ),
                           Shadow(
-                            color: AppColors.primaryOrange.withOpacity(0.2),
+                            color: AppColors.pineGreen.withOpacity(0.4),
                             blurRadius: 8,
                             offset: const Offset(2, 2),
                           ),
@@ -341,18 +359,19 @@ class _WelcomeSection extends ConsumerWidget {
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
+        gradient: AppColors.auroraGlassGradient,
         border: Border.all(
-          color: AppColors.primaryCyan.withOpacity(0.4),
+          color: AppColors.auroraBorder,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryCyan.withOpacity(0.3),
+            color: AppColors.rosyBrown.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: AppColors.primaryOrange.withOpacity(0.2),
+            color: AppColors.pineGreen.withOpacity(0.2),
             blurRadius: 15,
             offset: const Offset(5, 5),
           ),
@@ -365,7 +384,14 @@ class _WelcomeSection extends ConsumerWidget {
             width: MediaQuery.of(context).size.width * 0.45,
             height: MediaQuery.of(context).size.width * 0.45,
             decoration: BoxDecoration(
-              color: Color(0xFF87ceeb).withOpacity(0.3),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown.withOpacity(0.4),
+                  AppColors.pineGreen.withOpacity(0.3),
+                ],
+              ),
               borderRadius: BorderRadius.circular(40),
             ),
             child: Icon(
@@ -426,11 +452,17 @@ class _WelcomeSection extends ConsumerWidget {
   }
 
   Widget _buildLoadingSection(BuildContext context) {
-    return GlassContainer(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
-      borderRadius: 28.0,
-      useCyanAccent: true,
+      decoration: BoxDecoration(
+        gradient: AppColors.auroraGlassGradient,
+        borderRadius: BorderRadius.circular(28.0),
+        border: Border.all(
+          color: AppColors.auroraBorder,
+          width: 1.5,
+        ),
+      ),
       child: Column(
         children: [
           Container(
@@ -440,12 +472,12 @@ class _WelcomeSection extends ConsumerWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppColors.primaryCyan, AppColors.primaryCyanDark],
+                colors: [AppColors.rosyBrown, AppColors.pineGreen],
               ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryCyan.withOpacity(0.4),
+                  color: AppColors.rosyBrown.withOpacity(0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -467,7 +499,7 @@ class _WelcomeSection extends ConsumerWidget {
               fontWeight: FontWeight.bold,
               shadows: [
                 Shadow(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
+                  color: AppColors.rosyBrown.withOpacity(0.5),
                   blurRadius: 10,
                 ),
               ],
@@ -479,18 +511,31 @@ class _WelcomeSection extends ConsumerWidget {
   }
 
   Widget _buildErrorSection(BuildContext context) {
-    return GlassContainer(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
-      borderRadius: 28.0,
-      useOrangeAccent: true,
+      decoration: BoxDecoration(
+        gradient: AppColors.auroraGlassGradient,
+        borderRadius: BorderRadius.circular(28.0),
+        border: Border.all(
+          color: AppColors.auroraBorder,
+          width: 1.5,
+        ),
+      ),
       child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width * 0.25,
             height: MediaQuery.of(context).size.width * 0.25,
             decoration: BoxDecoration(
-              color: Color(0xFF87ceeb).withOpacity(0.3),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown.withOpacity(0.4),
+                  AppColors.pineGreen.withOpacity(0.3),
+                ],
+              ),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Icon(
@@ -526,7 +571,7 @@ class _PastChallengesList extends ConsumerWidget {
         child: Padding(
           padding: EdgeInsets.all(32.0),
           child: Center(
-            child: CircularProgressIndicator(color: AppColors.primaryCyan),
+            child: CircularProgressIndicator(color: AppColors.rosyBrown),
           ),
         ),
       ),
@@ -545,10 +590,10 @@ class _PastChallengesList extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () => ref.refresh(pastEventsProvider),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF87ceeb),
+                    backgroundColor: AppColors.rosyBrown,
                     foregroundColor: Colors.white,
                     elevation: 4,
-                    shadowColor: Color(0xFF87ceeb).withOpacity(0.3),
+                    shadowColor: AppColors.rosyBrown.withOpacity(0.3),
                   ),
                   child: const Text('Retry'),
                 ),
@@ -567,10 +612,10 @@ class _PastChallengesList extends ConsumerWidget {
           margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           padding: const EdgeInsets.all(32.0),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            gradient: AppColors.auroraGlassGradient,
             borderRadius: BorderRadius.circular(32),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: AppColors.auroraBorder,
               width: 1.5,
             ),
           ),
@@ -580,7 +625,14 @@ class _PastChallengesList extends ConsumerWidget {
                 width: MediaQuery.of(context).size.width * 0.3,
                 height: MediaQuery.of(context).size.width * 0.3,
                 decoration: BoxDecoration(
-                  color: Color(0xFF87ceeb).withOpacity(0.3),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.rosyBrown.withOpacity(0.4),
+                      AppColors.pineGreen.withOpacity(0.3),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Icon(
@@ -598,7 +650,7 @@ class _PastChallengesList extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   shadows: [
                     Shadow(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      color: AppColors.rosyBrown.withOpacity(0.5),
                       blurRadius: 10,
                     ),
                   ],
@@ -618,23 +670,15 @@ class _PastChallengesList extends ConsumerWidget {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primaryCyan.withOpacity(0.15),
-                  AppColors.primaryOrange.withOpacity(0.12),
-                  AppColors.warmBeige.withOpacity(0.08),
-                ],
-              ),
+              gradient: AppColors.auroraGlassGradient,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.primaryCyan.withOpacity(0.3),
+                color: AppColors.auroraBorder,
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryCyan.withOpacity(0.15),
+                  color: AppColors.rosyBrown.withOpacity(0.15),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
@@ -665,20 +709,20 @@ class _PastChallengesList extends ConsumerWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              AppColors.primaryCyan,
-                              AppColors.primaryOrange,
-                              AppColors.warmBeige,
+                              AppColors.rosyBrown,
+                              AppColors.pineGreen,
+                              AppColors.midnightGreen,
                             ],
                             stops: [0.0, 0.5, 1.0],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryCyan.withOpacity(0.4),
+                              color: AppColors.rosyBrown.withOpacity(0.4),
                               blurRadius: 12,
                               offset: const Offset(-4, -4),
                             ),
                             BoxShadow(
-                              color: AppColors.primaryOrange.withOpacity(0.4),
+                              color: AppColors.pineGreen.withOpacity(0.4),
                               blurRadius: 12,
                               offset: const Offset(4, 4),
                             ),
@@ -695,8 +739,16 @@ class _PastChallengesList extends ConsumerWidget {
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         decoration: BoxDecoration(
-                                          color: Color(0xFF87ceeb)
-                                              .withOpacity(0.3),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              AppColors.rosyBrown
+                                                  .withOpacity(0.4),
+                                              AppColors.pineGreen
+                                                  .withOpacity(0.3),
+                                            ],
+                                          ),
                                         ),
                                         child: Icon(
                                           Icons.photo_camera_outlined,
@@ -711,7 +763,14 @@ class _PastChallengesList extends ConsumerWidget {
                                   )
                                 : Container(
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF87ceeb).withOpacity(0.3),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          AppColors.rosyBrown.withOpacity(0.4),
+                                          AppColors.pineGreen.withOpacity(0.3),
+                                        ],
+                                      ),
                                     ),
                                     child: Icon(
                                       Icons.photo_camera_outlined,
@@ -746,17 +805,17 @@ class _PastChallengesList extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: AppColors.primaryCyan.withOpacity(0.1),
+                                color: AppColors.rosyBrown.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: AppColors.primaryCyan.withOpacity(0.3),
+                                  color: AppColors.rosyBrown.withOpacity(0.3),
                                   width: 1,
                                 ),
                               ),
                               child: Text(
                                 _formatDate(event.endTime),
                                 style: TextStyle(
-                                  color: Color(0xFF87ceeb),
+                                  color: AppColors.rosyBrown,
                                   fontSize:
                                       MediaQuery.of(context).size.width * 0.03,
                                   fontWeight: FontWeight.w500,
@@ -768,7 +827,7 @@ class _PastChallengesList extends ConsumerWidget {
                       ),
                       Icon(
                         Icons.arrow_forward_ios,
-                        color: Color(0xFF87ceeb).withOpacity(0.7),
+                        color: AppColors.rosyBrown.withOpacity(0.7),
                         size: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ],

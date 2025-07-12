@@ -8,6 +8,19 @@ class AppColors {
   static const Color primaryOrangeDark = Color(0xFFFF5722);
   static const Color warmBeige = Color(0xFFE1BEA1);
   
+  // Aurora color palette - inspired by aurora borealis
+  static const Color rosyBrown = Color(0xFFBF988A);
+  static const Color pineGreen = Color(0xFF247C6D);
+  static const Color midnightGreen = Color(0xFF031C26);
+  
+  // Aurora color variants
+  static const Color rosyBrownLight = Color(0xFFD4AE9F);
+  static const Color rosyBrownDark = Color(0xFFA57E6F);
+  static const Color pineGreenLight = Color(0xFF2E9B84);
+  static const Color pineGreenDark = Color(0xFF1A5F53);
+  static const Color midnightGreenLight = Color(0xFF0A2A3A);
+  static const Color midnightGreenDark = Color(0xFF000A0F);
+  
   // Modern glassmorphism background - optimized for glass effects
   static const Color backgroundPrimary = Color(0xFF0F1419);
   static const Color backgroundSecondary = Color(0xFF1E2328);
@@ -98,13 +111,53 @@ class AppColors {
     ],
   );
   
+  // Aurora glass effects
+  static LinearGradient get auroraGlassGradient => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      rosyBrown.withOpacity(0.15),
+      pineGreen.withOpacity(0.12),
+      midnightGreen.withOpacity(0.08),
+    ],
+  );
+  
+  // Aurora background gradient - mimics the soft blurred aurora effect
+  static LinearGradient get auroraBackgroundGradient => LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      midnightGreenDark,
+      midnightGreen,
+      pineGreenDark.withOpacity(0.8),
+      midnightGreen,
+    ],
+    stops: [0.0, 0.3, 0.7, 1.0],
+  );
+  
+  // Aurora radial gradient for soft light effects
+  static RadialGradient get auroraRadialGradient => RadialGradient(
+    center: Alignment.topCenter,
+    radius: 1.5,
+    colors: [
+      rosyBrown.withOpacity(0.3),
+      pineGreen.withOpacity(0.2),
+      Colors.transparent,
+      midnightGreen.withOpacity(0.1),
+    ],
+    stops: [0.0, 0.3, 0.6, 1.0],
+  );
+  
   // Utility colors
   static Color get cyanWithOpacity => primaryCyan.withOpacity(0.15);
   static Color get orangeWithOpacity => primaryOrange.withOpacity(0.15);
   static Color get beigeWithOpacity => warmBeige.withOpacity(0.15);
+  static Color get rosyBrownWithOpacity => rosyBrown.withOpacity(0.15);
+  static Color get pineGreenWithOpacity => pineGreen.withOpacity(0.15);
   
   // Border colors for glass effect
   static Color get glassBorder => Colors.white.withOpacity(0.2);
   static Color get cyanBorder => primaryCyan.withOpacity(0.3);
   static Color get orangeBorder => primaryOrange.withOpacity(0.3);
+  static Color get auroraBorder => rosyBrown.withOpacity(0.4);
 }
