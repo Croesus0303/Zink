@@ -42,7 +42,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     // Refresh event data
     ref.refresh(eventsProvider);
     ref.refresh(submissionsProvider(widget.eventId));
-    
+
     // Refresh social data
     final currentUser = ref.read(currentUserProvider);
     if (currentUser != null) {
@@ -91,13 +91,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: const Text('Event Not Found', style: TextStyle(color: AppColors.textPrimary)),
+              title: const Text('Event Not Found',
+                  style: TextStyle(color: AppColors.textPrimary)),
               centerTitle: true,
             ),
             body: Container(
               decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
               child: Container(
-                decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+                decoration:
+                    BoxDecoration(gradient: AppColors.radialBackgroundGradient),
                 child: const Center(
                   child: Text(
                     'Event not found',
@@ -115,13 +117,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Loading...', style: TextStyle(color: AppColors.textPrimary)),
+          title: const Text('Loading...',
+              style: TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
           decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
           child: Container(
-            decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+            decoration:
+                BoxDecoration(gradient: AppColors.radialBackgroundGradient),
             child: const Center(
               child: CircularProgressIndicator(color: AppColors.primaryCyan),
             ),
@@ -136,13 +140,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Error', style: TextStyle(color: AppColors.textPrimary)),
+            title: const Text('Error',
+                style: TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(
             decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
             child: Container(
-              decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+              decoration:
+                  BoxDecoration(gradient: AppColors.radialBackgroundGradient),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -168,25 +174,19 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           color: AppColors.primaryCyan.withOpacity(0.3),
                           width: 1,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryCyan.withOpacity(0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
                           onTap: () => ref.refresh(eventsProvider),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.refresh, color: Colors.white, size: 20),
+                                Icon(Icons.refresh,
+                                    color: Colors.white, size: 20),
                                 SizedBox(width: 8),
                                 Text(
                                   'Retry',
@@ -219,52 +219,67 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(event.title, style: const TextStyle(color: AppColors.textPrimary)),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.11,
+        title: null,
         centerTitle: true,
         leading: Container(
-          margin: const EdgeInsets.all(8),
+          margin: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primaryCyan.withOpacity(0.2),
-                AppColors.primaryCyan.withOpacity(0.1),
-              ],
-            ),
+            color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.primaryCyan.withOpacity(0.3),
-              width: 1,
+              color: Colors.white.withOpacity(0.2),
+              width: 1.5,
             ),
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back, color: AppColors.primaryCyan),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.055,
+            ),
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width * 0.12,
+              minHeight: MediaQuery.of(context).size.width * 0.12,
+            ),
+            padding: EdgeInsets.zero,
           ),
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
-          child: RefreshIndicator(
-            color: AppColors.primaryCyan,
-            onRefresh: _onRefresh,
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 100), // Space for app bar
-                ),
-                _EventHeaderSection(event: event),
-                SliverToBoxAdapter(
-                  child: _EventInfoSection(event: event),
-                ),
-                SliverToBoxAdapter(
-                  child: _FilterSection(),
-                ),
-                _SubmissionsList(eventId: widget.eventId),
-              ],
-            ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.backgroundDark,
+              AppColors.backgroundDark,
+              AppColors.backgroundDark,
+              AppColors.backgroundDark,
+            ],
+            stops: [0.0, 0.4, 0.7, 1.0],
+          ),
+        ),
+        child: RefreshIndicator(
+          color: Color(0xFF87ceeb),
+          onRefresh: _onRefresh,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child:
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+              ),
+              SliverToBoxAdapter(
+                child: _UnifiedEventContainer(
+                    event: event, eventId: widget.eventId),
+              ),
+              SliverToBoxAdapter(
+                child:
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              ),
+            ],
           ),
         ),
       ),
@@ -272,309 +287,395 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 }
 
-class _EventHeaderSection extends StatelessWidget {
+class _UnifiedEventContainer extends ConsumerWidget {
   final EventModel event;
+  final String eventId;
 
-  const _EventHeaderSection({required this.event});
+  const _UnifiedEventContainer({required this.event, required this.eventId});
 
   @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: GlassContainer(
-        margin: const EdgeInsets.all(16),
-        borderRadius: 32.0,
-        useCyanAccent: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Event image with glassmorphism styling
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Stack(
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: event.referenceImageURL,
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryCyan.withOpacity(0.2),
-                              AppColors.primaryOrange.withOpacity(0.1),
-                            ],
-                          ),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: AppColors.primaryCyan),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryOrange.withOpacity(0.2),
-                              AppColors.primaryCyan.withOpacity(0.1),
-                            ],
-                          ),
-                        ),
-                        child: const Icon(Icons.error, color: AppColors.primaryOrange, size: 48),
-                      ),
-                    ),
-                    // Glassmorphism gradient overlay
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            AppColors.primaryCyan.withOpacity(0.3),
-                            AppColors.backgroundPrimary.withOpacity(0.8),
-                          ],
-                          stops: [0.0, 0.7, 1.0],
-                        ),
-                      ),
-                    ),
-                    // Submit button overlay
-                    if (event.isActive)
-                      Positioned(
-                        bottom: 16,
-                        right: 16,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.primaryOrange.withOpacity(0.9),
-                                AppColors.primaryOrangeDark.withOpacity(0.8),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.primaryOrange.withOpacity(0.3),
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primaryOrange.withOpacity(0.4),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () => context.push('/submit/${event.id}'),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Submit Photo',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentFilter = ref.watch(submissionFilterProvider);
+    final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
 
-class _EventInfoSection extends StatelessWidget {
-  final EventModel event;
-
-  const _EventInfoSection({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
     return GlassContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      borderRadius: 32.0,
-      useOrangeAccent: true,
+      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      padding: const EdgeInsets.all(20.0),
+      useCyanAccent: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Status and time info
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: event.isActive ? [
-                      AppColors.primaryCyan.withOpacity(0.8),
-                      AppColors.primaryCyanDark.withOpacity(0.9),
-                    ] : [
-                      AppColors.textSecondary.withOpacity(0.8),
-                      AppColors.textSecondary.withOpacity(0.6),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: event.isActive ? AppColors.primaryCyan.withOpacity(0.3) : AppColors.textSecondary.withOpacity(0.3),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: (event.isActive ? AppColors.primaryCyan : AppColors.textSecondary).withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+          // Event Header with Image, Title, Description
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: Column(
+              children: [
+                // Reference photo (main space)
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF87ceeb).withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                  ],
-                ),
-                child: Text(
-                  event.isActive ? 'Active' : 'Ended',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    child: Container(
+                      margin: const EdgeInsets.all(4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: event.referenceImageURL.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: event.referenceImageURL,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                                placeholder: (context, url) => Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.primaryCyan,
+                                        AppColors.primaryOrange,
+                                        AppColors.warmBeige,
+                                      ],
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 4,
+                                    ),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.primaryCyan,
+                                        AppColors.primaryOrange,
+                                        AppColors.warmBeige,
+                                      ],
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.photo_camera_outlined,
+                                    color: Colors.white,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      AppColors.primaryCyan,
+                                      AppColors.primaryOrange,
+                                      AppColors.warmBeige,
+                                    ],
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.photo_camera_outlined,
+                                  color: Colors.white,
+                                  size: MediaQuery.of(context).size.width * 0.2,
+                                ),
+                              ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              if (event.isActive)
+                // Title and description below photo
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryOrange.withOpacity(0.2),
-                        AppColors.primaryOrange.withOpacity(0.1),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Column(
                     children: [
-                      const Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: AppColors.primaryOrange,
-                      ),
-                      const SizedBox(width: 4),
                       Text(
-                        _formatTimeRemaining(event.endTime),
-                        style: const TextStyle(
-                          color: AppColors.primaryOrange,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                        event.title,
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: MediaQuery.of(context).size.width * 0.048,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3,
+                          shadows: [
+                            Shadow(
+                              color: AppColors.primaryCyan.withOpacity(0.3),
+                              blurRadius: 8,
+                            ),
+                          ],
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.012),
+                      Text(
+                        event.description,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: MediaQuery.of(context).size.width * 0.035,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                          letterSpacing: 0.2,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Title
-          Text(
-            event.title,
-            style: TextStyle(
-              color: AppColors.primaryOrange,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
-                  blurRadius: 8,
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          // Description
-          Text(
-            event.description,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 16,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // Submit button (if active)
-          if (event.isActive)
-            Container(
-              width: double.infinity,
-              height: 56,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryOrange.withOpacity(0.8),
-                    AppColors.primaryOrangeDark.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryOrange.withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => context.push('/submit/${event.id}'),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          AppLocalizations.of(context)!.submitPhoto,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+
+          // Dynamic Status and Submit Button Section
+          AnimatedContainer(
+            padding: const EdgeInsets.only(top: 16),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: Column(
+              children: [
+                // Status Row
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: event.isActive
+                            ? Color(0xFF87ceeb).withOpacity(0.8)
+                            : Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: event.isActive
+                              ? Color(0xFF87ceeb).withOpacity(0.3)
+                              : Colors.white.withOpacity(0.3),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Text(
+                        event.isActive ? 'Active' : 'Ended',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    if (event.isActive)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                            width: 1.5,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              size: MediaQuery.of(context).size.width * 0.04,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            Text(
+                              _formatTimeRemaining(event.endTime),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
+
+                // Dynamic Submit Button Section
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  height: event.isActive
+                      ? MediaQuery.of(context).size.height * 0.1
+                      : 0,
+                  child: event.isActive
+                      ? Column(
+                          children: [
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02),
+                            Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF87ceeb).withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Color(0xFF87ceeb).withOpacity(0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () =>
+                                      context.push('/submit/${event.id}'),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24, vertical: 16),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                          size: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.045,
+                                        ),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02),
+                                        Text(
+                                          AppLocalizations.of(context)!
+                                              .submitPhoto,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.035,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
+
+          // Dynamic Divider
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            margin: EdgeInsets.symmetric(
+              vertical: event.isActive ? 20 : 10,
+            ),
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.white.withOpacity(0.3),
+                  Colors.transparent,
+                ],
               ),
             ),
+          ),
+
+          // Submissions Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.submissions,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _FilterChip(
+                      label: AppLocalizations.of(context)!.mostPopular,
+                      isSelected: currentFilter == SubmissionFilter.mostPopular,
+                      onSelected: () {
+                        ref.read(submissionFilterProvider.notifier).state =
+                            SubmissionFilter.mostPopular;
+                      },
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    _FilterChip(
+                      label: AppLocalizations.of(context)!.newest,
+                      isSelected: currentFilter == SubmissionFilter.newest,
+                      onSelected: () {
+                        ref.read(submissionFilterProvider.notifier).state =
+                            SubmissionFilter.newest;
+                      },
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    _FilterChip(
+                      label: AppLocalizations.of(context)!.oldest,
+                      isSelected: currentFilter == SubmissionFilter.oldest,
+                      onSelected: () {
+                        ref.read(submissionFilterProvider.notifier).state =
+                            SubmissionFilter.oldest;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+
+              // Submissions List
+              submissionsAsync.when(
+                data: (submissions) =>
+                    _buildSubmissionsList(context, submissions),
+                loading: () => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child:
+                        CircularProgressIndicator(color: AppColors.primaryCyan),
+                  ),
+                ),
+                error: (error, stack) => _buildErrorWidget(context, ref),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -593,66 +694,120 @@ class _EventInfoSection extends StatelessWidget {
       return 'Ending soon';
     }
   }
-}
 
-class _FilterSection extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentFilter = ref.watch(submissionFilterProvider);
+  Widget _buildSubmissionsList(
+      BuildContext context, List<SubmissionModel> submissions) {
+    if (submissions.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: MediaQuery.of(context).size.width * 0.25,
+              decoration: BoxDecoration(
+                color: Color(0xFF87ceeb).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                Icons.photo_library_outlined,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.12,
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Text(
+              'No submissions yet',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: MediaQuery.of(context).size.width * 0.04,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Text(
+              'Be the first to submit a photo!',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: MediaQuery.of(context).size.width * 0.032,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
 
-    return GlassContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      borderRadius: 32.0,
-      useCyanAccent: true,
+    return Column(
+      children: submissions
+          .map(
+            (submission) => Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: _SubmissionCard(submission: submission),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildErrorWidget(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppLocalizations.of(context)!.submissions,
-            style: TextStyle(
-              color: AppColors.primaryCyan,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
+            'Error loading submissions',
+            style: const TextStyle(color: AppColors.textPrimary),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _FilterChip(
-                  label: AppLocalizations.of(context)!.mostPopular,
-                  isSelected: currentFilter == SubmissionFilter.mostPopular,
-                  onSelected: () {
-                    ref.read(submissionFilterProvider.notifier).state =
-                        SubmissionFilter.mostPopular;
-                  },
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primaryCyan.withOpacity(0.8),
+                  AppColors.primaryCyanDark.withOpacity(0.9),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.primaryCyan.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => ref.refresh(submissionsProvider(eventId)),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.refresh, color: Colors.white, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Retry',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: AppLocalizations.of(context)!.newest,
-                  isSelected: currentFilter == SubmissionFilter.newest,
-                  onSelected: () {
-                    ref.read(submissionFilterProvider.notifier).state =
-                        SubmissionFilter.newest;
-                  },
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: AppLocalizations.of(context)!.oldest,
-                  isSelected: currentFilter == SubmissionFilter.oldest,
-                  onSelected: () {
-                    ref.read(submissionFilterProvider.notifier).state =
-                        SubmissionFilter.oldest;
-                  },
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -679,37 +834,24 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected ? LinearGradient(
-            colors: [
-              AppColors.primaryCyan.withOpacity(0.8),
-              AppColors.primaryCyanDark.withOpacity(0.9),
-            ],
-          ) : LinearGradient(
-            colors: [
-              AppColors.primaryCyan.withOpacity(0.2),
-              AppColors.primaryCyan.withOpacity(0.1),
-            ],
-          ),
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    AppColors.primaryCyan.withOpacity(0.8),
+                    AppColors.primaryCyanDark.withOpacity(0.9),
+                  ],
+                )
+              : LinearGradient(
+                  colors: [
+                    AppColors.primaryCyan.withOpacity(0.2),
+                    AppColors.primaryCyan.withOpacity(0.1),
+                  ],
+                ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: AppColors.primaryCyan.withOpacity(isSelected ? 0.6 : 0.4),
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.2),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
         ),
         child: Text(
           label,
@@ -717,182 +859,16 @@ class _FilterChip extends StatelessWidget {
             color: isSelected ? Colors.white : AppColors.primaryCyan,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
-            shadows: isSelected ? [
-              Shadow(
-                color: AppColors.primaryCyan.withOpacity(0.5),
-                blurRadius: 4,
-              ),
-            ] : null,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SubmissionsList extends ConsumerWidget {
-  final String eventId;
-
-  const _SubmissionsList({required this.eventId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
-
-    return submissionsAsync.when(
-      data: (submissions) => _buildSubmissionsList(context, submissions),
-      loading: () => const SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.all(32.0),
-          child: Center(
-            child: CircularProgressIndicator(color: AppColors.primaryCyan),
-          ),
-        ),
-      ),
-      error: (error, stack) {
-        AppLogger.e('Error loading submissions', error, stack);
-        return SliverToBoxAdapter(
-          child: GlassContainer(
-            margin: const EdgeInsets.all(16),
-            borderRadius: 32.0,
-            useCyanAccent: true,
-            child: Column(
-              children: [
-                Text(
-                  'Error loading submissions: $error',
-                  style: const TextStyle(color: AppColors.textPrimary),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryCyan.withOpacity(0.8),
-                        AppColors.primaryCyanDark.withOpacity(0.9),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryCyan.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () => ref.refresh(submissionsProvider(eventId)),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.refresh, color: Colors.white, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              'Retry',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSubmissionsList(
-      BuildContext context, List<SubmissionModel> submissions) {
-    if (submissions.isEmpty) {
-      return SliverToBoxAdapter(
-        child: GlassContainer(
-          margin: const EdgeInsets.all(16),
-          borderRadius: 32.0,
-          useCyanAccent: true,
-          child: Column(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primaryCyan.withOpacity(0.8),
-                      AppColors.primaryCyanDark.withOpacity(0.6),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.photo_library_outlined,
-                  size: 40,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'No submissions yet',
-                style: TextStyle(
-                  color: AppColors.primaryCyan,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
+            shadows: isSelected
+                ? [
                     Shadow(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      blurRadius: 8,
+                      color: AppColors.primaryCyan.withOpacity(0.5),
+                      blurRadius: 4,
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Be the first to submit a photo!',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 16,
-                ),
-              ),
-            ],
+                  ]
+                : null,
           ),
         ),
-      );
-    }
-
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final submission = submissions[index];
-
-          return _SubmissionCard(
-            submission: submission,
-          );
-        },
-        childCount: submissions.length,
       ),
     );
   }
@@ -934,191 +910,214 @@ class _SubmissionCard extends ConsumerWidget {
 
   Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
       dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
-    return GlassContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      borderRadius: 32.0,
-      useOrangeAccent: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Container(
+      margin: const EdgeInsets.only(bottom: 2.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // User info header
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                ClickableUserAvatar(
-                  user: user,
-                  userId: submission.uid,
-                  radius: 16,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClickableUserName(
-                        user: user,
-                        userId: submission.uid,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryOrange,
-                        ),
+          Row(
+            children: [
+              ClickableUserAvatar(
+                user: user,
+                userId: submission.uid,
+                radius: MediaQuery.of(context).size.width * 0.035,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClickableUserName(
+                      user: user,
+                      userId: submission.uid,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
                       ),
-                      Text(
-                        _formatSubmissionTime(submission.createdAt),
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
+                    ),
+                    Text(
+                      _formatSubmissionTime(submission.createdAt),
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.028,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Show delete option if current user owns the submission
+              if (currentUser != null && currentUser.uid == submission.uid)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: PopupMenuButton<String>(
+                    onSelected: (value) async {
+                      if (value == 'delete') {
+                        await _showDeleteConfirmationDialog(
+                            context, ref, submission);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete, color: Colors.red),
+                            SizedBox(width: 8),
+                            Text('Delete', style: TextStyle(color: Colors.red)),
+                          ],
                         ),
                       ),
                     ],
+                    child: Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.045,
+                    ),
                   ),
                 ),
-                // Show delete option if current user owns the submission
-                if (currentUser != null && currentUser.uid == submission.uid)
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withOpacity(0.2),
-                          AppColors.primaryOrange.withOpacity(0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
-                    ),
-                    child: PopupMenuButton<String>(
-                      onSelected: (value) async {
-                        if (value == 'delete') {
-                          await _showDeleteConfirmationDialog(
-                              context, ref, submission);
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        const PopupMenuItem<String>(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete, color: Colors.red),
-                              SizedBox(width: 8),
-                              Text('Delete',
-                                  style: TextStyle(color: Colors.red)),
-                            ],
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+          // Submission image
+          AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primaryCyan,
+                    AppColors.primaryOrange,
+                    AppColors.warmBeige,
+                  ],
+                  stops: [0.0, 0.5, 1.0],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Container(
+                margin: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: GestureDetector(
+                    onTap: () =>
+                        _showFullScreenImage(context, submission.imageURL),
+                    child: CachedNetworkImage(
+                      imageUrl: submission.imageURL,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF87ceeb).withOpacity(0.3),
+                        ),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 4,
                           ),
                         ),
-                      ],
-                      child: const Icon(Icons.more_vert, color: AppColors.primaryOrange),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          // Submission image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: GestureDetector(
-                onTap: () => _showFullScreenImage(context, submission.imageURL),
-                child: CachedNetworkImage(
-                  imageUrl: submission.imageURL,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withOpacity(0.2),
-                          AppColors.primaryCyan.withOpacity(0.1),
-                        ],
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF87ceeb).withOpacity(0.3),
+                        ),
+                        child: Icon(
+                          Icons.photo_camera_outlined,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.08,
+                        ),
                       ),
                     ),
-                    child: const Center(
-                      child: CircularProgressIndicator(color: AppColors.primaryOrange),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withOpacity(0.2),
-                          AppColors.primaryCyan.withOpacity(0.1),
-                        ],
-                      ),
-                    ),
-                    child: const Icon(Icons.error, color: AppColors.primaryOrange, size: 48),
                   ),
                 ),
               ),
             ),
           ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           // Actions
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                LikeButton(
-                  eventId: submission.eventId,
-                  submissionId: submission.id,
-                  initialLikeCount: currentLikeCount,
-                  initialIsLiked: isLikedByCurrentUser,
-                ),
-                const SizedBox(width: 16),
-                InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      useSafeArea: true,
-                      enableDrag: true,
-                      builder: (context) => Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: CommentSheet(
-                          eventId: submission.eventId,
-                          submissionId: submission.id,
-                        ),
+          Row(
+            children: [
+              LikeButton(
+                eventId: submission.eventId,
+                submissionId: submission.id,
+                initialLikeCount: currentLikeCount,
+                initialIsLiked: isLikedByCurrentUser,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.035),
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    useSafeArea: true,
+                    enableDrag: true,
+                    builder: (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withOpacity(0.2),
-                          AppColors.primaryOrange.withOpacity(0.1),
-                        ],
+                      child: CommentSheet(
+                        eventId: submission.eventId,
+                        submissionId: submission.id,
                       ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.primaryOrange.withOpacity(0.4), width: 1),
                     ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.comment_outlined,
-                          size: 20,
-                          color: AppColors.primaryOrange,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          'Comments',
-                          style: TextStyle(
-                            color: AppColors.primaryOrange,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                    vertical: MediaQuery.of(context).size.height * 0.01,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1.5,
                     ),
                   ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.comment_outlined,
+                        size: MediaQuery.of(context).size.width * 0.04,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      Text(
+                        'Comments',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.032,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ]),
       ),
     );
   }
@@ -1225,8 +1224,9 @@ class _FullScreenImageViewer extends StatelessWidget {
                 AppColors.primaryCyan.withOpacity(0.1),
               ],
             ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primaryCyan.withOpacity(0.3), width: 1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+                color: AppColors.primaryCyan.withOpacity(0.3), width: 1),
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -1247,7 +1247,8 @@ class _FullScreenImageViewer extends StatelessWidget {
               child: CircularProgressIndicator(color: AppColors.primaryCyan),
             ),
             errorWidget: (context, url, error) => const Center(
-              child: Icon(Icons.error, color: AppColors.primaryOrange, size: 64),
+              child:
+                  Icon(Icons.error, color: AppColors.primaryOrange, size: 64),
             ),
           ),
         ),
