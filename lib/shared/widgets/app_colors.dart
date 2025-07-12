@@ -111,15 +111,30 @@ class AppColors {
     ],
   );
   
-  // Aurora glass effects
+  // Aurora glass effects - ice-like appearance
   static LinearGradient get auroraGlassGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      rosyBrown.withOpacity(0.15),
-      pineGreen.withOpacity(0.12),
-      midnightGreen.withOpacity(0.08),
+      Colors.white.withOpacity(0.12),
+      rosyBrown.withOpacity(0.08),
+      pineGreen.withOpacity(0.06),
+      midnightGreen.withOpacity(0.04),
     ],
+    stops: [0.0, 0.3, 0.7, 1.0],
+  );
+  
+  // Ice-like glass effect with stronger highlights
+  static LinearGradient get iceGlassGradient => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Colors.white.withOpacity(0.18),
+      rosyBrown.withOpacity(0.10),
+      pineGreen.withOpacity(0.08),
+      Colors.white.withOpacity(0.05),
+    ],
+    stops: [0.0, 0.25, 0.75, 1.0],
   );
   
   // Aurora background gradient - mimics the soft blurred aurora effect
@@ -160,4 +175,8 @@ class AppColors {
   static Color get cyanBorder => primaryCyan.withOpacity(0.3);
   static Color get orangeBorder => primaryOrange.withOpacity(0.3);
   static Color get auroraBorder => rosyBrown.withOpacity(0.4);
+  
+  // Ice-like borders with white highlights
+  static Color get iceBorder => Colors.white.withOpacity(0.3);
+  static Color get iceHighlight => Colors.white.withOpacity(0.15);
 }

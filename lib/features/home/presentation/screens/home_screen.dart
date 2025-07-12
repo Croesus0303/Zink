@@ -18,21 +18,52 @@ class HomeScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
         elevation: 0,
         automaticallyImplyLeading: false,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.11,
-        title: null,
-        centerTitle: true,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+        title: Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: MediaQuery.of(context).size.height * 0.07,
+              child: Image.asset(
+                'assets/app_logo.png',
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.camera_alt,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.04),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.015),
+                      Text(
+                        'Zink',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.045,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        centerTitle: false,
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 8, left: 0, bottom: 8, top: 0),
+            margin: const EdgeInsets.only(right: 6, left: 0, bottom: 3, top: 3),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(22),
+              color: AppColors.rosyBrown.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(15),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: AppColors.rosyBrown.withOpacity(0.3),
+                width: 1,
               ),
             ),
             child: IconButton(
@@ -40,23 +71,23 @@ class HomeScreen extends ConsumerWidget {
               icon: Icon(
                 Icons.chat_bubble_outline,
                 color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.055,
+                size: MediaQuery.of(context).size.width * 0.04,
               ),
               constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width * 0.12,
-                minHeight: MediaQuery.of(context).size.width * 0.12,
+                minWidth: MediaQuery.of(context).size.width * 0.08,
+                minHeight: MediaQuery.of(context).size.width * 0.08,
               ),
               padding: EdgeInsets.zero,
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(right: 16),
+            margin: const EdgeInsets.only(right: 12, bottom: 3, top: 3),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(22),
+              color: AppColors.pineGreen.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(15),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+                color: AppColors.pineGreen.withOpacity(0.3),
+                width: 1,
               ),
             ),
             child: IconButton(
@@ -64,11 +95,11 @@ class HomeScreen extends ConsumerWidget {
               icon: Icon(
                 Icons.person_outline,
                 color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.055,
+                size: MediaQuery.of(context).size.width * 0.04,
               ),
               constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width * 0.12,
-                minHeight: MediaQuery.of(context).size.width * 0.12,
+                minWidth: MediaQuery.of(context).size.width * 0.08,
+                minHeight: MediaQuery.of(context).size.width * 0.08,
               ),
               padding: EdgeInsets.zero,
             ),
@@ -77,7 +108,10 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: AppColors.auroraBackgroundGradient,
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -85,51 +119,6 @@ class HomeScreen extends ConsumerWidget {
           ),
           child: Stack(
             children: [
-              // Logo positioned in the same place as app bar title
-              Positioned(
-                top: MediaQuery.of(context).size.height * 0.05,
-                left: 0,
-                right: MediaQuery.of(context).size.width * 0.6,
-                child: Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.height * 0.10,
-                    child: Image.asset(
-                      'assets/app_logo.png',
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      height: MediaQuery.of(context).size.height * 0.035,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: MediaQuery.of(context).size.height * 0.075,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.camera_alt,
-                                  color: Colors.white,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06),
-                              SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.03),
-                              Text(
-                                'Zink',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.07,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
               // Main content
               RefreshIndicator(
                 color: AppColors.rosyBrown,
@@ -143,7 +132,7 @@ class HomeScreen extends ConsumerWidget {
                     SliverToBoxAdapter(
                       child: SizedBox(
                           height: MediaQuery.of(context).size.height *
-                              0.15), // Space for app bar + logo
+                              0.15), // Space for app bar
                     ),
                     SliverToBoxAdapter(child: _WelcomeSection()),
                     SliverToBoxAdapter(
@@ -207,22 +196,27 @@ class _WelcomeSection extends ConsumerWidget {
         margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          gradient: AppColors.auroraGlassGradient,
+          gradient: AppColors.iceGlassGradient,
           borderRadius: BorderRadius.circular(32.0),
           border: Border.all(
-            color: AppColors.auroraBorder,
+            color: AppColors.iceBorder,
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.rosyBrown.withOpacity(0.2),
+              color: Colors.white.withOpacity(0.1),
               blurRadius: 20,
-              offset: const Offset(0, 8),
+              offset: const Offset(-2, -2),
             ),
             BoxShadow(
-              color: AppColors.pineGreen.withOpacity(0.15),
+              color: AppColors.rosyBrown.withOpacity(0.15),
               blurRadius: 15,
-              offset: const Offset(5, 5),
+              offset: const Offset(2, 2),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -355,96 +349,52 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildWelcomeSection(BuildContext context, user) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-      padding: const EdgeInsets.all(32.0),
+      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        gradient: AppColors.auroraGlassGradient,
-        border: Border.all(
-          color: AppColors.auroraBorder,
-          width: 1.5,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.15),
+            AppColors.rosyBrown.withOpacity(0.08),
+            Colors.white.withOpacity(0.05),
+          ],
         ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.iceBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(-1, -1),
           ),
           BoxShadow(
-            color: AppColors.pineGreen.withOpacity(0.2),
-            blurRadius: 15,
-            offset: const Offset(5, 5),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(1, 1),
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.45,
-            height: MediaQuery.of(context).size.width * 0.45,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.rosyBrown.withOpacity(0.4),
-                  AppColors.pineGreen.withOpacity(0.3),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Icon(
-              Icons.waving_hand,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.18,
-            ),
+          Icon(
+            Icons.schedule,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.045,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
           Text(
-            'Hoşgeldin ${user?.displayName ?? 'Buğra'}!',
+            'Şu anda aktif görev bulunmuyor',
             style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: MediaQuery.of(context).size.width * 0.07,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.038,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.2,
             ),
             textAlign: TextAlign.center,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(25),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.schedule,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.width * 0.05,
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                Flexible(
-                  child: Text(
-                    'Şu anda aktif görev bulunmuyor',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.3,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -456,12 +406,24 @@ class _WelcomeSection extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
-        gradient: AppColors.auroraGlassGradient,
+        gradient: AppColors.iceGlassGradient,
         borderRadius: BorderRadius.circular(28.0),
         border: Border.all(
-          color: AppColors.auroraBorder,
+          color: AppColors.iceBorder,
           width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -515,12 +477,24 @@ class _WelcomeSection extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
-        gradient: AppColors.auroraGlassGradient,
+        gradient: AppColors.iceGlassGradient,
         borderRadius: BorderRadius.circular(28.0),
         border: Border.all(
-          color: AppColors.auroraBorder,
+          color: AppColors.iceBorder,
           width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -612,12 +586,24 @@ class _PastChallengesList extends ConsumerWidget {
           margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           padding: const EdgeInsets.all(32.0),
           decoration: BoxDecoration(
-            gradient: AppColors.auroraGlassGradient,
+            gradient: AppColors.iceGlassGradient,
             borderRadius: BorderRadius.circular(32),
             border: Border.all(
-              color: AppColors.auroraBorder,
+              color: AppColors.iceBorder,
               width: 1.5,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(-2, -2),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 15,
+                offset: const Offset(2, 2),
+              ),
+            ],
           ),
           child: Column(
             children: [
@@ -670,17 +656,31 @@ class _PastChallengesList extends ConsumerWidget {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
             decoration: BoxDecoration(
-              gradient: AppColors.auroraGlassGradient,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.12),
+                  AppColors.rosyBrown.withOpacity(0.06),
+                  AppColors.pineGreen.withOpacity(0.04),
+                  Colors.white.withOpacity(0.03),
+                ],
+              ),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.auroraBorder,
+                color: AppColors.iceBorder,
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.rosyBrown.withOpacity(0.15),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
+                  color: Colors.white.withOpacity(0.06),
+                  blurRadius: 8,
+                  offset: const Offset(-1, -1),
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: const Offset(1, 1),
                 ),
               ],
             ),
