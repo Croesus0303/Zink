@@ -96,10 +96,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               centerTitle: true,
             ),
             body: Container(
-              decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Container(
                 decoration:
-                    BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+                    BoxDecoration(gradient: AppColors.auroraRadialGradient),
                 child: const Center(
                   child: Text(
                     'Event not found',
@@ -122,12 +127,16 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           centerTitle: true,
         ),
         body: Container(
-          decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Container(
-            decoration:
-                BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
             child: const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryCyan),
+              child: CircularProgressIndicator(color: AppColors.pineGreen),
             ),
           ),
         ),
@@ -145,10 +154,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             centerTitle: true,
           ),
           body: Container(
-            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/background.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: Container(
               decoration:
-                  BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -164,16 +178,31 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       height: 56,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                           colors: [
-                            AppColors.primaryCyan.withOpacity(0.8),
-                            AppColors.primaryCyanDark.withOpacity(0.9),
+                            Colors.white.withOpacity(0.15),
+                            AppColors.pineGreen.withOpacity(0.08),
+                            Colors.white.withOpacity(0.05),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.primaryCyan.withOpacity(0.3),
+                          color: AppColors.iceBorder,
                           width: 1,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(-1, -1),
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(1, 1),
+                          ),
+                        ],
                       ),
                       child: Material(
                         color: Colors.transparent,
@@ -217,31 +246,64 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
         elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.11,
-        title: null,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+        title: Text(
+          event.title,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(
+                color: AppColors.rosyBrown.withOpacity(0.6),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         leading: Container(
-          margin: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withOpacity(0.15),
+                AppColors.pineGreen.withOpacity(0.08),
+                Colors.white.withOpacity(0.05),
+              ],
             ),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(1, 1),
+              ),
+            ],
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
               Icons.arrow_back,
               color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.055,
+              size: MediaQuery.of(context).size.width * 0.04,
             ),
             constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.12,
-              minHeight: MediaQuery.of(context).size.width * 0.12,
+              minWidth: MediaQuery.of(context).size.width * 0.08,
+              minHeight: MediaQuery.of(context).size.width * 0.08,
             ),
             padding: EdgeInsets.zero,
           ),
@@ -249,31 +311,37 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-              AppColors.backgroundDark,
-            ],
-            stops: [0.0, 0.4, 0.7, 1.0],
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
           ),
         ),
-        child: RefreshIndicator(
-          color: Color(0xFF87ceeb),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: AppColors.auroraRadialGradient,
+          ),
+          child: RefreshIndicator(
+          color: AppColors.pineGreen,
           onRefresh: _onRefresh,
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
                 child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.08),
               ),
               SliverToBoxAdapter(
-                child: _UnifiedEventContainer(
-                    event: event, eventId: widget.eventId),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: _EventDetailWidget(event: event),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child:
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              ),
+              SliverToBoxAdapter(
+                child: _SubmissionsWidget(event: event, eventId: widget.eventId),
               ),
               SliverToBoxAdapter(
                 child:
@@ -282,32 +350,52 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             ],
           ),
         ),
+        ),
       ),
     );
   }
 }
 
-class _UnifiedEventContainer extends ConsumerWidget {
+class _EventDetailWidget extends StatelessWidget {
   final EventModel event;
-  final String eventId;
 
-  const _UnifiedEventContainer({required this.event, required this.eventId});
+  const _EventDetailWidget({required this.event});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentFilter = ref.watch(submissionFilterProvider);
-    final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
-
-    return GlassContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24.0),
       padding: const EdgeInsets.all(20.0),
-      useCyanAccent: true,
+      decoration: BoxDecoration(
+        gradient: AppColors.iceGlassGradient,
+        borderRadius: BorderRadius.circular(28.0),
+        border: Border.all(
+          color: AppColors.iceBorder,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: AppColors.rosyBrown.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Event Header with Image, Title, Description
+          // Reference photo and content
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.35,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               children: [
                 // Reference photo (main space)
@@ -316,13 +404,20 @@ class _UnifiedEventContainer extends ConsumerWidget {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color(0xFF87ceeb).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.rosyBrown.withOpacity(0.3),
+                          AppColors.pineGreen.withOpacity(0.2),
+                        ],
+                      ),
                     ),
                     child: Container(
                       margin: const EdgeInsets.all(4),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(20),
                         child: event.referenceImageURL.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: event.referenceImageURL,
@@ -335,9 +430,9 @@ class _UnifiedEventContainer extends ConsumerWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        AppColors.primaryCyan,
-                                        AppColors.primaryOrange,
-                                        AppColors.warmBeige,
+                                        AppColors.rosyBrown,
+                                        AppColors.pineGreen,
+                                        AppColors.midnightGreen,
                                       ],
                                     ),
                                   ),
@@ -354,17 +449,16 @@ class _UnifiedEventContainer extends ConsumerWidget {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
-                                        AppColors.primaryCyan,
-                                        AppColors.primaryOrange,
-                                        AppColors.warmBeige,
+                                        AppColors.rosyBrown,
+                                        AppColors.pineGreen,
+                                        AppColors.midnightGreen,
                                       ],
                                     ),
                                   ),
                                   child: Icon(
                                     Icons.photo_camera_outlined,
                                     color: Colors.white,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.2,
+                                    size: MediaQuery.of(context).size.width * 0.15,
                                   ),
                                 ),
                               )
@@ -374,308 +468,194 @@ class _UnifiedEventContainer extends ConsumerWidget {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.primaryCyan,
-                                      AppColors.primaryOrange,
-                                      AppColors.warmBeige,
+                                      AppColors.rosyBrown,
+                                      AppColors.pineGreen,
+                                      AppColors.midnightGreen,
                                     ],
                                   ),
                                 ),
                                 child: Icon(
                                   Icons.photo_camera_outlined,
                                   color: Colors.white,
-                                  size: MediaQuery.of(context).size.width * 0.2,
+                                  size: MediaQuery.of(context).size.width * 0.15,
                                 ),
                               ),
                       ),
                     ),
                   ),
                 ),
-                // Title and description below photo
+                // Description below photo
                 Container(
                   padding: const EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: [
-                      Text(
-                        event.title,
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: MediaQuery.of(context).size.width * 0.048,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.3,
-                          shadows: [
-                            Shadow(
-                              color: AppColors.primaryCyan.withOpacity(0.3),
-                              blurRadius: 8,
-                            ),
+                  child: Text(
+                    event.description,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: MediaQuery.of(context).size.width * 0.037,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                      letterSpacing: 0.3,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Status and Submit Section
+          _buildStatusAndSubmitSection(context, event),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusAndSubmitSection(BuildContext context, EventModel event) {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      child: Column(
+        children: [
+          // Status and Time Row
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  gradient: event.isActive
+                      ? AppColors.iceGlassGradient
+                      : LinearGradient(
+                          colors: [
+                            Colors.white.withOpacity(0.1),
+                            Colors.white.withOpacity(0.05),
                           ],
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: event.isActive
+                        ? AppColors.rosyBrown.withOpacity(0.3)
+                        : Colors.white.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Text(
+                  event.isActive ? 'Active' : 'Ended',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              if (event.isActive)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.iceGlassGradient,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.iceBorder,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: MediaQuery.of(context).size.width * 0.04,
+                        color: Colors.white,
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.012),
+                          width: MediaQuery.of(context).size.width * 0.01),
                       Text(
-                        event.description,
+                        _formatTimeRemaining(event.endTime),
                         style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: MediaQuery.of(context).size.width * 0.035,
+                          color: Colors.white,
                           fontWeight: FontWeight.w500,
-                          height: 1.4,
-                          letterSpacing: 0.2,
+                          fontSize: MediaQuery.of(context).size.width * 0.035,
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          // Dynamic Status and Submit Button Section
-          AnimatedContainer(
-            padding: const EdgeInsets.only(top: 16),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: Column(
-              children: [
-                // Status Row
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: event.isActive
-                            ? Color(0xFF87ceeb).withOpacity(0.8)
-                            : Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: event.isActive
-                              ? Color(0xFF87ceeb).withOpacity(0.3)
-                              : Colors.white.withOpacity(0.3),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Text(
-                        event.isActive ? 'Active' : 'Ended',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    if (event.isActive)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.access_time,
-                              size: MediaQuery.of(context).size.width * 0.04,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.01),
-                            Text(
-                              _formatTimeRemaining(event.endTime),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.035,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-
-                // Dynamic Submit Button Section
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  height: event.isActive
-                      ? MediaQuery.of(context).size.height * 0.1
-                      : 0,
-                  child: event.isActive
-                      ? Column(
-                          children: [
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.02),
-                            Container(
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              decoration: BoxDecoration(
-                                color: Color(0xFF87ceeb).withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: Color(0xFF87ceeb).withOpacity(0.3),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () =>
-                                      context.push('/submit/${event.id}'),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 24, vertical: 16),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.camera_alt,
-                                          color: Colors.white,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.045,
-                                        ),
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!
-                                              .submitPhoto,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.035,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ],
-            ),
-          ),
-
-          // Dynamic Divider
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            margin: EdgeInsets.symmetric(
-              vertical: event.isActive ? 20 : 10,
-            ),
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  Colors.white.withOpacity(0.3),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-          ),
-
-          // Submissions Section
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.submissions,
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: MediaQuery.of(context).size.width * 0.045,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.3,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _FilterChip(
-                      label: AppLocalizations.of(context)!.mostPopular,
-                      isSelected: currentFilter == SubmissionFilter.mostPopular,
-                      onSelected: () {
-                        ref.read(submissionFilterProvider.notifier).state =
-                            SubmissionFilter.mostPopular;
-                      },
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    _FilterChip(
-                      label: AppLocalizations.of(context)!.newest,
-                      isSelected: currentFilter == SubmissionFilter.newest,
-                      onSelected: () {
-                        ref.read(submissionFilterProvider.notifier).state =
-                            SubmissionFilter.newest;
-                      },
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
-                    _FilterChip(
-                      label: AppLocalizations.of(context)!.oldest,
-                      isSelected: currentFilter == SubmissionFilter.oldest,
-                      onSelected: () {
-                        ref.read(submissionFilterProvider.notifier).state =
-                            SubmissionFilter.oldest;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
-              // Submissions List
-              submissionsAsync.when(
-                data: (submissions) =>
-                    _buildSubmissionsList(context, submissions),
-                loading: () => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child:
-                        CircularProgressIndicator(color: AppColors.primaryCyan),
-                  ),
-                ),
-                error: (error, stack) => _buildErrorWidget(context, ref),
-              ),
             ],
           ),
+
+          // Submit Button under Active
+          if (event.isActive)
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.only(top: 12),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.height * 0.045,
+                decoration: BoxDecoration(
+                  gradient: AppColors.iceGlassGradient,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.rosyBrown.withOpacity(0.4),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.rosyBrown.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => context.push('/submit/${event.id}'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            child: Image.asset(
+                              'assets/app_logo.png',
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                  size: MediaQuery.of(context).size.width * 0.05,
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.015),
+                          Text(
+                            'Submit',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
         ],
       ),
     );
@@ -694,6 +674,119 @@ class _UnifiedEventContainer extends ConsumerWidget {
       return 'Ending soon';
     }
   }
+}
+
+class _SubmissionsWidget extends ConsumerWidget {
+  final EventModel event;
+  final String eventId;
+
+  const _SubmissionsWidget({required this.event, required this.eventId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentFilter = ref.watch(submissionFilterProvider);
+    final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        gradient: AppColors.iceGlassGradient,
+        borderRadius: BorderRadius.circular(28.0),
+        border: Border.all(
+          color: AppColors.iceBorder,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: AppColors.rosyBrown.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Submissions Section Header
+          Text(
+            AppLocalizations.of(context)!.submissions,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.3,
+              shadows: [
+                Shadow(
+                  color: AppColors.rosyBrown.withOpacity(0.4),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+
+          // Filter Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _FilterChip(
+                  label: AppLocalizations.of(context)!.mostPopular,
+                  isSelected: currentFilter == SubmissionFilter.mostPopular,
+                  onSelected: () {
+                    ref.read(submissionFilterProvider.notifier).state =
+                        SubmissionFilter.mostPopular;
+                  },
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                _FilterChip(
+                  label: AppLocalizations.of(context)!.newest,
+                  isSelected: currentFilter == SubmissionFilter.newest,
+                  onSelected: () {
+                    ref.read(submissionFilterProvider.notifier).state =
+                        SubmissionFilter.newest;
+                  },
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                _FilterChip(
+                  label: AppLocalizations.of(context)!.oldest,
+                  isSelected: currentFilter == SubmissionFilter.oldest,
+                  onSelected: () {
+                    ref.read(submissionFilterProvider.notifier).state =
+                        SubmissionFilter.oldest;
+                  },
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+
+          // Submissions List
+          submissionsAsync.when(
+            data: (submissions) => _buildSubmissionsList(context, submissions),
+            loading: () => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: CircularProgressIndicator(color: AppColors.rosyBrown),
+              ),
+            ),
+            error: (error, stack) => _buildErrorWidget(context, ref),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildSubmissionsList(
       BuildContext context, List<SubmissionModel> submissions) {
@@ -706,8 +799,15 @@ class _UnifiedEventContainer extends ConsumerWidget {
               width: MediaQuery.of(context).size.width * 0.25,
               height: MediaQuery.of(context).size.width * 0.25,
               decoration: BoxDecoration(
-                color: Color(0xFF87ceeb).withOpacity(0.3),
-                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.rosyBrown.withOpacity(0.4),
+                    AppColors.pineGreen.withOpacity(0.3),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(
                 Icons.photo_library_outlined,
@@ -724,7 +824,7 @@ class _UnifiedEventContainer extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(
-                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    color: AppColors.rosyBrown.withOpacity(0.4),
                     blurRadius: 8,
                   ),
                 ],
@@ -774,13 +874,13 @@ class _UnifiedEventContainer extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primaryCyan.withOpacity(0.8),
-                  AppColors.primaryCyanDark.withOpacity(0.9),
+                  AppColors.rosyBrown.withOpacity(0.8),
+                  AppColors.pineGreen.withOpacity(0.9),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.primaryCyan.withOpacity(0.3),
+                color: AppColors.rosyBrown.withOpacity(0.3),
                 width: 1,
               ),
             ),
@@ -834,35 +934,43 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.8),
-                    AppColors.primaryCyanDark.withOpacity(0.9),
-                  ],
-                )
-              : LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.2),
-                    AppColors.primaryCyan.withOpacity(0.1),
-                  ],
-                ),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withOpacity(0.15),
+              AppColors.pineGreen.withOpacity(isSelected ? 0.12 : 0.08),
+              Colors.white.withOpacity(0.05),
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.primaryCyan.withOpacity(isSelected ? 0.6 : 0.4),
+            color: AppColors.iceBorder,
             width: isSelected ? 2 : 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withOpacity(0.06),
+              blurRadius: 6,
+              offset: const Offset(-1, -1),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 6,
+              offset: const Offset(1, 1),
+            ),
+          ],
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.primaryCyan,
+            color: isSelected ? Colors.white : AppColors.pineGreen,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
             shadows: isSelected
                 ? [
                     Shadow(
-                      color: AppColors.primaryCyan.withOpacity(0.5),
+                      color: AppColors.pineGreen.withOpacity(0.5),
                       blurRadius: 4,
                     ),
                   ]
@@ -914,12 +1022,33 @@ class _SubmissionCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 2.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.12),
+            AppColors.rosyBrown.withOpacity(0.06),
+            AppColors.pineGreen.withOpacity(0.04),
+            Colors.white.withOpacity(0.03),
+          ],
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withOpacity(0.1),
+          color: AppColors.iceBorder,
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.06),
+            blurRadius: 8,
+            offset: const Offset(-1, -1),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(1, 1),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -937,21 +1066,26 @@ class _SubmissionCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClickableUserName(
-                      user: user,
-                      userId: submission.uid,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                        fontSize: MediaQuery.of(context).size.width * 0.035,
-                      ),
-                    ),
-                    Text(
-                      _formatSubmissionTime(submission.createdAt),
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: MediaQuery.of(context).size.width * 0.028,
-                      ),
+                    Row(
+                      children: [
+                        ClickableUserName(
+                          user: user,
+                          userId: submission.uid,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                            fontSize: MediaQuery.of(context).size.width * 0.035,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        Text(
+                          _formatSubmissionTime(submission.createdAt),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: MediaQuery.of(context).size.width * 0.028,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -960,37 +1094,28 @@ class _SubmissionCard extends ConsumerWidget {
               if (currentUser != null && currentUser.uid == submission.uid)
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    gradient: AppColors.iceGlassGradient,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: AppColors.iceBorder,
                       width: 1,
                     ),
                   ),
-                  child: PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      if (value == 'delete') {
-                        await _showDeleteConfirmationDialog(
-                            context, ref, submission);
-                      }
+                  child: IconButton(
+                    onPressed: () async {
+                      await _showDeleteConfirmationDialog(
+                          context, ref, submission);
                     },
-                    itemBuilder: (context) => [
-                      const PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Icon(Icons.delete, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                      ),
-                    ],
-                    child: Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                      size: MediaQuery.of(context).size.width * 0.045,
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: MediaQuery.of(context).size.width * 0.04,
                     ),
+                    constraints: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width * 0.08,
+                      minHeight: MediaQuery.of(context).size.width * 0.08,
+                    ),
+                    padding: EdgeInsets.zero,
                   ),
                 ),
             ],
@@ -1025,7 +1150,14 @@ class _SubmissionCard extends ConsumerWidget {
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFF87ceeb).withOpacity(0.3),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.midnightGreen.withOpacity(0.4),
+                              AppColors.rosyBrown.withOpacity(0.3),
+                            ],
+                          ),
                         ),
                         child: Center(
                           child: CircularProgressIndicator(
@@ -1036,12 +1168,14 @@ class _SubmissionCard extends ConsumerWidget {
                       ),
                       errorWidget: (context, url, error) => Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFF87ceeb).withOpacity(0.3),
-                        ),
-                        child: Icon(
-                          Icons.photo_camera_outlined,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width * 0.08,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.midnightGreen.withOpacity(0.4),
+                              AppColors.rosyBrown.withOpacity(0.3),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -1061,7 +1195,7 @@ class _SubmissionCard extends ConsumerWidget {
                 initialLikeCount: currentLikeCount,
                 initialIsLiked: isLikedByCurrentUser,
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.035),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               InkWell(
                 onTap: () {
                   showModalBottomSheet(
@@ -1087,10 +1221,10 @@ class _SubmissionCard extends ConsumerWidget {
                     vertical: MediaQuery.of(context).size.height * 0.01,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    gradient: AppColors.iceGlassGradient,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: AppColors.iceBorder,
                       width: 1.5,
                     ),
                   ),
@@ -1140,7 +1274,7 @@ class _SubmissionCard extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundSecondary,
+        backgroundColor: AppColors.midnightGreen,
         title: const Text(
           'Delete Post',
           style: TextStyle(color: AppColors.textPrimary),
@@ -1154,7 +1288,7 @@ class _SubmissionCard extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: const Text(
               'Cancel',
-              style: TextStyle(color: AppColors.primaryCyan),
+              style: TextStyle(color: AppColors.pineGreen),
             ),
           ),
           TextButton(
@@ -1210,27 +1344,41 @@ class _FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundPrimary,
+      backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.primaryCyan,
+        foregroundColor: AppColors.pineGreen,
         elevation: 0,
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                AppColors.primaryCyan.withOpacity(0.2),
-                AppColors.primaryCyan.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                AppColors.pineGreen.withOpacity(0.08),
+                Colors.white.withOpacity(0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-                color: AppColors.primaryCyan.withOpacity(0.3), width: 1),
+            border: Border.all(color: AppColors.iceBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.06),
+                blurRadius: 6,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 6,
+                offset: const Offset(1, 1),
+              ),
+            ],
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close, color: AppColors.primaryCyan),
+            icon: const Icon(Icons.close, color: AppColors.pineGreen),
           ),
         ),
       ),
@@ -1244,11 +1392,10 @@ class _FullScreenImageViewer extends StatelessWidget {
             imageUrl: imageUrl,
             fit: BoxFit.contain,
             placeholder: (context, url) => const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryCyan),
+              child: CircularProgressIndicator(color: AppColors.pineGreen),
             ),
             errorWidget: (context, url, error) => const Center(
-              child:
-                  Icon(Icons.error, color: AppColors.primaryOrange, size: 64),
+              child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
             ),
           ),
         ),
