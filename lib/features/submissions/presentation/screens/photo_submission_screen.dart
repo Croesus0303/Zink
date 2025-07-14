@@ -150,29 +150,67 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         } catch (e) {
           return Scaffold(
             backgroundColor: Colors.transparent,
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
               elevation: 0,
-              title: const Text('Event Not Found', style: TextStyle(color: AppColors.textPrimary)),
+              title: Text(
+                'Event Not Found',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             body: Container(
-              decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Container(
-                decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+                decoration:
+                    BoxDecoration(gradient: AppColors.auroraRadialGradient),
                 child: Center(
-                  child: GlassContainer(
-                    margin: const EdgeInsets.all(32),
-                    borderRadius: 24.0,
-                    useOrangeAccent: true,
-                    child: const Column(
+                  child: Container(
+                    margin: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.08),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.06),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.iceGlassGradient,
+                      borderRadius: BorderRadius.circular(24),
+                      border:
+                          Border.all(color: AppColors.iceBorder, width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.08),
+                          blurRadius: 15,
+                          offset: const Offset(-2, -2),
+                        ),
+                        BoxShadow(
+                          color: AppColors.rosyBrown.withOpacity(0.15),
+                          blurRadius: 15,
+                          offset: const Offset(2, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.event_busy, size: 64, color: AppColors.primaryOrange),
-                        SizedBox(height: 16),
+                        Icon(
+                          Icons.event_busy,
+                          size: MediaQuery.of(context).size.width * 0.16,
+                          color: AppColors.rosyBrown,
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02),
                         Text(
                           'Event not found',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: MediaQuery.of(context).size.width * 0.045,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
@@ -189,10 +227,16 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       loading: () => Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
-          decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Container(
-            decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
-            child: const Center(child: CircularProgressIndicator(color: AppColors.primaryCyan)),
+            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+            child: const Center(
+                child: CircularProgressIndicator(color: AppColors.pineGreen)),
           ),
         ),
       ),
@@ -200,80 +244,114 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         AppLogger.e('Error loading event for submission', error, stack);
         return Scaffold(
           backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
             elevation: 0,
-            title: const Text('Error', style: TextStyle(color: AppColors.textPrimary)),
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: MediaQuery.of(context).size.width * 0.045,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           body: Container(
-            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/background.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: Container(
-              decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+              decoration:
+                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
               child: Center(
-                child: GlassContainer(
-                  margin: const EdgeInsets.all(32),
-                  borderRadius: 24.0,
-                  useOrangeAccent: true,
+                child: Container(
+                  margin:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.iceGlassGradient,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: AppColors.iceBorder, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.08),
+                        blurRadius: 15,
+                        offset: const Offset(-2, -2),
+                      ),
+                      BoxShadow(
+                        color: AppColors.rosyBrown.withOpacity(0.15),
+                        blurRadius: 15,
+                        offset: const Offset(2, 2),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 80,
-                        height: 80,
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: MediaQuery.of(context).size.width * 0.2,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryOrange.withOpacity(0.8),
-                              AppColors.primaryOrangeDark.withOpacity(0.6),
+                              AppColors.rosyBrown.withOpacity(0.8),
+                              AppColors.rosyBrown.withOpacity(0.6),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryOrange.withOpacity(0.3),
+                              color: AppColors.rosyBrown.withOpacity(0.3),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
                           ],
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.error,
-                          size: 40,
+                          size: MediaQuery.of(context).size.width * 0.1,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025),
                       Text(
                         'Error loading event',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.textPrimary,
                           shadows: [
                             Shadow(
-                              color: AppColors.primaryOrange.withOpacity(0.3),
+                              color: AppColors.rosyBrown.withOpacity(0.6),
                               blurRadius: 8,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryOrange.withOpacity(0.8),
-                              AppColors.primaryOrangeDark.withOpacity(0.9),
+                              AppColors.pineGreen.withOpacity(0.8),
+                              AppColors.pineGreen.withOpacity(0.9),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.primaryOrange.withOpacity(0.3),
+                            color: Colors.white.withOpacity(0.3),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryOrange.withOpacity(0.4),
+                              color: AppColors.pineGreen.withOpacity(0.4),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -285,17 +363,31 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                             borderRadius: BorderRadius.circular(16),
                             onTap: () => ref.refresh(eventsProvider),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              child: const Row(
+                              padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.06,
+                                vertical:
+                                    MediaQuery.of(context).size.height * 0.015,
+                              ),
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.refresh, color: Colors.white, size: 20),
-                                  SizedBox(width: 8),
+                                  Icon(
+                                    Icons.refresh,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.05,
+                                  ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.02),
                                   Text(
                                     'Retry',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.04,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -321,66 +413,93 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
         elevation: 0,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
           AppLocalizations.of(context)!.submitPhoto,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: Colors.white,
             shadows: [
               Shadow(
-                color: AppColors.primaryCyan.withOpacity(0.3),
-                blurRadius: 4,
+                color: AppColors.rosyBrown.withOpacity(0.6),
+                blurRadius: 8,
               ),
             ],
           ),
         ),
+        centerTitle: true,
         leading: Container(
-          margin: const EdgeInsets.all(8),
+          margin: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.03,
+              top: 3,
+              bottom: 3),
           decoration: BoxDecoration(
             gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                AppColors.primaryCyan.withOpacity(0.2),
-                AppColors.primaryCyan.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                AppColors.pineGreen.withOpacity(0.08),
+                Colors.white.withOpacity(0.05),
               ],
             ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.primaryCyan.withOpacity(0.3),
-              width: 1,
-            ),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppColors.iceBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(1, 1),
+              ),
+            ],
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back, color: AppColors.primaryCyan),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.04,
+            ),
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width * 0.08,
+              minHeight: MediaQuery.of(context).size.width * 0.08,
+            ),
+            padding: EdgeInsets.zero,
           ),
         ),
         actions: [
           if (_selectedImage != null)
             Container(
-              margin: const EdgeInsets.all(8),
+              margin: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.03,
+                  top: 3,
+                  bottom: 3),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: _isSubmitting
                       ? [
-                          AppColors.backgroundSecondary.withOpacity(0.6),
-                          AppColors.backgroundSecondary.withOpacity(0.4),
+                          AppColors.midnightGreen.withOpacity(0.6),
+                          AppColors.midnightGreen.withOpacity(0.4),
                         ]
                       : [
-                          AppColors.primaryCyan.withOpacity(0.8),
-                          AppColors.primaryCyanDark.withOpacity(0.9),
+                          AppColors.rosyBrown.withOpacity(0.8),
+                          AppColors.rosyBrown.withOpacity(0.9),
                         ],
                 ),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
-                  width: 1,
-                ),
+                borderRadius: BorderRadius.circular(15),
+                border:
+                    Border.all(color: Colors.white.withOpacity(0.3), width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    color: AppColors.rosyBrown.withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -389,14 +508,16 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                   onTap: _isSubmitting ? null : _submitPhoto,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.04,
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: _isSubmitting
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
+                        ? SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                            height: MediaQuery.of(context).size.width * 0.04,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               color: Colors.white,
@@ -404,10 +525,11 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                           )
                         : Text(
                             AppLocalizations.of(context)!.submit,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035,
                             ),
                           ),
                   ),
@@ -417,21 +539,28 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Container(
-          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
           child: Column(
             children: [
-              const SizedBox(height: 100), // Space for app bar
+              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.04),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Challenge info
                       _ChallengeInfoSection(event: event),
-                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025),
                       // Photo selection/preview
                       _PhotoSection(
                         selectedImage: _selectedImage,
@@ -443,10 +572,12 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                           });
                         },
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025),
                       // Guidelines
                       _GuidelinesSection(),
-                      const SizedBox(height: 100), // Space for bottom button
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.12),
                     ],
                   ),
                 ),
@@ -457,76 +588,80 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       ),
       bottomNavigationBar: _selectedImage != null
           ? Container(
-              margin: const EdgeInsets.all(16),
-              child: GlassContainer(
-                borderRadius: 20.0,
-                useCyanAccent: true,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: _isSubmitting
-                          ? [
-                              AppColors.backgroundSecondary.withOpacity(0.8),
-                              AppColors.backgroundSecondary.withOpacity(0.6),
-                            ]
-                          : [
-                              AppColors.primaryCyan.withOpacity(0.8),
-                              AppColors.primaryCyanDark.withOpacity(0.9),
-                            ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryCyan.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+              margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: _isSubmitting
+                        ? [
+                            AppColors.midnightGreen.withOpacity(0.6),
+                            AppColors.midnightGreen.withOpacity(0.4),
+                          ]
+                        : [
+                            AppColors.rosyBrown.withOpacity(0.8),
+                            AppColors.rosyBrown.withOpacity(0.9),
+                          ],
                   ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: _isSubmitting ? null : _submitPhoto,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: _isSubmitting
-                            ? const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.rosyBrown.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: _isSubmitting ? null : _submitPhoto,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.02),
+                      child: _isSubmitting
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
                                   ),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    'Submitting...',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Text(
-                                AppLocalizations.of(context)!.submitPhoto,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
                                 ),
-                                textAlign: TextAlign.center,
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.03),
+                                Text(
+                                  'Submitting...',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Text(
+                              AppLocalizations.of(context)!.submitPhoto,
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
-                      ),
+                              textAlign: TextAlign.center,
+                            ),
                     ),
                   ),
                 ),
@@ -550,139 +685,159 @@ class _ChallengeInfoSection extends StatelessWidget {
         Text(
           'Challenge',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.primaryCyan.withOpacity(0.3),
-                blurRadius: 4,
+                color: AppColors.rosyBrown.withOpacity(0.6),
+                blurRadius: 8,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        GlassContainer(
-          borderRadius: 20.0,
-          useCyanAccent: true,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryCyan.withOpacity(0.8),
-                        AppColors.primaryOrange.withOpacity(0.6),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryCyan.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+        Container(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+          decoration: BoxDecoration(
+            gradient: AppColors.iceGlassGradient,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(-2, -2),
+              ),
+              BoxShadow(
+                color: AppColors.rosyBrown.withOpacity(0.15),
+                blurRadius: 15,
+                offset: const Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.pineGreen.withOpacity(0.3),
+                      AppColors.rosyBrown.withOpacity(0.2),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: event.referenceImageURL,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.backgroundSecondary.withOpacity(0.6),
-                              AppColors.backgroundSecondary.withOpacity(0.4),
-                            ],
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.image,
-                          color: AppColors.textSecondary,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.iceBorder,
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pineGreen.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    imageUrl: event.referenceImageURL,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    height: MediaQuery.of(context).size.width * 0.15,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      height: MediaQuery.of(context).size.width * 0.15,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.midnightGreen.withOpacity(0.3),
+                            AppColors.midnightGreen.withOpacity(0.1),
+                          ],
                         ),
                       ),
-                      errorWidget: (context, url, error) => Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryOrange.withOpacity(0.6),
-                              AppColors.primaryOrange.withOpacity(0.4),
-                            ],
-                          ),
+                      child: Icon(
+                        Icons.image,
+                        color: AppColors.textSecondary,
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      width: MediaQuery.of(context).size.width * 0.15,
+                      height: MediaQuery.of(context).size.width * 0.15,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.rosyBrown.withOpacity(0.3),
+                            AppColors.rosyBrown.withOpacity(0.1),
+                          ],
                         ),
-                        child: const Icon(
-                          Icons.error,
-                          color: Colors.white,
-                        ),
+                      ),
+                      child: Icon(
+                        Icons.error,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.06,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+              Expanded(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         event.title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           color: AppColors.textPrimary,
                           shadows: [
                             Shadow(
-                              color: AppColors.primaryCyan.withOpacity(0.3),
-                              blurRadius: 4,
+                              color: AppColors.rosyBrown.withOpacity(0.6),
+                              blurRadius: 8,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.008),
                       Text(
                         event.description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 14,
+                          fontSize: MediaQuery.of(context).size.width * 0.035,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (event.isActive) ...[
-                        const SizedBox(height: 10),
+                      if (event.isActive) ...<Widget>[
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.025,
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.008,
                           ),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.green.withOpacity(0.8),
-                                Colors.green.shade600.withOpacity(0.9),
+                                AppColors.pineGreen.withOpacity(0.8),
+                                AppColors.pineGreen.withOpacity(0.9),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Colors.green.withOpacity(0.3),
+                              color: Colors.white.withOpacity(0.3),
                               width: 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.green.withOpacity(0.3),
+                                color: AppColors.pineGreen.withOpacity(0.3),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -691,17 +846,20 @@ class _ChallengeInfoSection extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.access_time,
-                                size: 14,
+                                size: MediaQuery.of(context).size.width * 0.035,
                                 color: Colors.white,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      0.015),
                               Text(
                                 _formatTimeRemaining(event.endTime),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -709,11 +867,9 @@ class _ChallengeInfoSection extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                    ]),
+              ),
+            ],
           ),
         ),
       ],
@@ -756,27 +912,42 @@ class _PhotoSection extends StatelessWidget {
         Text(
           'Your Photo',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.primaryCyan.withOpacity(0.3),
-                blurRadius: 4,
+                color: AppColors.rosyBrown.withOpacity(0.6),
+                blurRadius: 8,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
         if (selectedImage != null) ...[
           // Photo preview
-          GlassContainer(
-            borderRadius: 20.0,
-            useCyanAccent: true,
+          Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.iceGlassGradient,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.iceBorder, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.08),
+                  blurRadius: 15,
+                  offset: const Offset(-2, -2),
+                ),
+                BoxShadow(
+                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  blurRadius: 15,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+            ),
             child: Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.file(
@@ -786,24 +957,24 @@ class _PhotoSection extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 12,
-                  right: 12,
+                  top: MediaQuery.of(context).size.width * 0.03,
+                  right: MediaQuery.of(context).size.width * 0.03,
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryOrange.withOpacity(0.9),
-                          AppColors.primaryOrangeDark.withOpacity(0.8),
+                          AppColors.rosyBrown.withOpacity(0.9),
+                          AppColors.rosyBrown.withOpacity(0.8),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: Colors.white.withOpacity(0.3),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryOrange.withOpacity(0.4),
+                          color: AppColors.rosyBrown.withOpacity(0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -812,14 +983,15 @@ class _PhotoSection extends StatelessWidget {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         onTap: onRemovePhoto,
                         child: Container(
-                          padding: const EdgeInsets.all(8),
-                          child: const Icon(
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.02),
+                          child: Icon(
                             Icons.close,
                             color: Colors.white,
-                            size: 20,
+                            size: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
                       ),
@@ -829,7 +1001,7 @@ class _PhotoSection extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Row(
             children: [
               Expanded(
@@ -837,13 +1009,13 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryCyan.withOpacity(0.1),
-                        AppColors.primaryOrange.withOpacity(0.08),
+                        AppColors.pineGreen.withOpacity(0.15),
+                        AppColors.pineGreen.withOpacity(0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      color: AppColors.pineGreen.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -853,20 +1025,27 @@ class _PhotoSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       onTap: onTakePhoto,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.015),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.camera_alt,
-                              color: AppColors.primaryCyan,
+                              color: AppColors.pineGreen,
+                              size: MediaQuery.of(context).size.width * 0.045,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
                             Text(
                               AppLocalizations.of(context)!.takePhoto,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w600,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035,
                               ),
                             ),
                           ],
@@ -876,19 +1055,19 @@ class _PhotoSection extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange.withOpacity(0.1),
-                        AppColors.primaryCyan.withOpacity(0.08),
+                        AppColors.rosyBrown.withOpacity(0.15),
+                        AppColors.rosyBrown.withOpacity(0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primaryOrange.withOpacity(0.3),
+                      color: AppColors.rosyBrown.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -898,20 +1077,27 @@ class _PhotoSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       onTap: onChooseFromGallery,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.015),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.photo_library,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.rosyBrown,
+                              size: MediaQuery.of(context).size.width * 0.045,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
                             Text(
                               AppLocalizations.of(context)!.chooseFromGallery,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w600,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035,
                               ),
                             ),
                           ],
@@ -925,60 +1111,73 @@ class _PhotoSection extends StatelessWidget {
           ),
         ] else ...[
           // Photo selection placeholder
-          GlassContainer(
-            borderRadius: 20.0,
-            useCyanAccent: true,
-            child: Container(
-              width: double.infinity,
-              height: 200,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryCyan.withOpacity(0.8),
-                          AppColors.primaryOrange.withOpacity(0.6),
-                        ],
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.25,
+            decoration: BoxDecoration(
+              gradient: AppColors.iceGlassGradient,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.iceBorder, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.08),
+                  blurRadius: 15,
+                  offset: const Offset(-2, -2),
+                ),
+                BoxShadow(
+                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  blurRadius: 15,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  height: MediaQuery.of(context).size.width * 0.15,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.pineGreen.withOpacity(0.8),
+                        AppColors.rosyBrown.withOpacity(0.6),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.pineGreen.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryCyan.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.add_photo_alternate,
-                      size: 32,
-                      color: Colors.white,
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Add your photo',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryCyan,
-                      shadows: [
-                        Shadow(
-                          color: AppColors.primaryCyan.withOpacity(0.3),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
+                  child: Icon(
+                    Icons.add_photo_alternate,
+                    size: MediaQuery.of(context).size.width * 0.08,
+                    color: Colors.white,
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
+                  'Add your photo',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.rosyBrown.withOpacity(0.6),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Row(
             children: [
               Expanded(
@@ -986,18 +1185,18 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryCyan.withOpacity(0.8),
-                        AppColors.primaryCyanDark.withOpacity(0.9),
+                        AppColors.pineGreen.withOpacity(0.8),
+                        AppColors.pineGreen.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.3),
+                      color: Colors.white.withOpacity(0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryCyan.withOpacity(0.4),
+                        color: AppColors.pineGreen.withOpacity(0.4),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -1009,20 +1208,27 @@ class _PhotoSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       onTap: onTakePhoto,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.015),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.camera_alt,
                               color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.045,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
                             Text(
                               AppLocalizations.of(context)!.takePhoto,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035,
                               ),
                             ),
                           ],
@@ -1032,19 +1238,19 @@ class _PhotoSection extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange.withOpacity(0.1),
-                        AppColors.primaryCyan.withOpacity(0.08),
+                        AppColors.rosyBrown.withOpacity(0.15),
+                        AppColors.rosyBrown.withOpacity(0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primaryOrange.withOpacity(0.3),
+                      color: AppColors.rosyBrown.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -1054,20 +1260,27 @@ class _PhotoSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       onTap: onChooseFromGallery,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.015),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.photo_library,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.rosyBrown,
+                              size: MediaQuery.of(context).size.width * 0.045,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
                             Text(
                               AppLocalizations.of(context)!.chooseFromGallery,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontWeight: FontWeight.w600,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035,
                               ),
                             ),
                           ],
@@ -1094,47 +1307,61 @@ class _GuidelinesSection extends StatelessWidget {
         Text(
           'Submission Guidelines',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.primaryCyan.withOpacity(0.3),
-                blurRadius: 4,
+                color: AppColors.rosyBrown.withOpacity(0.6),
+                blurRadius: 8,
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        GlassContainer(
-          borderRadius: 20.0,
-          useCyanAccent: true,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _GuidelineItem(
-                  icon: Icons.check_circle,
-                  text: 'Make sure your photo matches the challenge theme',
-                ),
-                SizedBox(height: 12),
-                _GuidelineItem(
-                  icon: Icons.check_circle,
-                  text: 'Use good lighting and clear focus',
-                ),
-                SizedBox(height: 12),
-                _GuidelineItem(
-                  icon: Icons.check_circle,
-                  text: 'Original photos only - no screenshots or downloaded images',
-                ),
-                SizedBox(height: 12),
-                _GuidelineItem(
-                  icon: Icons.check_circle,
-                  text: 'Keep content appropriate for all audiences',
-                ),
-              ],
-            ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+        Container(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+          decoration: BoxDecoration(
+            gradient: AppColors.iceGlassGradient,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 15,
+                offset: const Offset(-2, -2),
+              ),
+              BoxShadow(
+                color: AppColors.rosyBrown.withOpacity(0.15),
+                blurRadius: 15,
+                offset: const Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _GuidelineItem(
+                icon: Icons.check_circle,
+                text: 'Make sure your photo matches the challenge theme',
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              _GuidelineItem(
+                icon: Icons.check_circle,
+                text: 'Use good lighting and clear focus',
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              _GuidelineItem(
+                icon: Icons.check_circle,
+                text:
+                    'Original photos only - no screenshots or downloaded images',
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+              _GuidelineItem(
+                icon: Icons.check_circle,
+                text: 'Keep content appropriate for all audiences',
+              ),
+            ],
           ),
         ),
       ],
@@ -1157,23 +1384,23 @@ class _GuidelineItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 24,
-          height: 24,
+          width: MediaQuery.of(context).size.width * 0.06,
+          height: MediaQuery.of(context).size.width * 0.06,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.green.withOpacity(0.8),
-                Colors.green.shade600.withOpacity(0.9),
+                AppColors.pineGreen.withOpacity(0.8),
+                AppColors.pineGreen.withOpacity(0.9),
               ],
             ),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.green.withOpacity(0.3),
+              color: Colors.white.withOpacity(0.3),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.green.withOpacity(0.3),
+                color: AppColors.pineGreen.withOpacity(0.3),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -1181,16 +1408,16 @@ class _GuidelineItem extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            size: 14,
+            size: MediaQuery.of(context).size.width * 0.035,
             color: Colors.white,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.035,
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
             ),
