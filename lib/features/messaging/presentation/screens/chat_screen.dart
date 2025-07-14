@@ -106,50 +106,93 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
         elevation: 0,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: otherUserAsync.when(
           data: (user) => _buildAppBarTitle(user),
-          loading: () => const Text('Loading...', style: TextStyle(color: AppColors.textPrimary)),
-          error: (_, __) => const Text('User', style: TextStyle(color: AppColors.textPrimary)),
+          loading: () => Text(
+            'Loading...',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.04,
+            ),
+          ),
+          error: (_, __) => Text(
+            'User',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.04,
+            ),
+          ),
         ),
         leading: Container(
-          margin: const EdgeInsets.all(8),
+          margin: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.03,
+            top: 3,
+            bottom: 3
+          ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                AppColors.primaryCyan.withOpacity(0.2),
-                AppColors.primaryCyan.withOpacity(0.1),
+                Colors.white.withOpacity(0.15),
+                AppColors.pineGreen.withOpacity(0.08),
+                Colors.white.withOpacity(0.05),
               ],
             ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.primaryCyan.withOpacity(0.3),
-              width: 1,
-            ),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: AppColors.iceBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 8,
+                offset: const Offset(1, 1),
+              ),
+            ],
           ),
           child: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back, color: AppColors.primaryCyan),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.04,
+            ),
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width * 0.08,
+              minHeight: MediaQuery.of(context).size.width * 0.08,
+            ),
+            padding: EdgeInsets.zero,
           ),
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Container(
-          decoration: BoxDecoration(gradient: AppColors.radialBackgroundGradient),
+          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
           child: Column(
             children: [
-              const SizedBox(height: 100), // Space for app bar
+              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
               // Messages list
               Expanded(
                 child: _chatId != null 
                     ? otherUserAsync.when(
                         data: (otherUser) => _buildMessagesList(currentUser, otherUser),
-                        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primaryCyan)),
+                        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
                         error: (_, __) => _buildMessagesList(currentUser, null),
                       )
-                    : const Center(child: CircularProgressIndicator(color: AppColors.primaryCyan)),
+                    : const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
               ),
               // Message input
               _buildMessageInput(),
@@ -167,25 +210,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.primaryCyan.withOpacity(0.8),
-                AppColors.primaryOrange.withOpacity(0.6),
+                AppColors.pineGreen.withOpacity(0.3),
+                AppColors.rosyBrown.withOpacity(0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.primaryCyan.withOpacity(0.3),
-              width: 2,
+              color: AppColors.iceBorder,
+              width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryCyan.withOpacity(0.3),
+                color: AppColors.pineGreen.withOpacity(0.2),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
           child: CircleAvatar(
-            radius: 16,
+            radius: MediaQuery.of(context).size.width * 0.04,
             backgroundColor: Colors.transparent,
             backgroundImage: user?.photoURL != null
                 ? CachedNetworkImageProvider(user!.photoURL!)
@@ -193,8 +236,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: user?.photoURL == null
                 ? Text(
                     user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -202,18 +245,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 : null,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
         Expanded(
           child: Text(
             user?.displayName ?? 'Unknown User',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: Colors.white,
               shadows: [
                 Shadow(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
-                  blurRadius: 4,
+                  color: AppColors.rosyBrown.withOpacity(0.6),
+                  blurRadius: 8,
                 ),
               ],
             ),
@@ -231,58 +274,74 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       data: (messages) {
         if (messages.isEmpty) {
           return Center(
-            child: GlassContainer(
-              margin: const EdgeInsets.all(32),
-              borderRadius: 24.0,
-              useCyanAccent: true,
+            child: Container(
+              margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+              decoration: BoxDecoration(
+                gradient: AppColors.iceGlassGradient,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.iceBorder, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.08),
+                    blurRadius: 15,
+                    offset: const Offset(-2, -2),
+                  ),
+                  BoxShadow(
+                    color: AppColors.rosyBrown.withOpacity(0.15),
+                    blurRadius: 15,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.2,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryCyan.withOpacity(0.8),
-                          AppColors.primaryOrange.withOpacity(0.6),
+                          AppColors.pineGreen.withOpacity(0.8),
+                          AppColors.rosyBrown.withOpacity(0.6),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryCyan.withOpacity(0.3),
+                          color: AppColors.pineGreen.withOpacity(0.3),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.chat_bubble_outline,
-                      size: 40,
+                      size: MediaQuery.of(context).size.width * 0.1,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                   Text(
                     'No messages yet',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: MediaQuery.of(context).size.width * 0.045,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryCyan,
+                      color: AppColors.textPrimary,
                       shadows: [
                         Shadow(
-                          color: AppColors.primaryCyan.withOpacity(0.3),
+                          color: AppColors.rosyBrown.withOpacity(0.6),
                           blurRadius: 8,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Text(
                     'Start the conversation!',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -299,7 +358,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
         return ListView.builder(
           controller: _scrollController,
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height * 0.02,
+            bottom: MediaQuery.of(context).size.height * 0.02,
+          ),
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];
@@ -318,74 +380,90 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
       error: (error, stack) {
         AppLogger.e('Error loading messages', error, stack);
         return Center(
-          child: GlassContainer(
-            margin: const EdgeInsets.all(32),
-            borderRadius: 24.0,
-            useOrangeAccent: true,
+          child: Container(
+            margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+            decoration: BoxDecoration(
+              gradient: AppColors.iceGlassGradient,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.iceBorder, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.08),
+                  blurRadius: 15,
+                  offset: const Offset(-2, -2),
+                ),
+                BoxShadow(
+                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  blurRadius: 15,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 80,
-                  height: 80,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  height: MediaQuery.of(context).size.width * 0.2,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange.withOpacity(0.8),
-                        AppColors.primaryOrangeDark.withOpacity(0.6),
+                        AppColors.rosyBrown.withOpacity(0.8),
+                        AppColors.rosyBrown.withOpacity(0.6),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: AppColors.rosyBrown.withOpacity(0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.error,
-                    size: 40,
+                    size: MediaQuery.of(context).size.width * 0.1,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Text(
                   'Error loading messages',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.textPrimary,
                     shadows: [
                       Shadow(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: AppColors.rosyBrown.withOpacity(0.6),
                         blurRadius: 8,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange.withOpacity(0.8),
-                        AppColors.primaryOrangeDark.withOpacity(0.9),
+                        AppColors.pineGreen.withOpacity(0.8),
+                        AppColors.pineGreen.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primaryOrange.withOpacity(0.3),
+                      color: Colors.white.withOpacity(0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryOrange.withOpacity(0.4),
+                        color: AppColors.pineGreen.withOpacity(0.4),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -397,17 +475,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       borderRadius: BorderRadius.circular(16),
                       onTap: () => ref.refresh(chatMessagesProvider(_chatId!)),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        child: const Row(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.06,
+                          vertical: MediaQuery.of(context).size.height * 0.015,
+                        ),
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.refresh, color: Colors.white, size: 20),
-                            SizedBox(width: 8),
+                            Icon(
+                              Icons.refresh,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                             Text(
                               'Retry',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: MediaQuery.of(context).size.width * 0.04,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -426,37 +511,54 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Widget _buildMessageInput() {
-    return GlassContainer(
-      margin: const EdgeInsets.all(16),
-      borderRadius: 24.0,
-      useCyanAccent: true,
+    return Container(
+      margin: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.04,
+        right: MediaQuery.of(context).size.width * 0.04,
+        top: MediaQuery.of(context).size.width * 0.02,
+        bottom: MediaQuery.of(context).size.width * 0.04 + MediaQuery.of(context).padding.bottom,
+      ),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.midnightGreen.withOpacity(0.3), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.1),
-                    AppColors.primaryOrange.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
-                  width: 1,
+                  color: AppColors.midnightGreen.withOpacity(0.2),
+                  width: 0.5,
                 ),
               ),
               child: TextField(
                 controller: _messageController,
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Type a message...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  hintStyle: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.04,
+                    vertical: MediaQuery.of(context).size.height * 0.015,
                   ),
                 ),
                 maxLines: null,
@@ -465,39 +567,39 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.03),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primaryCyan.withOpacity(0.8),
-                  AppColors.primaryCyanDark.withOpacity(0.9),
+                  AppColors.pineGreen.withOpacity(0.8),
+                  AppColors.pineGreen.withOpacity(0.9),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                color: AppColors.primaryCyan.withOpacity(0.3),
+                color: Colors.white.withOpacity(0.2),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryCyan.withOpacity(0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  color: AppColors.pineGreen.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(18),
                 onTap: _sendMessage,
                 child: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: const Icon(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+                  child: Icon(
                     Icons.send,
                     color: Colors.white,
-                    size: 20,
+                    size: MediaQuery.of(context).size.width * 0.05,
                   ),
                 ),
               ),
@@ -525,35 +627,44 @@ class _MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.height * 0.01,
+        left: MediaQuery.of(context).size.width * 0.04,
+        right: MediaQuery.of(context).size.width * 0.04,
+      ),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           if (!isMe && showAvatar) ...[
-            Container(
-              decoration: BoxDecoration(
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.01),
+              child: Container(
+                decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryCyan.withOpacity(0.8),
-                    AppColors.primaryOrange.withOpacity(0.6),
+                    AppColors.pineGreen.withOpacity(0.3),
+                    AppColors.rosyBrown.withOpacity(0.2),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
-                  width: 1,
+                  color: AppColors.iceBorder,
+                  width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.3),
+                    color: AppColors.pineGreen.withOpacity(0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: CircleAvatar(
-                radius: 12,
+                radius: MediaQuery.of(context).size.width * 0.04,
                 backgroundColor: Colors.transparent,
                 backgroundImage: otherUser?.photoURL != null
                     ? CachedNetworkImageProvider(otherUser!.photoURL!)
@@ -561,82 +672,97 @@ class _MessageBubble extends StatelessWidget {
                 child: otherUser?.photoURL == null
                     ? Text(
                         otherUser?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                        style: const TextStyle(
-                          fontSize: 10,
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.03,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       )
                     : null,
               ),
+              ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.03),
           ] else if (!isMe) ...[
-            const SizedBox(width: 32),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.13),
           ],
           Flexible(
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
+                minWidth: MediaQuery.of(context).size.width * 0.15,
               ),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isMe 
-                      ? [
-                          AppColors.primaryCyan.withOpacity(0.8),
-                          AppColors.primaryCyanDark.withOpacity(0.9),
-                        ]
-                      : [
-                          AppColors.backgroundSecondary.withOpacity(0.8),
-                          AppColors.backgroundSecondary.withOpacity(0.6),
+                gradient: isMe 
+                    ? LinearGradient(
+                        colors: [
+                          AppColors.pineGreen.withOpacity(0.8),
+                          AppColors.pineGreen.withOpacity(0.9),
                         ],
-                ),
-                borderRadius: BorderRadius.circular(20).copyWith(
-                  bottomLeft: !isMe && showAvatar ? const Radius.circular(6) : null,
-                  bottomRight: isMe ? const Radius.circular(6) : null,
+                      )
+                    : LinearGradient(
+                        colors: [
+                          AppColors.midnightGreen.withOpacity(0.2),
+                          AppColors.midnightGreen.withOpacity(0.1),
+                        ],
+                      ),
+                borderRadius: BorderRadius.circular(15).copyWith(
+                  bottomLeft: !isMe && showAvatar ? const Radius.circular(3) : null,
+                  bottomRight: isMe ? const Radius.circular(3) : null,
                 ),
                 border: Border.all(
                   color: isMe 
-                      ? AppColors.primaryCyan.withOpacity(0.4)
-                      : AppColors.primaryCyan.withOpacity(0.2),
+                      ? Colors.white.withOpacity(0.2)
+                      : AppColors.midnightGreen.withOpacity(0.3),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: isMe 
-                        ? AppColors.primaryCyan.withOpacity(0.3)
-                        : AppColors.backgroundSecondary.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     message.text,
                     style: TextStyle(
-                      color: isMe 
-                          ? Colors.white
-                          : AppColors.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _formatTime(message.createdAt),
-                    style: TextStyle(
-                      color: isMe 
-                          ? Colors.white.withOpacity(0.7)
-                          : AppColors.textSecondary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                      fontSize: MediaQuery.of(context).size.width * 0.038,
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+          if (isMe) ...[
+            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+          ],
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.003),
+          Padding(
+            padding: EdgeInsets.only(
+              left: !isMe && showAvatar 
+                  ? MediaQuery.of(context).size.width * 0.13 
+                  : !isMe 
+                    ? MediaQuery.of(context).size.width * 0.16
+                    : 0,
+              right: isMe ? MediaQuery.of(context).size.width * 0.02 : 0,
+            ),
+            child: Text(
+              _formatTime(message.createdAt),
+              style: TextStyle(
+                color: AppColors.rosyBrown.withOpacity(0.8),
+                fontSize: MediaQuery.of(context).size.width * 0.025,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
@@ -650,9 +776,13 @@ class _MessageBubble extends StatelessWidget {
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${dateTime.day}/${dateTime.month}';
-    } else if (difference.inHours > 0) {
-      return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      if (difference.inDays == 1) {
+        return 'Yesterday ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} days ago';
+      } else {
+        return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      }
     } else {
       return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
     }
