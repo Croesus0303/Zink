@@ -13,7 +13,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
-import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
@@ -40,8 +39,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
   void _refreshEventData() {
     // Refresh event data
-    ref.refresh(eventsProvider);
-    ref.refresh(submissionsProvider(widget.eventId));
+    ref.invalidate(eventsProvider);
+    ref.invalidate(submissionsProvider(widget.eventId));
 
     // Refresh social data
     final currentUser = ref.read(currentUserProvider);
@@ -96,7 +95,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               centerTitle: true,
             ),
             body: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/background.png'),
                   fit: BoxFit.cover,
@@ -127,7 +126,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           centerTitle: true,
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover,
@@ -154,7 +153,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             centerTitle: true,
           ),
           body: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/background.png'),
                 fit: BoxFit.cover,
@@ -181,9 +180,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Colors.white.withOpacity(0.15),
-                            AppColors.pineGreen.withOpacity(0.08),
-                            Colors.white.withOpacity(0.05),
+                            Colors.white.withValues(alpha: 0.15),
+                            AppColors.pineGreen.withValues(alpha: 0.08),
+                            Colors.white.withValues(alpha: 0.05),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
@@ -193,12 +192,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withOpacity(0.08),
+                            color: Colors.white.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(-1, -1),
                           ),
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 8,
                             offset: const Offset(1, 1),
                           ),
@@ -246,7 +245,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
@@ -257,7 +256,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             fontWeight: FontWeight.bold,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -271,9 +270,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(15),
@@ -283,12 +282,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(1, 1),
               ),
@@ -310,7 +309,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -375,17 +374,17 @@ class _EventDetailWidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.15),
+            color: AppColors.rosyBrown.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(2, 2),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -409,8 +408,8 @@ class _EventDetailWidget extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColors.rosyBrown.withOpacity(0.3),
-                          AppColors.pineGreen.withOpacity(0.2),
+                          AppColors.rosyBrown.withValues(alpha: 0.3),
+                          AppColors.pineGreen.withValues(alpha: 0.2),
                         ],
                       ),
                     ),
@@ -425,7 +424,7 @@ class _EventDetailWidget extends StatelessWidget {
                                 width: double.infinity,
                                 height: double.infinity,
                                 placeholder: (context, url) => Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -436,7 +435,7 @@ class _EventDetailWidget extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  child: Center(
+                                  child: const Center(
                                     child: CircularProgressIndicator(
                                       color: Colors.white,
                                       strokeWidth: 4,
@@ -444,7 +443,7 @@ class _EventDetailWidget extends StatelessWidget {
                                   ),
                                 ),
                                 errorWidget: (context, url, error) => Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -467,7 +466,7 @@ class _EventDetailWidget extends StatelessWidget {
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
-                                    colors: [
+                                    colors: const [
                                       AppColors.rosyBrown,
                                       AppColors.pineGreen,
                                       AppColors.midnightGreen,
@@ -490,14 +489,14 @@ class _EventDetailWidget extends StatelessWidget {
                   child: Text(
                     event.description,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: MediaQuery.of(context).size.width * 0.037,
                       fontWeight: FontWeight.w500,
                       height: 1.5,
                       letterSpacing: 0.3,
                       shadows: [
                         Shadow(
-                          color: AppColors.midnightGreen.withOpacity(0.5),
+                          color: AppColors.midnightGreen.withValues(alpha: 0.5),
                           blurRadius: 2,
                           offset: const Offset(0, 1),
                         ),
@@ -535,29 +534,29 @@ class _EventDetailWidget extends StatelessWidget {
                 end: Alignment.bottomRight,
                 colors: event.isActive
                     ? [
-                        AppColors.pineGreen.withOpacity(0.9),
-                        AppColors.pineGreen.withOpacity(0.8),
-                        AppColors.pineGreen.withOpacity(0.85),
+                        AppColors.pineGreen.withValues(alpha: 0.9),
+                        AppColors.pineGreen.withValues(alpha: 0.8),
+                        AppColors.pineGreen.withValues(alpha: 0.85),
                       ]
                     : [
-                        AppColors.midnightGreen.withOpacity(0.9),
-                        AppColors.midnightGreen.withOpacity(0.7),
-                        AppColors.midnightGreen.withOpacity(0.8),
+                        AppColors.midnightGreen.withValues(alpha: 0.9),
+                        AppColors.midnightGreen.withValues(alpha: 0.7),
+                        AppColors.midnightGreen.withValues(alpha: 0.8),
                       ],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   blurRadius: 6,
                   offset: const Offset(-1, -1),
                 ),
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 6,
                   offset: const Offset(1, 1),
                 ),
@@ -607,24 +606,24 @@ class _EventDetailWidget extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppColors.rosyBrown.withOpacity(0.9),
-                      AppColors.rosyBrown.withOpacity(0.8),
-                      AppColors.rosyBrown.withOpacity(0.85),
+                      AppColors.rosyBrown.withValues(alpha: 0.9),
+                      AppColors.rosyBrown.withValues(alpha: 0.8),
+                      AppColors.rosyBrown.withValues(alpha: 0.85),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       blurRadius: 6,
                       offset: const Offset(-1, -1),
                     ),
                     BoxShadow(
-                      color: AppColors.rosyBrown.withOpacity(0.4),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
                       blurRadius: 8,
                       offset: const Offset(2, 2),
                     ),
@@ -713,29 +712,29 @@ class _SubmissionsWidget extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withOpacity(0.08),
-            AppColors.midnightGreen.withOpacity(0.15),
-            Colors.white.withOpacity(0.05),
+            Colors.white.withValues(alpha: 0.08),
+            AppColors.midnightGreen.withValues(alpha: 0.15),
+            Colors.white.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.06),
+            color: Colors.white.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.midnightGreen.withOpacity(0.2),
+            color: AppColors.midnightGreen.withValues(alpha: 0.2),
             blurRadius: 12,
             offset: const Offset(2, 2),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -754,7 +753,7 @@ class _SubmissionsWidget extends ConsumerWidget {
               letterSpacing: 0.3,
               shadows: [
                 Shadow(
-                  color: AppColors.rosyBrown.withOpacity(0.4),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.4),
                   blurRadius: 8,
                 ),
               ],
@@ -801,9 +800,9 @@ class _SubmissionsWidget extends ConsumerWidget {
           // Submissions List
           submissionsAsync.when(
             data: (submissions) => _buildSubmissionsList(context, submissions),
-            loading: () => Center(
+            loading: () => const Center(
               child: Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: EdgeInsets.all(32.0),
                 child: CircularProgressIndicator(color: AppColors.rosyBrown),
               ),
             ),
@@ -829,8 +828,8 @@ class _SubmissionsWidget extends ConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.rosyBrown.withOpacity(0.4),
-                    AppColors.pineGreen.withOpacity(0.3),
+                    AppColors.rosyBrown.withValues(alpha: 0.4),
+                    AppColors.pineGreen.withValues(alpha: 0.3),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
@@ -850,7 +849,7 @@ class _SubmissionsWidget extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(
-                    color: AppColors.rosyBrown.withOpacity(0.4),
+                    color: AppColors.rosyBrown.withValues(alpha: 0.4),
                     blurRadius: 8,
                   ),
                 ],
@@ -890,9 +889,9 @@ class _SubmissionsWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
-          Text(
+          const Text(
             'Error loading submissions',
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.textPrimary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -900,13 +899,13 @@ class _SubmissionsWidget extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.rosyBrown.withOpacity(0.8),
-                  AppColors.pineGreen.withOpacity(0.9),
+                  AppColors.rosyBrown.withValues(alpha: 0.8),
+                  AppColors.pineGreen.withValues(alpha: 0.9),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.rosyBrown.withOpacity(0.3),
+                color: AppColors.rosyBrown.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -962,12 +961,12 @@ class _FilterChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.pineGreen
-              : AppColors.midnightGreen.withOpacity(0.3),
+              : AppColors.midnightGreen.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
                 ? AppColors.pineGreen
-                : Colors.white.withOpacity(0.3),
+                : Colors.white.withValues(alpha: 0.3),
             width: 1.5,
           ),
         ),
@@ -976,7 +975,7 @@ class _FilterChip extends StatelessWidget {
           style: TextStyle(
             color: isSelected
                 ? Colors.white
-                : Colors.white.withOpacity(0.8),
+                : Colors.white.withValues(alpha: 0.8),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
           ),
@@ -1026,15 +1025,15 @@ class _SubmissionCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 2.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.pineGreen.withOpacity(0.15),
+        color: AppColors.pineGreen.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.pineGreen.withOpacity(0.3),
+          color: AppColors.pineGreen.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -1085,10 +1084,10 @@ class _SubmissionCard extends ConsumerWidget {
               if (currentUser != null && currentUser.uid == submission.uid)
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.pineGreen.withOpacity(0.2),
+                    color: AppColors.pineGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.pineGreen.withOpacity(0.3),
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -1099,7 +1098,7 @@ class _SubmissionCard extends ConsumerWidget {
                     },
                     icon: Icon(
                       Icons.delete,
-                      color: AppColors.rosyBrown.withOpacity(0.8),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.8),
                       size: MediaQuery.of(context).size.width * 0.04,
                     ),
                     constraints: BoxConstraints(
@@ -1121,11 +1120,11 @@ class _SubmissionCard extends ConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.rosyBrown.withOpacity(0.6),
-                    AppColors.pineGreen.withOpacity(0.5),
-                    AppColors.midnightGreen.withOpacity(0.4),
+                    AppColors.rosyBrown.withValues(alpha: 0.6),
+                    AppColors.pineGreen.withValues(alpha: 0.5),
+                    AppColors.midnightGreen.withValues(alpha: 0.4),
                   ],
-                  stops: [0.0, 0.5, 1.0],
+                  stops: const [0.0, 0.5, 1.0],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -1145,12 +1144,12 @@ class _SubmissionCard extends ConsumerWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              AppColors.midnightGreen.withOpacity(0.4),
-                              AppColors.rosyBrown.withOpacity(0.3),
+                              AppColors.midnightGreen.withValues(alpha: 0.4),
+                              AppColors.rosyBrown.withValues(alpha: 0.3),
                             ],
                           ),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 4,
@@ -1163,8 +1162,8 @@ class _SubmissionCard extends ConsumerWidget {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              AppColors.midnightGreen.withOpacity(0.4),
-                              AppColors.rosyBrown.withOpacity(0.3),
+                              AppColors.midnightGreen.withValues(alpha: 0.4),
+                              AppColors.rosyBrown.withValues(alpha: 0.3),
                             ],
                           ),
                         ),
@@ -1212,10 +1211,10 @@ class _SubmissionCard extends ConsumerWidget {
                     vertical: MediaQuery.of(context).size.height * 0.01,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.pineGreen.withOpacity(0.2),
+                    color: AppColors.pineGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.pineGreen.withOpacity(0.3),
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -1347,21 +1346,21 @@ class _FullScreenImageViewer extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppColors.iceBorder, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.06),
+                color: Colors.white.withValues(alpha: 0.06),
                 blurRadius: 6,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 6,
                 offset: const Offset(1, 1),
               ),
