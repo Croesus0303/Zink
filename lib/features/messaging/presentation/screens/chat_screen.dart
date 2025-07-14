@@ -125,11 +125,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
         ),
         leading: Container(
-          margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.03,
-            top: 3,
-            bottom: 3
-          ),
+          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -141,7 +137,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ],
             ),
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.iceBorder, width: 1),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.08),
