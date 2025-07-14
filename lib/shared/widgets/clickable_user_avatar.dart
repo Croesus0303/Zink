@@ -96,7 +96,7 @@ class ClickableUserName extends StatelessWidget {
       child: Text(
         displayName,
         style: (style ?? const TextStyle()).copyWith(
-          decoration: TextDecoration.underline,
+          decoration: style?.decoration ?? TextDecoration.underline,
           decorationColor: style?.color ?? Theme.of(context).primaryColor,
         ),
       ),

@@ -1065,6 +1065,7 @@ class _SubmissionCard extends ConsumerWidget {
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
                             fontSize: MediaQuery.of(context).size.width * 0.035,
+                            decoration: TextDecoration.none,
                           ),
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -1185,7 +1186,7 @@ class _SubmissionCard extends ConsumerWidget {
                 initialLikeCount: currentLikeCount,
                 initialIsLiked: isLikedByCurrentUser,
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.015),
               InkWell(
                 onTap: () {
                   showModalBottomSheet(
