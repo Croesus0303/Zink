@@ -7,8 +7,6 @@ import '../../../events/providers/events_providers.dart';
 import '../../providers/messaging_providers.dart';
 import '../../data/models/message_model.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -106,7 +104,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: otherUserAsync.when(
@@ -137,21 +135,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: AppColors.iceBorder, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(1, 1),
               ),
@@ -173,7 +171,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -210,8 +208,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.pineGreen.withOpacity(0.3),
-                AppColors.rosyBrown.withOpacity(0.2),
+                AppColors.pineGreen.withValues(alpha: 0.3),
+                AppColors.rosyBrown.withValues(alpha: 0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
@@ -221,7 +219,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.pineGreen.withOpacity(0.2),
+                color: AppColors.pineGreen.withValues(alpha: 0.2),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -255,7 +253,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               color: Colors.white,
               shadows: [
                 Shadow(
-                  color: AppColors.rosyBrown.withOpacity(0.6),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
                   blurRadius: 8,
                 ),
               ],
@@ -283,12 +281,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 border: Border.all(color: AppColors.iceBorder, width: 1.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha: 0.08),
                     blurRadius: 15,
                     offset: const Offset(-2, -2),
                   ),
                   BoxShadow(
-                    color: AppColors.rosyBrown.withOpacity(0.15),
+                    color: AppColors.rosyBrown.withValues(alpha: 0.15),
                     blurRadius: 15,
                     offset: const Offset(2, 2),
                   ),
@@ -303,14 +301,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.pineGreen.withOpacity(0.8),
-                          AppColors.rosyBrown.withOpacity(0.6),
+                          AppColors.pineGreen.withValues(alpha: 0.8),
+                          AppColors.rosyBrown.withValues(alpha: 0.6),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.pineGreen.withOpacity(0.3),
+                          color: AppColors.pineGreen.withValues(alpha: 0.3),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -331,7 +329,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       color: AppColors.textPrimary,
                       shadows: [
                         Shadow(
-                          color: AppColors.rosyBrown.withOpacity(0.6),
+                          color: AppColors.rosyBrown.withValues(alpha: 0.6),
                           blurRadius: 8,
                         ),
                       ],
@@ -393,12 +391,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               border: Border.all(color: AppColors.iceBorder, width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   blurRadius: 15,
                   offset: const Offset(-2, -2),
                 ),
                 BoxShadow(
-                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.15),
                   blurRadius: 15,
                   offset: const Offset(2, 2),
                 ),
@@ -413,14 +411,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.rosyBrown.withOpacity(0.8),
-                        AppColors.rosyBrown.withOpacity(0.6),
+                        AppColors.rosyBrown.withValues(alpha: 0.8),
+                        AppColors.rosyBrown.withValues(alpha: 0.6),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.rosyBrown.withOpacity(0.3),
+                        color: AppColors.rosyBrown.withValues(alpha: 0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
@@ -441,7 +439,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     color: AppColors.textPrimary,
                     shadows: [
                       Shadow(
-                        color: AppColors.rosyBrown.withOpacity(0.6),
+                        color: AppColors.rosyBrown.withValues(alpha: 0.6),
                         blurRadius: 8,
                       ),
                     ],
@@ -452,18 +450,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withOpacity(0.8),
-                        AppColors.pineGreen.withOpacity(0.9),
+                        AppColors.pineGreen.withValues(alpha: 0.8),
+                        AppColors.pineGreen.withValues(alpha: 0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.pineGreen.withOpacity(0.4),
+                        color: AppColors.pineGreen.withValues(alpha: 0.4),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -520,12 +518,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.midnightGreen.withOpacity(0.3), width: 1),
+        border: Border.all(color: AppColors.midnightGreen.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
@@ -536,10 +534,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.midnightGreen.withOpacity(0.2),
+                  color: AppColors.midnightGreen.withValues(alpha: 0.2),
                   width: 0.5,
                 ),
               ),
@@ -572,18 +570,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.pineGreen.withOpacity(0.8),
-                  AppColors.pineGreen.withOpacity(0.9),
+                  AppColors.pineGreen.withValues(alpha: 0.8),
+                  AppColors.pineGreen.withValues(alpha: 0.9),
                 ],
               ),
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.pineGreen.withOpacity(0.3),
+                  color: AppColors.pineGreen.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -646,8 +644,8 @@ class _MessageBubble extends StatelessWidget {
                 decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.pineGreen.withOpacity(0.3),
-                    AppColors.rosyBrown.withOpacity(0.2),
+                    AppColors.pineGreen.withValues(alpha: 0.3),
+                    AppColors.rosyBrown.withValues(alpha: 0.2),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -657,7 +655,7 @@ class _MessageBubble extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.pineGreen.withOpacity(0.2),
+                    color: AppColors.pineGreen.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -697,14 +695,14 @@ class _MessageBubble extends StatelessWidget {
                 gradient: isMe 
                     ? LinearGradient(
                         colors: [
-                          AppColors.pineGreen.withOpacity(0.8),
-                          AppColors.pineGreen.withOpacity(0.9),
+                          AppColors.pineGreen.withValues(alpha: 0.8),
+                          AppColors.pineGreen.withValues(alpha: 0.9),
                         ],
                       )
                     : LinearGradient(
                         colors: [
-                          AppColors.midnightGreen.withOpacity(0.2),
-                          AppColors.midnightGreen.withOpacity(0.1),
+                          AppColors.midnightGreen.withValues(alpha: 0.2),
+                          AppColors.midnightGreen.withValues(alpha: 0.1),
                         ],
                       ),
                 borderRadius: BorderRadius.circular(15).copyWith(
@@ -713,13 +711,13 @@ class _MessageBubble extends StatelessWidget {
                 ),
                 border: Border.all(
                   color: isMe 
-                      ? Colors.white.withOpacity(0.2)
-                      : AppColors.midnightGreen.withOpacity(0.3),
+                      ? Colors.white.withValues(alpha: 0.2)
+                      : AppColors.midnightGreen.withValues(alpha: 0.3),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
@@ -760,7 +758,7 @@ class _MessageBubble extends StatelessWidget {
             child: Text(
               _formatTime(message.createdAt),
               style: TextStyle(
-                color: AppColors.rosyBrown.withOpacity(0.8),
+                color: AppColors.rosyBrown.withValues(alpha: 0.8),
                 fontSize: MediaQuery.of(context).size.width * 0.025,
                 fontWeight: FontWeight.w400,
               ),
