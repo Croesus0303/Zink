@@ -338,7 +338,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               ),
               SliverToBoxAdapter(
                 child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.06),
               ),
               SliverToBoxAdapter(
                 child: _SubmissionsWidget(event: event, eventId: widget.eventId),
@@ -368,7 +368,7 @@ class _EventDetailWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(28.0),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
           color: AppColors.iceBorder,
           width: 1.5,
@@ -404,7 +404,7 @@ class _EventDetailWidget extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(16),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -417,7 +417,7 @@ class _EventDetailWidget extends StatelessWidget {
                     child: Container(
                       margin: const EdgeInsets.all(4),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         child: event.referenceImageURL.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: event.referenceImageURL,
@@ -490,11 +490,18 @@ class _EventDetailWidget extends StatelessWidget {
                   child: Text(
                     event.description,
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: Colors.white.withOpacity(0.9),
                       fontSize: MediaQuery.of(context).size.width * 0.037,
                       fontWeight: FontWeight.w500,
                       height: 1.5,
                       letterSpacing: 0.3,
+                      shadows: [
+                        Shadow(
+                          color: AppColors.midnightGreen.withOpacity(0.5),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                     maxLines: 2,
@@ -516,99 +523,110 @@ class _EventDetailWidget extends StatelessWidget {
       margin: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          // Status and Time Row
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+          // Merged Status and Time Pill
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: event.isActive
+                    ? [
+                        AppColors.pineGreen.withOpacity(0.9),
+                        AppColors.pineGreen.withOpacity(0.8),
+                        AppColors.pineGreen.withOpacity(0.85),
+                      ]
+                    : [
+                        AppColors.midnightGreen.withOpacity(0.9),
+                        AppColors.midnightGreen.withOpacity(0.7),
+                        AppColors.midnightGreen.withOpacity(0.8),
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.08),
+                  blurRadius: 6,
+                  offset: const Offset(-1, -1),
                 ),
-                decoration: BoxDecoration(
-                  gradient: event.isActive
-                      ? AppColors.iceGlassGradient
-                      : LinearGradient(
-                          colors: [
-                            Colors.white.withOpacity(0.1),
-                            Colors.white.withOpacity(0.05),
-                          ],
-                        ),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: event.isActive
-                        ? AppColors.rosyBrown.withOpacity(0.3)
-                        : Colors.white.withOpacity(0.3),
-                    width: 1.5,
-                  ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(1, 1),
                 ),
-                child: Text(
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
                   event.isActive ? 'Active' : 'Ended',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
-              ),
-              const Spacer(),
-              if (event.isActive)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                if (event.isActive) ...<Widget>[
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                  Icon(
+                    Icons.access_time,
+                    size: MediaQuery.of(context).size.width * 0.035,
+                    color: Colors.white,
                   ),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.iceGlassGradient,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.iceBorder,
-                      width: 1.5,
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                  Text(
+                    _formatTimeRemaining(event.endTime),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: MediaQuery.of(context).size.width * 0.032,
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: MediaQuery.of(context).size.width * 0.04,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.01),
-                      Text(
-                        _formatTimeRemaining(event.endTime),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.035,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
+                ],
+              ],
+            ),
           ),
 
-          // Submit Button under Active
+          // Submit Button
           if (event.isActive)
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(top: 12),
+            Center(
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: MediaQuery.of(context).size.height * 0.045,
+                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.height * 0.06,
                 decoration: BoxDecoration(
-                  gradient: AppColors.iceGlassGradient,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.rosyBrown.withOpacity(0.9),
+                      AppColors.rosyBrown.withOpacity(0.8),
+                      AppColors.rosyBrown.withOpacity(0.85),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.rosyBrown.withOpacity(0.4),
-                    width: 1.5,
+                    color: Colors.white.withOpacity(0.3),
+                    width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.rosyBrown.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(-1, -1),
+                    ),
+                    BoxShadow(
+                      color: AppColors.rosyBrown.withOpacity(0.4),
                       blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      offset: const Offset(2, 2),
                     ),
                   ],
                 ),
@@ -616,16 +634,17 @@ class _EventDetailWidget extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => context.push('/submit/${event.id}'),
+                    borderRadius: BorderRadius.circular(16),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.04,
+                          vertical: MediaQuery.of(context).size.height * 0.015),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            height: MediaQuery.of(context).size.width * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.12,
+                            height: MediaQuery.of(context).size.width * 0.12,
                             child: Image.asset(
                               'assets/app_logo.png',
                               fit: BoxFit.contain,
@@ -633,18 +652,17 @@ class _EventDetailWidget extends StatelessWidget {
                                 return Icon(
                                   Icons.camera_alt,
                                   color: Colors.white,
-                                  size: MediaQuery.of(context).size.width * 0.05,
+                                  size: MediaQuery.of(context).size.width * 0.12,
                                 );
                               },
                             ),
                           ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.015),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                           Text(
                             'Submit',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              fontSize: MediaQuery.of(context).size.width * 0.035,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -691,26 +709,34 @@ class _SubmissionsWidget extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24.0),
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(28.0),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.08),
+            AppColors.midnightGreen.withOpacity(0.15),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          color: AppColors.iceBorder,
+          color: Colors.white.withOpacity(0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.08),
-            blurRadius: 15,
+            color: Colors.white.withOpacity(0.06),
+            blurRadius: 12,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.15),
-            blurRadius: 15,
+            color: AppColors.midnightGreen.withOpacity(0.2),
+            blurRadius: 12,
             offset: const Offset(2, 2),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
@@ -934,47 +960,25 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withOpacity(0.15),
-              AppColors.pineGreen.withOpacity(isSelected ? 0.12 : 0.08),
-              Colors.white.withOpacity(0.05),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
+          color: isSelected
+              ? AppColors.pineGreen
+              : AppColors.midnightGreen.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.iceBorder,
-            width: isSelected ? 2 : 1,
+            color: isSelected
+                ? AppColors.pineGreen
+                : Colors.white.withOpacity(0.3),
+            width: 1.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withOpacity(0.06),
-              blurRadius: 6,
-              offset: const Offset(-1, -1),
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 6,
-              offset: const Offset(1, 1),
-            ),
-          ],
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.pineGreen,
+            color: isSelected
+                ? Colors.white
+                : Colors.white.withOpacity(0.8),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
-            shadows: isSelected
-                ? [
-                    Shadow(
-                      color: AppColors.pineGreen.withOpacity(0.5),
-                      blurRadius: 4,
-                    ),
-                  ]
-                : null,
           ),
         ),
       ),
@@ -1022,31 +1026,17 @@ class _SubmissionCard extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 2.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.12),
-            AppColors.rosyBrown.withOpacity(0.06),
-            AppColors.pineGreen.withOpacity(0.04),
-            Colors.white.withOpacity(0.03),
-          ],
-        ),
+        color: AppColors.pineGreen.withOpacity(0.15),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.iceBorder,
+          color: AppColors.pineGreen.withOpacity(0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1094,10 +1084,10 @@ class _SubmissionCard extends ConsumerWidget {
               if (currentUser != null && currentUser.uid == submission.uid)
                 Container(
                   decoration: BoxDecoration(
-                    gradient: AppColors.iceGlassGradient,
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.pineGreen.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.iceBorder,
+                      color: AppColors.pineGreen.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -1108,7 +1098,7 @@ class _SubmissionCard extends ConsumerWidget {
                     },
                     icon: Icon(
                       Icons.delete,
-                      color: Colors.red,
+                      color: AppColors.rosyBrown.withOpacity(0.8),
                       size: MediaQuery.of(context).size.width * 0.04,
                     ),
                     constraints: BoxConstraints(
@@ -1130,9 +1120,9 @@ class _SubmissionCard extends ConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.primaryCyan,
-                    AppColors.primaryOrange,
-                    AppColors.warmBeige,
+                    AppColors.rosyBrown.withOpacity(0.6),
+                    AppColors.pineGreen.withOpacity(0.5),
+                    AppColors.midnightGreen.withOpacity(0.4),
                   ],
                   stops: [0.0, 0.5, 1.0],
                 ),
@@ -1221,10 +1211,10 @@ class _SubmissionCard extends ConsumerWidget {
                     vertical: MediaQuery.of(context).size.height * 0.01,
                   ),
                   decoration: BoxDecoration(
-                    gradient: AppColors.iceGlassGradient,
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.pineGreen.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.iceBorder,
+                      color: AppColors.pineGreen.withOpacity(0.3),
                       width: 1.5,
                     ),
                   ),

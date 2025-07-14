@@ -22,7 +22,8 @@
       "Bash(gem pristine:*)",
       "Bash(sudo gem pristine:*)",
       "Bash(brew install:*)",
-      "Bash(pod:*)"
+      "Bash(pod:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/events/presentation/screens/event_detail_screen.dart)"
     ],
     "deny": []
   }
