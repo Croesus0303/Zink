@@ -9,6 +9,7 @@ import '../../../auth/data/models/user_model.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
+import '../../../../shared/widgets/app_colors.dart';
 
 class CommentSheet extends ConsumerStatefulWidget {
   final String eventId;
@@ -89,64 +90,149 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
-      minChildSize: 0.3,
+      minChildSize: 0.4,
       maxChildSize: 0.95,
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.midnightGreen.withOpacity(0.95),
+                AppColors.midnightGreen.withOpacity(0.98),
+              ],
+            ),
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+                offset: const Offset(0, -5),
+              ),
+            ],
           ),
-          child: Column(
-            children: [
-              // Handle bar
-              Container(
-                margin: const EdgeInsets.only(top: 8, bottom: 16),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    commentsAsync.when(
-                      data: (comments) => Text(
-                        'Comments (${comments.length})',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Handle bar
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.01, 
+                      bottom: MediaQuery.of(context).size.height * 0.015
+                    ),
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    height: MediaQuery.of(context).size.height * 0.005,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  // Header
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                    child: Row(
+                      children: [
+                        commentsAsync.when(
+                          data: (comments) => Text(
+                            'Comments (${comments.length})',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  blurRadius: 8,
+                                ),
+                              ],
                             ),
-                      ),
-                      loading: () => Text(
-                        'Comments',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          ),
+                          loading: () => Text(
+                            'Comments',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  blurRadius: 8,
+                                ),
+                              ],
                             ),
-                      ),
-                      error: (_, __) => Text(
-                        'Comments',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          ),
+                          error: (_, __) => Text(
+                            'Comments',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  blurRadius: 8,
+                                ),
+                              ],
                             ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.white.withOpacity(0.15),
+                                AppColors.pineGreen.withOpacity(0.08),
+                                Colors.white.withOpacity(0.05),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.iceBorder,
+                              width: 1,
+                            ),
+                          ),
+                          child: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.045,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 1,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.04,
+                      vertical: MediaQuery.of(context).size.height * 0.008,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.white.withOpacity(0.3),
+                          Colors.transparent,
+                        ],
                       ),
                     ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-              // Comments list
-              Expanded(
-                child: commentsAsync.when(
+                  ),
+                  // Comments list - flexible
+                  Flexible(
+                    child: commentsAsync.when(
                   data: (comments) => comments.isEmpty
                       ? Center(
                           child: Column(
@@ -154,23 +240,24 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             children: [
                               Icon(
                                 Icons.comment_outlined,
-                                size: 48,
-                                color: Colors.grey[400],
+                                size: MediaQuery.of(context).size.width * 0.12,
+                                color: AppColors.textSecondary,
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                               Text(
                                 'No comments yet',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 16,
+                                  color: AppColors.textPrimary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                               Text(
                                 'Be the first to comment!',
                                 style: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontSize: 14,
+                                  color: AppColors.textSecondary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.035,
                                 ),
                               ),
                             ],
@@ -178,7 +265,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         )
                       : ListView.builder(
                           controller: scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
                             final comment = comments[index];
@@ -187,76 +274,180 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             );
                           },
                         ),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(color: AppColors.pineGreen),
+                  ),
                   error: (error, stack) {
                     AppLogger.e('Error loading comments', error, stack);
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Error loading comments: $error'),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () => ref.refresh(
-                                commentsStreamProvider((
-                              eventId: widget.eventId,
-                              submissionId: widget.submissionId
-                            ))),
-                            child: const Text('Retry'),
+                          Text(
+                            'Error loading comments: $error',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: MediaQuery.of(context).size.width * 0.035,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.pineGreen.withOpacity(0.8),
+                                  AppColors.pineGreen.withOpacity(0.9),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => ref.refresh(
+                                    commentsStreamProvider((
+                                  eventId: widget.eventId,
+                                  submissionId: widget.submissionId
+                                ))),
+                                borderRadius: BorderRadius.circular(16),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.06,
+                                    vertical: MediaQuery.of(context).size.height * 0.015,
+                                  ),
+                                  child: Text(
+                                    'Retry',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                ),
-              ),
-              const Divider(),
-              // Comment input
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _commentController,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!.addComment,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                      );
+                    },
+                  ),
+                  ),
+                  Container(
+                    height: 1,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.04,
+                      vertical: MediaQuery.of(context).size.height * 0.008,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.white.withOpacity(0.3),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Comment input - fixed at bottom
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.04,
+                      right: MediaQuery.of(context).size.width * 0.04,
+                      top: MediaQuery.of(context).size.height * 0.01,
+                      bottom: MediaQuery.of(context).size.height * 0.015,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withOpacity(0.08),
+                                  AppColors.pineGreen.withOpacity(0.05),
+                                  Colors.white.withOpacity(0.03),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _commentController,
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.addComment,
+                                hintStyle: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.035,
+                                ),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                                  vertical: MediaQuery.of(context).size.height * 0.01,
+                                ),
+                              ),
+                              style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: MediaQuery.of(context).size.width * 0.035,
+                              ),
+                              maxLines: 3,
+                              minLines: 1,
+                              textCapitalization: TextCapitalization.sentences,
+                              textInputAction: TextInputAction.send,
+                              enabled: !_isSubmitting,
+                              onSubmitted: _isSubmitting ? null : (_) => _addComment(),
+                            ),
                           ),
                         ),
-                        maxLines: null,
-                        textCapitalization: TextCapitalization.sentences,
-                        textInputAction: TextInputAction.send,
-                        enabled: !_isSubmitting,
-                        onSubmitted:
-                            _isSubmitting ? null : (_) => _addComment(),
-                      ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.rosyBrown.withOpacity(0.8),
+                                AppColors.rosyBrown.withOpacity(0.9),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: IconButton(
+                            onPressed: _isSubmitting ? null : _addComment,
+                            icon: _isSubmitting
+                                ? SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.04,
+                                    height: MediaQuery.of(context).size.width * 0.04,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.width * 0.04,
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      onPressed: _isSubmitting ? null : _addComment,
-                      icon: _isSubmitting
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.send),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                ],
+              );
+            }
           ),
         );
       },
@@ -283,17 +474,34 @@ class _CommentItem extends ConsumerWidget {
   }
 
   Widget _buildCommentItem(BuildContext context, UserModel? user) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.008),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.05),
+            AppColors.pineGreen.withOpacity(0.03),
+            Colors.white.withOpacity(0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClickableUserAvatar(
             user: user,
             userId: comment.uid,
-            radius: 16,
+            radius: MediaQuery.of(context).size.width * 0.04,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.03),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,25 +511,31 @@ class _CommentItem extends ConsumerWidget {
                     ClickableUserName(
                       user: user,
                       userId: comment.uid,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                        color: AppColors.textPrimary,
+                        decoration: TextDecoration.none,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     Text(
                       _formatTime(comment.createdAt),
                       style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.03,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                 Text(
                   comment.text,
-                  style: const TextStyle(fontSize: 14),
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                    color: AppColors.textPrimary,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
