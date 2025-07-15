@@ -392,6 +392,23 @@ class SubmissionsService {
       return [];
     }
   }
+
+  Future<int> getUserSubmissionCountForEvent(String userId, String eventId) async {
+    try {
+      // Use main submissions collection for more reliable count
+      final mainSnapshot = await _firestore
+          .collection('events')
+          .doc(eventId)
+          .collection('submissions')
+          .where('uid', isEqualTo: userId)
+          .get();
+
+      return mainSnapshot.docs.length;
+    } catch (e) {
+      AppLogger.e('Error getting user submission count for event $eventId', e);
+      return 0;
+    }
+  }
 }
 
 final submissionsServiceProvider = Provider<SubmissionsService>((ref) {

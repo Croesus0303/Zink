@@ -193,6 +193,12 @@ final userBadgesProvider = FutureProvider.family<List<String>, String>((ref, use
   return await submissionsService.getUserBadges(userId);
 });
 
+// User submission count for event provider
+final userSubmissionCountForEventProvider = FutureProvider.family<int, ({String userId, String eventId})>((ref, params) async {
+  final submissionsService = ref.watch(submissionsServiceProvider);
+  return await submissionsService.getUserSubmissionCountForEvent(params.userId, params.eventId);
+});
+
 // User liked submission IDs provider
 final userLikedSubmissionIdsProvider =
     FutureProvider.family<List<String>, String>((ref, userId) async {

@@ -1302,9 +1302,10 @@ class _SubmissionCard extends ConsumerWidget {
           );
         }
 
-        // Refresh the submissions list
+        // Refresh the submissions list and submission count
         ref.invalidate(submissionsProvider(submission.eventId));
         ref.invalidate(submissionsStreamProvider(submission.eventId));
+        ref.invalidate(userSubmissionCountForEventProvider((userId: submission.uid, eventId: submission.eventId)));
       } catch (e) {
         AppLogger.e('Error deleting submission ${submission.id}', e);
         if (context.mounted) {

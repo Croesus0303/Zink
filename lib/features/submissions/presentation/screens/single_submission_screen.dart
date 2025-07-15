@@ -757,6 +757,9 @@ class _SubmissionInfo extends ConsumerWidget {
             submission.eventId, submission.id);
 
         if (context.mounted) {
+          // Refresh the submission count provider
+          ref.invalidate(userSubmissionCountForEventProvider((userId: submission.uid, eventId: submission.eventId)));
+          
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Post deleted successfully')),
           );

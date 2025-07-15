@@ -98,6 +98,9 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       AppLogger.i('Photo submitted successfully: ${submission.id}');
 
       if (mounted) {
+        // Refresh the submission count provider for this specific event
+        ref.invalidate(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: widget.eventId)));
+        
         _showSuccessSnackBar(
           AppLocalizations.of(context)!.submissionSuccessful,
         );
@@ -409,6 +412,60 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
   }
 
   Widget _buildSubmissionScreen(BuildContext context, EventModel event) {
+    final currentUser = ref.watch(currentUserProvider);
+    
+    if (currentUser == null) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+          elevation: 0,
+          title: Text(
+            'Authentication Required',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+            child: Center(
+              child: Text(
+                'Please sign in to submit photos',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final submissionCountAsync = ref.watch(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: event.id)));
+
+    return submissionCountAsync.when(
+      data: (submissionCount) => _buildSubmissionScreenContent(context, event, submissionCount),
+      loading: () => _buildLoadingScreen(context),
+      error: (error, stack) => _buildErrorScreen(context, error),
+    );
+  }
+
+  Widget _buildSubmissionScreenContent(BuildContext context, EventModel event, int submissionCount) {
+    const maxSubmissions = 3;
+    final hasReachedLimit = submissionCount >= maxSubmissions;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
@@ -476,7 +533,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           ),
         ),
         actions: [
-          if (_selectedImage != null)
+          if (_selectedImage != null && !hasReachedLimit)
             Container(
               margin: EdgeInsets.only(
                   right: MediaQuery.of(context).size.width * 0.03,
@@ -561,21 +618,31 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                       _ChallengeInfoSection(event: event),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
-                      // Photo selection/preview
-                      _PhotoSection(
-                        selectedImage: _selectedImage,
-                        onTakePhoto: _pickImageFromCamera,
-                        onChooseFromGallery: _pickImageFromGallery,
-                        onRemovePhoto: () {
-                          setState(() {
-                            _selectedImage = null;
-                          });
-                        },
+                      // Submission count info
+                      _SubmissionCountInfo(
+                        submissionCount: submissionCount,
+                        maxSubmissions: maxSubmissions,
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
+                      // Photo selection/preview or limit message
+                      if (hasReachedLimit)
+                        _SubmissionLimitMessage()
+                      else
+                        _PhotoSection(
+                          selectedImage: _selectedImage,
+                          onTakePhoto: _pickImageFromCamera,
+                          onChooseFromGallery: _pickImageFromGallery,
+                          onRemovePhoto: () {
+                            setState(() {
+                              _selectedImage = null;
+                            });
+                          },
+                        ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025),
                       // Guidelines
-                      _GuidelinesSection(),
+                      if (!hasReachedLimit) _GuidelinesSection(),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.12),
                     ],
@@ -586,7 +653,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _selectedImage != null
+      bottomNavigationBar: _selectedImage != null && !hasReachedLimit
           ? Container(
               margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
               child: Container(
@@ -668,6 +735,278 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               ),
             )
           : null,
+    );
+  }
+
+  Widget _buildLoadingScreen(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        elevation: 0,
+        title: Text(
+          'Loading...',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+          child: Center(
+            child: CircularProgressIndicator(color: AppColors.pineGreen),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorScreen(BuildContext context, dynamic error) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        elevation: 0,
+        title: Text(
+          'Error',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Error loading submission data',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                  ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Go Back'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SubmissionCountInfo extends StatelessWidget {
+  final int submissionCount;
+  final int maxSubmissions;
+
+  const _SubmissionCountInfo({
+    required this.submissionCount,
+    required this.maxSubmissions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.12),
+            AppColors.pineGreen.withOpacity(0.08),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.iceBorder, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: AppColors.pineGreen.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.12,
+            height: MediaQuery.of(context).size.width * 0.12,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.pineGreen.withOpacity(0.8),
+                  AppColors.pineGreen.withOpacity(0.9),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.pineGreen.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.photo_library,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.06,
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Submissions',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  '$submissionCount of $maxSubmissions used',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SubmissionLimitMessage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.rosyBrown.withOpacity(0.1),
+            AppColors.rosyBrown.withOpacity(0.05),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.rosyBrown.withOpacity(0.3), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: AppColors.rosyBrown.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.16,
+            height: MediaQuery.of(context).size.width * 0.16,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.rosyBrown.withOpacity(0.8),
+                  AppColors.rosyBrown.withOpacity(0.6),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.rosyBrown.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.block,
+              size: MediaQuery.of(context).size.width * 0.08,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          Text(
+            'Submission Limit Reached',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+              shadows: [
+                Shadow(
+                  color: AppColors.rosyBrown.withOpacity(0.6),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+          Text(
+            'You have used all your submissions for this event.',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.035,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
