@@ -53,6 +53,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       ref.invalidate(userLikedSubmissionsProvider(targetUserId));
       ref.invalidate(userSubmissionCountProvider(targetUserId));
       ref.invalidate(userLikeCountFromUserCollectionProvider(targetUserId));
+      ref.invalidate(userBadgesProvider(targetUserId));
     }
   }
 
@@ -657,6 +658,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const SizedBox(height: 16),
             _buildSocialMediaLinks(user),
             const SizedBox(height: 16),
+            _buildBadges(context, ref, user),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -1143,6 +1146,146 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         children: validSocialLinks.map((entry) {
           return _buildSocialMediaButton(entry.key, entry.value);
         }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildBadges(BuildContext context, WidgetRef ref, UserModel? user) {
+    if (user == null) {
+      return const SizedBox.shrink();
+    }
+    
+    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
+
+    return badgesAsync.when(
+      data: (badges) {
+        if (badges.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.04,
+            vertical: MediaQuery.of(context).size.height * 0.015,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: 0.12),
+                AppColors.rosyBrown.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.08),
+                blurRadius: 8,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(1, 1),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Text(
+                'Event Badges',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: badges.map((badgeURL) {
+                  return _buildBadgeItem(badgeURL);
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (error, stack) => const SizedBox.shrink(),
+    );
+  }
+
+  Widget _buildBadgeItem(String badgeURL) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.12,
+      height: MediaQuery.of(context).size.width * 0.12,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.rosyBrown.withValues(alpha: 0.2),
+            AppColors.pineGreen.withValues(alpha: 0.1),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.rosyBrown.withValues(alpha: 0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.rosyBrown.withValues(alpha: 0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: CachedNetworkImage(
+          imageUrl: badgeURL,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.rosyBrown.withValues(alpha: 0.3),
+                  AppColors.pineGreen.withValues(alpha: 0.2),
+                ],
+              ),
+            ),
+            child: const Icon(
+              Icons.emoji_events,
+              color: AppColors.rosyBrown,
+              size: 24,
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.rosyBrown.withValues(alpha: 0.3),
+                  AppColors.pineGreen.withValues(alpha: 0.2),
+                ],
+              ),
+            ),
+            child: const Icon(
+              Icons.emoji_events,
+              color: AppColors.rosyBrown,
+              size: 24,
+            ),
+          ),
+        ),
       ),
     );
   }

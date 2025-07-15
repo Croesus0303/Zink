@@ -161,6 +161,7 @@ class AuthService {
       _ref.invalidate(userLikeCountProvider);
       _ref.invalidate(userCommentCountProvider);
       _ref.invalidate(likeStatusProvider);
+      _ref.invalidate(userBadgesProvider);
 
       // Invalidate notification providers
       _ref.invalidate(fcmTokenProvider);

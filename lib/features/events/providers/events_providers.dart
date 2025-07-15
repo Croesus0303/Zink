@@ -187,6 +187,12 @@ final userSubmissionsFromUserCollectionProvider =
   return await submissionsService.getUserSubmissionsFromUserCollection(userId);
 });
 
+// User badges provider
+final userBadgesProvider = FutureProvider.family<List<String>, String>((ref, userId) async {
+  final submissionsService = ref.watch(submissionsServiceProvider);
+  return await submissionsService.getUserBadges(userId);
+});
+
 // User liked submission IDs provider
 final userLikedSubmissionIdsProvider =
     FutureProvider.family<List<String>, String>((ref, userId) async {

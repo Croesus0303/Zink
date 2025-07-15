@@ -134,6 +134,18 @@ class SubmissionsService {
       // Upload image first
       final imageUrl = await uploadImage(imageFile, eventId, userId);
 
+      // Get event data to retrieve badgeURL
+      final eventDoc = await _firestore
+          .collection('events')
+          .doc(eventId)
+          .get();
+      
+      String? badgeURL;
+      if (eventDoc.exists) {
+        final eventData = eventDoc.data() as Map<String, dynamic>;
+        badgeURL = eventData['badgeURL'];
+      }
+
       // Use batch to create both submission and user reference
       final batch = _firestore.batch();
 
@@ -145,6 +157,7 @@ class SubmissionsService {
         'eventId': eventId,
         'uid': userId,
         'imageURL': imageUrl,
+        if (badgeURL != null) 'badgeURL': badgeURL,
         'createdAt': FieldValue.serverTimestamp(),
         'likeCount': 0,
       };
@@ -160,6 +173,7 @@ class SubmissionsService {
         'eventId': eventId,
         'submissionId': submissionRef.id,
         'imageURL': imageUrl,
+        if (badgeURL != null) 'badgeURL': badgeURL,
         'createdAt': FieldValue.serverTimestamp(),
       };
       batch.set(userSubmissionRef, userSubmissionData);
@@ -345,6 +359,37 @@ class SubmissionsService {
           'Error fetching user submissions from user collection for $userId',
           e);
       rethrow;
+    }
+  }
+
+  Future<List<String>> getUserBadges(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('submissions')
+          .get();
+
+      AppLogger.d(
+          'Fetched ${snapshot.docs.length} submissions for badge extraction for user $userId');
+      
+      final badgeURLs = <String>{};
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data();
+        final badgeURL = data['badgeURL'] as String?;
+        
+        if (badgeURL != null && badgeURL.isNotEmpty) {
+          badgeURLs.add(badgeURL);
+        }
+      }
+
+      final uniqueBadges = badgeURLs.toList();
+      AppLogger.d('Found ${uniqueBadges.length} unique badges for user $userId');
+      return uniqueBadges;
+    } catch (e) {
+      AppLogger.e('Error fetching user badges for $userId', e);
+      return [];
     }
   }
 }
