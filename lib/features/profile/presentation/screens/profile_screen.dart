@@ -41,6 +41,104 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     });
   }
 
+  Widget _buildMenuItem({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required bool isPrimary,
+    bool isDestructive = false,
+  }) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.06,
+      margin: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.015,
+        vertical: MediaQuery.of(context).size.height * 0.005,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.04,
+        vertical: MediaQuery.of(context).size.height * 0.015,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDestructive
+              ? [
+                  AppColors.rosyBrown.withValues(alpha: 0.15),
+                  AppColors.rosyBrown.withValues(alpha: 0.08),
+                ]
+              : isPrimary
+                  ? [
+                      AppColors.pineGreen.withValues(alpha: 0.2),
+                      AppColors.pineGreen.withValues(alpha: 0.1),
+                    ]
+                  : [
+                      AppColors.midnightGreen.withValues(alpha: 0.2),
+                      AppColors.midnightGreen.withValues(alpha: 0.1),
+                    ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDestructive
+              ? AppColors.rosyBrown.withValues(alpha: 0.4)
+              : isPrimary
+                  ? AppColors.pineGreen.withValues(alpha: 0.4)
+                  : AppColors.iceBorder.withValues(alpha: 0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDestructive
+                ? AppColors.rosyBrown.withValues(alpha: 0.1)
+                : isPrimary
+                    ? AppColors.pineGreen.withValues(alpha: 0.1)
+                    : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.08,
+            height: MediaQuery.of(context).size.width * 0.08,
+            decoration: BoxDecoration(
+              color: isDestructive
+                  ? AppColors.rosyBrown.withValues(alpha: 0.2)
+                  : isPrimary
+                      ? AppColors.pineGreen.withValues(alpha: 0.2)
+                      : AppColors.iceBorder.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: isDestructive
+                  ? AppColors.rosyBrown
+                  : isPrimary
+                      ? AppColors.pineGreen
+                      : Colors.white.withValues(alpha: 0.9),
+              size: MediaQuery.of(context).size.width * 0.04,
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: MediaQuery.of(context).size.width * 0.036,
+                fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w500,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _refreshProfileData() {
     final currentUser = ref.read(currentUserProvider);
     final targetUserId = widget.userId ?? currentUser?.uid;
@@ -72,11 +170,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final targetUserId = widget.userId ?? currentUser?.uid;
 
     // Debug logging
-    AppLogger.i('ProfileScreen: currentUser?.uid = ${currentUser?.uid}, widget.userId = ${widget.userId}, targetUserId = $targetUserId');
+    AppLogger.i(
+        'ProfileScreen: currentUser?.uid = ${currentUser?.uid}, widget.userId = ${widget.userId}, targetUserId = $targetUserId');
     AppLogger.i('ProfileScreen: authState = ${authState.toString()}');
 
     if (targetUserId == null) {
-      AppLogger.w('ProfileScreen: targetUserId is null, showing user not found');
+      AppLogger.w(
+          'ProfileScreen: targetUserId is null, showing user not found');
       return const Scaffold(
         body: Center(child: Text('User not found')),
       );
@@ -93,7 +193,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Loading...', style: TextStyle(color: AppColors.textPrimary)),
+          title: const Text('Loading...',
+              style: TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
@@ -117,7 +218,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Error', style: TextStyle(color: AppColors.textPrimary)),
+          title: const Text('Error',
+              style: TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
@@ -164,15 +266,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(16),
-                        onTap: () => ref.refresh(userDataProvider(targetUserId)),
+                        onTap: () =>
+                            ref.refresh(userDataProvider(targetUserId)),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh, color: Colors.white, size: 20),
+                              Icon(Icons.refresh,
+                                  color: Colors.white, size: 20),
                               SizedBox(width: 8),
-                              Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text('Retry',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
@@ -199,7 +308,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Profile', style: TextStyle(color: AppColors.textPrimary)),
+            title: const Text('Profile',
+                style: TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(
@@ -210,7 +320,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
             ),
             child: Container(
-              decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+              decoration:
+                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -265,7 +376,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.primaryOrange.withOpacity(0.8), AppColors.primaryOrangeDark],
+                          colors: [
+                            AppColors.primaryOrange.withOpacity(0.8),
+                            AppColors.primaryOrangeDark
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
@@ -282,13 +396,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           borderRadius: BorderRadius.circular(16),
                           onTap: () => context.go('/onboarding'),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 18),
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.edit, color: Colors.white, size: 20),
                                 SizedBox(width: 12),
-                                Text('Complete Setup', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                Text('Complete Setup',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
                               ],
                             ),
                           ),
@@ -308,7 +427,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Profile', style: TextStyle(color: AppColors.textPrimary)),
+            title: const Text('Profile',
+                style: TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(
@@ -319,7 +439,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
             ),
             child: Container(
-              decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+              decoration:
+                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
               child: const Center(
                 child: Text(
                   'User not found',
@@ -350,186 +471,261 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
         ),
         centerTitle: true,
-        actions: [
-        if (!isOwnProfile)
-          Container(
-            margin: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.02,
-              top: 3,
-              bottom: 3
-            ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 0.15),
-                  AppColors.pineGreen.withValues(alpha: 0.08),
-                  Colors.white.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: AppColors.iceBorder, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(-1, -1),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(1, 1),
-                ),
+        leading: Container(
+          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
-            child: IconButton(
-              onPressed: () => context.push('/chat/$targetUserId'),
-              icon: Icon(
-                Icons.message,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.04,
-              ),
-              tooltip: 'Send Message',
-              constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width * 0.08,
-                minHeight: MediaQuery.of(context).size.width * 0.08,
-              ),
-              padding: EdgeInsets.zero,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.08),
+                blurRadius: 8,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(1, 1),
+              ),
+            ],
           ),
-        if (isOwnProfile)
-          Container(
-            margin: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.04,
-              top: 3,
-              bottom: 3
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.04,
             ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 0.15),
-                  AppColors.rosyBrown.withValues(alpha: 0.08),
-                  Colors.white.withValues(alpha: 0.05),
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width * 0.08,
+              minHeight: MediaQuery.of(context).size.width * 0.08,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ),
+        actions: [
+          if (!isOwnProfile)
+            Container(
+              margin: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.02,
+                  top: 3,
+                  bottom: 3),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.15),
+                    AppColors.pineGreen.withValues(alpha: 0.08),
+                    Colors.white.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: AppColors.iceBorder, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(1, 1),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: AppColors.iceBorder, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(-1, -1),
+              child: IconButton(
+                onPressed: () => context.push('/chat/$targetUserId'),
+                icon: Icon(
+                  Icons.message,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.04,
                 ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(1, 1),
+                tooltip: 'Send Message',
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width * 0.08,
+                  minHeight: MediaQuery.of(context).size.width * 0.08,
                 ),
-              ],
-            ),
-            child: PopupMenuButton<String>(
-              icon: Icon(
-                Icons.more_vert,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.04,
+                padding: EdgeInsets.zero,
               ),
-              onSelected: (value) async {
-                if (value == 'editProfile') {
-                  if (user != null) {
-                    Navigator.of(context)
-                        .push(
-                      MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(user: user),
-                      ),
-                    )
-                        .then((_) {
-                      _refreshProfileData();
-                    });
-                  }
-                } else if (value == 'testStorage') {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const StorageTestScreen(),
-                    ),
-                  );
-                } else if (value == 'settings') {
-                  context.push('/settings');
-                } else if (value == 'signOut') {
-                  try {
-                    final authService = ref.read(authServiceProvider);
-                    await authService.signOut();
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Sign out failed: ${e.toString()}'),
-                          backgroundColor: AppColors.errorColor,
+            ),
+          if (isOwnProfile)
+            Container(
+              margin: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.04,
+                  top: 3,
+                  bottom: 3),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.15),
+                    AppColors.rosyBrown.withValues(alpha: 0.08),
+                    Colors.white.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: AppColors.iceBorder, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(1, 1),
+                  ),
+                ],
+              ),
+              child: PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.04,
+                ),
+                color: AppColors.midnightGreen.withValues(alpha: 0.98),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: AppColors.iceBorder,
+                    width: 1.5,
+                  ),
+                ),
+                elevation: 12,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.02),
+                position: PopupMenuPosition.under,
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width * 0.45,
+                  maxWidth: MediaQuery.of(context).size.width * 0.52,
+                ),
+                menuPadding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
+                onSelected: (value) async {
+                  if (value == 'editProfile') {
+                    if (user != null) {
+                      Navigator.of(context)
+                          .push(
+                        MaterialPageRoute(
+                          builder: (context) => EditProfileScreen(user: user),
                         ),
-                      );
+                      )
+                          .then((_) {
+                        _refreshProfileData();
+                      });
+                    }
+                  } else if (value == 'testStorage') {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const StorageTestScreen(),
+                      ),
+                    );
+                  } else if (value == 'settings') {
+                    context.push('/settings');
+                  } else if (value == 'signOut') {
+                    try {
+                      final authService = ref.read(authServiceProvider);
+                      await authService.signOut();
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Sign out failed: ${e.toString()}'),
+                            backgroundColor: AppColors.errorColor,
+                          ),
+                        );
+                      }
                     }
                   }
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem<String>(
-                  value: 'editProfile',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.edit, color: AppColors.primaryCyan),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.editProfile,
-                        style: const TextStyle(color: AppColors.textPrimary),
+                },
+                itemBuilder: (context) => [
+                  // Caret indicator
+                  PopupMenuItem<String>(
+                    enabled: false,
+                    height: 0,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.02,
+                        bottom: MediaQuery.of(context).size.height * 0.01,
                       ),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'testStorage',
-                  child: Row(
-                    children: [
-                      Icon(Icons.storage, color: AppColors.primaryCyan),
-                      SizedBox(width: 8),
-                      Text(
-                        'Test Storage',
-                        style: TextStyle(color: AppColors.textPrimary),
+                      child: Icon(
+                        Icons.keyboard_arrow_up,
+                        color: AppColors.iceBorder,
+                        size: MediaQuery.of(context).size.width * 0.05,
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'settings',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.settings, color: AppColors.primaryCyan),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.settings,
-                        style: const TextStyle(color: AppColors.textPrimary),
+                  // Edit Profile
+                  PopupMenuItem<String>(
+                    value: 'editProfile',
+                    child: _buildMenuItem(
+                      context: context,
+                      icon: Icons.edit,
+                      label: AppLocalizations.of(context)!.editProfile,
+                      isPrimary: true,
+                    ),
+                  ),
+                  // Settings
+                  PopupMenuItem<String>(
+                    value: 'settings',
+                    child: _buildMenuItem(
+                      context: context,
+                      icon: Icons.settings,
+                      label: AppLocalizations.of(context)!.settings,
+                      isPrimary: false,
+                    ),
+                  ),
+                  // Divider for Sign Out
+                  PopupMenuItem<String>(
+                    enabled: false,
+                    height: 1,
+                    child: Container(
+                      height: 1,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.02,
+                        vertical: MediaQuery.of(context).size.height * 0.01,
                       ),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'signOut',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.logout, color: AppColors.primaryOrange),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.signOut,
-                        style: const TextStyle(color: AppColors.textPrimary),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.rosyBrown.withValues(alpha: 0.3),
+                            AppColors.rosyBrown.withValues(alpha: 0.1),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  // Sign Out
+                  PopupMenuItem<String>(
+                    value: 'signOut',
+                    child: _buildMenuItem(
+                      context: context,
+                      icon: Icons.logout,
+                      label: AppLocalizations.of(context)!.signOut,
+                      isPrimary: false,
+                      isDestructive: true,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -831,15 +1027,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () => ref.refresh(userSubmissionsFromUserCollectionProvider(targetUserId)),
+                  onTap: () => ref.refresh(
+                      userSubmissionsFromUserCollectionProvider(targetUserId)),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.refresh, color: Colors.white, size: 20),
                         SizedBox(width: 8),
-                        Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text('Retry',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -896,15 +1098,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () => ref.refresh(userLikedSubmissionsProvider(targetUserId)),
+                  onTap: () =>
+                      ref.refresh(userLikedSubmissionsProvider(targetUserId)),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.refresh, color: Colors.white, size: 20),
                         SizedBox(width: 8),
-                        Text('Retry', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text('Retry',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -1154,7 +1362,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     if (user == null) {
       return const SizedBox.shrink();
     }
-    
+
     final badgesAsync = ref.watch(userBadgesProvider(user.uid));
 
     return badgesAsync.when(
@@ -1292,7 +1500,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildSocialMediaButton(String platform, String url) {
     final socialData = _getSocialMediaData(platform);
-    
+
     return GestureDetector(
       onTap: () => _launchURL(url, platform),
       child: Container(
@@ -1311,7 +1519,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
           boxShadow: [
             BoxShadow(
-              color: (socialData['gradient'] as List<Color>)[0].withValues(alpha: 0.4),
+              color: (socialData['gradient'] as List<Color>)[0]
+                  .withValues(alpha: 0.4),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -1325,44 +1534,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       ),
     );
   }
-  
+
   bool _isValidURL(String url) {
     url = url.trim();
-    
+
     // Check minimum length
     if (url.length < 1) return false;
-    
+
     // Check if it's a proper URL
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return true;
     }
-    
+
     // Check if it contains a domain-like structure
     if (url.contains('.') && url.contains('/')) {
       return true;
     }
-    
+
     // Check if it's a domain without path
     if (url.contains('.') && !url.contains(' ') && url.split('.').length >= 2) {
       return true;
     }
-    
+
     // Check if it's an email
     if (url.contains('@') && !url.contains('/')) {
       return true;
     }
-    
+
     // Allow social media usernames (common case)
     // Most social media usernames are alphanumeric with underscores/dots/dashes
     if (RegExp(r'^[a-zA-Z0-9._-]+$').hasMatch(url) && url.length >= 1) {
       return true;
     }
-    
+
     // Allow Twitter-style handles
     if (url.startsWith('@') && url.length > 1) {
       return true;
     }
-    
+
     return false;
   }
 
@@ -1468,20 +1677,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       // Validate and format the URL
       String formattedUrl = _formatURL(url, platform);
       AppLogger.i('Attempting to launch URL: $formattedUrl');
-      
+
       final uri = Uri.parse(formattedUrl);
-      
+
       // Validate the URI
-      if (!uri.hasScheme || (uri.scheme != 'http' && uri.scheme != 'https' && uri.scheme != 'mailto')) {
+      if (!uri.hasScheme ||
+          (uri.scheme != 'http' &&
+              uri.scheme != 'https' &&
+              uri.scheme != 'mailto')) {
         throw FormatException('Invalid URL scheme: ${uri.scheme}');
       }
-      
+
       bool launched = false;
-      
+
       // Try external application mode first (preferred for social media)
       try {
         await launchUrl(
-          uri, 
+          uri,
           mode: LaunchMode.externalApplication,
           webViewConfiguration: const WebViewConfiguration(
             enableJavaScript: true,
@@ -1492,19 +1704,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         AppLogger.i('Successfully launched URL in external app: $formattedUrl');
       } catch (e) {
         AppLogger.w('External application launch failed: $e');
-        
+
         // Fallback to platform default
         try {
           await launchUrl(uri, mode: LaunchMode.platformDefault);
           launched = true;
-          AppLogger.i('Successfully launched URL with platform default: $formattedUrl');
+          AppLogger.i(
+              'Successfully launched URL with platform default: $formattedUrl');
         } catch (e2) {
           AppLogger.w('Platform default launch failed: $e2');
-          
+
           // Last resort: in-app web view
           try {
             await launchUrl(
-              uri, 
+              uri,
               mode: LaunchMode.inAppWebView,
               webViewConfiguration: const WebViewConfiguration(
                 enableJavaScript: true,
@@ -1518,11 +1731,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           }
         }
       }
-      
+
       if (!launched) {
         throw Exception('Failed to launch URL with all available methods');
       }
-      
     } catch (e) {
       AppLogger.e('Error launching URL: $url', e);
       if (mounted) {
@@ -1540,22 +1752,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   String _formatURL(String url, String platform) {
     // Remove whitespace
     url = url.trim();
-    
+
     // If the URL is too short or obviously invalid, don't try to launch it
     if (url.length < 1) {
       throw FormatException('URL too short: $url');
     }
-    
+
     // If it already has a scheme, return as is
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    
+
     // Special handling for email
     if (url.contains('@') && !url.contains('/')) {
       return 'mailto:$url';
     }
-    
+
     // Platform-specific URL generation for usernames
     switch (platform.toLowerCase()) {
       case 'instagram':
@@ -1587,7 +1799,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         return 'https://$url';
     }
   }
-  
+
   String _cleanUsername(String username) {
     // Remove @ symbol if present (common for Twitter handles)
     if (username.startsWith('@')) {
