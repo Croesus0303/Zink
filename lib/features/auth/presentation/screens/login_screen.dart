@@ -18,6 +18,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   // Email/Password form controllers
   final _emailController = TextEditingController();
@@ -230,75 +232,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         backgroundColor: Colors.transparent,
         extendBodyBehindAppBar: true,
         body: Container(
-            decoration: BoxDecoration(
-              gradient: AppColors.backgroundGradient,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/background.png'),
+                fit: BoxFit.cover,
+              ),
             ),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: AppColors.radialBackgroundGradient,
-              ),
+              decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
               child: SafeArea(
                 child: Stack(
                   children: [
                     // Language selector in top right
-                    const Positioned(
-                      top: 8,
-                      right: 8,
-                      child: LanguageToggleButton(),
+                    Positioned(
+                      top: 12,
+                      right: MediaQuery.of(context).size.width * 0.04,
+                      child: const LanguageToggleButton(),
                     ),
                     // Main content
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).size.width * 0.12,
+                          ),
+                          child: Column(
+                            children: [
                           // Logo/Icon and App Info
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.28,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                                 Container(
-                                  width: 140,
-                                  height: 140,
+                                  width: MediaQuery.of(context).size.width * 0.18,
+                                  height: MediaQuery.of(context).size.width * 0.18,
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.primaryCyan,
-                                        AppColors.primaryOrange,
-                                        AppColors.warmBeige,
-                                      ],
-                                      stops: [0.0, 0.5, 1.0],
+                                    gradient: AppColors.iceGlassGradient,
+                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
+                                    border: Border.all(
+                                      color: AppColors.iceBorder,
+                                      width: 2,
                                     ),
-                                    borderRadius: BorderRadius.circular(35),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.primaryCyan
-                                            .withOpacity(0.4),
-                                        blurRadius: 25,
-                                        offset: const Offset(-8, -8),
+                                        color: Colors.white.withValues(alpha: 0.1),
+                                        blurRadius: 20,
+                                        offset: const Offset(-3, -3),
                                       ),
                                       BoxShadow(
-                                        color: AppColors.primaryOrange
-                                            .withOpacity(0.4),
-                                        blurRadius: 25,
-                                        offset: const Offset(8, 8),
+                                        color: AppColors.rosyBrown.withValues(alpha: 0.2),
+                                        blurRadius: 20,
+                                        offset: const Offset(3, 3),
                                       ),
                                     ],
                                   ),
                                   child: Container(
-                                    margin: const EdgeInsets.all(8),
+                                    margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(27),
+                                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                                       child: Image.asset(
                                         'assets/app_logo.png',
                                         fit: BoxFit.contain,
                                         errorBuilder:
                                             (context, error, stackTrace) {
-                                          return const Icon(
+                                          return Icon(
                                             Icons.camera_alt_rounded,
-                                            size: 70,
+                                            size: MediaQuery.of(context).size.width * 0.12,
                                             color: Colors.white,
                                           );
                                         },
@@ -306,119 +307,98 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 20),
+                                SizedBox(height: MediaQuery.of(context).size.width * 0.04),
                                 Text(
                                   AppLocalizations.of(context)!.appName,
                                   style: TextStyle(
-                                    fontSize: 36,
+                                    fontSize: MediaQuery.of(context).size.width * 0.07,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
+                                    color: Colors.white,
+                                    letterSpacing: 1.2,
                                     shadows: [
                                       Shadow(
-                                        color: AppColors.primaryCyan
-                                            .withOpacity(0.5),
-                                        blurRadius: 10,
+                                        color: AppColors.pineGreen.withValues(alpha: 0.6),
+                                        blurRadius: 12,
                                       ),
                                     ],
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
                                 Text(
                                   AppLocalizations.of(context)!.appTagline,
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    color: AppColors.textSecondary,
-                                    fontWeight: FontWeight.w500,
+                                  style: TextStyle(
+                                    fontSize: MediaQuery.of(context).size.width * 0.038,
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.5,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
-                            ),
                           ),
+                          const SizedBox(height: 24),
 
                           // Auth Forms - Fixed Height
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.65,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            padding: const EdgeInsets.all(28.0),
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.04, 
+                                vertical: MediaQuery.of(context).size.height * 0.01),
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppColors.primaryCyan.withOpacity(0.15),
-                                  AppColors.primaryOrange.withOpacity(0.12),
-                                  AppColors.warmBeige.withOpacity(0.08),
-                                  AppColors.primaryCyanDark.withOpacity(0.1),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(32),
+                              gradient: AppColors.iceGlassGradient,
+                              borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: AppColors.primaryCyan.withOpacity(0.3),
-                                width: 1.5,
+                                color: AppColors.iceBorder.withValues(alpha: 0.3),
+                                width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primaryCyan.withOpacity(0.2),
-                                  blurRadius: 15,
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 24,
                                   offset: const Offset(0, 8),
-                                ),
-                                BoxShadow(
-                                  color:
-                                      AppColors.primaryOrange.withOpacity(0.15),
-                                  blurRadius: 12,
-                                  offset: const Offset(5, 5),
                                 ),
                               ],
                             ),
                             child: Column(
                               children: [
-                                // Tab Bar
+                                // Tab Bar - Segmented Control
                                 Container(
+                                  height: 44,
+                                  margin: const EdgeInsets.symmetric(horizontal: 8),
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppColors.primaryCyan.withOpacity(0.1),
-                                        AppColors.primaryOrange
-                                            .withOpacity(0.08),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.white.withValues(alpha: 0.06),
+                                    borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: AppColors.primaryCyan
-                                          .withOpacity(0.2),
+                                      color: AppColors.iceBorder.withValues(alpha: 0.15),
                                       width: 1,
                                     ),
                                   ),
                                   child: TabBar(
                                     controller: _tabController,
                                     indicator: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppColors.primaryCyan
-                                              .withOpacity(0.8),
-                                          AppColors.primaryOrange
-                                              .withOpacity(0.6),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
+                                      color: AppColors.pineGreen.withValues(alpha: 0.85),
+                                      borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppColors.primaryCyan
-                                              .withOpacity(0.3),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 3),
+                                          color: AppColors.pineGreen.withValues(alpha: 0.25),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
                                         ),
                                       ],
                                     ),
+                                    indicatorSize: TabBarIndicatorSize.tab,
+                                    indicatorPadding: const EdgeInsets.all(3),
                                     labelColor: Colors.white,
-                                    unselectedLabelColor:
-                                        AppColors.textSecondary,
+                                    unselectedLabelColor: Colors.white.withValues(alpha: 0.75),
                                     labelStyle: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                    unselectedLabelStyle: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
                                     ),
                                     tabs: const [
                                       Tab(text: 'Sign In'),
@@ -426,12 +406,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 16),
 
                                 // Tab Bar View - Fixed Height
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
+                                Expanded(
                                   child: TabBarView(
                                     controller: _tabController,
                                     children: [
@@ -443,7 +421,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ],
                             ),
                           ),
-                        ],
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -462,29 +442,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             // Email field
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.1),
-                    AppColors.primaryOrange.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.black.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
                   prefixIcon:
-                      Icon(Icons.email_outlined, color: AppColors.primaryCyan),
-                  labelStyle: TextStyle(color: AppColors.primaryCyan),
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                      Icon(Icons.email_outlined, color: AppColors.pineGreen),
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontWeight: FontWeight.w500),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(20),
                 ),
@@ -500,34 +475,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Password field
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryOrange.withOpacity(0.1),
-                    AppColors.primaryCyan.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.black.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                style: const TextStyle(color: AppColors.textPrimary),
+                obscureText: !_isPasswordVisible,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
-                  prefixIcon:
-                      Icon(Icons.lock_outlined, color: AppColors.primaryOrange),
-                  labelStyle: TextStyle(color: AppColors.primaryOrange),
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  prefixIcon: Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontWeight: FontWeight.w500),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(20),
                 ),
@@ -544,36 +524,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             // Forgot password link
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: _sendPasswordReset,
-                child: const Text(
-                  'Forgot Password?',
-                  style: TextStyle(color: AppColors.primaryCyan),
+              child: Container(
+                height: 44,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    minimumSize: const Size(88, 44),
+                  ),
+                  onPressed: _sendPasswordReset,
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             // Sign in button
             Container(
               width: double.infinity,
               height: 56,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.8),
-                    AppColors.primaryCyanDark.withOpacity(0.9),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.pineGreen.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
+                  color: AppColors.pineGreen.withValues(alpha: 0.4),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryCyan.withOpacity(0.4),
-                    blurRadius: 12,
+                    color: AppColors.pineGreen.withValues(alpha: 0.35),
+                    blurRadius: 10,
                     offset: const Offset(0, 6),
                   ),
                 ],
@@ -581,7 +567,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: _isLoading ? null : _signInWithEmailPassword,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -615,15 +601,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               children: [
                 Expanded(
                     child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3))),
+                        color: Colors.white.withValues(alpha: 0.4))),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR',
-                      style: TextStyle(color: AppColors.textSecondary)),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'OR',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
                 ),
                 Expanded(
                     child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3))),
+                        color: Colors.white.withValues(alpha: 0.4))),
               ],
             ),
             const SizedBox(height: 16),
@@ -633,22 +626,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               width: double.infinity,
               height: 56,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryOrange.withOpacity(0.15),
-                    AppColors.primaryCyan.withOpacity(0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.4),
-                  width: 1.5,
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
                 ),
               ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: _isLoading ? null : _signInWithGoogle,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -657,12 +645,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.g_mobiledata,
-                            color: AppColors.primaryOrange, size: 24),
+                            color: Colors.white, size: 24),
                         const SizedBox(width: 8),
                         Text(
                           AppLocalizations.of(context)!.continueWithGoogle,
                           style: TextStyle(
-                            color: AppColors.primaryOrange,
+                            color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -687,7 +675,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       AppColors.primaryCyan.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: AppColors.warmBeige.withOpacity(0.4),
                     width: 1.5,
@@ -696,7 +684,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     onTap: _isLoading ? null : _signInWithApple,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -738,29 +726,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             // Email field
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryCyan.withOpacity(0.1),
-                    AppColors.primaryOrange.withOpacity(0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.black.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryCyan.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
                   prefixIcon:
-                      Icon(Icons.email_outlined, color: AppColors.primaryCyan),
-                  labelStyle: TextStyle(color: AppColors.primaryCyan),
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                      Icon(Icons.email_outlined, color: AppColors.pineGreen),
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontWeight: FontWeight.w500),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(20),
                 ),
@@ -776,34 +759,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Password field
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryOrange.withOpacity(0.1),
-                    AppColors.primaryCyan.withOpacity(0.08),
+                    AppColors.rosyBrown.withValues(alpha: 0.15),
+                    AppColors.pineGreen.withValues(alpha: 0.08),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                style: const TextStyle(color: AppColors.textPrimary),
+                obscureText: !_isPasswordVisible,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
-                  prefixIcon:
-                      Icon(Icons.lock_outlined, color: AppColors.primaryOrange),
-                  labelStyle: TextStyle(color: AppColors.primaryOrange),
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  prefixIcon: Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontWeight: FontWeight.w500),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(20),
                 ),
@@ -818,34 +811,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Confirm password field
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.warmBeige.withOpacity(0.1),
-                    AppColors.primaryCyan.withOpacity(0.08),
+                    AppColors.midnightGreen.withValues(alpha: 0.15),
+                    AppColors.pineGreen.withValues(alpha: 0.08),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.warmBeige.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
               child: TextFormField(
                 controller: _confirmPasswordController,
-                obscureText: true,
-                style: const TextStyle(color: AppColors.textPrimary),
+                obscureText: !_isConfirmPasswordVisible,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
                   hintText: 'Re-enter your password',
-                  prefixIcon:
-                      Icon(Icons.lock_outlined, color: AppColors.warmBeige),
-                  labelStyle: TextStyle(color: AppColors.warmBeige),
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  prefixIcon: Icon(Icons.lock_outlined, color: AppColors.midnightGreen),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                      });
+                    },
+                  ),
+                  labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontWeight: FontWeight.w500),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(20),
                 ),
@@ -869,13 +872,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryOrange.withOpacity(0.8),
-                    AppColors.primaryOrangeDark.withOpacity(0.9),
+                    AppColors.rosyBrown.withValues(alpha: 0.8),
+                    AppColors.rosyBrown.withValues(alpha: 0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  color: AppColors.iceBorder.withValues(alpha: 0.3),
                   width: 1,
                 ),
                 boxShadow: [
@@ -889,7 +892,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: _isLoading ? null : _signUpWithEmailPassword,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -923,15 +926,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               children: [
                 Expanded(
                     child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3))),
+                        color: Colors.white.withValues(alpha: 0.4))),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('OR',
-                      style: TextStyle(color: AppColors.textSecondary)),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'OR',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
                 ),
                 Expanded(
                     child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3))),
+                        color: Colors.white.withValues(alpha: 0.4))),
               ],
             ),
             const SizedBox(height: 16),
@@ -941,22 +951,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               width: double.infinity,
               height: 56,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryOrange.withOpacity(0.15),
-                    AppColors.primaryCyan.withOpacity(0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.4),
-                  width: 1.5,
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
                 ),
               ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: _isLoading ? null : _signInWithGoogle,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -965,12 +970,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.g_mobiledata,
-                            color: AppColors.primaryOrange, size: 24),
+                            color: Colors.white, size: 24),
                         const SizedBox(width: 8),
                         Text(
                           AppLocalizations.of(context)!.continueWithGoogle,
                           style: const TextStyle(
-                            color: AppColors.primaryOrange,
+                            color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -995,7 +1000,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       AppColors.primaryCyan.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: AppColors.warmBeige.withOpacity(0.4),
                     width: 1.5,
@@ -1004,7 +1009,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     onTap: _isLoading ? null : _signInWithApple,
                     child: Container(
                       padding: const EdgeInsets.symmetric(

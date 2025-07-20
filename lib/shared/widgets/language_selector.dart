@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../core/providers/locale_provider.dart';
+import 'app_colors.dart';
 
 class LanguageSelector extends ConsumerWidget {
   const LanguageSelector({super.key});
@@ -84,17 +85,64 @@ class LanguageToggleButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
 
-    return IconButton(
-      icon: Text(
-        locale.languageCode == 'en' ? '🇬🇧' : '🇹🇷',
-        style: const TextStyle(fontSize: 24),
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.15),
+            AppColors.pineGreen.withValues(alpha: 0.08),
+            Colors.white.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.iceBorder,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(-1, -1),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(1, 1),
+          ),
+        ],
       ),
-      onPressed: () {
-        ref.read(localeProvider.notifier).toggleLocale();
-      },
-      tooltip: locale.languageCode == 'en'
-          ? 'Switch to Turkish'
-          : 'Switch to English',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            ref.read(localeProvider.notifier).toggleLocale();
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                locale.languageCode == 'en' ? '🇬🇧' : '🇹🇷',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                locale.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
