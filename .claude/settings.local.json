@@ -24,7 +24,9 @@
       "Bash(brew install:*)",
       "Bash(pod:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/events/presentation/screens/event_detail_screen.dart)",
-      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter run --debug)"
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter run --debug)",
+      "Bash(xcodebuild:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
