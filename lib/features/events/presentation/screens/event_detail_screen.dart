@@ -326,8 +326,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+                child: SizedBox(
+                  height: MediaQuery.of(context).padding.top + 
+                          kToolbarHeight + 20,
+                ),
               ),
               SliverToBoxAdapter(
                 child: Container(

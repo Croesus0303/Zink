@@ -180,7 +180,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
           child: Column(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+              SizedBox(
+                height: MediaQuery.of(context).padding.top + 
+                        kToolbarHeight + 20,
+              ),
               // Messages list
               Expanded(
                 child: _chatId != null 
