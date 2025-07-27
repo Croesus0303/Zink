@@ -6,6 +6,7 @@ import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../events/presentation/screens/event_detail_screen.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/app_colors.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -133,6 +134,7 @@ class HomeScreen extends ConsumerWidget {
                           height: MediaQuery.of(context).size.height *
                               0.15), // Space for app bar
                     ),
+                    const SliverToBoxAdapter(child: _NotificationPermissionPrompt()),
                     const SliverToBoxAdapter(child: _WelcomeSection()),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -854,5 +856,208 @@ class _PastChallengesList extends ConsumerWidget {
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }
+  }
+}
+
+class _NotificationPermissionPrompt extends ConsumerWidget {
+  const _NotificationPermissionPrompt();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shouldShowPromptAsync = ref.watch(shouldShowNotificationPromptProvider);
+
+    return shouldShowPromptAsync.when(
+      data: (shouldShow) {
+        if (!shouldShow) {
+          // Don't show prompt (permission granted or user dismissed)
+          return const SizedBox.shrink();
+        }
+
+        // Show permission prompt
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          padding: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primaryOrange.withValues(alpha: 0.15),
+                AppColors.rosyBrown.withValues(alpha: 0.10),
+                Colors.white.withValues(alpha: 0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.primaryOrange.withValues(alpha: 0.3),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryOrange.withValues(alpha: 0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.notifications_outlined,
+                      color: AppColors.primaryOrange,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Bildirimler',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.045,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: MediaQuery.of(context).size.width * 0.038,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () async {
+                            // Dismiss the prompt without requesting permission
+                            final notificationService = ref.read(notificationServiceProvider);
+                            await notificationService.dismissNotificationPrompt();
+                            ref.invalidate(shouldShowNotificationPromptProvider);
+                          },
+                          child: Center(
+                            child: Text(
+                              'Şimdi Değil',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () async {
+                            final notificationService = ref.read(notificationServiceProvider);
+                            final granted = await notificationService.requestNotificationPermission();
+                            
+                            if (granted) {
+                              // Refresh prompt status to hide it
+                              ref.invalidate(shouldShowNotificationPromptProvider);
+                              
+                              // Show success message
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Bildirim izni verildi!'),
+                                    backgroundColor: AppColors.pineGreen,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            } else {
+                              // Dismiss the prompt since user rejected permission
+                              final notificationService = ref.read(notificationServiceProvider);
+                              await notificationService.dismissNotificationPrompt();
+                              ref.invalidate(shouldShowNotificationPromptProvider);
+                              
+                              // Show error message
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.'),
+                                    backgroundColor: AppColors.rosyBrown,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: const Center(
+                            child: Text(
+                              'İzin Ver',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(), // Hide while loading
+      error: (error, stack) {
+        AppLogger.e('Error checking notification permission', error, stack);
+        return const SizedBox.shrink(); // Hide on error
+      },
+    );
   }
 }

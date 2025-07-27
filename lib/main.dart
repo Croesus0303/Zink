@@ -9,6 +9,7 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/logger.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
+import 'core/services/notification_service.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/user_onboarding_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
@@ -47,6 +48,15 @@ class ZinkApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AppLogger.i('ZinkApp build() called');
+    
+    // Initialize notification service when app starts
+    ref.listen(authStateProvider, (previous, next) {
+      // Initialize notifications when user logs in
+      if (previous?.valueOrNull == null && next.valueOrNull != null) {
+        final notificationService = ref.read(notificationServiceProvider);
+        notificationService.initialize();
+      }
+    });
     
     final locale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);

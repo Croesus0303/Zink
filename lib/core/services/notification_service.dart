@@ -1,29 +1,22 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/logger.dart';
+import '../providers/locale_provider.dart';
 
 class NotificationService {
   final FirebaseMessaging _messaging;
+  final SharedPreferences _prefs;
+  
+  static const String _notificationPromptDismissedKey = 'notification_prompt_dismissed';
 
-  NotificationService(this._messaging);
+  NotificationService(this._messaging, this._prefs);
 
   Future<void> initialize() async {
     try {
-      // Request permission for iOS
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        final settings = await _messaging.requestPermission(
-          alert: true,
-          announcement: false,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true,
-        );
-
-        AppLogger.i('iOS notification permission: ${settings.authorizationStatus}');
-      }
+      await _requestNotificationPermission();
 
       // Get FCM token
       final token = await _messaging.getToken();
@@ -121,6 +114,73 @@ class NotificationService {
       // TODO: Send new token to your backend if needed
     });
   }
+
+  Future<bool> hasNotificationPermission() async {
+    try {
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final settings = await _messaging.getNotificationSettings();
+        return settings.authorizationStatus == AuthorizationStatus.authorized;
+      } else if (defaultTargetPlatform == TargetPlatform.android) {
+        final status = await Permission.notification.status;
+        return status.isGranted;
+      }
+      return false;
+    } catch (e) {
+      AppLogger.e('Failed to check notification permission', e);
+      return false;
+    }
+  }
+
+  Future<bool> requestNotificationPermission() async {
+    try {
+      return await _requestNotificationPermission();
+    } catch (e) {
+      AppLogger.e('Failed to request notification permission', e);
+      return false;
+    }
+  }
+
+  Future<bool> _requestNotificationPermission() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final settings = await _messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+
+      AppLogger.i('iOS notification permission: ${settings.authorizationStatus}');
+      return settings.authorizationStatus == AuthorizationStatus.authorized;
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      final status = await Permission.notification.request();
+      AppLogger.i('Android notification permission: $status');
+      return status.isGranted;
+    }
+    
+    return false;
+  }
+
+  bool isNotificationPromptDismissed() {
+    return _prefs.getBool(_notificationPromptDismissedKey) ?? false;
+  }
+
+  Future<void> dismissNotificationPrompt() async {
+    await _prefs.setBool(_notificationPromptDismissedKey, true);
+  }
+
+  Future<bool> shouldShowNotificationPrompt() async {
+    // Don't show if user has dismissed it
+    if (isNotificationPromptDismissed()) {
+      return false;
+    }
+    
+    // Don't show if permission is already granted
+    final hasPermission = await hasNotificationPermission();
+    return !hasPermission;
+  }
 }
 
 // Top-level function for background message handling
@@ -133,13 +193,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {
-  return NotificationService(FirebaseMessaging.instance);
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return NotificationService(FirebaseMessaging.instance, prefs);
 });
 
 // Provider for FCM token
 final fcmTokenProvider = FutureProvider<String?>((ref) async {
   final notificationService = ref.watch(notificationServiceProvider);
   return await notificationService.getToken();
+});
+
+// Provider for notification permission status
+final notificationPermissionProvider = FutureProvider<bool>((ref) async {
+  final notificationService = ref.watch(notificationServiceProvider);
+  return await notificationService.hasNotificationPermission();
+});
+
+// Provider for whether to show notification prompt
+final shouldShowNotificationPromptProvider = FutureProvider<bool>((ref) async {
+  final notificationService = ref.watch(notificationServiceProvider);
+  return await notificationService.shouldShowNotificationPrompt();
 });
 
 // Provider for notification settings
