@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +18,13 @@ class NotificationService {
   Future<void> initialize() async {
     try {
       await _requestNotificationPermission();
+
+      // Check if we have permission and subscribe to all_users topic
+      final hasPermission = await hasNotificationPermission();
+      if (hasPermission) {
+        await subscribeToTopic('all_users');
+        AppLogger.i('Subscribed to all_users topic during initialization');
+      }
 
       // Get FCM token
       final token = await _messaging.getToken();
@@ -61,10 +69,18 @@ class NotificationService {
 
   Future<void> subscribeToTopic(String topic) async {
     try {
+      // Ensure we have a valid FCM token before subscribing
+      final token = await _messaging.getToken();
+      if (token == null) {
+        AppLogger.e('Cannot subscribe to topic: No FCM token available');
+        return;
+      }
+      
       await _messaging.subscribeToTopic(topic);
-      AppLogger.i('Subscribed to topic: $topic');
+      AppLogger.i('Successfully subscribed to topic: $topic with token: ${token.substring(0, 20)}...');
     } catch (e) {
       AppLogger.e('Failed to subscribe to topic $topic', e);
+      rethrow; // Re-throw to see the actual error
     }
   }
 
@@ -80,16 +96,63 @@ class NotificationService {
   void _handleMessage(RemoteMessage message) {
     AppLogger.d('Handling foreground message: ${message.notification?.title}');
     
-    // TODO: Show in-app notification or update UI
-    // You could use a local notification package here or update the UI directly
-    
+    // Log notification details
     if (message.notification != null) {
-      AppLogger.d('Message notification: ${message.notification!.title} - ${message.notification!.body}');
+      AppLogger.d('Foreground notification title: ${message.notification!.title}');
+      AppLogger.d('Foreground notification body: ${message.notification!.body}');
     }
     
+    // Log data payload
     if (message.data.isNotEmpty) {
-      AppLogger.d('Message data: ${message.data}');
+      AppLogger.d('Foreground message data: ${message.data}');
     }
+    
+    // Handle different message types when app is in foreground
+    final data = message.data;
+    
+    if (data.containsKey('type')) {
+      final messageType = data['type'];
+      
+      switch (messageType) {
+        case 'new_event':
+          _handleForegroundNewEvent(data);
+          break;
+        case 'event_reminder':
+          _handleForegroundEventReminder(data);
+          break;
+        case 'submission_update':
+          _handleForegroundSubmissionUpdate(data);
+          break;
+        case 'general':
+        default:
+          _handleForegroundGeneral(data);
+          break;
+      }
+    }
+    
+    // TODO: Show in-app notification banner or dialog
+    // You could use flutter_local_notifications or a custom overlay
+  }
+
+  void _handleForegroundNewEvent(Map<String, dynamic> data) {
+    AppLogger.d('Handling foreground new event notification');
+    // TODO: Show in-app notification for new event
+    // Could refresh events list or show a banner
+  }
+
+  void _handleForegroundEventReminder(Map<String, dynamic> data) {
+    AppLogger.d('Handling foreground event reminder notification');
+    // TODO: Show reminder dialog or banner
+  }
+
+  void _handleForegroundSubmissionUpdate(Map<String, dynamic> data) {
+    AppLogger.d('Handling foreground submission update notification');
+    // TODO: Refresh submission status or show update banner
+  }
+
+  void _handleForegroundGeneral(Map<String, dynamic> data) {
+    AppLogger.d('Handling foreground general notification');
+    // TODO: Show general notification banner
   }
 
   void _handleNotificationTap(RemoteMessage message) {
@@ -133,7 +196,15 @@ class NotificationService {
 
   Future<bool> requestNotificationPermission() async {
     try {
-      return await _requestNotificationPermission();
+      final granted = await _requestNotificationPermission();
+      
+      if (granted) {
+        // Subscribe to all_users topic when permission is granted
+        await subscribeToTopic('all_users');
+        AppLogger.i('Subscribed to all_users topic after permission granted');
+      }
+      
+      return granted;
     } catch (e) {
       AppLogger.e('Failed to request notification permission', e);
       return false;
@@ -181,15 +252,167 @@ class NotificationService {
     final hasPermission = await hasNotificationPermission();
     return !hasPermission;
   }
+
+  Future<void> unsubscribeFromAllTopics() async {
+    try {
+      await unsubscribeFromTopic('all_users');
+      AppLogger.i('Unsubscribed from all topics');
+    } catch (e) {
+      AppLogger.e('Failed to unsubscribe from topics', e);
+    }
+  }
+
+  Future<void> checkAndManageTopicSubscription() async {
+    try {
+      final hasPermission = await hasNotificationPermission();
+      
+      if (hasPermission) {
+        // Subscribe to all_users topic if we have permission
+        await subscribeToTopic('all_users');
+        AppLogger.d('Ensured subscription to all_users topic');
+      } else {
+        // Unsubscribe if we don't have permission
+        await unsubscribeFromAllTopics();
+        AppLogger.d('Unsubscribed from topics due to no permission');
+      }
+    } catch (e) {
+      AppLogger.e('Failed to manage topic subscription', e);
+    }
+  }
+
+  // Debug method to verify FCM setup
+  Future<void> debugFCMSetup() async {
+    try {
+      AppLogger.i('=== FCM Debug Information ===');
+      AppLogger.i('Platform: ${defaultTargetPlatform.toString()}');
+      
+      // Check if running on simulator/emulator
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        AppLogger.w('⚠️  iOS Simulator detected - FCM notifications will NOT work!');
+        AppLogger.w('⚠️  Use a physical iOS device for notification testing');
+      }
+      
+      // Check permission status
+      final hasPermission = await hasNotificationPermission();
+      AppLogger.i('Notification permission: $hasPermission');
+      
+      // Get FCM token
+      final token = await getToken();
+      if (token != null) {
+        AppLogger.i('FCM Token: ${token.substring(0, 50)}...');
+      } else {
+        AppLogger.w('FCM Token: null (expected on iOS Simulator)');
+      }
+      
+      // Check notification settings (iOS)
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        final settings = await _messaging.getNotificationSettings();
+        AppLogger.i('iOS Notification Settings:');
+        AppLogger.i('  - Authorization Status: ${settings.authorizationStatus}');
+        AppLogger.i('  - Alert Setting: ${settings.alert}');
+        AppLogger.i('  - Badge Setting: ${settings.badge}');
+        AppLogger.i('  - Sound Setting: ${settings.sound}');
+      }
+      
+      AppLogger.i('=== End FCM Debug ===');
+    } catch (e) {
+      AppLogger.e('FCM Debug failed', e);
+    }
+  }
 }
 
 // Top-level function for background message handling
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Initialize Firebase if not already initialized
+  await Firebase.initializeApp();
+  
   AppLogger.d('Handling background message: ${message.messageId}');
   
-  // TODO: Handle background message
-  // This could include updating local storage, showing notifications, etc.
+  // Log notification details
+  if (message.notification != null) {
+    AppLogger.d('Background notification title: ${message.notification!.title}');
+    AppLogger.d('Background notification body: ${message.notification!.body}');
+  }
+  
+  // Log data payload
+  if (message.data.isNotEmpty) {
+    AppLogger.d('Background message data: ${message.data}');
+  }
+  
+  // Handle different message types based on data
+  final data = message.data;
+  
+  if (data.containsKey('type')) {
+    final messageType = data['type'];
+    
+    switch (messageType) {
+      case 'new_event':
+        await _handleNewEventNotification(data);
+        break;
+      case 'event_reminder':
+        await _handleEventReminderNotification(data);
+        break;
+      case 'submission_update':
+        await _handleSubmissionUpdateNotification(data);
+        break;
+      case 'general':
+      default:
+        await _handleGeneralNotification(data);
+        break;
+    }
+  } else {
+    // Handle notifications without specific type
+    await _handleGeneralNotification(data);
+  }
+}
+
+// Handle new event notifications
+Future<void> _handleNewEventNotification(Map<String, dynamic> data) async {
+  AppLogger.d('Handling new event notification');
+  
+  // TODO: Update local cache or database with new event info
+  // Example: Store event ID for later retrieval when app opens
+  
+  if (data.containsKey('eventId')) {
+    final eventId = data['eventId'];
+    AppLogger.d('New event ID: $eventId');
+    
+    // TODO: Cache the event ID or update local storage
+    // This could trigger a notification badge or update local data
+  }
+}
+
+// Handle event reminder notifications  
+Future<void> _handleEventReminderNotification(Map<String, dynamic> data) async {
+  AppLogger.d('Handling event reminder notification');
+  
+  if (data.containsKey('eventId')) {
+    final eventId = data['eventId'];
+    AppLogger.d('Event reminder for ID: $eventId');
+    
+    // TODO: Set local reminder flags or update app badge
+  }
+}
+
+// Handle submission update notifications
+Future<void> _handleSubmissionUpdateNotification(Map<String, dynamic> data) async {
+  AppLogger.d('Handling submission update notification');
+  
+  if (data.containsKey('submissionId')) {
+    final submissionId = data['submissionId'];
+    AppLogger.d('Submission update for ID: $submissionId');
+    
+    // TODO: Update submission status in local storage
+  }
+}
+
+// Handle general notifications
+Future<void> _handleGeneralNotification(Map<String, dynamic> data) async {
+  AppLogger.d('Handling general notification');
+  
+  // TODO: Handle general app notifications
+  // This could include app updates, announcements, etc.
 }
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {

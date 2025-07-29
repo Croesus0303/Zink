@@ -1002,6 +1002,10 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                             final granted = await notificationService.requestNotificationPermission();
                             
                             if (granted) {
+                              // Debug FCM setup after permission grant
+                              final notificationService = ref.read(notificationServiceProvider);
+                              await notificationService.debugFCMSetup();
+                              
                               // Refresh prompt status to hide it
                               ref.invalidate(shouldShowNotificationPromptProvider);
                               
