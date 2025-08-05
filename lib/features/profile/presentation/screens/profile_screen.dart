@@ -30,11 +30,14 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  PageController? _pageController;
+  int _currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _pageController = PageController();
 
     // Reload profile data when entering the screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -159,6 +162,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
@@ -783,45 +787,364 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
           ],
         ),
-        child: Column(
-          children: [
-            _buildAvatarWithBadges(context, ref, user),
-            const SizedBox(height: 16),
-            Text(
-              user?.displayName ?? 'Unknown User',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: MediaQuery.of(context).size.width * 0.065,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                    blurRadius: 12,
-                  ),
-                  Shadow(
-                    color: AppColors.pineGreen.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.45, // Fixed height
+          child: Column(
+            children: [
+              // Page indicators at top - dynamic based on number of pages
+              Container(
+                height: 20,
+                margin: const EdgeInsets.only(top: 8, bottom: 8),
+                child: _buildDynamicPageIndicators(context, ref, user),
               ),
-            ),
-            if (user?.username != null && user!.username!.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                '@${user!.username!}',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: MediaQuery.of(context).size.width * 0.04,
+              // PageView takes remaining space
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    if (mounted) {
+                      setState(() {
+                        _currentPageIndex = index;
+                      });
+                    }
+                  },
+                  children: _buildAllPages(context, ref, user),
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: 16),
-            _buildSocialMediaLinks(user),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDynamicPageIndicators(BuildContext context, WidgetRef ref, UserModel? user) {
+    if (user == null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.pineGreen.withValues(alpha: 0.8),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 0.5,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
+    return badgesAsync.when(
+      data: (badges) {
+        final displayBadges = badges;
+
+        // Calculate total pages: 1 profile page + badge pages (25 badges per page)
+        final badgePages = displayBadges.isEmpty ? 0 : ((displayBadges.length - 1) ~/ 25 + 1);
+        final totalPages = 1 + badgePages;
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(totalPages, (index) {
+            Color dotColor;
+            if (index == 0) {
+              // Profile page - green when active
+              dotColor = _currentPageIndex == 0
+                  ? AppColors.pineGreen.withValues(alpha: 0.8)
+                  : Colors.white.withValues(alpha: 0.6);
+            } else {
+              // Badge pages - orange when active
+              dotColor = _currentPageIndex == index
+                  ? AppColors.primaryOrange.withValues(alpha: 0.8)
+                  : Colors.white.withValues(alpha: 0.6);
+            }
+
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: dotColor,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 0.5,
+                ),
+              ),
+            );
+          }),
+        );
+      },
+      loading: () => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.pineGreen.withValues(alpha: 0.8),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 0.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+      error: (error, stack) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.pineGreen.withValues(alpha: 0.8),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 0.5,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildAllPages(BuildContext context, WidgetRef ref, UserModel? user) {
+    List<Widget> pages = [];
+    
+    // First page: Profile info
+    pages.add(_buildProfileInfoPage(context, user));
+
+    if (user == null) return pages;
+
+    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
+    return badgesAsync.when(
+      data: (badges) {
+        final displayBadges = badges;
+
+        if (displayBadges.isEmpty) return pages;
+
+        // Create badge pages (25 badges per page)
+        const badgesPerPage = 25;
+        for (int i = 0; i < displayBadges.length; i += badgesPerPage) {
+          final endIndex = (i + badgesPerPage < displayBadges.length) 
+              ? i + badgesPerPage 
+              : displayBadges.length;
+          final pageBadges = displayBadges.sublist(i, endIndex);
+          pages.add(_buildSingleBadgePage(context, pageBadges));
+        }
+
+        return pages;
+      },
+      loading: () => pages,
+      error: (error, stack) => pages,
+    );
+  }
+
+  Widget _buildSingleBadgePage(BuildContext context, List<String> badges) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 5,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount: badges.length,
+      itemBuilder: (context, index) {
+        final badgeURL = badges[index];
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: AppColors.primaryOrange.withValues(alpha: 0.4),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: Image.network(
+              badgeURL,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primaryOrange.withValues(alpha: 0.6),
+                      AppColors.rosyBrown.withValues(alpha: 0.6),
+                    ],
+                  ),
+                ),
+                child: Icon(
+                  Icons.emoji_events,
+                  color: AppColors.primaryOrange,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildProfileInfoPage(BuildContext context, UserModel? user) {
+    return Container(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildSimpleAvatar(context, user),
+          const SizedBox(height: 16),
+          Text(
+            user?.displayName ?? 'Unknown User',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: MediaQuery.of(context).size.width * 0.065,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                  blurRadius: 12,
+                ),
+                Shadow(
+                  color: AppColors.pineGreen.withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+            ),
+          ),
+          if (user?.username != null && user!.username!.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              '@${user!.username!}',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: MediaQuery.of(context).size.width * 0.04,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+          const SizedBox(height: 16),
+          _buildSocialMediaLinks(user),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgesPage(BuildContext context, WidgetRef ref, UserModel? user) {
+    if (user == null) return const SizedBox.shrink();
+
+    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
+
+    return badgesAsync.when(
+      data: (badges) {
+        // Mock data - multiply badges by 150 for testing as mentioned
+        final mockBadges = <String>[];
+        for (int i = 0; i < 150; i++) {
+          mockBadges.addAll(badges);
+        }
+        final displayBadges = mockBadges.isNotEmpty ? mockBadges : badges;
+
+        if (displayBadges.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.emoji_events_outlined,
+                  color: AppColors.textSecondary,
+                  size: MediaQuery.of(context).size.width * 0.15,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No badges yet',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: MediaQuery.of(context).size.width * 0.045,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 5,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1,
+          ),
+          itemCount: displayBadges.length > 25 ? 25 : displayBadges.length, // Reduce to fit screen
+                  itemBuilder: (context, index) {
+                    final badgeURL = displayBadges[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          badgeURL,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primaryOrange.withValues(alpha: 0.6),
+                                  AppColors.rosyBrown.withValues(alpha: 0.6),
+                                ],
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.emoji_events,
+                              color: AppColors.primaryOrange,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.pineGreen),
+      ),
+      error: (error, stack) => const SizedBox.shrink(),
     );
   }
 
@@ -1282,6 +1605,45 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         children: validSocialLinks.map((entry) {
           return _buildSocialMediaButton(entry.key, entry.value);
         }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildSimpleAvatar(BuildContext context, UserModel? user) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.rosyBrown,
+            AppColors.pineGreen,
+            AppColors.midnightGreen,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.rosyBrown.withValues(alpha: 0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(4),
+      child: CircleAvatar(
+        radius: MediaQuery.of(context).size.width * 0.13,
+        backgroundColor: Colors.transparent,
+        backgroundImage: user?.photoURL != null && user!.photoURL!.isNotEmpty
+            ? CachedNetworkImageProvider(user.photoURL!)
+            : null,
+        child: user?.photoURL == null || user!.photoURL!.isEmpty
+            ? Icon(
+                Icons.person,
+                size: MediaQuery.of(context).size.width * 0.13,
+                color: Colors.white,
+              )
+            : null,
       ),
     );
   }

@@ -241,18 +241,41 @@ class _WelcomeSection extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  child: Container(
-                    margin: const EdgeInsets.all(6),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      child: activeEvent.referenceImageURL.isNotEmpty
-                          ? Image.network(
-                              activeEvent.referenceImageURL,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: activeEvent.referenceImageURL.isNotEmpty
+                              ? Image.network(
+                                  activeEvent.referenceImageURL,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: const BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            AppColors.rosyBrown,
+                                            AppColors.pineGreen,
+                                            AppColors.midnightGreen,
+                                          ],
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.photo_camera_outlined,
+                                        color: Colors.white,
+                                        size:
+                                            MediaQuery.of(context).size.width * 0.2,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
                                   decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       begin: Alignment.topLeft,
@@ -267,31 +290,59 @@ class _WelcomeSection extends ConsumerWidget {
                                   child: Icon(
                                     Icons.photo_camera_outlined,
                                     color: Colors.white,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.2,
+                                    size: MediaQuery.of(context).size.width * 0.2,
                                   ),
-                                );
-                              },
-                            )
-                          : Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    AppColors.rosyBrown,
-                                    AppColors.pineGreen,
-                                    AppColors.midnightGreen,
-                                  ],
                                 ),
-                              ),
-                              child: Icon(
-                                Icons.photo_camera_outlined,
+                        ),
+                      ),
+                      // Badge overlay
+                      if (activeEvent.badgeURL != null && activeEvent.badgeURL!.isNotEmpty)
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.12,
+                            height: MediaQuery.of(context).size.width * 0.12,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
                                 color: Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.2,
+                                width: 3,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                activeEvent.badgeURL!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppColors.primaryOrange.withValues(alpha: 0.8),
+                                          AppColors.rosyBrown.withValues(alpha: 0.8),
+                                        ],
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.emoji_events,
+                                      color: Colors.white,
+                                      size: MediaQuery.of(context).size.width * 0.06,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
-                    ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -701,87 +752,138 @@ class _PastChallengesList extends ConsumerWidget {
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        height: MediaQuery.of(context).size.width * 0.2,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: const [
-                              AppColors.rosyBrown,
-                              AppColors.pineGreen,
-                              AppColors.midnightGreen,
-                            ],
-                            stops: const [0.0, 0.5, 1.0],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                              blurRadius: 12,
-                              offset: const Offset(-4, -4),
+                      Stack(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            height: MediaQuery.of(context).size.width * 0.2,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: const [
+                                  AppColors.rosyBrown,
+                                  AppColors.pineGreen,
+                                  AppColors.midnightGreen,
+                                ],
+                                stops: const [0.0, 0.5, 1.0],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(-4, -4),
+                                ),
+                                BoxShadow(
+                                  color: AppColors.pineGreen.withValues(alpha: 0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(4, 4),
+                                ),
+                              ],
                             ),
-                            BoxShadow(
-                              color: AppColors.pineGreen.withValues(alpha: 0.4),
-                              blurRadius: 12,
-                              offset: const Offset(4, 4),
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.all(2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: event.referenceImageURL.isNotEmpty
-                                ? Image.network(
-                                    event.referenceImageURL,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
+                            child: Container(
+                              margin: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(18),
+                                child: event.referenceImageURL.isNotEmpty
+                                    ? Image.network(
+                                        event.referenceImageURL,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                                colors: [
+                                                  AppColors.rosyBrown
+                                                      .withValues(alpha: 0.4),
+                                                  AppColors.pineGreen
+                                                      .withValues(alpha: 0.3),
+                                                ],
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              Icons.photo_camera_outlined,
+                                              color: Colors.white,
+                                              size: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.08,
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Container(
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
                                             colors: [
-                                              AppColors.rosyBrown
-                                                  .withValues(alpha: 0.4),
-                                              AppColors.pineGreen
-                                                  .withValues(alpha: 0.3),
+                                              AppColors.rosyBrown.withValues(alpha: 0.4),
+                                              AppColors.pineGreen.withValues(alpha: 0.3),
                                             ],
                                           ),
                                         ),
                                         child: Icon(
                                           Icons.photo_camera_outlined,
                                           color: Colors.white,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                          size: MediaQuery.of(context).size.width *
                                               0.08,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
+                          // Badge overlay for past events
+                          if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
+                            Positioned(
+                              top: -2,
+                              right: -2,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.08,
+                                height: MediaQuery.of(context).size.width * 0.08,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.3),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: Image.network(
+                                    event.badgeURL!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppColors.primaryOrange.withValues(alpha: 0.8),
+                                              AppColors.rosyBrown.withValues(alpha: 0.8),
+                                            ],
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.emoji_events,
+                                          color: Colors.white,
+                                          size: MediaQuery.of(context).size.width * 0.04,
                                         ),
                                       );
                                     },
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          AppColors.rosyBrown.withValues(alpha: 0.4),
-                                          AppColors.pineGreen.withValues(alpha: 0.3),
-                                        ],
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.photo_camera_outlined,
-                                      color: Colors.white,
-                                      size: MediaQuery.of(context).size.width *
-                                          0.08,
-                                    ),
                                   ),
-                          ),
-                        ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                       Expanded(
