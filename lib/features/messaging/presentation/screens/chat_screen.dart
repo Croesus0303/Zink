@@ -8,6 +8,7 @@ import '../../providers/messaging_providers.dart';
 import '../../data/models/message_model.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String otherUserId;
@@ -227,22 +228,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.04,
-            backgroundColor: Colors.transparent,
-            backgroundImage: user?.photoURL != null
-                ? CachedNetworkImageProvider(user!.photoURL!)
-                : null,
-            child: user?.photoURL == null
-                ? Text(
-                    user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                    style: TextStyle(
+          child: GestureDetector(
+            onTap: () {
+              if (user != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(userId: user!.uid),
+                  ),
+                );
+              }
+            },
+            child: CircleAvatar(
+              radius: MediaQuery.of(context).size.width * 0.04,
+              backgroundColor: Colors.transparent,
+              backgroundImage: user?.photoURL != null
+                  ? CachedNetworkImageProvider(user!.photoURL!)
+                  : null,
+              child: user?.photoURL == null
+                  ? Text(
+                      user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
+                      style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.035,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   )
                 : null,
+            ),
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.03),
@@ -663,22 +675,33 @@ class _MessageBubble extends StatelessWidget {
                   ),
                 ],
               ),
-              child: CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 0.04,
-                backgroundColor: Colors.transparent,
-                backgroundImage: otherUser?.photoURL != null
-                    ? CachedNetworkImageProvider(otherUser!.photoURL!)
-                    : null,
-                child: otherUser?.photoURL == null
-                    ? Text(
-                        otherUser?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                        style: TextStyle(
+              child: GestureDetector(
+                onTap: () {
+                  if (otherUser != null) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(userId: otherUser!.uid),
+                      ),
+                    );
+                  }
+                },
+                child: CircleAvatar(
+                  radius: MediaQuery.of(context).size.width * 0.04,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: otherUser?.photoURL != null
+                      ? CachedNetworkImageProvider(otherUser!.photoURL!)
+                      : null,
+                  child: otherUser?.photoURL == null
+                      ? Text(
+                          otherUser?.displayName?.substring(0, 1).toUpperCase() ?? '?',
+                          style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.03,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       )
                     : null,
+                ),
               ),
               ),
             ),
