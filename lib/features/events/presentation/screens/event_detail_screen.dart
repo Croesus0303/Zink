@@ -415,9 +415,11 @@ class _EventDetailWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: Container(
-                      margin: const EdgeInsets.all(4),
-                      child: ClipRRect(
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(4),
+                          child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: event.referenceImageURL.isNotEmpty
                             ? CachedNetworkImage(
@@ -481,7 +483,52 @@ class _EventDetailWidget extends StatelessWidget {
                                   size: MediaQuery.of(context).size.width * 0.15,
                                 ),
                               ),
-                      ),
+                          ),
+                        ),
+                        // Badge overlay - positioned at top right of reference photo
+                        if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
+                          Positioned(
+                            top: 16,
+                            right: 16,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.12,
+                              height: MediaQuery.of(context).size.width * 0.12,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.4),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: ClipOval(
+                                child: Image.network(
+                                  event.badgeURL!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            AppColors.primaryOrange.withValues(alpha: 0.9),
+                                            AppColors.rosyBrown.withValues(alpha: 0.9),
+                                          ],
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.emoji_events,
+                                        color: Colors.white,
+                                        size: MediaQuery.of(context).size.width * 0.06,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -820,8 +867,11 @@ class _SubmissionsWidget extends ConsumerWidget {
     if (submissions.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
             Container(
               width: MediaQuery.of(context).size.width * 0.25,
               height: MediaQuery.of(context).size.width * 0.25,
@@ -870,6 +920,7 @@ class _SubmissionsWidget extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ],
+          ),
         ),
       );
     }

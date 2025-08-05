@@ -305,10 +305,6 @@ class _WelcomeSection extends ConsumerWidget {
                             height: MediaQuery.of(context).size.width * 0.12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 3,
-                              ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.3),
@@ -748,12 +744,14 @@ class _PastChallengesList extends ConsumerWidget {
                     ),
                   );
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    children: [
-                      Stack(
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
                         children: [
+                          Stack(
+                            children: [
                           Container(
                             width: MediaQuery.of(context).size.width * 0.2,
                             height: MediaQuery.of(context).size.width * 0.2,
@@ -836,53 +834,6 @@ class _PastChallengesList extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          // Badge overlay for past events
-                          if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
-                            Positioned(
-                              top: -2,
-                              right: -2,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.08,
-                                height: MediaQuery.of(context).size.width * 0.08,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.3),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: ClipOval(
-                                  child: Image.network(
-                                    event.badgeURL!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppColors.primaryOrange.withValues(alpha: 0.8),
-                                              AppColors.rosyBrown.withValues(alpha: 0.8),
-                                            ],
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.emoji_events,
-                                          color: Colors.white,
-                                          size: MediaQuery.of(context).size.width * 0.04,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
                         ],
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.04),
@@ -935,6 +886,51 @@ class _PastChallengesList extends ConsumerWidget {
                       ),
                     ],
                   ),
+                ),
+                    // Badge overlay for past events - positioned at top right of card
+                    if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.08,
+                          height: MediaQuery.of(context).size.width * 0.08,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              event.badgeURL!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.primaryOrange.withValues(alpha: 0.8),
+                                        AppColors.rosyBrown.withValues(alpha: 0.8),
+                                      ],
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.emoji_events,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.width * 0.04,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
