@@ -743,8 +743,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
           child: CustomScrollView(
             slivers: [
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 100), // Space for app bar
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: MediaQuery.of(context).padding.top +
+                      MediaQuery.of(context).size.height * 0.065,
+                ), // Dynamic space for status bar + app bar
               ),
               _buildProfileHeader(context, user, isOwnProfile),
               _buildTabBar(context),
@@ -818,7 +821,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildDynamicPageIndicators(BuildContext context, WidgetRef ref, UserModel? user) {
+  Widget _buildDynamicPageIndicators(
+      BuildContext context, WidgetRef ref, UserModel? user) {
     if (user == null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -846,7 +850,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         final displayBadges = badges;
 
         // Calculate total pages: 1 profile page + badge pages (25 badges per page)
-        final badgePages = displayBadges.isEmpty ? 0 : ((displayBadges.length - 1) ~/ 25 + 1);
+        final badgePages =
+            displayBadges.isEmpty ? 0 : ((displayBadges.length - 1) ~/ 25 + 1);
         final totalPages = 1 + badgePages;
 
         return Row(
@@ -920,9 +925,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  List<Widget> _buildAllPages(BuildContext context, WidgetRef ref, UserModel? user) {
+  List<Widget> _buildAllPages(
+      BuildContext context, WidgetRef ref, UserModel? user) {
     List<Widget> pages = [];
-    
+
     // First page: Profile info
     pages.add(_buildProfileInfoPage(context, user));
 
@@ -938,8 +944,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         // Create badge pages (25 badges per page)
         const badgesPerPage = 25;
         for (int i = 0; i < displayBadges.length; i += badgesPerPage) {
-          final endIndex = (i + badgesPerPage < displayBadges.length) 
-              ? i + badgesPerPage 
+          final endIndex = (i + badgesPerPage < displayBadges.length)
+              ? i + badgesPerPage
               : displayBadges.length;
           final pageBadges = displayBadges.sublist(i, endIndex);
           pages.add(_buildSingleBadgePage(context, pageBadges));
@@ -1033,17 +1039,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ],
             ),
           ),
-          if (user?.username != null && user!.username!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              '@${user!.username!}',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: MediaQuery.of(context).size.width * 0.04,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
           const SizedBox(height: 16),
           _buildSocialMediaLinks(user),
         ],
@@ -1051,7 +1046,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildBadgesPage(BuildContext context, WidgetRef ref, UserModel? user) {
+  Widget _buildBadgesPage(
+      BuildContext context, WidgetRef ref, UserModel? user) {
     if (user == null) return const SizedBox.shrink();
 
     final badgesAsync = ref.watch(userBadgesProvider(user.uid));
@@ -1098,47 +1094,49 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             crossAxisSpacing: 8,
             childAspectRatio: 1,
           ),
-          itemCount: displayBadges.length > 25 ? 25 : displayBadges.length, // Reduce to fit screen
-                  itemBuilder: (context, index) {
-                    final badgeURL = displayBadges[index];
-                    return Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
+          itemCount: displayBadges.length > 25
+              ? 25
+              : displayBadges.length, // Reduce to fit screen
+          itemBuilder: (context, index) {
+            final badgeURL = displayBadges[index];
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: Image.network(
+                  badgeURL,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withValues(alpha: 0.6),
+                          AppColors.rosyBrown.withValues(alpha: 0.6),
                         ],
                       ),
-                      child: ClipOval(
-                        child: Image.network(
-                          badgeURL,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.primaryOrange.withValues(alpha: 0.6),
-                                  AppColors.rosyBrown.withValues(alpha: 0.6),
-                                ],
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.emoji_events,
-                              color: AppColors.primaryOrange,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                    ),
+                    child: Icon(
+                      Icons.emoji_events,
+                      color: AppColors.primaryOrange,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
       loading: () => const Center(
@@ -1147,7 +1145,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       error: (error, stack) => const SizedBox.shrink(),
     );
   }
-
 
   Widget _buildTabBar(BuildContext context) {
     return SliverToBoxAdapter(
@@ -1213,8 +1210,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             fontSize: MediaQuery.of(context).size.width * 0.04,
           ),
           tabs: const [
-            Tab(text: 'Posts'),
-            Tab(text: 'Liked'),
+            Tab(text: '  Posts  '),
+            Tab(text: '  Liked  '),
           ],
         ),
       ),
@@ -1648,7 +1645,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildAvatarWithBadges(BuildContext context, WidgetRef ref, UserModel? user) {
+  Widget _buildAvatarWithBadges(
+      BuildContext context, WidgetRef ref, UserModel? user) {
     if (user == null) {
       return Container(
         decoration: BoxDecoration(
@@ -1701,8 +1699,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             alignment: Alignment.center,
             children: [
               // Badges positioned around the avatar
-              if (displayBadges.isNotEmpty) ..._buildSurroundingBadges(context, displayBadges),
-              
+              if (displayBadges.isNotEmpty)
+                ..._buildSurroundingBadges(context, displayBadges),
+
               // Central avatar
               Container(
                 decoration: BoxDecoration(
@@ -1819,20 +1818,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  List<Widget> _buildSurroundingBadges(BuildContext context, List<String> badges) {
+  List<Widget> _buildSurroundingBadges(
+      BuildContext context, List<String> badges) {
     final List<Widget> badgeWidgets = [];
     final screenWidth = MediaQuery.of(context).size.width;
     final containerRadius = screenWidth * 0.2; // Half of the container width
     final badgeSize = screenWidth * 0.08;
-    
+
     // Limit to 12 visible badges for clean circular arrangement
     final visibleBadges = badges.take(12).toList();
-    
+
     for (int i = 0; i < visibleBadges.length; i++) {
-      final angle = (i * 2 * 3.14159) / visibleBadges.length; // Evenly distribute around circle
-      final x = containerRadius * 0.85 * math.cos(angle - 3.14159 / 2); // -π/2 to start from top
+      final angle = (i * 2 * 3.14159) /
+          visibleBadges.length; // Evenly distribute around circle
+      final x = containerRadius *
+          0.85 *
+          math.cos(angle - 3.14159 / 2); // -π/2 to start from top
       final y = containerRadius * 0.85 * math.sin(angle - 3.14159 / 2);
-      
+
       badgeWidgets.add(
         Positioned(
           left: containerRadius + x - badgeSize / 2,
@@ -1902,7 +1905,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         ),
       );
     }
-    
+
     // Add badge count indicator if there are more than 12 badges
     if (badges.length > 12) {
       badgeWidgets.add(
@@ -1943,7 +1946,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         ),
       );
     }
-    
+
     return badgeWidgets;
   }
 
@@ -2111,14 +2114,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             const Color(0xFF0084B4),
           ],
         };
-      case 'linkedin':
-        return {
-          'icon': Icons.work,
-          'gradient': [
-            const Color(0xFF0077B5),
-            const Color(0xFF005885),
-          ],
-        };
       case 'github':
         return {
           'icon': Icons.code,
@@ -2165,15 +2160,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           'gradient': [
             const Color(0xFF7289DA),
             const Color(0xFF5B6DAE),
-          ],
-        };
-      case 'website':
-      case 'portfolio':
-        return {
-          'icon': Icons.language,
-          'gradient': [
-            AppColors.pineGreen,
-            AppColors.midnightGreen,
           ],
         };
       default:
@@ -2292,8 +2278,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         return 'https://twitter.com/${_cleanUsername(url)}';
       case 'facebook':
         return 'https://facebook.com/${_cleanUsername(url)}';
-      case 'linkedin':
-        return 'https://linkedin.com/in/${_cleanUsername(url)}';
       case 'github':
         return 'https://github.com/${_cleanUsername(url)}';
       case 'youtube':
@@ -2304,10 +2288,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         return 'https://snapchat.com/add/${_cleanUsername(url)}';
       case 'discord':
         // Discord doesn't have direct profile URLs, return as-is
-        return 'https://$url';
-      case 'website':
-      case 'portfolio':
-        // For websites, add https if no scheme
         return 'https://$url';
       default:
         // For unknown platforms, add https

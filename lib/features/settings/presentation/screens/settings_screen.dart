@@ -96,17 +96,12 @@ class SettingsScreen extends ConsumerWidget {
           child: ListView(
             padding: EdgeInsets.fromLTRB(
               MediaQuery.of(context).size.width * 0.04,
-              MediaQuery.of(context).size.height * 0.12,
+              MediaQuery.of(context).padding.top + 
+              MediaQuery.of(context).size.height * 0.065 + 16,
               MediaQuery.of(context).size.width * 0.04,
               MediaQuery.of(context).size.width * 0.04,
             ),
             children: [
-              _buildSectionHeader(context, 'Account'),
-              _buildAccountSection(context, ref, currentUser),
-              const SizedBox(height: 24),
-              _buildSectionHeader(context, 'Preferences'),
-              _buildPreferencesSection(context, ref, currentLocale.languageCode),
-              const SizedBox(height: 24),
               _buildSectionHeader(context, 'App'),
               _buildAppSection(context, ref),
               const SizedBox(height: 32),

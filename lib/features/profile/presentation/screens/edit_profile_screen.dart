@@ -25,8 +25,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _instagramController;
   late TextEditingController _twitterController;
   late TextEditingController _facebookController;
-  late TextEditingController _linkedinController;
-  late TextEditingController _websiteController;
 
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -42,10 +40,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         TextEditingController(text: widget.user.socialLinks['twitter'] ?? '');
     _facebookController =
         TextEditingController(text: widget.user.socialLinks['facebook'] ?? '');
-    _linkedinController =
-        TextEditingController(text: widget.user.socialLinks['linkedin'] ?? '');
-    _websiteController =
-        TextEditingController(text: widget.user.socialLinks['website'] ?? '');
   }
 
   @override
@@ -53,8 +47,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _instagramController.dispose();
     _twitterController.dispose();
     _facebookController.dispose();
-    _linkedinController.dispose();
-    _websiteController.dispose();
     super.dispose();
   }
 
@@ -165,12 +157,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
       if (_facebookController.text.isNotEmpty) {
         socialLinks['facebook'] = _facebookController.text.trim();
-      }
-      if (_linkedinController.text.isNotEmpty) {
-        socialLinks['linkedin'] = _linkedinController.text.trim();
-      }
-      if (_websiteController.text.isNotEmpty) {
-        socialLinks['website'] = _websiteController.text.trim();
       }
 
       AppLogger.i('Social links prepared: $socialLinks');
@@ -508,22 +494,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   hint: 'Profile name',
                   icon: Icons.facebook,
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-
-                _buildSocialLinkField(
-                  controller: _linkedinController,
-                  label: 'LinkedIn',
-                  hint: 'Profile name',
-                  icon: Icons.business_center,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-
-                _buildSocialLinkField(
-                  controller: _websiteController,
-                  label: 'Website',
-                  hint: 'https://yoursite.com',
-                  icon: Icons.public,
-                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.06),
               ],
             ),
@@ -696,13 +666,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
             ),
             validator: (value) {
-              if (value != null && value.isNotEmpty) {
-                if (label == 'Website') {
-                  if (!RegExp(r'^https?://').hasMatch(value.trim())) {
-                    return 'Website must start with http:// or https://';
-                  }
-                }
-              }
               return null;
             },
           ),
