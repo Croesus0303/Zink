@@ -357,13 +357,13 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 }
 
-class _EventDetailWidget extends StatelessWidget {
+class _EventDetailWidget extends ConsumerWidget {
   final EventModel event;
 
   const _EventDetailWidget({required this.event});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24.0),
       padding: const EdgeInsets.all(20.0),
@@ -394,171 +394,8 @@ class _EventDetailWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Reference photo and content
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
-            child: Column(
-              children: [
-                // Reference photo (main space)
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColors.rosyBrown.withValues(alpha: 0.3),
-                          AppColors.pineGreen.withValues(alpha: 0.2),
-                        ],
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(4),
-                          child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: event.referenceImageURL.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: event.referenceImageURL,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                                placeholder: (context, url) => Container(
-                                  decoration: const BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.rosyBrown,
-                                        AppColors.pineGreen,
-                                        AppColors.midnightGreen,
-                                      ],
-                                    ),
-                                  ),
-                                  child: const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 4,
-                                    ),
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) => Container(
-                                  decoration: const BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.rosyBrown,
-                                        AppColors.pineGreen,
-                                        AppColors.midnightGreen,
-                                      ],
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.photo_camera_outlined,
-                                    color: Colors.white,
-                                    size: MediaQuery.of(context).size.width * 0.15,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: const [
-                                      AppColors.rosyBrown,
-                                      AppColors.pineGreen,
-                                      AppColors.midnightGreen,
-                                    ],
-                                  ),
-                                ),
-                                child: Icon(
-                                  Icons.photo_camera_outlined,
-                                  color: Colors.white,
-                                  size: MediaQuery.of(context).size.width * 0.15,
-                                ),
-                              ),
-                          ),
-                        ),
-                        // Badge overlay - positioned at top right of reference photo
-                        if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
-                          Positioned(
-                            top: 16,
-                            right: 16,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.12,
-                              height: MediaQuery.of(context).size.width * 0.12,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.4),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: ClipOval(
-                                child: Image.network(
-                                  event.badgeURL!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            AppColors.primaryOrange.withValues(alpha: 0.9),
-                                            AppColors.rosyBrown.withValues(alpha: 0.9),
-                                          ],
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.emoji_events,
-                                        color: Colors.white,
-                                        size: MediaQuery.of(context).size.width * 0.06,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Description below photo
-                Container(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text(
-                    event.description,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: MediaQuery.of(context).size.width * 0.037,
-                      fontWeight: FontWeight.w500,
-                      height: 1.5,
-                      letterSpacing: 0.3,
-                      shadows: [
-                        Shadow(
-                          color: AppColors.midnightGreen.withValues(alpha: 0.5),
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Show reference photo and description unless event is expired AND has submissions
+          _buildReferencePhotoSection(context, event, ref),
           // Status and Submit Section
           _buildStatusAndSubmitSection(context, event),
         ],
@@ -566,7 +403,222 @@ class _EventDetailWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildReferencePhotoSection(BuildContext context, EventModel event, WidgetRef ref) {
+    // If event is not expired, always show reference photo
+    if (!event.isExpired) {
+      return _buildFullReferenceSection(context, event);
+    }
+
+    // If event is expired, check if there are submissions
+    final submissionsAsync = ref.watch(submissionsProvider(event.id));
+    
+    return submissionsAsync.when(
+      data: (submissions) {
+        // If expired and has submissions, show only description (winner widget will be shown below)
+        if (submissions.isNotEmpty) {
+          return Container(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              event.description,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: MediaQuery.of(context).size.width * 0.037,
+                fontWeight: FontWeight.w500,
+                height: 1.5,
+                letterSpacing: 0.3,
+                shadows: [
+                  Shadow(
+                    color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          );
+        }
+        
+        // If expired but no submissions, show full reference section
+        return _buildFullReferenceSection(context, event);
+      },
+      loading: () => _buildFullReferenceSection(context, event),
+      error: (error, stack) => _buildFullReferenceSection(context, event),
+    );
+  }
+
+  Widget _buildFullReferenceSection(BuildContext context, EventModel event) {
+    return Column(
+      children: [
+        // Reference photo - matching submissions list dimensions
+        AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown.withValues(alpha: 0.6),
+                  AppColors.pineGreen.withValues(alpha: 0.5),
+                  AppColors.midnightGreen.withValues(alpha: 0.4),
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
+            child: Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: event.referenceImageURL.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: event.referenceImageURL,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    AppColors.rosyBrown,
+                                    AppColors.pineGreen,
+                                    AppColors.midnightGreen,
+                                  ],
+                                ),
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 4,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    AppColors.rosyBrown,
+                                    AppColors.pineGreen,
+                                    AppColors.midnightGreen,
+                                  ],
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.photo_camera_outlined,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.15,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: const [
+                                  AppColors.rosyBrown,
+                                  AppColors.pineGreen,
+                                  AppColors.midnightGreen,
+                                ],
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.photo_camera_outlined,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.15,
+                            ),
+                          ),
+                  ),
+                ),
+                // Badge overlay - positioned at top right of reference photo
+                if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.12,
+                      height: MediaQuery.of(context).size.width * 0.12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          event.badgeURL!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.primaryOrange.withValues(alpha: 0.9),
+                                    AppColors.rosyBrown.withValues(alpha: 0.9),
+                                  ],
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.emoji_events,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        // Description below photo
+        Container(
+          padding: const EdgeInsets.only(top: 16),
+          child: Text(
+            event.description,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: MediaQuery.of(context).size.width * 0.037,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              letterSpacing: 0.3,
+              shadows: [
+                Shadow(
+                  color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildStatusAndSubmitSection(BuildContext context, EventModel event) {
+    // If event is expired, show winner widget if there are submissions
+    if (event.isExpired) {
+      return _WinnerAnnouncementWidget(eventId: event.id);
+    }
+
+    // Show regular status and submit section for active events
     return Container(
       margin: const EdgeInsets.only(top: 20),
       child: Column(
@@ -1368,6 +1420,581 @@ class _SubmissionCard extends ConsumerWidget {
         }
       }
     }
+  }
+
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
+      ),
+    );
+  }
+}
+
+class _SubmissionRanking {
+  final SubmissionModel submission;
+  final int likeCount;
+  final int commentCount;
+
+  _SubmissionRanking({
+    required this.submission,
+    required this.likeCount,
+    required this.commentCount,
+  });
+}
+
+class _WinnerAnnouncementWidget extends ConsumerWidget {
+  final String eventId;
+
+  const _WinnerAnnouncementWidget({required this.eventId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final submissionsAsync = ref.watch(submissionsProvider(eventId));
+
+    return submissionsAsync.when(
+      data: (submissions) {
+        // If no submissions, show the regular status section
+        if (submissions.isEmpty) {
+          return Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.midnightGreen.withValues(alpha: 0.9),
+                    AppColors.midnightGreen.withValues(alpha: 0.7),
+                    AppColors.midnightGreen.withValues(alpha: 0.8),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.08),
+                    blurRadius: 6,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 6,
+                    offset: const Offset(1, 1),
+                  ),
+                ],
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Ended',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Return a FutureBuilder to handle the async winner determination
+        return FutureBuilder<SubmissionModel>(
+          future: _determineWinner(submissions, ref),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.pineGreen),
+                ),
+              );
+            }
+            
+            if (snapshot.hasError) {
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.midnightGreen.withValues(alpha: 0.9),
+                        AppColors.midnightGreen.withValues(alpha: 0.7),
+                        AppColors.midnightGreen.withValues(alpha: 0.8),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Ended',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            
+            final winnerSubmission = snapshot.data!;
+            return _buildWinnerWidget(context, ref, winnerSubmission);
+          },
+        );
+      },
+      loading: () => Container(
+        margin: const EdgeInsets.only(top: 20),
+        child: const Center(
+          child: CircularProgressIndicator(color: AppColors.pineGreen),
+        ),
+      ),
+      error: (error, stack) => Container(
+        margin: const EdgeInsets.only(top: 20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.midnightGreen.withValues(alpha: 0.9),
+                AppColors.midnightGreen.withValues(alpha: 0.7),
+                AppColors.midnightGreen.withValues(alpha: 0.8),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Ended',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<SubmissionModel> _determineWinner(List<SubmissionModel> submissions, WidgetRef ref) async {
+    if (submissions.isEmpty) {
+      throw Exception('No submissions available');
+    }
+
+    // Create a list of submissions with their comment counts
+    final submissionRankings = <_SubmissionRanking>[];
+    
+    for (final submission in submissions) {
+      final commentCountAsync = await ref.read(commentCountProvider((
+        eventId: submission.eventId, 
+        submissionId: submission.id
+      )).future);
+      
+      submissionRankings.add(_SubmissionRanking(
+        submission: submission,
+        likeCount: submission.likeCount,
+        commentCount: commentCountAsync,
+      ));
+    }
+
+    // Sort according to the rules
+    submissionRankings.sort((a, b) {
+      // Rule 1: Most likes wins
+      if (a.likeCount != b.likeCount) {
+        return b.likeCount.compareTo(a.likeCount);
+      }
+      
+      // Rule 2: If likes are tied, most comments wins
+      if (a.commentCount != b.commentCount) {
+        return b.commentCount.compareTo(a.commentCount);
+      }
+      
+      // Rule 3: If both likes and comments are tied, earliest upload wins
+      return a.submission.createdAt.compareTo(b.submission.createdAt);
+    });
+
+    return submissionRankings.first.submission;
+  }
+
+  Widget _buildWinnerWidget(BuildContext context, WidgetRef ref, SubmissionModel winnerSubmission) {
+    final userDataAsync = ref.watch(userDataProvider(winnerSubmission.uid));
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF004D40).withValues(alpha: 0.3),
+              const Color(0xFF002B36).withValues(alpha: 0.25),
+              const Color(0xFFFFB300).withValues(alpha: 0.1),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: const Color(0xFF004D40).withValues(alpha: 0.6),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFFB300).withValues(alpha: 0.2),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(-2, -2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Winner announcement header
+            Center(
+              child: Text(
+                'SPOTLIGHT',
+                style: TextStyle(
+                  foreground: Paint()
+                    ..shader = const LinearGradient(
+                      colors: [Color(0xFFFFD54F), Color(0xFFFFB300)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  shadows: [
+                    Shadow(
+                      color: const Color(0xFFFFB300).withValues(alpha: 0.5),
+                      blurRadius: 8,
+                      offset: const Offset(0, 0),
+                    ),
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      blurRadius: 4,
+                      offset: const Offset(1, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+
+            // Winner photo - matching submissions list dimensions
+            AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFFFFB300).withValues(alpha: 0.6),
+                      AppColors.rosyBrown.withValues(alpha: 0.5),
+                      const Color(0xFF004D40).withValues(alpha: 0.4),
+                    ],
+                    stops: const [0.0, 0.5, 1.0],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFF1E1E1E).withValues(alpha: 0.8),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFFB300).withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Container(
+                  margin: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: GestureDetector(
+                      onTap: () => _showFullScreenImage(context, winnerSubmission.imageURL),
+                      child: CachedNetworkImage(
+                        imageUrl: winnerSubmission.imageURL,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.primaryOrange.withValues(alpha: 0.4),
+                                AppColors.rosyBrown.withValues(alpha: 0.3),
+                              ],
+                            ),
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 4,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.primaryOrange.withValues(alpha: 0.4),
+                                AppColors.rosyBrown.withValues(alpha: 0.3),
+                              ],
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.broken_image,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+
+            // User info
+            userDataAsync.when(
+              data: (user) => Row(
+                children: [
+                  ClickableUserAvatar(
+                    user: user,
+                    userId: winnerSubmission.uid,
+                    radius: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                  Expanded(
+                    child: ClickableUserName(
+                      user: user,
+                      userId: winnerSubmission.uid,
+                      style: TextStyle(
+                        color: const Color(0xFF80CBC4),
+                        fontSize: MediaQuery.of(context).size.width * 0.042,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.none,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            blurRadius: 3,
+                            offset: const Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.3),
+                          Colors.black.withValues(alpha: 0.2),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFF1E1E1E).withValues(alpha: 0.6),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.favorite,
+                          color: const Color(0xFFFF6F61),
+                          size: MediaQuery.of(context).size.width * 0.035,
+                          shadows: [
+                            Shadow(
+                              color: const Color(0xFFFF6F61).withValues(alpha: 0.4),
+                              blurRadius: 4,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                        Text(
+                          '${winnerSubmission.likeCount}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width * 0.036,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withValues(alpha: 0.5),
+                                blurRadius: 2,
+                                offset: const Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              loading: () => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: AppColors.pineGreen.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              error: (error, stack) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    height: MediaQuery.of(context).size.width * 0.1,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.pineGreen.withValues(alpha: 0.6),
+                          AppColors.rosyBrown.withValues(alpha: 0.4),
+                        ],
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Anonymous Winner',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withValues(alpha: 0.4),
+                                blurRadius: 2,
+                                offset: const Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          'Champion of this event!',
+                          style: TextStyle(
+                            color: AppColors.primaryOrange.withValues(alpha: 0.9),
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showFullScreenImage(BuildContext context, String imageUrl) {

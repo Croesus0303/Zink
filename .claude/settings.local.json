@@ -27,8 +27,11 @@
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter run --debug)",
       "Bash(xcodebuild:*)",
       "Bash(rm:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin//flutter --version)",
+      "Bash(bash:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
