@@ -11,6 +11,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class PhotoSubmissionScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -121,21 +122,11 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ),
-    );
+    CustomSnackBar.showError(context, message);
   }
 
   void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
+    CustomSnackBar.showSuccess(context, message);
   }
 
   @override

@@ -9,6 +9,7 @@ import '../../data/models/message_model.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String otherUserId;
@@ -46,9 +47,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       AppLogger.e('Error initializing chat', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load chat: $e')),
-        );
+        CustomSnackBar.showError(context, 'Failed to load chat: $e');
       }
     }
   }
@@ -87,9 +86,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       AppLogger.e('Error sending message', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to send message: $e')),
-        );
+        CustomSnackBar.showError(context, 'Failed to send message: $e');
         // Restore the message text if sending failed
         _messageController.text = text;
       }

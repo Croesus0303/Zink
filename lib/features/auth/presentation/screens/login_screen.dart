@@ -6,6 +6,7 @@ import '../../../../shared/widgets/language_selector.dart';
 import '../../providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -89,7 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         } else if (result.isCancelled) {
           // User cancelled, no action needed
         } else if (result.errorMessage != null) {
-          _showErrorSnackBar(result.errorMessage!);
+          CustomSnackBar.showError(context, result.errorMessage!);
         }
       }
     } finally {
@@ -118,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         } else if (result.isCancelled) {
           // User cancelled, no action needed
         } else if (result.errorMessage != null) {
-          _showErrorSnackBar(result.errorMessage!);
+          CustomSnackBar.showError(context, result.errorMessage!);
         }
       }
     } finally {
@@ -148,7 +149,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         if (result.isSuccess) {
           // Navigation will be handled automatically by the router
         } else if (result.errorMessage != null) {
-          _showErrorSnackBar(result.errorMessage!);
+          CustomSnackBar.showError(context, result.errorMessage!);
         }
       }
     } finally {
@@ -178,7 +179,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         if (result.isSuccess) {
           // Navigation will be handled automatically by the router
         } else if (result.errorMessage != null) {
-          _showErrorSnackBar(result.errorMessage!);
+          CustomSnackBar.showError(context, result.errorMessage!);
         }
       }
     } finally {
@@ -192,7 +193,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   Future<void> _sendPasswordReset() async {
     if (_emailController.text.trim().isEmpty) {
-      _showErrorSnackBar('Please enter your email address');
+      CustomSnackBar.showError(context, 'Please enter your email address');
       return;
     }
 
@@ -201,29 +202,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       await authService.sendPasswordResetEmail(_emailController.text.trim());
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Password reset email sent! Check your inbox.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        CustomSnackBar.showSuccess(context, 'Password reset email sent! Check your inbox.');
       }
     } catch (e) {
       if (mounted) {
-        _showErrorSnackBar(
-            'Failed to send password reset email: ${e.toString()}');
+        CustomSnackBar.showError(context, 'Failed to send password reset email: ${e.toString()}');
       }
     }
   }
 
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

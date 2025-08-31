@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class DeleteAccountDialog extends ConsumerStatefulWidget {
   const DeleteAccountDialog({super.key});
@@ -146,12 +148,7 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
         Navigator.of(context).pop(); // Close dialog
         context.go('/'); // Navigate to home
         
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account deleted successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        CustomSnackBar.showSuccess(context, 'Account deleted successfully');
       }
     } catch (e) {
       AppLogger.e('Error deleting account', e);

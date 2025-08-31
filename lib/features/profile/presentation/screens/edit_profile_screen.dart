@@ -8,6 +8,7 @@ import '../../../auth/data/models/user_model.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   final UserModel user;
@@ -67,12 +68,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (e) {
       AppLogger.e('Error picking image', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error selecting image: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackBar.showError(context, 'Error selecting image: ${e.toString()}');
       }
     }
   }
@@ -94,12 +90,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (e) {
       AppLogger.e('Error taking photo', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error taking photo: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackBar.showError(context, 'Error taking photo: ${e.toString()}');
       }
     }
   }
@@ -171,24 +162,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       AppLogger.i('Profile update completed successfully');
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        CustomSnackBar.showSuccess(context, 'Profile updated successfully');
         Navigator.pop(context);
       }
     } catch (e) {
       AppLogger.e('Error updating profile', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error updating profile: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        CustomSnackBar.showError(context, 'Error updating profile: ${e.toString()}');
       }
     } finally {
       if (mounted) {

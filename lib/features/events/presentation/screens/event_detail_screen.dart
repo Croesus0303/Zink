@@ -14,6 +14,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -1402,9 +1403,7 @@ class _SubmissionCard extends ConsumerWidget {
             submission.eventId, submission.id);
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Post deleted successfully')),
-          );
+          CustomSnackBar.showSuccess(context, 'Post deleted successfully');
         }
 
         // Refresh the submissions list and submission count
@@ -1414,9 +1413,7 @@ class _SubmissionCard extends ConsumerWidget {
       } catch (e) {
         AppLogger.e('Error deleting submission ${submission.id}', e);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to delete post')),
-          );
+          CustomSnackBar.showError(context, 'Failed to delete post');
         }
       }
     }

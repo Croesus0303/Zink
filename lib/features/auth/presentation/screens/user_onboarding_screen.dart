@@ -6,6 +6,7 @@ import '../../providers/auth_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class UserOnboardingScreen extends ConsumerStatefulWidget {
   const UserOnboardingScreen({super.key});
@@ -55,12 +56,7 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
     } catch (e) {
       AppLogger.e('Error completing user onboarding', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to complete setup: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackBar.showError(context, 'Failed to complete setup: ${e.toString()}');
       }
     } finally {
       if (mounted) {

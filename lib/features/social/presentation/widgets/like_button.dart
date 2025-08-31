@@ -5,6 +5,8 @@ import '../../data/services/social_service.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../screens/likes_list_screen.dart';
+import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class LikeButton extends ConsumerStatefulWidget {
   final String eventId;
@@ -52,9 +54,7 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
   Future<void> _toggleLike() async {
     final currentUser = ref.read(currentUserProvider);
     if (currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please sign in to like photos')),
-      );
+      CustomSnackBar.showError(context, 'Please sign in to like photos');
       return;
     }
 
@@ -88,10 +88,7 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
       AppLogger.e(
           'Error toggling like for submission ${widget.submissionId}', e);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Failed to ${_isLiked ? 'unlike' : 'like'} photo')),
-      );
+      CustomSnackBar.showError(context, 'Failed to ${_isLiked ? 'unlike' : 'like'} photo');
     } finally {
       if (mounted) {
         setState(() {

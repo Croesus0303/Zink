@@ -9,6 +9,7 @@ import '../../data/models/chat_model.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class ChatsListScreen extends ConsumerWidget {
   const ChatsListScreen({super.key});
@@ -766,17 +767,12 @@ class _ChatListItem extends ConsumerWidget {
                             final deleteChat = ref.read(deleteChatProvider);
                             await deleteChat(chat.id);
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Chat deleted')),
-                              );
+                              CustomSnackBar.showSuccess(context, 'Chat deleted');
                             }
                           } catch (e) {
                             AppLogger.e('Error deleting chat', e);
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text('Failed to delete chat: $e')),
-                              );
+                              CustomSnackBar.showError(context, 'Failed to delete chat: $e');
                             }
                           }
                         }

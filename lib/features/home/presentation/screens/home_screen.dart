@@ -8,6 +8,7 @@ import '../../../events/presentation/screens/event_detail_screen.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -1109,13 +1110,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                               
                               // Show success message
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Bildirim izni verildi!'),
-                                    backgroundColor: AppColors.pineGreen,
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
+                                CustomSnackBar.showSuccess(context, 'Bildirim izni verildi!');
                               }
                             } else {
                               // Dismiss the prompt since user rejected permission
@@ -1125,13 +1120,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                               
                               // Show error message
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.'),
-                                    backgroundColor: AppColors.rosyBrown,
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
+                                CustomSnackBar.showError(context, 'Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.');
                               }
                             }
                           },

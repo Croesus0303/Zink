@@ -14,6 +14,7 @@ import 'edit_profile_screen.dart';
 import 'storage_test_screen.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -648,12 +649,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       await authService.signOut();
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Sign out failed: ${e.toString()}'),
-                            backgroundColor: AppColors.errorColor,
-                          ),
-                        );
+                        CustomSnackBar.showError(context, 'Sign out failed: ${e.toString()}');
                       }
                     }
                   }
@@ -2239,13 +2235,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     } catch (e) {
       AppLogger.e('Error launching URL: $url', e);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Opening link in browser...'),
-            backgroundColor: AppColors.pineGreen,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        CustomSnackBar.showInfo(context, 'Opening link in browser...');
       }
     }
   }

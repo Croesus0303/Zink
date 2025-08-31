@@ -8,6 +8,7 @@ import '../../../../core/utils/logger.dart';
 import '../widgets/delete_account_dialog.dart';
 import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -726,12 +727,7 @@ class SettingsScreen extends ConsumerWidget {
                   // TODO: Save notification settings to provider/storage
                   AppLogger.i('Saving notification settings...');
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Notification settings saved'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  CustomSnackBar.showSuccess(context, 'Notification settings saved');
                 },
                 child: const Text(
                   'Save',

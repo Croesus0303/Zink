@@ -10,6 +10,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 
 class CommentSheet extends ConsumerStatefulWidget {
   final String eventId;
@@ -41,9 +42,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
 
     final currentUser = ref.read(currentUserProvider);
     if (currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please sign in to comment')),
-      );
+      CustomSnackBar.showError(context, 'Please sign in to comment');
       return;
     }
 
@@ -71,9 +70,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
       AppLogger.e(
           'Error adding comment to submission ${widget.submissionId}', e);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add comment')),
-      );
+      CustomSnackBar.showError(context, 'Failed to add comment');
     } finally {
       if (mounted) {
         setState(() {
