@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
@@ -28,7 +27,7 @@ class LikesListScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
@@ -39,7 +38,7 @@ class LikesListScreen extends ConsumerWidget {
             fontWeight: FontWeight.bold,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -57,9 +56,9 @@ class LikesListScreen extends ConsumerWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(15),
@@ -69,12 +68,12 @@ class LikesListScreen extends ConsumerWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(1, 1),
               ),
@@ -96,8 +95,8 @@ class LikesListScreen extends ConsumerWidget {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
+        decoration: const BoxDecoration(
+          image: const DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
           ),
@@ -186,13 +185,13 @@ class LikesListScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.pineGreen.withOpacity(0.8),
-                              AppColors.pineGreen.withOpacity(0.9),
+                              AppColors.pineGreen.withValues(alpha: 0.8),
+                              AppColors.pineGreen.withValues(alpha: 0.9),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -266,12 +265,12 @@ class _LikeListItem extends ConsumerWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(-1, -1),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.1),
+            color: AppColors.rosyBrown.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(1, 1),
           ),
@@ -323,7 +322,7 @@ class _LikeListItem extends ConsumerWidget {
             width: MediaQuery.of(context).size.width * 0.08,
             height: MediaQuery.of(context).size.width * 0.08,
             decoration: BoxDecoration(
-              color: AppColors.textSecondary.withOpacity(0.3),
+              color: AppColors.textSecondary.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -339,7 +338,7 @@ class _LikeListItem extends ConsumerWidget {
               width: MediaQuery.of(context).size.width * 0.25,
               height: MediaQuery.of(context).size.height * 0.02,
               decoration: BoxDecoration(
-                color: AppColors.textSecondary.withOpacity(0.3),
+                color: AppColors.textSecondary.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -357,7 +356,7 @@ class _LikeListItem extends ConsumerWidget {
         gradient: AppColors.iceGlassGradient,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.rosyBrown.withOpacity(0.3),
+          color: AppColors.rosyBrown.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -368,7 +367,7 @@ class _LikeListItem extends ConsumerWidget {
             width: MediaQuery.of(context).size.width * 0.08,
             height: MediaQuery.of(context).size.width * 0.08,
             decoration: BoxDecoration(
-              color: AppColors.rosyBrown.withOpacity(0.2),
+              color: AppColors.rosyBrown.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -394,21 +393,4 @@ class _LikeListItem extends ConsumerWidget {
     );
   }
 
-  String _formatLikeTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 1) {
-      return 'Just now';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 30) {
-      return '${difference.inDays}d ago';
-    } else {
-      final months = difference.inDays ~/ 30;
-      return '${months}mo ago';
-    }
-  }
 }

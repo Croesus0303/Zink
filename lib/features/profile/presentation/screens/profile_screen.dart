@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -383,14 +382,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.primaryOrange.withOpacity(0.8),
+                            AppColors.primaryOrange.withValues(alpha: 0.8),
                             AppColors.primaryOrangeDark
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryOrange.withOpacity(0.4),
+                            color: AppColors.primaryOrange.withValues(alpha: 0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -469,7 +468,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         title: Text(
           isOwnProfile
               ? AppLocalizations.of(context)!.profile
-              : user?.displayName ?? 'Profile',
+              : user.displayName,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -624,7 +623,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
                 onSelected: (value) async {
                   if (value == 'editProfile') {
-                    if (user != null) {
+                    {
                       Navigator.of(context)
                           .push(
                         MaterialPageRoute(
@@ -995,7 +994,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ],
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.emoji_events,
                   color: AppColors.primaryOrange,
                   size: 20,
@@ -1042,105 +1041,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildBadgesPage(
-      BuildContext context, WidgetRef ref, UserModel? user) {
-    if (user == null) return const SizedBox.shrink();
-
-    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
-
-    return badgesAsync.when(
-      data: (badges) {
-        // Mock data - multiply badges by 150 for testing as mentioned
-        final mockBadges = <String>[];
-        for (int i = 0; i < 150; i++) {
-          mockBadges.addAll(badges);
-        }
-        final displayBadges = mockBadges.isNotEmpty ? mockBadges : badges;
-
-        if (displayBadges.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.emoji_events_outlined,
-                  color: AppColors.textSecondary,
-                  size: MediaQuery.of(context).size.width * 0.15,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No badges yet',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: MediaQuery.of(context).size.width * 0.045,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1,
-          ),
-          itemCount: displayBadges.length > 25
-              ? 25
-              : displayBadges.length, // Reduce to fit screen
-          itemBuilder: (context, index) {
-            final badgeURL = displayBadges[index];
-            return Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ClipOval(
-                child: Image.network(
-                  badgeURL,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withValues(alpha: 0.6),
-                          AppColors.rosyBrown.withValues(alpha: 0.6),
-                        ],
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.emoji_events,
-                      color: AppColors.primaryOrange,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-      loading: () => const Center(
-        child: CircularProgressIndicator(color: AppColors.pineGreen),
-      ),
-      error: (error, stack) => const SizedBox.shrink(),
-    );
-  }
 
   Widget _buildTabBar(BuildContext context) {
     return SliverToBoxAdapter(
@@ -1241,9 +1141,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Error loading submissions',
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             const SizedBox(height: 16),
             Container(
@@ -1312,9 +1212,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Error loading liked submissions',
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             const SizedBox(height: 16),
             Container(
@@ -1641,376 +1541,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildAvatarWithBadges(
-      BuildContext context, WidgetRef ref, UserModel? user) {
-    if (user == null) {
-      return Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.rosyBrown,
-              AppColors.pineGreen,
-              AppColors.midnightGreen,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.rosyBrown.withValues(alpha: 0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(4),
-        child: CircleAvatar(
-          radius: MediaQuery.of(context).size.width * 0.13,
-          backgroundColor: Colors.transparent,
-          child: Icon(
-            Icons.person,
-            size: MediaQuery.of(context).size.width * 0.13,
-            color: Colors.white,
-          ),
-        ),
-      );
-    }
 
-    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
 
-    return badgesAsync.when(
-      data: (badges) {
-        // Mock data - multiply badges by 50 for testing
-        final mockBadges = <String>[];
-        for (int i = 0; i < 50; i++) {
-          mockBadges.addAll(badges);
-        }
-        final displayBadges = mockBadges.isNotEmpty ? mockBadges : badges;
-
-        return SizedBox(
-          width: MediaQuery.of(context).size.width * 0.4,
-          height: MediaQuery.of(context).size.width * 0.4,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Badges positioned around the avatar
-              if (displayBadges.isNotEmpty)
-                ..._buildSurroundingBadges(context, displayBadges),
-
-              // Central avatar
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.rosyBrown,
-                      AppColors.pineGreen,
-                      AppColors.midnightGreen,
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(4),
-                child: CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.13,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: user.photoURL != null
-                      ? CachedNetworkImageProvider(user.photoURL!)
-                      : null,
-                  child: user.photoURL == null
-                      ? Icon(
-                          Icons.person,
-                          size: MediaQuery.of(context).size.width * 0.13,
-                          color: Colors.white,
-                        )
-                      : null,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      loading: () => Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.rosyBrown,
-              AppColors.pineGreen,
-              AppColors.midnightGreen,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.rosyBrown.withValues(alpha: 0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(4),
-        child: CircleAvatar(
-          radius: MediaQuery.of(context).size.width * 0.13,
-          backgroundColor: Colors.transparent,
-          backgroundImage: user?.photoURL != null
-              ? CachedNetworkImageProvider(user!.photoURL!)
-              : null,
-          child: user?.photoURL == null
-              ? Icon(
-                  Icons.person,
-                  size: MediaQuery.of(context).size.width * 0.13,
-                  color: Colors.white,
-                )
-              : null,
-        ),
-      ),
-      error: (error, stack) => Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.rosyBrown,
-              AppColors.pineGreen,
-              AppColors.midnightGreen,
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.rosyBrown.withValues(alpha: 0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(4),
-        child: CircleAvatar(
-          radius: MediaQuery.of(context).size.width * 0.13,
-          backgroundColor: Colors.transparent,
-          backgroundImage: user?.photoURL != null
-              ? CachedNetworkImageProvider(user!.photoURL!)
-              : null,
-          child: user?.photoURL == null
-              ? Icon(
-                  Icons.person,
-                  size: MediaQuery.of(context).size.width * 0.13,
-                  color: Colors.white,
-                )
-              : null,
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildSurroundingBadges(
-      BuildContext context, List<String> badges) {
-    final List<Widget> badgeWidgets = [];
-    final screenWidth = MediaQuery.of(context).size.width;
-    final containerRadius = screenWidth * 0.2; // Half of the container width
-    final badgeSize = screenWidth * 0.08;
-
-    // Limit to 12 visible badges for clean circular arrangement
-    final visibleBadges = badges.take(12).toList();
-
-    for (int i = 0; i < visibleBadges.length; i++) {
-      final angle = (i * 2 * 3.14159) /
-          visibleBadges.length; // Evenly distribute around circle
-      final x = containerRadius *
-          0.85 *
-          math.cos(angle - 3.14159 / 2); // -π/2 to start from top
-      final y = containerRadius * 0.85 * math.sin(angle - 3.14159 / 2);
-
-      badgeWidgets.add(
-        Positioned(
-          left: containerRadius + x - badgeSize / 2,
-          top: containerRadius + y - badgeSize / 2,
-          child: Container(
-            width: badgeSize,
-            height: badgeSize,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.3),
-                  AppColors.pineGreen.withValues(alpha: 0.2),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.iceBorder,
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: visibleBadges[i],
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.rosyBrown.withValues(alpha: 0.3),
-                        AppColors.pineGreen.withValues(alpha: 0.2),
-                      ],
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.emoji_events,
-                    color: AppColors.rosyBrown,
-                    size: badgeSize * 0.4,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.rosyBrown.withValues(alpha: 0.3),
-                        AppColors.pineGreen.withValues(alpha: 0.2),
-                      ],
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.emoji_events,
-                    color: AppColors.rosyBrown,
-                    size: badgeSize * 0.4,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Add badge count indicator if there are more than 12 badges
-    if (badges.length > 12) {
-      badgeWidgets.add(
-        Positioned(
-          right: 0,
-          top: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.9),
-                  AppColors.rosyBrown.withValues(alpha: 0.7),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.iceBorder,
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Text(
-              '+${badges.length - 12}',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: screenWidth * 0.025,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return badgeWidgets;
-  }
-
-  Widget _buildBadgeItem(String badgeURL) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.12,
-      height: MediaQuery.of(context).size.width * 0.12,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.rosyBrown.withValues(alpha: 0.2),
-            AppColors.pineGreen.withValues(alpha: 0.1),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.rosyBrown.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: CachedNetworkImage(
-          imageUrl: badgeURL,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.3),
-                  AppColors.pineGreen.withValues(alpha: 0.2),
-                ],
-              ),
-            ),
-            child: const Icon(
-              Icons.emoji_events,
-              color: AppColors.rosyBrown,
-              size: 24,
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.3),
-                  AppColors.pineGreen.withValues(alpha: 0.2),
-                ],
-              ),
-            ),
-            child: const Icon(
-              Icons.emoji_events,
-              color: AppColors.rosyBrown,
-              size: 24,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildSocialMediaButton(String platform, String url) {
     final socialData = _getSocialMediaData(platform);
@@ -2053,7 +1585,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     url = url.trim();
 
     // Check minimum length
-    if (url.length < 1) return false;
+    if (url.isEmpty) return false;
 
     // Check if it's a proper URL
     if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -2077,7 +1609,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     // Allow social media usernames (common case)
     // Most social media usernames are alphanumeric with underscores/dots/dashes
-    if (RegExp(r'^[a-zA-Z0-9._-]+$').hasMatch(url) && url.length >= 1) {
+    if (RegExp(r'^[a-zA-Z0-9._-]+$').hasMatch(url) && url.isNotEmpty) {
       return true;
     }
 
@@ -2245,7 +1777,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     url = url.trim();
 
     // If the URL is too short or obviously invalid, don't try to launch it
-    if (url.length < 1) {
+    if (url.isEmpty) {
       throw FormatException('URL too short: $url');
     }
 

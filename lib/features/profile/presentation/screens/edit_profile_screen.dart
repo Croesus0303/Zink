@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../../../auth/providers/auth_providers.dart';
 import '../../../auth/data/repositories/auth_repository.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -294,10 +293,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
               ),
               child: _isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       width: 20,
                       height: 20,
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
@@ -611,21 +610,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: AppColors.pineGreen,
                   width: 2,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: AppColors.rosyBrown,
                   width: 2,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: AppColors.rosyBrown,
                   width: 2,
                 ),

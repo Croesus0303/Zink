@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 
 class DeleteAccountDialog extends ConsumerStatefulWidget {
@@ -27,8 +26,6 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = ref.watch(currentUserProvider);
-    
     return AlertDialog(
       title: const Text(
         'Delete Account',
@@ -144,7 +141,7 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
       // Delete the account
       await authService.deleteAccount();
 
-      if (context.mounted) {
+      if (mounted && context.mounted) {
         Navigator.of(context).pop(); // Close dialog
         context.go('/'); // Navigate to home
         

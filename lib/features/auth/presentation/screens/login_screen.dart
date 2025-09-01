@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/widgets/language_selector.dart';
 import '../../providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
@@ -429,7 +428,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               labelText: 'Email',
               hintText: 'Enter your email',
               prefixIcon:
-                  Icon(Icons.email_outlined, color: AppColors.pineGreen),
+                  const Icon(Icons.email_outlined, color: AppColors.pineGreen),
               labelStyle: TextStyle(
                   color: Colors.white.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500),
@@ -469,7 +468,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             decoration: InputDecoration(
               labelText: 'Password',
               hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
+              prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
               suffixIcon: IconButton(
                 icon: Icon(
                   _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
@@ -501,7 +500,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         // Forgot password link
         Align(
           alignment: Alignment.centerRight,
-          child: Container(
+          child: SizedBox(
             height: 44,
             child: TextButton(
               style: TextButton.styleFrom(
@@ -619,11 +618,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.g_mobiledata, color: Colors.white, size: 24),
+                    const Icon(Icons.g_mobiledata, color: Colors.white, size: 24),
                     const SizedBox(width: 8),
                     Text(
                       AppLocalizations.of(context)!.continueWithGoogle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -645,13 +644,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.warmBeige.withOpacity(0.15),
-                  AppColors.primaryCyan.withOpacity(0.1),
+                  AppColors.warmBeige.withValues(alpha: 0.15),
+                  AppColors.primaryCyan.withValues(alpha: 0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.warmBeige.withOpacity(0.4),
+                color: AppColors.warmBeige.withValues(alpha: 0.4),
                 width: 1.5,
               ),
             ),
@@ -666,11 +665,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.apple, color: AppColors.warmBeige, size: 20),
+                      const Icon(Icons.apple, color: AppColors.warmBeige, size: 20),
                       const SizedBox(width: 8),
                       Text(
                         AppLocalizations.of(context)!.continueWithApple,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.warmBeige,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -712,7 +711,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               labelText: 'Email',
               hintText: 'Enter your email',
               prefixIcon:
-                  Icon(Icons.email_outlined, color: AppColors.pineGreen),
+                  const Icon(Icons.email_outlined, color: AppColors.pineGreen),
               labelStyle: TextStyle(
                   color: Colors.white.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500),
@@ -757,7 +756,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             decoration: InputDecoration(
               labelText: 'Password',
               hintText: 'Enter your password',
-              prefixIcon: Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
+              prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
               suffixIcon: IconButton(
                 icon: Icon(
                   _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
@@ -813,7 +812,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               labelText: 'Confirm Password',
               hintText: 'Re-enter your password',
               prefixIcon:
-                  Icon(Icons.lock_outlined, color: AppColors.midnightGreen),
+                  const Icon(Icons.lock_outlined, color: AppColors.midnightGreen),
               suffixIcon: IconButton(
                 icon: Icon(
                   _isConfirmPasswordVisible
@@ -865,7 +864,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryOrange.withOpacity(0.4),
+                color: AppColors.primaryOrange.withValues(alpha: 0.4),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
@@ -976,13 +975,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.warmBeige.withOpacity(0.15),
-                  AppColors.primaryCyan.withOpacity(0.1),
+                  AppColors.warmBeige.withValues(alpha: 0.15),
+                  AppColors.primaryCyan.withValues(alpha: 0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.warmBeige.withOpacity(0.4),
+                color: AppColors.warmBeige.withValues(alpha: 0.4),
                 width: 1.5,
               ),
             ),
@@ -997,11 +996,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.apple, color: AppColors.warmBeige, size: 20),
+                      const Icon(Icons.apple, color: AppColors.warmBeige, size: 20),
                       const SizedBox(width: 8),
                       Text(
                         AppLocalizations.of(context)!.continueWithApple,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.warmBeige,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

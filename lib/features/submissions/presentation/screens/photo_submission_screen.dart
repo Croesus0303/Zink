@@ -9,7 +9,6 @@ import '../../../submissions/data/services/submissions_service.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 
@@ -146,7 +145,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             backgroundColor: Colors.transparent,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+              backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
               elevation: 0,
               title: Text(
                 'Event Not Found',
@@ -158,7 +157,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               ),
             ),
             body: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/background.png'),
                   fit: BoxFit.cover,
@@ -180,12 +179,12 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                           Border.all(color: AppColors.iceBorder, width: 1.5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                           blurRadius: 15,
                           offset: const Offset(-2, -2),
                         ),
                         BoxShadow(
-                          color: AppColors.rosyBrown.withOpacity(0.15),
+                          color: AppColors.rosyBrown.withValues(alpha: 0.15),
                           blurRadius: 15,
                           offset: const Offset(2, 2),
                         ),
@@ -221,7 +220,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       loading: () => Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover,
@@ -230,7 +229,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           child: Container(
             decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
             child: const Center(
-                child: CircularProgressIndicator(color: AppColors.pineGreen)),
+                child: const CircularProgressIndicator(color: AppColors.pineGreen)),
           ),
         ),
       ),
@@ -240,7 +239,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           backgroundColor: Colors.transparent,
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-            backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+            backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
             elevation: 0,
             title: Text(
               'Error',
@@ -273,12 +272,12 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                     border: Border.all(color: AppColors.iceBorder, width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.08),
+                        color: Colors.white.withValues(alpha: 0.08),
                         blurRadius: 15,
                         offset: const Offset(-2, -2),
                       ),
                       BoxShadow(
-                        color: AppColors.rosyBrown.withOpacity(0.15),
+                        color: AppColors.rosyBrown.withValues(alpha: 0.15),
                         blurRadius: 15,
                         offset: const Offset(2, 2),
                       ),
@@ -293,14 +292,14 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.rosyBrown.withOpacity(0.8),
-                              AppColors.rosyBrown.withOpacity(0.6),
+                              AppColors.rosyBrown.withValues(alpha: 0.8),
+                              AppColors.rosyBrown.withValues(alpha: 0.6),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.rosyBrown.withOpacity(0.3),
+                              color: AppColors.rosyBrown.withValues(alpha: 0.3),
                               blurRadius: 15,
                               offset: const Offset(0, 5),
                             ),
@@ -322,7 +321,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                           color: AppColors.textPrimary,
                           shadows: [
                             Shadow(
-                              color: AppColors.rosyBrown.withOpacity(0.6),
+                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
                               blurRadius: 8,
                             ),
                           ],
@@ -334,18 +333,18 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.pineGreen.withOpacity(0.8),
-                              AppColors.pineGreen.withOpacity(0.9),
+                              AppColors.pineGreen.withValues(alpha: 0.8),
+                              AppColors.pineGreen.withValues(alpha: 0.9),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.pineGreen.withOpacity(0.4),
+                              color: AppColors.pineGreen.withValues(alpha: 0.4),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -410,7 +409,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         backgroundColor: Colors.transparent,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+          backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
           elevation: 0,
           title: Text(
             'Authentication Required',
@@ -422,7 +421,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover,
@@ -461,7 +460,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
@@ -472,7 +471,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             color: Colors.white,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -489,21 +488,21 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: AppColors.iceBorder, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(1, 1),
               ),
@@ -534,20 +533,20 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                 gradient: LinearGradient(
                   colors: _isSubmitting
                       ? [
-                          AppColors.midnightGreen.withOpacity(0.6),
-                          AppColors.midnightGreen.withOpacity(0.4),
+                          AppColors.midnightGreen.withValues(alpha: 0.6),
+                          AppColors.midnightGreen.withValues(alpha: 0.4),
                         ]
                       : [
-                          AppColors.rosyBrown.withOpacity(0.8),
-                          AppColors.rosyBrown.withOpacity(0.9),
+                          AppColors.rosyBrown.withValues(alpha: 0.8),
+                          AppColors.rosyBrown.withValues(alpha: 0.9),
                         ],
                 ),
                 borderRadius: BorderRadius.circular(15),
                 border:
-                    Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                    Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.rosyBrown.withOpacity(0.3),
+                    color: AppColors.rosyBrown.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -566,7 +565,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                         ? SizedBox(
                             width: MediaQuery.of(context).size.width * 0.04,
                             height: MediaQuery.of(context).size.width * 0.04,
-                            child: CircularProgressIndicator(
+                            child: const CircularProgressIndicator(
                               strokeWidth: 2,
                               color: Colors.white,
                             ),
@@ -587,7 +586,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -652,22 +651,22 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                   gradient: LinearGradient(
                     colors: _isSubmitting
                         ? [
-                            AppColors.midnightGreen.withOpacity(0.6),
-                            AppColors.midnightGreen.withOpacity(0.4),
+                            AppColors.midnightGreen.withValues(alpha: 0.6),
+                            AppColors.midnightGreen.withValues(alpha: 0.4),
                           ]
                         : [
-                            AppColors.rosyBrown.withOpacity(0.8),
-                            AppColors.rosyBrown.withOpacity(0.9),
+                            AppColors.rosyBrown.withValues(alpha: 0.8),
+                            AppColors.rosyBrown.withValues(alpha: 0.9),
                           ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.rosyBrown.withOpacity(0.4),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -690,7 +689,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                                       MediaQuery.of(context).size.width * 0.05,
                                   height:
                                       MediaQuery.of(context).size.width * 0.05,
-                                  child: CircularProgressIndicator(
+                                  child: const CircularProgressIndicator(
                                     strokeWidth: 2,
                                     color: Colors.white,
                                   ),
@@ -733,7 +732,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         title: Text(
           'Loading...',
@@ -746,7 +745,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -755,7 +754,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         child: Container(
           decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
           child: Center(
-            child: CircularProgressIndicator(color: AppColors.pineGreen),
+            child: const CircularProgressIndicator(color: AppColors.pineGreen),
           ),
         ),
       ),
@@ -766,7 +765,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         title: Text(
           'Error',
@@ -779,7 +778,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -798,10 +797,10 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                     fontSize: MediaQuery.of(context).size.width * 0.04,
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Go Back'),
+                  child: const Text('Go Back'),
                 ),
               ],
             ),
@@ -830,21 +829,21 @@ class _SubmissionCountInfo extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withOpacity(0.12),
-            AppColors.pineGreen.withOpacity(0.08),
-            Colors.white.withOpacity(0.05),
+            Colors.white.withValues(alpha: 0.12),
+            AppColors.pineGreen.withValues(alpha: 0.08),
+            Colors.white.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.iceBorder, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.pineGreen.withOpacity(0.15),
+            color: AppColors.pineGreen.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(2, 2),
           ),
@@ -858,18 +857,18 @@ class _SubmissionCountInfo extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.pineGreen.withOpacity(0.8),
-                  AppColors.pineGreen.withOpacity(0.9),
+                  AppColors.pineGreen.withValues(alpha: 0.8),
+                  AppColors.pineGreen.withValues(alpha: 0.9),
                 ],
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.pineGreen.withOpacity(0.3),
+                  color: AppColors.pineGreen.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -894,7 +893,7 @@ class _SubmissionCountInfo extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   '$submissionCount of $maxSubmissions used',
                   style: TextStyle(
@@ -922,21 +921,21 @@ class _SubmissionLimitMessage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.rosyBrown.withOpacity(0.1),
-            AppColors.rosyBrown.withOpacity(0.05),
-            Colors.white.withOpacity(0.05),
+            AppColors.rosyBrown.withValues(alpha: 0.1),
+            AppColors.rosyBrown.withValues(alpha: 0.05),
+            Colors.white.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.rosyBrown.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.15),
+            color: AppColors.rosyBrown.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(2, 2),
           ),
@@ -951,14 +950,14 @@ class _SubmissionLimitMessage extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.rosyBrown.withOpacity(0.8),
-                  AppColors.rosyBrown.withOpacity(0.6),
+                  AppColors.rosyBrown.withValues(alpha: 0.8),
+                  AppColors.rosyBrown.withValues(alpha: 0.6),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.rosyBrown.withOpacity(0.3),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -979,7 +978,7 @@ class _SubmissionLimitMessage extends StatelessWidget {
               color: AppColors.textPrimary,
               shadows: [
                 Shadow(
-                  color: AppColors.rosyBrown.withOpacity(0.6),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
                   blurRadius: 8,
                 ),
               ],
@@ -1020,7 +1019,7 @@ class _ChallengeInfoSection extends StatelessWidget {
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -1035,12 +1034,12 @@ class _ChallengeInfoSection extends StatelessWidget {
             border: Border.all(color: AppColors.iceBorder, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 15,
                 offset: const Offset(-2, -2),
               ),
               BoxShadow(
-                color: AppColors.rosyBrown.withOpacity(0.15),
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
                 blurRadius: 15,
                 offset: const Offset(2, 2),
               ),
@@ -1052,8 +1051,8 @@ class _ChallengeInfoSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.pineGreen.withOpacity(0.3),
-                      AppColors.rosyBrown.withOpacity(0.2),
+                      AppColors.pineGreen.withValues(alpha: 0.3),
+                      AppColors.rosyBrown.withValues(alpha: 0.2),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
@@ -1063,7 +1062,7 @@ class _ChallengeInfoSection extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.pineGreen.withOpacity(0.2),
+                      color: AppColors.pineGreen.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -1082,8 +1081,8 @@ class _ChallengeInfoSection extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.midnightGreen.withOpacity(0.3),
-                            AppColors.midnightGreen.withOpacity(0.1),
+                            AppColors.midnightGreen.withValues(alpha: 0.3),
+                            AppColors.midnightGreen.withValues(alpha: 0.1),
                           ],
                         ),
                       ),
@@ -1099,8 +1098,8 @@ class _ChallengeInfoSection extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.rosyBrown.withOpacity(0.3),
-                            AppColors.rosyBrown.withOpacity(0.1),
+                            AppColors.rosyBrown.withValues(alpha: 0.3),
+                            AppColors.rosyBrown.withValues(alpha: 0.1),
                           ],
                         ),
                       ),
@@ -1126,7 +1125,7 @@ class _ChallengeInfoSection extends StatelessWidget {
                           color: AppColors.textPrimary,
                           shadows: [
                             Shadow(
-                              color: AppColors.rosyBrown.withOpacity(0.6),
+                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
                               blurRadius: 8,
                             ),
                           ],
@@ -1156,18 +1155,18 @@ class _ChallengeInfoSection extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.pineGreen.withOpacity(0.8),
-                                AppColors.pineGreen.withOpacity(0.9),
+                                AppColors.pineGreen.withValues(alpha: 0.8),
+                                AppColors.pineGreen.withValues(alpha: 0.9),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               width: 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.pineGreen.withOpacity(0.3),
+                                color: AppColors.pineGreen.withValues(alpha: 0.3),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -1247,7 +1246,7 @@ class _PhotoSection extends StatelessWidget {
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -1263,12 +1262,12 @@ class _PhotoSection extends StatelessWidget {
               border: Border.all(color: AppColors.iceBorder, width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   blurRadius: 15,
                   offset: const Offset(-2, -2),
                 ),
                 BoxShadow(
-                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.15),
                   blurRadius: 15,
                   offset: const Offset(2, 2),
                 ),
@@ -1293,18 +1292,18 @@ class _PhotoSection extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.rosyBrown.withOpacity(0.9),
-                          AppColors.rosyBrown.withOpacity(0.8),
+                          AppColors.rosyBrown.withValues(alpha: 0.9),
+                          AppColors.rosyBrown.withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.rosyBrown.withOpacity(0.4),
+                          color: AppColors.rosyBrown.withValues(alpha: 0.4),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -1339,13 +1338,13 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withOpacity(0.15),
-                        AppColors.pineGreen.withOpacity(0.08),
+                        AppColors.pineGreen.withValues(alpha: 0.15),
+                        AppColors.pineGreen.withValues(alpha: 0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.pineGreen.withOpacity(0.3),
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -1391,13 +1390,13 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.rosyBrown.withOpacity(0.15),
-                        AppColors.rosyBrown.withOpacity(0.08),
+                        AppColors.rosyBrown.withValues(alpha: 0.15),
+                        AppColors.rosyBrown.withValues(alpha: 0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.rosyBrown.withOpacity(0.3),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -1450,12 +1449,12 @@ class _PhotoSection extends StatelessWidget {
               border: Border.all(color: AppColors.iceBorder, width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                   blurRadius: 15,
                   offset: const Offset(-2, -2),
                 ),
                 BoxShadow(
-                  color: AppColors.rosyBrown.withOpacity(0.15),
+                  color: AppColors.rosyBrown.withValues(alpha: 0.15),
                   blurRadius: 15,
                   offset: const Offset(2, 2),
                 ),
@@ -1470,14 +1469,14 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withOpacity(0.8),
-                        AppColors.rosyBrown.withOpacity(0.6),
+                        AppColors.pineGreen.withValues(alpha: 0.8),
+                        AppColors.rosyBrown.withValues(alpha: 0.6),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.pineGreen.withOpacity(0.3),
+                        color: AppColors.pineGreen.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -1498,7 +1497,7 @@ class _PhotoSection extends StatelessWidget {
                     color: AppColors.textPrimary,
                     shadows: [
                       Shadow(
-                        color: AppColors.rosyBrown.withOpacity(0.6),
+                        color: AppColors.rosyBrown.withValues(alpha: 0.6),
                         blurRadius: 8,
                       ),
                     ],
@@ -1515,18 +1514,18 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withOpacity(0.8),
-                        AppColors.pineGreen.withOpacity(0.9),
+                        AppColors.pineGreen.withValues(alpha: 0.8),
+                        AppColors.pineGreen.withValues(alpha: 0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.pineGreen.withOpacity(0.4),
+                        color: AppColors.pineGreen.withValues(alpha: 0.4),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -1574,13 +1573,13 @@ class _PhotoSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.rosyBrown.withOpacity(0.15),
-                        AppColors.rosyBrown.withOpacity(0.08),
+                        AppColors.rosyBrown.withValues(alpha: 0.15),
+                        AppColors.rosyBrown.withValues(alpha: 0.08),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.rosyBrown.withOpacity(0.3),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -1642,7 +1641,7 @@ class _GuidelinesSection extends StatelessWidget {
             color: AppColors.textPrimary,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -1657,12 +1656,12 @@ class _GuidelinesSection extends StatelessWidget {
             border: Border.all(color: AppColors.iceBorder, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 15,
                 offset: const Offset(-2, -2),
               ),
               BoxShadow(
-                color: AppColors.rosyBrown.withOpacity(0.15),
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
                 blurRadius: 15,
                 offset: const Offset(2, 2),
               ),
@@ -1719,18 +1718,18 @@ class _GuidelineItem extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.pineGreen.withOpacity(0.8),
-                AppColors.pineGreen.withOpacity(0.9),
+                AppColors.pineGreen.withValues(alpha: 0.8),
+                AppColors.pineGreen.withValues(alpha: 0.9),
               ],
             ),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.pineGreen.withOpacity(0.3),
+                color: AppColors.pineGreen.withValues(alpha: 0.3),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),

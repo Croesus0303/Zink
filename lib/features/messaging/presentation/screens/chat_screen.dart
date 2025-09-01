@@ -38,7 +38,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   void _initializeChat() async {
     try {
-      final chat = await ref.read(getOrCreateChatProvider(widget.otherUserId).future);
+      final chat =
+          await ref.read(getOrCreateChatProvider(widget.otherUserId).future);
       if (mounted) {
         setState(() {
           _chatId = chat.id;
@@ -78,7 +79,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     try {
       final sendMessage = ref.read(sendMessageProvider);
       await sendMessage(_chatId!, text);
-      
+
       // Scroll to bottom after sending message
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
@@ -179,18 +180,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: MediaQuery.of(context).padding.top + 
-                        kToolbarHeight + 20,
+                height:
+                    MediaQuery.of(context).padding.top + kToolbarHeight + 20,
               ),
               // Messages list
               Expanded(
-                child: _chatId != null 
+                child: _chatId != null
                     ? otherUserAsync.when(
-                        data: (otherUser) => _buildMessagesList(currentUser, otherUser),
-                        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
+                        data: (otherUser) =>
+                            _buildMessagesList(currentUser, otherUser),
+                        loading: () => const Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.pineGreen)),
                         error: (_, __) => _buildMessagesList(currentUser, null),
                       )
-                    : const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
+                    : const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.pineGreen)),
               ),
               // Message input
               _buildMessageInput(),
@@ -230,7 +236,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               if (user != null) {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ProfileScreen(userId: user!.uid),
+                    builder: (context) => ProfileScreen(userId: user.uid),
                   ),
                 );
               }
@@ -243,14 +249,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   : null,
               child: user?.photoURL == null
                   ? Text(
-                      user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
+                      (user?.displayName ?? '').isNotEmpty
+                          ? user!.displayName.substring(0, 1).toUpperCase()
+                          : '?',
                       style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.035,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  )
-                : null,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
             ),
           ),
         ),
@@ -376,9 +384,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             final message = messages[index];
             final isMe = currentUser?.uid == message.senderId;
             final isLastMessage = index == messages.length - 1;
-            final nextMessage = index < messages.length - 1 ? messages[index + 1] : null;
-            final showAvatar = isLastMessage || 
-                                (nextMessage != null && nextMessage.senderId != message.senderId);
+            final nextMessage =
+                index < messages.length - 1 ? messages[index + 1] : null;
+            final showAvatar = isLastMessage ||
+                (nextMessage != null &&
+                    nextMessage.senderId != message.senderId);
 
             return _MessageBubble(
               message: message,
@@ -389,7 +399,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.pineGreen)),
+      loading: () => const Center(
+          child: CircularProgressIndicator(color: AppColors.pineGreen)),
       error: (error, stack) {
         AppLogger.e('Error loading messages', error, stack);
         return Center(
@@ -496,12 +507,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               color: Colors.white,
                               size: MediaQuery.of(context).size.width * 0.05,
                             ),
-                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.02),
                             Text(
                               'Retry',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: MediaQuery.of(context).size.width * 0.04,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.04,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -525,13 +539,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         left: MediaQuery.of(context).size.width * 0.04,
         right: MediaQuery.of(context).size.width * 0.04,
         top: MediaQuery.of(context).size.width * 0.02,
-        bottom: MediaQuery.of(context).size.width * 0.04 + MediaQuery.of(context).padding.bottom,
+        bottom: MediaQuery.of(context).size.width * 0.04 +
+            MediaQuery.of(context).padding.bottom,
       ),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.midnightGreen.withValues(alpha: 0.3), width: 1),
+        border: Border.all(
+            color: AppColors.midnightGreen.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -604,7 +620,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 borderRadius: BorderRadius.circular(18),
                 onTap: _sendMessage,
                 child: Container(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
                   child: Icon(
                     Icons.send,
                     color: Colors.white,
@@ -642,139 +659,148 @@ class _MessageBubble extends StatelessWidget {
         right: MediaQuery.of(context).size.width * 0.04,
       ),
       child: Column(
-        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment:
+                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          if (!isMe && showAvatar) ...[
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.01),
-              child: Container(
-                decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.pineGreen.withValues(alpha: 0.3),
-                    AppColors.rosyBrown.withValues(alpha: 0.2),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.iceBorder,
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.pineGreen.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  if (otherUser != null) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfileScreen(userId: otherUser!.uid),
+              if (!isMe && showAvatar) ...[
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.width * 0.01),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.pineGreen.withValues(alpha: 0.3),
+                          AppColors.rosyBrown.withValues(alpha: 0.2),
+                        ],
                       ),
-                    );
-                  }
-                },
-                child: CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.04,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: otherUser?.photoURL != null
-                      ? CachedNetworkImageProvider(otherUser!.photoURL!)
-                      : null,
-                  child: otherUser?.photoURL == null
-                      ? Text(
-                          otherUser?.displayName?.substring(0, 1).toUpperCase() ?? '?',
-                          style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.iceBorder,
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.pineGreen.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
-                      )
-                    : null,
-                ),
-              ),
-              ),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-          ] else if (!isMe) ...[
-            SizedBox(width: MediaQuery.of(context).size.width * 0.13),
-          ],
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
-                minWidth: MediaQuery.of(context).size.width * 0.15,
-              ),
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
-              decoration: BoxDecoration(
-                gradient: isMe 
-                    ? LinearGradient(
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.8),
-                          AppColors.pineGreen.withValues(alpha: 0.9),
-                        ],
-                      )
-                    : LinearGradient(
-                        colors: [
-                          AppColors.midnightGreen.withValues(alpha: 0.2),
-                          AppColors.midnightGreen.withValues(alpha: 0.1),
-                        ],
+                      ],
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (otherUser != null) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProfileScreen(userId: otherUser!.uid),
+                            ),
+                          );
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: MediaQuery.of(context).size.width * 0.04,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: otherUser?.photoURL != null
+                            ? CachedNetworkImageProvider(otherUser!.photoURL!)
+                            : null,
+                        child: otherUser?.photoURL == null
+                            ? Text(
+                                (otherUser?.displayName ?? '').isNotEmpty
+                                    ? otherUser!.displayName.substring(0, 1).toUpperCase()
+                                    : '?',
+                                style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : null,
                       ),
-                borderRadius: BorderRadius.circular(15).copyWith(
-                  bottomLeft: !isMe && showAvatar ? const Radius.circular(3) : null,
-                  bottomRight: isMe ? const Radius.circular(3) : null,
-                ),
-                border: Border.all(
-                  color: isMe 
-                      ? Colors.white.withValues(alpha: 0.2)
-                      : AppColors.midnightGreen.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    message.text,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: MediaQuery.of(context).size.width * 0.038,
-                      fontWeight: FontWeight.w600,
-                      height: 1.3,
                     ),
                   ),
-                ],
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+              ] else if (!isMe) ...[
+                SizedBox(width: MediaQuery.of(context).size.width * 0.13),
+              ],
+              Flexible(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    minWidth: MediaQuery.of(context).size.width * 0.15,
+                  ),
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
+                  decoration: BoxDecoration(
+                    gradient: isMe
+                        ? LinearGradient(
+                            colors: [
+                              AppColors.pineGreen.withValues(alpha: 0.8),
+                              AppColors.pineGreen.withValues(alpha: 0.9),
+                            ],
+                          )
+                        : LinearGradient(
+                            colors: [
+                              AppColors.midnightGreen.withValues(alpha: 0.2),
+                              AppColors.midnightGreen.withValues(alpha: 0.1),
+                            ],
+                          ),
+                    borderRadius: BorderRadius.circular(15).copyWith(
+                      bottomLeft:
+                          !isMe && showAvatar ? const Radius.circular(3) : null,
+                      bottomRight: isMe ? const Radius.circular(3) : null,
+                    ),
+                    border: Border.all(
+                      color: isMe
+                          ? Colors.white.withValues(alpha: 0.2)
+                          : AppColors.midnightGreen.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        message.text,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.038,
+                          fontWeight: FontWeight.w600,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          if (isMe) ...[
-            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-          ],
+              if (isMe) ...[
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+              ],
             ],
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.003),
           Padding(
             padding: EdgeInsets.only(
-              left: !isMe && showAvatar 
-                  ? MediaQuery.of(context).size.width * 0.13 
-                  : !isMe 
-                    ? MediaQuery.of(context).size.width * 0.16
-                    : 0,
+              left: !isMe && showAvatar
+                  ? MediaQuery.of(context).size.width * 0.13
+                  : !isMe
+                      ? MediaQuery.of(context).size.width * 0.16
+                      : 0,
               right: isMe ? MediaQuery.of(context).size.width * 0.02 : 0,
             ),
             child: Text(

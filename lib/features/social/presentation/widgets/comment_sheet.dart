@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/services/social_service.dart';
@@ -97,18 +96,18 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                AppColors.midnightGreen.withOpacity(0.95),
-                AppColors.midnightGreen.withOpacity(0.98),
+                AppColors.midnightGreen.withValues(alpha: 0.95),
+                AppColors.midnightGreen.withValues(alpha: 0.98),
               ],
             ),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -128,7 +127,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                     width: MediaQuery.of(context).size.width * 0.1,
                     height: MediaQuery.of(context).size.height * 0.005,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.6),
+                      color: Colors.white.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -146,7 +145,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                               fontWeight: FontWeight.bold,
                               shadows: [
                                 Shadow(
-                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -160,7 +159,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                               fontWeight: FontWeight.bold,
                               shadows: [
                                 Shadow(
-                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -174,7 +173,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                               fontWeight: FontWeight.bold,
                               shadows: [
                                 Shadow(
-                                  color: AppColors.rosyBrown.withOpacity(0.6),
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -188,9 +187,9 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Colors.white.withOpacity(0.15),
-                                AppColors.pineGreen.withOpacity(0.08),
-                                Colors.white.withOpacity(0.05),
+                                Colors.white.withValues(alpha: 0.15),
+                                AppColors.pineGreen.withValues(alpha: 0.08),
+                                Colors.white.withValues(alpha: 0.05),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -221,7 +220,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,
-                          Colors.white.withOpacity(0.3),
+                          Colors.white.withValues(alpha: 0.3),
                           Colors.transparent,
                         ],
                       ),
@@ -293,13 +292,13 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  AppColors.pineGreen.withOpacity(0.8),
-                                  AppColors.pineGreen.withOpacity(0.9),
+                                  AppColors.pineGreen.withValues(alpha: 0.8),
+                                  AppColors.pineGreen.withValues(alpha: 0.9),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -345,7 +344,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                       gradient: LinearGradient(
                         colors: [
                           Colors.transparent,
-                          Colors.white.withOpacity(0.3),
+                          Colors.white.withValues(alpha: 0.3),
                           Colors.transparent,
                         ],
                       ),
@@ -368,14 +367,14 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  Colors.white.withOpacity(0.08),
-                                  AppColors.pineGreen.withOpacity(0.05),
-                                  Colors.white.withOpacity(0.03),
+                                  Colors.white.withValues(alpha: 0.08),
+                                  AppColors.pineGreen.withValues(alpha: 0.05),
+                                  Colors.white.withValues(alpha: 0.03),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -411,13 +410,13 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.rosyBrown.withOpacity(0.8),
-                                AppColors.rosyBrown.withOpacity(0.9),
+                                AppColors.rosyBrown.withValues(alpha: 0.8),
+                                AppColors.rosyBrown.withValues(alpha: 0.9),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
@@ -427,7 +426,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 ? SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.04,
                                     height: MediaQuery.of(context).size.width * 0.04,
-                                    child: CircularProgressIndicator(
+                                    child: const CircularProgressIndicator(
                                       strokeWidth: 2,
                                       color: Colors.white,
                                     ),
@@ -479,14 +478,14 @@ class _CommentItem extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withOpacity(0.05),
-            AppColors.pineGreen.withOpacity(0.03),
-            Colors.white.withOpacity(0.02),
+            Colors.white.withValues(alpha: 0.05),
+            AppColors.pineGreen.withValues(alpha: 0.03),
+            Colors.white.withValues(alpha: 0.02),
           ],
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           width: 1,
         ),
       ),

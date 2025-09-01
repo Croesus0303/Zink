@@ -29,7 +29,9 @@
       "Bash(rm:*)",
       "Bash(kill:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin//flutter --version)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/auth/presentation/screens/login_screen.dart)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/settings/presentation/screens/settings_screen.dart)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

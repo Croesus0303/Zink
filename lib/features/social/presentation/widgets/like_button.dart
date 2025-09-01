@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../data/services/social_service.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../screens/likes_list_screen.dart';
-import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 
 class LikeButton extends ConsumerStatefulWidget {
@@ -117,10 +115,10 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
         vertical: MediaQuery.of(context).size.height * 0.008,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF247c6d).withOpacity(0.15),
+        color: const Color(0xFF247c6d).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF247c6d).withOpacity(0.3),
+          color: const Color(0xFF247c6d).withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -137,7 +135,7 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
                   ? SizedBox(
                       width: MediaQuery.of(context).size.width * 0.04,
                       height: MediaQuery.of(context).size.width * 0.04,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2,
                         color: Colors.white,
                       ),
