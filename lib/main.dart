@@ -10,9 +10,6 @@ import 'core/utils/logger.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
-import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/auth/presentation/screens/user_onboarding_screen.dart';
-import 'features/home/presentation/screens/home_screen.dart';
 import 'features/auth/providers/auth_providers.dart';
 import 'l10n/app_localizations.dart';
 

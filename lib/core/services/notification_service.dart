@@ -10,8 +10,9 @@ import '../providers/locale_provider.dart';
 class NotificationService {
   final FirebaseMessaging _messaging;
   final SharedPreferences _prefs;
-  
-  static const String _notificationPromptDismissedKey = 'notification_prompt_dismissed';
+
+  static const String _notificationPromptDismissedKey =
+      'notification_prompt_dismissed';
 
   NotificationService(this._messaging, this._prefs);
 
@@ -31,7 +32,8 @@ class NotificationService {
       AppLogger.i('FCM Token: $token');
 
       // Handle background messages
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -48,7 +50,8 @@ class NotificationService {
       // Check if app was opened from a notification when terminated
       final initialMessage = await _messaging.getInitialMessage();
       if (initialMessage != null) {
-        AppLogger.d('App opened from terminated state via notification: ${initialMessage.messageId}');
+        AppLogger.d(
+            'App opened from terminated state via notification: ${initialMessage.messageId}');
         _handleNotificationTap(initialMessage);
       }
 
@@ -75,9 +78,10 @@ class NotificationService {
         AppLogger.e('Cannot subscribe to topic: No FCM token available');
         return;
       }
-      
+
       await _messaging.subscribeToTopic(topic);
-      AppLogger.i('Successfully subscribed to topic: $topic with token: ${token.substring(0, 20)}...');
+      AppLogger.i(
+          'Successfully subscribed to topic: $topic with token: ${token.substring(0, 20)}...');
     } catch (e) {
       AppLogger.e('Failed to subscribe to topic $topic', e);
       rethrow; // Re-throw to see the actual error
@@ -95,24 +99,26 @@ class NotificationService {
 
   void _handleMessage(RemoteMessage message) {
     AppLogger.d('Handling foreground message: ${message.notification?.title}');
-    
+
     // Log notification details
     if (message.notification != null) {
-      AppLogger.d('Foreground notification title: ${message.notification!.title}');
-      AppLogger.d('Foreground notification body: ${message.notification!.body}');
+      AppLogger.d(
+          'Foreground notification title: ${message.notification!.title}');
+      AppLogger.d(
+          'Foreground notification body: ${message.notification!.body}');
     }
-    
+
     // Log data payload
     if (message.data.isNotEmpty) {
       AppLogger.d('Foreground message data: ${message.data}');
     }
-    
+
     // Handle different message types when app is in foreground
     final data = message.data;
-    
+
     if (data.containsKey('type')) {
       final messageType = data['type'];
-      
+
       switch (messageType) {
         case 'new_event':
           _handleForegroundNewEvent(data);
@@ -129,38 +135,27 @@ class NotificationService {
           break;
       }
     }
-    
-    // TODO: Show in-app notification banner or dialog
-    // You could use flutter_local_notifications or a custom overlay
   }
 
   void _handleForegroundNewEvent(Map<String, dynamic> data) {
     AppLogger.d('Handling foreground new event notification');
-    // TODO: Show in-app notification for new event
-    // Could refresh events list or show a banner
   }
 
   void _handleForegroundEventReminder(Map<String, dynamic> data) {
     AppLogger.d('Handling foreground event reminder notification');
-    // TODO: Show reminder dialog or banner
   }
 
   void _handleForegroundSubmissionUpdate(Map<String, dynamic> data) {
     AppLogger.d('Handling foreground submission update notification');
-    // TODO: Refresh submission status or show update banner
   }
 
   void _handleForegroundGeneral(Map<String, dynamic> data) {
     AppLogger.d('Handling foreground general notification');
-    // TODO: Show general notification banner
   }
 
   void _handleNotificationTap(RemoteMessage message) {
     AppLogger.d('Handling notification tap: ${message.data}');
-    
-    // TODO: Navigate to appropriate screen based on message data
-    // Example: Navigate to event detail if it's a new challenge notification
-    
+
     final data = message.data;
     if (data.containsKey('eventId')) {
       // Navigate to event detail
@@ -174,7 +169,6 @@ class NotificationService {
   Future<void> handleTokenRefresh() async {
     _messaging.onTokenRefresh.listen((newToken) {
       AppLogger.i('FCM token refreshed: $newToken');
-      // TODO: Send new token to your backend if needed
     });
   }
 
@@ -197,13 +191,13 @@ class NotificationService {
   Future<bool> requestNotificationPermission() async {
     try {
       final granted = await _requestNotificationPermission();
-      
+
       if (granted) {
         // Subscribe to all_users topic when permission is granted
         await subscribeToTopic('all_users');
         AppLogger.i('Subscribed to all_users topic after permission granted');
       }
-      
+
       return granted;
     } catch (e) {
       AppLogger.e('Failed to request notification permission', e);
@@ -223,14 +217,15 @@ class NotificationService {
         sound: true,
       );
 
-      AppLogger.i('iOS notification permission: ${settings.authorizationStatus}');
+      AppLogger.i(
+          'iOS notification permission: ${settings.authorizationStatus}');
       return settings.authorizationStatus == AuthorizationStatus.authorized;
     } else if (defaultTargetPlatform == TargetPlatform.android) {
       final status = await Permission.notification.request();
       AppLogger.i('Android notification permission: $status');
       return status.isGranted;
     }
-    
+
     return false;
   }
 
@@ -247,7 +242,7 @@ class NotificationService {
     if (isNotificationPromptDismissed()) {
       return false;
     }
-    
+
     // Don't show if permission is already granted
     final hasPermission = await hasNotificationPermission();
     return !hasPermission;
@@ -265,7 +260,7 @@ class NotificationService {
   Future<void> checkAndManageTopicSubscription() async {
     try {
       final hasPermission = await hasNotificationPermission();
-      
+
       if (hasPermission) {
         // Subscribe to all_users topic if we have permission
         await subscribeToTopic('all_users');
@@ -285,17 +280,18 @@ class NotificationService {
     try {
       AppLogger.i('=== FCM Debug Information ===');
       AppLogger.i('Platform: ${defaultTargetPlatform.toString()}');
-      
+
       // Check if running on simulator/emulator
       if (defaultTargetPlatform == TargetPlatform.iOS) {
-        AppLogger.w('⚠️  iOS Simulator detected - FCM notifications will NOT work!');
+        AppLogger.w(
+            '⚠️  iOS Simulator detected - FCM notifications will NOT work!');
         AppLogger.w('⚠️  Use a physical iOS device for notification testing');
       }
-      
+
       // Check permission status
       final hasPermission = await hasNotificationPermission();
       AppLogger.i('Notification permission: $hasPermission');
-      
+
       // Get FCM token
       final token = await getToken();
       if (token != null) {
@@ -303,17 +299,18 @@ class NotificationService {
       } else {
         AppLogger.w('FCM Token: null (expected on iOS Simulator)');
       }
-      
+
       // Check notification settings (iOS)
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         final settings = await _messaging.getNotificationSettings();
         AppLogger.i('iOS Notification Settings:');
-        AppLogger.i('  - Authorization Status: ${settings.authorizationStatus}');
+        AppLogger.i(
+            '  - Authorization Status: ${settings.authorizationStatus}');
         AppLogger.i('  - Alert Setting: ${settings.alert}');
         AppLogger.i('  - Badge Setting: ${settings.badge}');
         AppLogger.i('  - Sound Setting: ${settings.sound}');
       }
-      
+
       AppLogger.i('=== End FCM Debug ===');
     } catch (e) {
       AppLogger.e('FCM Debug failed', e);
@@ -326,26 +323,27 @@ class NotificationService {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase if not already initialized
   await Firebase.initializeApp();
-  
+
   AppLogger.d('Handling background message: ${message.messageId}');
-  
+
   // Log notification details
   if (message.notification != null) {
-    AppLogger.d('Background notification title: ${message.notification!.title}');
+    AppLogger.d(
+        'Background notification title: ${message.notification!.title}');
     AppLogger.d('Background notification body: ${message.notification!.body}');
   }
-  
+
   // Log data payload
   if (message.data.isNotEmpty) {
     AppLogger.d('Background message data: ${message.data}');
   }
-  
+
   // Handle different message types based on data
   final data = message.data;
-  
+
   if (data.containsKey('type')) {
     final messageType = data['type'];
-    
+
     switch (messageType) {
       case 'new_event':
         await _handleNewEventNotification(data);
@@ -370,49 +368,37 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // Handle new event notifications
 Future<void> _handleNewEventNotification(Map<String, dynamic> data) async {
   AppLogger.d('Handling new event notification');
-  
-  // TODO: Update local cache or database with new event info
-  // Example: Store event ID for later retrieval when app opens
-  
+
   if (data.containsKey('eventId')) {
     final eventId = data['eventId'];
     AppLogger.d('New event ID: $eventId');
-    
-    // TODO: Cache the event ID or update local storage
-    // This could trigger a notification badge or update local data
   }
 }
 
-// Handle event reminder notifications  
+// Handle event reminder notifications
 Future<void> _handleEventReminderNotification(Map<String, dynamic> data) async {
   AppLogger.d('Handling event reminder notification');
-  
+
   if (data.containsKey('eventId')) {
     final eventId = data['eventId'];
     AppLogger.d('Event reminder for ID: $eventId');
-    
-    // TODO: Set local reminder flags or update app badge
   }
 }
 
 // Handle submission update notifications
-Future<void> _handleSubmissionUpdateNotification(Map<String, dynamic> data) async {
+Future<void> _handleSubmissionUpdateNotification(
+    Map<String, dynamic> data) async {
   AppLogger.d('Handling submission update notification');
-  
+
   if (data.containsKey('submissionId')) {
     final submissionId = data['submissionId'];
     AppLogger.d('Submission update for ID: $submissionId');
-    
-    // TODO: Update submission status in local storage
   }
 }
 
 // Handle general notifications
 Future<void> _handleGeneralNotification(Map<String, dynamic> data) async {
   AppLogger.d('Handling general notification');
-  
-  // TODO: Handle general app notifications
-  // This could include app updates, announcements, etc.
 }
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {

@@ -83,7 +83,8 @@ class _SingleSubmissionScreenState
               ],
             ),
           ),
-          child: const Center(child: CircularProgressIndicator(color: AppColors.primaryCyan)),
+          child: const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryCyan)),
         ),
       ),
       error: (error, stack) => Scaffold(
@@ -111,18 +112,18 @@ class _SingleSubmissionScreenState
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryOrange.withOpacity(0.2),
-                    AppColors.primaryOrangeDark.withOpacity(0.1),
+                    AppColors.primaryOrange.withValues(alpha: 0.2),
+                    AppColors.primaryOrangeDark.withValues(alpha: 0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: AppColors.primaryOrange.withOpacity(0.3),
+                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryOrange.withOpacity(0.2),
+                    color: AppColors.primaryOrange.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -137,14 +138,14 @@ class _SingleSubmissionScreenState
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryOrange.withOpacity(0.8),
-                          AppColors.primaryOrangeDark.withOpacity(0.6),
+                          AppColors.primaryOrange.withValues(alpha: 0.8),
+                          AppColors.primaryOrangeDark.withValues(alpha: 0.6),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryOrange.withOpacity(0.3),
+                          color: AppColors.primaryOrange.withValues(alpha: 0.3),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -170,18 +171,18 @@ class _SingleSubmissionScreenState
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryOrange.withOpacity(0.8),
-                          AppColors.primaryOrangeDark.withOpacity(0.9),
+                          AppColors.primaryOrange.withValues(alpha: 0.8),
+                          AppColors.primaryOrangeDark.withValues(alpha: 0.9),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primaryOrange.withOpacity(0.4),
+                          color: AppColors.primaryOrange.withValues(alpha: 0.4),
                           blurRadius: 12,
                           offset: const Offset(0, 6),
                         ),
@@ -196,11 +197,13 @@ class _SingleSubmissionScreenState
                           submissionId: widget.submissionId
                         ))),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh, color: Colors.white, size: 20),
+                              Icon(Icons.refresh,
+                                  color: Colors.white, size: 20),
                               SizedBox(width: 8),
                               Text(
                                 'Retry',
@@ -231,7 +234,8 @@ class _SingleSubmissionScreenState
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Submission Not Found', style: TextStyle(color: Colors.white)),
+        title: const Text('Submission Not Found',
+            style: TextStyle(color: Colors.white)),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -251,18 +255,18 @@ class _SingleSubmissionScreenState
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primaryOrange.withOpacity(0.2),
-                  AppColors.primaryOrangeDark.withOpacity(0.1),
+                  AppColors.primaryOrange.withValues(alpha: 0.2),
+                  AppColors.primaryOrangeDark.withValues(alpha: 0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.primaryOrange.withOpacity(0.3),
+                color: AppColors.primaryOrange.withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryOrange.withOpacity(0.2),
+                  color: AppColors.primaryOrange.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -297,7 +301,8 @@ class _SingleSubmissionScreenState
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            onPressed: () => _showFullScreen(submission.imageURL, submission.eventId),
+            onPressed: () =>
+                _showFullScreen(submission.imageURL, submission.eventId),
             icon: const Icon(Icons.fullscreen),
           ),
         ],
@@ -309,7 +314,8 @@ class _SingleSubmissionScreenState
             // Main image
             Expanded(
               child: GestureDetector(
-                onTap: () => _showFullScreen(submission.imageURL, submission.eventId),
+                onTap: () =>
+                    _showFullScreen(submission.imageURL, submission.eventId),
                 child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.all(16),
@@ -324,13 +330,15 @@ class _SingleSubmissionScreenState
                         placeholder: (context, url) => Container(
                           color: Colors.grey[900],
                           child: const Center(
-                            child: CircularProgressIndicator(color: Colors.white),
+                            child:
+                                CircularProgressIndicator(color: Colors.white),
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
                           color: Colors.grey[900],
                           child: const Center(
-                            child: Icon(Icons.error, color: Colors.white, size: 64),
+                            child: Icon(Icons.error,
+                                color: Colors.white, size: 64),
                           ),
                         ),
                       ),
@@ -353,7 +361,7 @@ class _SingleSubmissionScreenState
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.8),
+                    Colors.black.withValues(alpha: 0.8),
                     Colors.black,
                   ],
                 ),
@@ -399,50 +407,51 @@ class _EventInfoOverlay extends ConsumerWidget {
                   context.push('/event/${event.id}');
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryCyan.withOpacity(0.3),
-                        AppColors.primaryOrange.withOpacity(0.2),
+                        AppColors.primaryCyan.withValues(alpha: 0.3),
+                        AppColors.primaryOrange.withValues(alpha: 0.2),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.primaryCyan.withOpacity(0.4),
+                      color: AppColors.primaryCyan.withValues(alpha: 0.4),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryCyan.withOpacity(0.3),
+                        color: AppColors.primaryCyan.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.event,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 6),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 150),
-                      child: Text(
-                        event.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.event,
+                        color: Colors.white,
+                        size: 16,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 6),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 150),
+                        child: Text(
+                          event.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -453,17 +462,17 @@ class _EventInfoOverlay extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.backgroundSecondary.withOpacity(0.3),
-              AppColors.backgroundSecondary.withOpacity(0.2),
+              AppColors.backgroundSecondary.withValues(alpha: 0.3),
+              AppColors.backgroundSecondary.withValues(alpha: 0.2),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.primaryCyan.withOpacity(0.3),
+            color: AppColors.primaryCyan.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
@@ -474,10 +483,10 @@ class _EventInfoOverlay extends ConsumerWidget {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: 6),
             Text(
               'Loading...',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -534,18 +543,18 @@ class _SubmissionInfo extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primaryCyan.withOpacity(0.2),
-                  AppColors.primaryOrange.withOpacity(0.1),
+                  AppColors.primaryCyan.withValues(alpha: 0.2),
+                  AppColors.primaryOrange.withValues(alpha: 0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.primaryCyan.withOpacity(0.3),
+                color: AppColors.primaryCyan.withValues(alpha: 0.3),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryCyan.withOpacity(0.2),
+                  color: AppColors.primaryCyan.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -586,18 +595,20 @@ class _SubmissionInfo extends ConsumerWidget {
                       ),
                     ),
                     // Show delete option if current user owns the submission
-                    if (currentUser != null && currentUser.uid == submission.uid)
+                    if (currentUser != null &&
+                        currentUser.uid == submission.uid)
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryOrange.withOpacity(0.3),
-                              AppColors.primaryOrange.withOpacity(0.2),
+                              AppColors.primaryOrange.withValues(alpha: 0.3),
+                              AppColors.primaryOrange.withValues(alpha: 0.2),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.primaryOrange.withOpacity(0.3),
+                            color:
+                                AppColors.primaryOrange.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -615,14 +626,16 @@ class _SubmissionInfo extends ConsumerWidget {
                                 children: [
                                   Icon(Icons.delete, color: Colors.red),
                                   SizedBox(width: 8),
-                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                  Text('Delete',
+                                      style: TextStyle(color: Colors.red)),
                                 ],
                               ),
                             ),
                           ],
                           child: Container(
                             padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.more_vert, color: Colors.white),
+                            child: const Icon(Icons.more_vert,
+                                color: Colors.white),
                           ),
                         ),
                       ),
@@ -660,7 +673,8 @@ class _SubmissionInfo extends ConsumerWidget {
                       },
                       borderRadius: BorderRadius.circular(20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -759,8 +773,9 @@ class _SubmissionInfo extends ConsumerWidget {
 
         if (context.mounted) {
           // Refresh the submission count provider
-          ref.invalidate(userSubmissionCountForEventProvider((userId: submission.uid, eventId: submission.eventId)));
-          
+          ref.invalidate(userSubmissionCountForEventProvider(
+              (userId: submission.uid, eventId: submission.eventId)));
+
           CustomSnackBar.showSuccess(context, 'Post deleted successfully');
           // Go back to profile or previous screen
           Navigator.of(context).pop();

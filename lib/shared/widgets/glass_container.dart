@@ -34,40 +34,40 @@ class GlassContainer extends StatelessWidget {
     LinearGradient gradient = AppColors.glassGradient;
 
     if (useCyanAccent) {
-      borderColor = AppColors.primaryCyan.withOpacity(0.6);
+      borderColor = AppColors.primaryCyan.withValues(alpha: 0.6);
       gradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          AppColors.primaryCyan.withOpacity(0.3),
-          AppColors.primaryOrange.withOpacity(0.2),
-          AppColors.primaryCyan.withOpacity(0.1),
+          AppColors.primaryCyan.withValues(alpha: 0.3),
+          AppColors.primaryOrange.withValues(alpha: 0.2),
+          AppColors.primaryCyan.withValues(alpha: 0.1),
         ],
-        stops: [0.0, 0.5, 1.0],
+        stops: const [0.0, 0.5, 1.0],
       );
     } else if (useOrangeAccent) {
-      borderColor = AppColors.primaryOrange.withOpacity(0.6);
+      borderColor = AppColors.primaryOrange.withValues(alpha: 0.6);
       gradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          AppColors.primaryOrange.withOpacity(0.3),
-          AppColors.warmBeige.withOpacity(0.2),
-          AppColors.primaryOrangeDark.withOpacity(0.1),
+          AppColors.primaryOrange.withValues(alpha: 0.3),
+          AppColors.warmBeige.withValues(alpha: 0.2),
+          AppColors.primaryOrangeDark.withValues(alpha: 0.1),
         ],
-        stops: [0.0, 0.5, 1.0],
+        stops: const [0.0, 0.5, 1.0],
       );
     } else if (useBeigeAccent) {
-      borderColor = AppColors.warmBeige.withOpacity(0.6);
+      borderColor = AppColors.warmBeige.withValues(alpha: 0.6);
       gradient = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          AppColors.warmBeige.withOpacity(0.3),
-          AppColors.primaryCyan.withOpacity(0.2),
-          AppColors.primaryOrange.withOpacity(0.1),
+          AppColors.warmBeige.withValues(alpha: 0.3),
+          AppColors.primaryCyan.withValues(alpha: 0.2),
+          AppColors.primaryOrange.withValues(alpha: 0.1),
         ],
-        stops: [0.0, 0.5, 1.0],
+        stops: const [0.0, 0.5, 1.0],
       );
     }
 
@@ -90,12 +90,12 @@ class GlassContainer extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
                   BoxShadow(
-                    color: borderColor.withOpacity(0.1),
+                    color: borderColor.withValues(alpha: 0.1),
                     blurRadius: 40,
                     offset: const Offset(0, 16),
                   ),
@@ -152,8 +152,8 @@ class GlassButton extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      primaryColor.withOpacity(0.8),
-                      primaryColor.withOpacity(0.6),
+                      primaryColor.withValues(alpha: 0.8),
+                      primaryColor.withValues(alpha: 0.6),
                     ],
                   ),
               border: Border.all(
@@ -163,7 +163,7 @@ class GlassButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
               boxShadow: [
                 BoxShadow(
-                  color: primaryColor.withOpacity(0.3),
+                  color: primaryColor.withValues(alpha: 0.3),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),

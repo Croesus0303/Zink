@@ -22,7 +22,7 @@ class ChatsListScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withOpacity(0.9),
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
@@ -33,7 +33,7 @@ class ChatsListScreen extends ConsumerWidget {
             color: Colors.white,
             shadows: [
               Shadow(
-                color: AppColors.rosyBrown.withOpacity(0.6),
+                color: AppColors.rosyBrown.withValues(alpha: 0.6),
                 blurRadius: 8,
               ),
             ],
@@ -47,9 +47,9 @@ class ChatsListScreen extends ConsumerWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.15),
-                AppColors.pineGreen.withOpacity(0.08),
-                Colors.white.withOpacity(0.05),
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(15),
@@ -59,12 +59,12 @@ class ChatsListScreen extends ConsumerWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(-1, -1),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(1, 1),
               ),
@@ -86,7 +86,7 @@ class ChatsListScreen extends ConsumerWidget {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
@@ -118,12 +118,12 @@ class ChatsListScreen extends ConsumerWidget {
                               color: AppColors.iceBorder, width: 1.5),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.white.withOpacity(0.08),
+                              color: Colors.white.withValues(alpha: 0.08),
                               blurRadius: 15,
                               offset: const Offset(-2, -2),
                             ),
                             BoxShadow(
-                              color: AppColors.rosyBrown.withOpacity(0.15),
+                              color: AppColors.rosyBrown.withValues(alpha: 0.15),
                               blurRadius: 15,
                               offset: const Offset(2, 2),
                             ),
@@ -138,14 +138,14 @@ class ChatsListScreen extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.rosyBrown.withOpacity(0.8),
-                                    AppColors.rosyBrown.withOpacity(0.6),
+                                    AppColors.rosyBrown.withValues(alpha: 0.8),
+                                    AppColors.rosyBrown.withValues(alpha: 0.6),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.rosyBrown.withOpacity(0.3),
+                                    color: AppColors.rosyBrown.withValues(alpha: 0.3),
                                     blurRadius: 15,
                                     offset: const Offset(0, 5),
                                   ),
@@ -169,7 +169,7 @@ class ChatsListScreen extends ConsumerWidget {
                                 color: AppColors.textPrimary,
                                 shadows: [
                                   Shadow(
-                                    color: AppColors.rosyBrown.withOpacity(0.6),
+                                    color: AppColors.rosyBrown.withValues(alpha: 0.6),
                                     blurRadius: 8,
                                   ),
                                 ],
@@ -182,18 +182,18 @@ class ChatsListScreen extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.pineGreen.withOpacity(0.8),
-                                    AppColors.pineGreen.withOpacity(0.9),
+                                    AppColors.pineGreen.withValues(alpha: 0.8),
+                                    AppColors.pineGreen.withValues(alpha: 0.9),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.pineGreen.withOpacity(0.4),
+                                    color: AppColors.pineGreen.withValues(alpha: 0.4),
                                     blurRadius: 12,
                                     offset: const Offset(0, 6),
                                   ),
@@ -273,12 +273,12 @@ class ChatsListScreen extends ConsumerWidget {
             border: Border.all(color: AppColors.iceBorder, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 15,
                 offset: const Offset(-2, -2),
               ),
               BoxShadow(
-                color: AppColors.rosyBrown.withOpacity(0.15),
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
                 blurRadius: 15,
                 offset: const Offset(2, 2),
               ),
@@ -293,14 +293,14 @@ class ChatsListScreen extends ConsumerWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.pineGreen.withOpacity(0.8),
-                      AppColors.rosyBrown.withOpacity(0.6),
+                      AppColors.pineGreen.withValues(alpha: 0.8),
+                      AppColors.rosyBrown.withValues(alpha: 0.6),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.pineGreen.withOpacity(0.3),
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -321,7 +321,7 @@ class ChatsListScreen extends ConsumerWidget {
                   color: AppColors.textPrimary,
                   shadows: [
                     Shadow(
-                      color: AppColors.rosyBrown.withOpacity(0.6),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
                       blurRadius: 8,
                     ),
                   ],
@@ -394,12 +394,12 @@ class _ChatListItem extends ConsumerWidget {
         border: Border.all(color: AppColors.iceBorder, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             blurRadius: 15,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withOpacity(0.15),
+            color: AppColors.rosyBrown.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(2, 2),
           ),
@@ -423,8 +423,8 @@ class _ChatListItem extends ConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withOpacity(0.3),
-                        AppColors.rosyBrown.withOpacity(0.2),
+                        AppColors.pineGreen.withValues(alpha: 0.3),
+                        AppColors.rosyBrown.withValues(alpha: 0.2),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(24),
@@ -434,7 +434,7 @@ class _ChatListItem extends ConsumerWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.pineGreen.withOpacity(0.2),
+                        color: AppColors.pineGreen.withValues(alpha: 0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -475,7 +475,7 @@ class _ChatListItem extends ConsumerWidget {
                           color: AppColors.textPrimary,
                           shadows: [
                             Shadow(
-                              color: AppColors.rosyBrown.withOpacity(0.6),
+                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
                               blurRadius: 8,
                             ),
                           ],
@@ -500,8 +500,8 @@ class _ChatListItem extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          AppColors.pineGreen.withOpacity(0.6),
-                                          AppColors.rosyBrown.withOpacity(0.4),
+                                          AppColors.pineGreen.withValues(alpha: 0.6),
+                                          AppColors.rosyBrown.withValues(alpha: 0.4),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(8),
@@ -552,8 +552,8 @@ class _ChatListItem extends ConsumerWidget {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.pineGreen.withOpacity(0.2),
-                              AppColors.rosyBrown.withOpacity(0.1),
+                              AppColors.pineGreen.withValues(alpha: 0.2),
+                              AppColors.rosyBrown.withValues(alpha: 0.1),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(8),
@@ -602,8 +602,8 @@ class _ChatListItem extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.midnightGreen.withOpacity(0.3),
-                    AppColors.midnightGreen.withOpacity(0.1),
+                    AppColors.midnightGreen.withValues(alpha: 0.3),
+                    AppColors.midnightGreen.withValues(alpha: 0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24),
@@ -624,8 +624,8 @@ class _ChatListItem extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.midnightGreen.withOpacity(0.3),
-                          AppColors.midnightGreen.withOpacity(0.1),
+                          AppColors.midnightGreen.withValues(alpha: 0.3),
+                          AppColors.midnightGreen.withValues(alpha: 0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(8),
@@ -638,8 +638,8 @@ class _ChatListItem extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.midnightGreen.withOpacity(0.2),
-                          AppColors.midnightGreen.withOpacity(0.05),
+                          AppColors.midnightGreen.withValues(alpha: 0.2),
+                          AppColors.midnightGreen.withValues(alpha: 0.05),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(6),
@@ -662,7 +662,7 @@ class _ChatListItem extends ConsumerWidget {
         gradient: AppColors.iceGlassGradient,
         borderRadius: BorderRadius.circular(16),
         border:
-            Border.all(color: AppColors.rosyBrown.withOpacity(0.3), width: 1.5),
+            Border.all(color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
@@ -679,8 +679,8 @@ class _ChatListItem extends ConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.rosyBrown.withOpacity(0.8),
-                        AppColors.rosyBrown.withOpacity(0.6),
+                        AppColors.rosyBrown.withValues(alpha: 0.8),
+                        AppColors.rosyBrown.withValues(alpha: 0.6),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(24),
@@ -690,7 +690,7 @@ class _ChatListItem extends ConsumerWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.rosyBrown.withOpacity(0.3),
+                        color: AppColors.rosyBrown.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -788,21 +788,21 @@ class _ChatListItem extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.primaryOrange.withOpacity(0.8),
+                                    AppColors.primaryOrange.withValues(alpha: 0.8),
                                     AppColors.primaryOrangeDark
-                                        .withOpacity(0.6),
+                                        .withValues(alpha: 0.6),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color:
-                                      AppColors.primaryOrange.withOpacity(0.3),
+                                      AppColors.primaryOrange.withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.primaryOrange
-                                        .withOpacity(0.3),
+                                        .withValues(alpha: 0.3),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -857,14 +857,14 @@ class _ChatListItem extends ConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryOrange.withOpacity(0.8),
-                        AppColors.primaryOrangeDark.withOpacity(0.6),
+                        AppColors.primaryOrange.withValues(alpha: 0.8),
+                        AppColors.primaryOrangeDark.withValues(alpha: 0.6),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -885,7 +885,7 @@ class _ChatListItem extends ConsumerWidget {
                     color: AppColors.primaryOrange,
                     shadows: [
                       Shadow(
-                        color: AppColors.primaryOrange.withOpacity(0.3),
+                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
                         blurRadius: 8,
                       ),
                     ],
@@ -913,13 +913,13 @@ class _ChatListItem extends ConsumerWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.backgroundSecondary.withOpacity(0.8),
-                                AppColors.backgroundSecondary.withOpacity(0.6),
+                                AppColors.backgroundSecondary.withValues(alpha: 0.8),
+                                AppColors.backgroundSecondary.withValues(alpha: 0.6),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primaryCyan.withOpacity(0.3),
+                              color: AppColors.primaryCyan.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
@@ -952,18 +952,18 @@ class _ChatListItem extends ConsumerWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.primaryOrange.withOpacity(0.8),
-                                AppColors.primaryOrangeDark.withOpacity(0.9),
+                                AppColors.primaryOrange.withValues(alpha: 0.8),
+                                AppColors.primaryOrangeDark.withValues(alpha: 0.9),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primaryOrange.withOpacity(0.3),
+                              color: AppColors.primaryOrange.withValues(alpha: 0.3),
                               width: 1,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryOrange.withOpacity(0.4),
+                                color: AppColors.primaryOrange.withValues(alpha: 0.4),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),

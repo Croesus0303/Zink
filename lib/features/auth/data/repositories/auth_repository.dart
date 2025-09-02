@@ -118,8 +118,11 @@ class AuthRepository {
         if (!userDoc.exists) {
           AppLogger.i('New Apple user detected, will require onboarding');
           // Update the user's display name if provided by Apple
-          if (appleCredential.givenName != null || appleCredential.familyName != null) {
-            final displayName = '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'.trim();
+          if (appleCredential.givenName != null ||
+              appleCredential.familyName != null) {
+            final displayName =
+                '${appleCredential.givenName ?? ''} ${appleCredential.familyName ?? ''}'
+                    .trim();
             if (displayName.isNotEmpty) {
               await userCredential.user!.updateDisplayName(displayName);
             }
@@ -412,10 +415,11 @@ class AuthRepository {
 
   Future<String> _uploadProfileImage(File imageFile, String userId) async {
     try {
-      AppLogger.i('Starting image upload to Firebase Storage for user: $userId');
+      AppLogger.i(
+          'Starting image upload to Firebase Storage for user: $userId');
       AppLogger.i('Image file path: ${imageFile.path}');
       AppLogger.i('Image file exists: ${imageFile.existsSync()}');
-      
+
       // Create a reference to the location where we want to upload the file
       final storageRef = _storage.ref().child('profile_images/$userId.jpg');
       AppLogger.i('Storage reference created: ${storageRef.fullPath}');
@@ -477,14 +481,13 @@ class AuthRepository {
   Future<void> _deleteUserData(String userId) async {
     try {
       AppLogger.i('Deleting user data from Firestore for user: $userId');
-      
+
       // Delete user document
       await _firestore
           .collection(UserModel.collectionPath)
           .doc(userId)
           .delete();
 
-      // TODO: Delete user's submissions, likes, comments, and other related data
       // This would require querying collections where the user has data
       // For now, we're just deleting the main user document
 
@@ -498,9 +501,10 @@ class AuthRepository {
   Future<void> _deleteUserStorage(String userId) async {
     try {
       AppLogger.i('Deleting user storage files for user: $userId');
-      
+
       // Delete profile image
-      final profileImageRef = _storage.ref().child('profile_images/$userId.jpg');
+      final profileImageRef =
+          _storage.ref().child('profile_images/$userId.jpg');
       try {
         await profileImageRef.delete();
         AppLogger.i('Profile image deleted successfully');
@@ -508,7 +512,6 @@ class AuthRepository {
         AppLogger.w('Profile image not found or already deleted: $e');
       }
 
-      // TODO: Delete other user-related files if they exist
       // This could include submission images, etc.
 
       AppLogger.i('User storage files deletion completed');

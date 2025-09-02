@@ -229,7 +229,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           child: Container(
             decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
             child: const Center(
-                child: const CircularProgressIndicator(color: AppColors.pineGreen)),
+                child: CircularProgressIndicator(color: AppColors.pineGreen)),
           ),
         ),
       ),
@@ -251,7 +251,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             ),
           ),
           body: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/background.png'),
                 fit: BoxFit.cover,
@@ -753,8 +753,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         ),
         child: Container(
           decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: Center(
-            child: const CircularProgressIndicator(color: AppColors.pineGreen),
+          child: const Center(
+            child: CircularProgressIndicator(color: AppColors.pineGreen),
           ),
         ),
       ),
@@ -1670,23 +1670,23 @@ class _GuidelinesSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _GuidelineItem(
+              const _GuidelineItem(
                 icon: Icons.check_circle,
                 text: 'Make sure your photo matches the challenge theme',
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              _GuidelineItem(
+              const _GuidelineItem(
                 icon: Icons.check_circle,
                 text: 'Use good lighting and clear focus',
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              _GuidelineItem(
+              const _GuidelineItem(
                 icon: Icons.check_circle,
                 text:
                     'Original photos only - no screenshots or downloaded images',
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              _GuidelineItem(
+              const _GuidelineItem(
                 icon: Icons.check_circle,
                 text: 'Keep content appropriate for all audiences',
               ),

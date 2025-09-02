@@ -56,7 +56,8 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
     } catch (e) {
       AppLogger.e('Error completing user onboarding', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Failed to complete setup: ${e.toString()}');
+        CustomSnackBar.showError(
+            context, 'Failed to complete setup: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -143,57 +144,71 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                         ),
                       ],
                     ),
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.04),
                     child: IntrinsicHeight(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
                           // Welcome header
                           Text(
                             AppLocalizations.of(context)!.welcomeToZink,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.055,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.055,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.2,
                               shadows: [
                                 Shadow(
-                                  color: AppColors.pineGreen.withValues(alpha: 0.6),
+                                  color: AppColors.pineGreen
+                                      .withValues(alpha: 0.6),
                                   blurRadius: 8,
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
                           Text(
                             AppLocalizations.of(context)!.onboardingSubtitle,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.035,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035,
                               color: Colors.white.withValues(alpha: 0.9),
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.03),
 
                           // Username field
                           Text(
                             AppLocalizations.of(context)!.chooseUsername,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.038,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.038,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.iceBorder.withValues(alpha: 0.3),
+                                color:
+                                    AppColors.iceBorder.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -206,11 +221,12 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.enterUsername,
+                                hintText:
+                                    AppLocalizations.of(context)!.enterUsername,
                                 hintStyle: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.6),
                                 ),
-                                prefixIcon: Icon(
+                                prefixIcon: const Icon(
                                   Icons.alternate_email,
                                   color: AppColors.pineGreen,
                                 ),
@@ -221,25 +237,31 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                             ),
                           ),
 
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
 
                           // Age field
                           Text(
                             AppLocalizations.of(context)!.whatsYourAge,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.038,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.038,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.iceBorder.withValues(alpha: 0.3),
+                                color:
+                                    AppColors.iceBorder.withValues(alpha: 0.3),
                                 width: 1,
                               ),
                             ),
@@ -257,11 +279,12 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                               decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.enterAge,
+                                hintText:
+                                    AppLocalizations.of(context)!.enterAge,
                                 hintStyle: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.6),
                                 ),
-                                prefixIcon: Icon(
+                                prefixIcon: const Icon(
                                   Icons.cake,
                                   color: AppColors.rosyBrown,
                                 ),
@@ -273,7 +296,9 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                             ),
                           ),
 
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.03),
 
                           // Continue button
                           Container(
@@ -283,12 +308,14 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                               color: AppColors.pineGreen.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.pineGreen.withValues(alpha: 0.4),
+                                color:
+                                    AppColors.pineGreen.withValues(alpha: 0.4),
                                 width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.pineGreen.withValues(alpha: 0.35),
+                                  color: AppColors.pineGreen
+                                      .withValues(alpha: 0.35),
                                   blurRadius: 10,
                                   offset: const Offset(0, 6),
                                 ),
@@ -306,21 +333,23 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       if (_isLoading) ...[
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 20,
                                           width: 20,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2,
-                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.white),
                                           ),
                                         ),
                                       ] else ...[
-                                        Icon(Icons.arrow_forward,
+                                        const Icon(Icons.arrow_forward,
                                             color: Colors.white, size: 20),
                                         const SizedBox(width: 8),
                                         Text(
-                                          AppLocalizations.of(context)!.completeSetup,
+                                          AppLocalizations.of(context)!
+                                              .completeSetup,
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 15,
@@ -335,13 +364,16 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                             ),
                           ),
 
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.015),
 
                           // Privacy note
                           Text(
                             AppLocalizations.of(context)!.privacyNote,
                             style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.03,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.03,
                               color: Colors.white.withValues(alpha: 0.7),
                               fontWeight: FontWeight.w400,
                             ),

@@ -519,11 +519,11 @@ class _EventDetailWidget extends ConsumerWidget {
                             ),
                           )
                         : Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: const [
+                                colors: [
                                   AppColors.rosyBrown,
                                   AppColors.pineGreen,
                                   AppColors.midnightGreen,
@@ -743,7 +743,7 @@ class _EventDetailWidget extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width * 0.12,
                             height: MediaQuery.of(context).size.width * 0.12,
                             child: Image.asset(

@@ -25,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Row(
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.25,
               height: MediaQuery.of(context).size.height * 0.07,
               child: Image.asset(
@@ -480,10 +480,10 @@ class _WelcomeSection extends ConsumerWidget {
             width: MediaQuery.of(context).size.width * 0.25,
             height: MediaQuery.of(context).size.width * 0.25,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: const [AppColors.rosyBrown, AppColors.pineGreen],
+                colors: [AppColors.rosyBrown, AppColors.pineGreen],
               ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
@@ -758,15 +758,15 @@ class _PastChallengesList extends ConsumerWidget {
                             height: MediaQuery.of(context).size.width * 0.2,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              gradient: LinearGradient(
+                              gradient: const LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: const [
+                                colors: [
                                   AppColors.rosyBrown,
                                   AppColors.pineGreen,
                                   AppColors.midnightGreen,
                                 ],
-                                stops: const [0.0, 0.5, 1.0],
+                                stops: [0.0, 0.5, 1.0],
                               ),
                               boxShadow: [
                                 BoxShadow(
@@ -1010,7 +1010,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                       color: AppColors.primaryOrange.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.notifications_outlined,
                       color: AppColors.primaryOrange,
                       size: 20,

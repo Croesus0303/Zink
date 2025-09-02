@@ -4,8 +4,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API Endpoints
-  static const String baseUrl =
-      'https://api.zink.app'; // TODO: Update with actual URL
+  static const String baseUrl = 'https://api.zink.app';
 
   // Firebase Collections
   static const String usersCollection = 'users';

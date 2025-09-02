@@ -42,7 +42,9 @@ class ClickableUserAvatar extends StatelessWidget {
                 : null,
             child: user?.photoURL == null
                 ? Text(
-                    user?.displayName?.substring(0, 1).toUpperCase() ?? '?',
+                    (user?.displayName ?? '').isNotEmpty 
+                        ? user!.displayName.substring(0, 1).toUpperCase() 
+                        : '?',
                     style: TextStyle(fontSize: radius * 0.8),
                   )
                 : null,

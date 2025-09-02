@@ -47,10 +47,9 @@ class LikesListScreen extends ConsumerWidget {
         centerTitle: true,
         leading: Container(
           margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.03, 
-            top: 3, 
-            bottom: 3
-          ),
+              left: MediaQuery.of(context).size.width * 0.03,
+              top: 3,
+              bottom: 3),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -96,7 +95,7 @@ class LikesListScreen extends ConsumerWidget {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          image: const DecorationImage(
+          image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
           ),
@@ -109,7 +108,8 @@ class LikesListScreen extends ConsumerWidget {
             child: likesAsync.when(
               data: (likes) => likes.isNotEmpty
                   ? ListView.builder(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.04),
                       itemCount: likes.length,
                       itemBuilder: (context, index) {
                         final like = likes[index];
@@ -128,21 +128,27 @@ class LikesListScreen extends ConsumerWidget {
                             size: MediaQuery.of(context).size.width * 0.16,
                             color: AppColors.textSecondary,
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
                           Text(
                             'No likes yet',
                             style: TextStyle(
                               color: AppColors.textPrimary,
-                              fontSize: MediaQuery.of(context).size.width * 0.045,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.01),
                           Text(
                             'Be the first to like this post!',
                             style: TextStyle(
                               color: AppColors.textSecondary,
-                              fontSize: MediaQuery.of(context).size.width * 0.035,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035,
                             ),
                           ),
                         ],
@@ -152,7 +158,8 @@ class LikesListScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(color: AppColors.pineGreen),
               ),
               error: (error, stack) {
-                AppLogger.e('Error loading likes for submission $submissionId', error);
+                AppLogger.e(
+                    'Error loading likes for submission $submissionId', error);
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +169,8 @@ class LikesListScreen extends ConsumerWidget {
                         size: MediaQuery.of(context).size.width * 0.16,
                         color: AppColors.rosyBrown,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
                       Text(
                         'Error loading likes',
                         style: TextStyle(
@@ -171,7 +179,8 @@ class LikesListScreen extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         error.toString(),
                         style: TextStyle(
@@ -180,7 +189,8 @@ class LikesListScreen extends ConsumerWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -205,14 +215,17 @@ class LikesListScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(16),
                             child: Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.06,
-                                vertical: MediaQuery.of(context).size.height * 0.015,
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.06,
+                                vertical:
+                                    MediaQuery.of(context).size.height * 0.015,
                               ),
                               child: Text(
                                 'Retry',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -254,7 +267,8 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildListItem(BuildContext context, UserModel? user) {
     return Container(
-      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
+      margin:
+          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
@@ -305,7 +319,8 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildLoadingItem(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
+      margin:
+          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
@@ -350,7 +365,8 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildErrorItem(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
+      margin:
+          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
@@ -392,5 +408,4 @@ class _LikeListItem extends ConsumerWidget {
       ),
     );
   }
-
 }
