@@ -312,5 +312,681 @@
   "settings": "Settings",
   "@settings": {
     "description": "Settings screen title"
+  },
+
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "enterEmail": "Enter your email",
+  "@enterEmail": {
+    "description": "Email field placeholder"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "enterPassword": "Enter your password",
+  "@enterPassword": {
+    "description": "Password field placeholder"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Confirm password field label"
+  },
+  "reenterPassword": "Re-enter your password",
+  "@reenterPassword": {
+    "description": "Confirm password field placeholder"
+  },
+  "pleaseEnterEmail": "Please enter your email",
+  "@pleaseEnterEmail": {
+    "description": "Email validation error"
+  },
+  "pleaseEnterValidEmail": "Please enter a valid email",
+  "@pleaseEnterValidEmail": {
+    "description": "Email format validation error"
+  },
+  "pleaseEnterPassword": "Please enter your password",
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "passwordTooShort": "Password must be at least 6 characters",
+  "@passwordTooShort": {
+    "description": "Password length validation error"
+  },
+  "pleaseConfirmPassword": "Please confirm your password",
+  "@pleaseConfirmPassword": {
+    "description": "Confirm password validation error"
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "@passwordsDoNotMatch": {
+    "description": "Password mismatch validation error"
+  },
+
+  "app": "App",
+  "@app": {
+    "description": "App section header in settings"
+  },
+  "about": "About",
+  "@about": {
+    "description": "About menu item"
+  },
+  "version": "Version {version}",
+  "@version": {
+    "description": "App version display",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy menu item"
+  },
+  "helpAndSupport": "Help & Support",
+  "@helpAndSupport": {
+    "description": "Help and support menu item"
+  },
+  "deleteAccount": "Delete Account",
+  "@deleteAccount": {
+    "description": "Delete account menu item"
+  },
+  "permanentlyDeleteAccount": "Permanently delete your account and all data",
+  "@permanentlyDeleteAccount": {
+    "description": "Delete account subtitle"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+  "socialPhotoSharingApp": "A social photo sharing app for events and moments.",
+  "@socialPhotoSharingApp": {
+    "description": "App description in about dialog"
+  },
+  "zinkPrivacyPolicy": "Zink Privacy Policy",
+  "@zinkPrivacyPolicy": {
+    "description": "Privacy policy title"
+  },
+  "lastUpdated": "Last updated: {year}",
+  "@lastUpdated": {
+    "description": "Last updated text",
+    "placeholders": {
+      "year": {
+        "type": "String",
+        "example": "2024"
+      }
+    }
+  },
+  "informationWeCollect": "Information We Collect",
+  "@informationWeCollect": {
+    "description": "Privacy policy section title"
+  },
+  "howWeUseInformation": "How We Use Your Information",
+  "@howWeUseInformation": {
+    "description": "Privacy policy section title"
+  },
+  "informationSharing": "Information Sharing",
+  "@informationSharing": {
+    "description": "Privacy policy section title"
+  },
+  "dataSecurity": "Data Security",
+  "@dataSecurity": {
+    "description": "Privacy policy section title"
+  },
+  "yourRights": "Your Rights",
+  "@yourRights": {
+    "description": "Privacy policy section title"
+  },
+  "contactUs": "Contact Us",
+  "@contactUs": {
+    "description": "Contact us section title"
+  },
+
+  "frequentlyAskedQuestions": "Frequently Asked Questions",
+  "@frequentlyAskedQuestions": {
+    "description": "FAQ section title"
+  },
+  "howCreateAccount": "How do I create an account?\nTap the sign up button and follow the prompts to create your account.",
+  "@howCreateAccount": {
+    "description": "FAQ answer about creating account"
+  },
+  "howPostPhoto": "How do I post a photo?\nTap the camera icon in the events section and select an active event.",
+  "@howPostPhoto": {
+    "description": "FAQ answer about posting photo"
+  },
+  "howLikeSubmission": "How do I like a submission?\nTap the heart icon below any photo submission.",
+  "@howLikeSubmission": {
+    "description": "FAQ answer about liking submission"
+  },
+  "howEditProfile": "How do I edit my profile?\nGo to Profile > Menu > Edit Profile.",
+  "@howEditProfile": {
+    "description": "FAQ answer about editing profile"
+  },
+  "contactSupport": "Contact Support",
+  "@contactSupport": {
+    "description": "Contact support section title"
+  },
+  "emailSupport": "Email: support@zinkapp.com",
+  "@emailSupport": {
+    "description": "Support email address"
+  },
+  "responseTime": "Response time: 24-48 hours",
+  "@responseTime": {
+    "description": "Support response time"
+  },
+  "urgentIssuesNote": "For urgent issues, please include \"URGENT\" in your subject line.",
+  "@urgentIssuesNote": {
+    "description": "Urgent issues note"
+  },
+  "appVersion": "App Version",
+  "@appVersion": {
+    "description": "App version section title"
+  },
+  "platformMobile": "Platform: Mobile App",
+  "@platformMobile": {
+    "description": "Platform description"
+  },
+  "reportBug": "Report a Bug",
+  "@reportBug": {
+    "description": "Report bug section title"
+  },
+  "bugReportInstructions": "If you encounter any issues, please describe:\n• What you were doing when the problem occurred\n• Steps to reproduce the issue\n• Your device model and OS version",
+  "@bugReportInstructions": {
+    "description": "Bug report instructions"
+  },
+
+  "actionCannotBeUndone": "This action cannot be undone. This will permanently delete your account and all associated data.",
+  "@actionCannotBeUndone": {
+    "description": "Delete account warning"
+  },
+  "enterPasswordToConfirm": "Please enter your password to confirm:",
+  "@enterPasswordToConfirm": {
+    "description": "Password confirmation prompt"
+  },
+  "passwordRequired": "Password is required",
+  "@passwordRequired": {
+    "description": "Password required validation error"
+  },
+  "accountDeletedSuccessfully": "Account deleted successfully",
+  "@accountDeletedSuccessfully": {
+    "description": "Account deletion success message"
+  },
+  "incorrectPassword": "Incorrect password. Please try again.",
+  "@incorrectPassword": {
+    "description": "Incorrect password error"
+  },
+  "tooManyFailedAttempts": "Too many failed attempts. Please try again later.",
+  "@tooManyFailedAttempts": {
+    "description": "Too many attempts error"
+  },
+  "failedToDeleteAccount": "Failed to delete account. Please try again.",
+  "@failedToDeleteAccount": {
+    "description": "Account deletion failure error"
+  },
+  "finalConfirmation": "Final Confirmation",
+  "@finalConfirmation": {
+    "description": "Final confirmation dialog title"
+  },
+  "absolutelySureWarning": "Are you absolutely sure? This action cannot be undone and will permanently delete:\n\n• Your profile and account data\n• All your posts and submissions\n• Your chat history\n• All other associated data\n\nThis action is irreversible.",
+  "@absolutelySureWarning": {
+    "description": "Final deletion warning"
+  },
+  "yesDeleteMyAccount": "Yes, Delete My Account",
+  "@yesDeleteMyAccount": {
+    "description": "Final delete confirmation button"
+  },
+
+  "eventNotFound": "Event Not Found",
+  "@eventNotFound": {
+    "description": "Event not found title"
+  },
+  "errorLoadingEvent": "Error loading event",
+  "@errorLoadingEvent": {
+    "description": "Error loading event message"
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Go back button text"
+  },
+  "submissionLimitReached": "Submission Limit Reached",
+  "@submissionLimitReached": {
+    "description": "Submission limit reached title"
+  },
+  "usedAllSubmissions": "You have used all your submissions for this event.",
+  "@usedAllSubmissions": {
+    "description": "Submission limit reached message"
+  },
+  "challenge": "Challenge",
+  "@challenge": {
+    "description": "Challenge section title"
+  },
+  "endingSoon": "Ending soon",
+  "@endingSoon": {
+    "description": "Event ending soon status"
+  },
+  "yourPhoto": "Your Photo",
+  "@yourPhoto": {
+    "description": "Your photo section title"
+  },
+  "addYourPhoto": "Add your photo",
+  "@addYourPhoto": {
+    "description": "Add photo placeholder"
+  },
+  "submissionGuidelines": "Submission Guidelines",
+  "@submissionGuidelines": {
+    "description": "Submission guidelines title"
+  },
+  "matchChallengeTheme": "Make sure your photo matches the challenge theme",
+  "@matchChallengeTheme": {
+    "description": "Submission guideline 1"
+  },
+  "useGoodLighting": "Use good lighting and clear focus",
+  "@useGoodLighting": {
+    "description": "Submission guideline 2"
+  },
+  "originalPhotosOnly": "Original photos only - no screenshots or downloaded images",
+  "@originalPhotosOnly": {
+    "description": "Submission guideline 3"
+  },
+  "failedToTakePhoto": "Failed to take photo: {error}",
+  "@failedToTakePhoto": {
+    "description": "Failed to take photo error",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Camera not available"
+      }
+    }
+  },
+  "failedToSelectPhoto": "Failed to select photo: {error}",
+  "@failedToSelectPhoto": {
+    "description": "Failed to select photo error",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Permission denied"
+      }
+    }
+  },
+  "pleaseSelectPhotoFirst": "Please select a photo first",
+  "@pleaseSelectPhotoFirst": {
+    "description": "No photo selected error"
+  },
+  "userNotAuthenticated": "User not authenticated",
+  "@userNotAuthenticated": {
+    "description": "User not authenticated error"
+  },
+  "failedToSubmitPhoto": "Failed to submit photo: {error}",
+  "@failedToSubmitPhoto": {
+    "description": "Failed to submit photo error",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+  "submitting": "Submitting...",
+  "@submitting": {
+    "description": "Submitting status text"
+  },
+  "errorLoadingSubmissionData": "Error loading submission data",
+  "@errorLoadingSubmissionData": {
+    "description": "Error loading submission data"
+  },
+  "authenticationRequired": "Authentication Required",
+  "@authenticationRequired": {
+    "description": "Authentication required title"
+  },
+  "pleaseSignInToSubmit": "Please sign in to submit photos",
+  "@pleaseSignInToSubmit": {
+    "description": "Sign in to submit message"
+  },
+
+  "submissionNotFound": "Submission Not Found",
+  "@submissionNotFound": {
+    "description": "Submission not found title"
+  },
+  "errorLoadingSubmission": "Error loading submission",
+  "@errorLoadingSubmission": {
+    "description": "Error loading submission message"
+  },
+  "photo": "Photo",
+  "@photo": {
+    "description": "Photo title"
+  },
+  "deletePost": "Delete Post",
+  "@deletePost": {
+    "description": "Delete post title"
+  },
+  "sureDeletePost": "Are you sure you want to delete this post? This action cannot be undone.",
+  "@sureDeletePost": {
+    "description": "Delete post confirmation message"
+  },
+  "postDeletedSuccessfully": "Post deleted successfully",
+  "@postDeletedSuccessfully": {
+    "description": "Post deleted success message"
+  },
+  "failedToDeletePost": "Failed to delete post",
+  "@failedToDeletePost": {
+    "description": "Failed to delete post error"
+  },
+
+  "messages": "Messages",
+  "@messages": {
+    "description": "Messages screen title"
+  },
+  "errorLoadingChats": "Error loading chats",
+  "@errorLoadingChats": {
+    "description": "Error loading chats message"
+  },
+  "noConversationsYet": "No conversations yet",
+  "@noConversationsYet": {
+    "description": "No conversations message"
+  },
+  "unknownUser": "Unknown User",
+  "@unknownUser": {
+    "description": "Unknown user display name"
+  },
+  "noMessagesYet": "No messages yet",
+  "@noMessagesYet": {
+    "description": "No messages in chat"
+  },
+  "failedToLoadUserData": "Failed to load user data",
+  "@failedToLoadUserData": {
+    "description": "Failed to load user data error"
+  },
+  "chatDeleted": "Chat deleted",
+  "@chatDeleted": {
+    "description": "Chat deleted success message"
+  },
+  "deleteChat": "Delete Chat",
+  "@deleteChat": {
+    "description": "Delete chat button text"
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Just now timestamp"
+  },
+  "user": "User",
+  "@user": {
+    "description": "User label"
+  },
+  "errorLoadingMessages": "Error loading messages",
+  "@errorLoadingMessages": {
+    "description": "Error loading messages"
+  },
+  "typeMessage": "Type a message...",
+  "@typeMessage": {
+    "description": "Type message placeholder"
+  },
+
+  "userNotFound": "User not found",
+  "@userNotFound": {
+    "description": "User not found message"
+  },
+  "completeSetup": "Complete Setup",
+  "@completeSetup": {
+    "description": "Complete setup button text"
+  },
+
+  "pageNotFound": "Page not found: {location}",
+  "@pageNotFound": {
+    "description": "Page not found error",
+    "placeholders": {
+      "location": {
+        "type": "String",
+        "example": "/unknown"
+      }
+    }
+  },
+  "goHome": "Go Home",
+  "@goHome": {
+    "description": "Go home button text"
+  },
+
+  "noSubmissionsYet": "No submissions yet",
+  "@noSubmissionsYet": {
+    "description": "No submissions message"
+  },
+  "beFirstToSubmit": "Be the first to submit a photo!",
+  "@beFirstToSubmit": {
+    "description": "Be first to submit message"
+  },
+  "errorLoadingSubmissions": "Error loading submissions",
+  "@errorLoadingSubmissions": {
+    "description": "Error loading submissions message"
+  },
+  "anonymousWinner": "Anonymous Winner",
+  "@anonymousWinner": {
+    "description": "Anonymous winner display name"
+  },
+  "championOfEvent": "Champion of this event!",
+  "@championOfEvent": {
+    "description": "Champion message"
+  },
+
+  "storageTest": "Storage Test",
+  "@storageTest": {
+    "description": "Storage test screen title"
+  },
+  "testStorageConnection": "Test Storage Connection",
+  "@testStorageConnection": {
+    "description": "Test storage button text"
+  },
+  "pickImageAndUpload": "Pick Image & Upload",
+  "@pickImageAndUpload": {
+    "description": "Pick image button text"
+  },
+  "selectedImage": "Selected Image:",
+  "@selectedImage": {
+    "description": "Selected image label"
+  },
+
+  "accountExistsWithDifferentCredential": "An account already exists with a different credential.",
+  "@accountExistsWithDifferentCredential": {
+    "description": "Auth error message"
+  },
+  "credentialMalformedOrExpired": "The credential received is malformed or has expired.",
+  "@credentialMalformedOrExpired": {
+    "description": "Auth error message"
+  },
+  "operationNotAllowed": "This operation is not allowed. Please contact support.",
+  "@operationNotAllowed": {
+    "description": "Auth error message"
+  },
+  "userAccountDisabled": "This user account has been disabled.",
+  "@userAccountDisabled": {
+    "description": "Auth error message"
+  },
+  "noUserFoundWithEmail": "No user found with this email address.",
+  "@noUserFoundWithEmail": {
+    "description": "Auth error message"
+  },
+  "incorrectPasswordTryAgain": "Incorrect password. Please try again.",
+  "@incorrectPasswordTryAgain": {
+    "description": "Auth error message"
+  },
+  "tooManyRequestsTryLater": "Too many requests. Try again later.",
+  "@tooManyRequestsTryLater": {
+    "description": "Auth error message"
+  },
+  "networkErrorCheckConnection": "Network error. Please check your connection.",
+  "@networkErrorCheckConnection": {
+    "description": "Auth error message"
+  },
+  "emailAlreadyRegistered": "This email address is already registered. Please sign in instead.",
+  "@emailAlreadyRegistered": {
+    "description": "Auth error message"
+  },
+  "enterValidEmailAddress": "Please enter a valid email address.",
+  "@enterValidEmailAddress": {
+    "description": "Auth error message"
+  },
+  "passwordTooWeak": "Password is too weak. Please choose a stronger password.",
+  "@passwordTooWeak": {
+    "description": "Auth error message"
+  },
+  "signOutAndSignInAgain": "Please sign out and sign in again before retrying this request.",
+  "@signOutAndSignInAgain": {
+    "description": "Auth error message"
+  },
+  "verificationCodeInvalid": "The verification code is invalid. Please try again.",
+  "@verificationCodeInvalid": {
+    "description": "Auth error message"
+  },
+  "verificationIdInvalid": "The verification ID is invalid. Please try again.",
+  "@verificationIdInvalid": {
+    "description": "Auth error message"
+  },
+  "authenticationFailedTryAgain": "Authentication failed. Please try again.",
+  "@authenticationFailedTryAgain": {
+    "description": "Auth error message"
+  },
+
+  "failedToLoadChat": "Failed to load chat: {error}",
+  "@failedToLoadChat": {
+    "description": "Failed to load chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToSendMessage": "Failed to send message: {error}",
+  "@failedToSendMessage": {
+    "description": "Failed to send message error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noConversationsDescription": "Start a conversation by visiting someone's profile",
+  "@noConversationsDescription": {
+    "description": "Description for empty conversations"
+  },
+  "startConversation": "Start the conversation!",
+  "@startConversation": {
+    "description": "Start conversation prompt"
+  },
+  "failedToDeleteChat": "Failed to delete chat: {error}",
+  "@failedToDeleteChat": {
+    "description": "Failed to delete chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sureDeleteChat": "Are you sure you want to delete this chat? This action cannot be undone.",
+  "@sureDeleteChat": {
+    "description": "Delete chat confirmation message"
+  },
+  "yesterday": "Yesterday {time}",
+  "@yesterday": {
+    "description": "Yesterday timestamp format",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "daysAgo": "{days} days ago",
+  "@daysAgo": {
+    "description": "Days ago format",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursLeft": "{hours}h {minutes}m left",
+  "@hoursLeft": {
+    "description": "Hours and minutes left format",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesLeft": "{minutes}m left",
+  "@minutesLeft": {
+    "description": "Minutes left format",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Active status"
+  },
+  "ended": "Ended",
+  "@ended": {
+    "description": "Ended status"
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Submit button text"
+  },
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "description": "Minutes ago format",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "description": "Hours ago format",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgoShort": "{days}d ago",
+  "@daysAgoShort": {
+    "description": "Days ago short format",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "comments": "Comments",
+  "@comments": {
+    "description": "Comments section title"
+  },
+  "profileNotSetUp": "Profile not set up yet",
+  "@profileNotSetUp": {
+    "description": "Profile not set up message"
+  },
+  "pleaseCompleteProfileSetup": "Please complete your profile setup",
+  "@pleaseCompleteProfileSetup": {
+    "description": "Complete profile setup prompt"
+  },
+  "errorLoadingProfile": "Error loading profile: {error}",
+  "@errorLoadingProfile": {
+    "description": "Error loading profile message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "spotlight": "SPOTLIGHT",
+  "@spotlight": {
+    "description": "Spotlight text"
   }
 } 

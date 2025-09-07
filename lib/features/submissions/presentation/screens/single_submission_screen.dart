@@ -13,6 +13,7 @@ import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SingleSubmissionScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -92,7 +93,7 @@ class _SingleSubmissionScreenState
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Error', style: TextStyle(color: Colors.white)),
+          title: Text(AppLocalizations.of(context)!.error, style: const TextStyle(color: Colors.white)),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -158,9 +159,9 @@ class _SingleSubmissionScreenState
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Error loading submission',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.errorLoadingSubmission,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -199,15 +200,15 @@ class _SingleSubmissionScreenState
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh,
+                              const Icon(Icons.refresh,
                                   color: Colors.white, size: 20),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
-                                'Retry',
-                                style: TextStyle(
+                                AppLocalizations.of(context)!.retry,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -234,8 +235,8 @@ class _SingleSubmissionScreenState
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Submission Not Found',
-            style: TextStyle(color: Colors.white)),
+        title: Text(AppLocalizations.of(context)!.submissionNotFound,
+            style: const TextStyle(color: Colors.white)),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -272,14 +273,14 @@ class _SingleSubmissionScreenState
                 ),
               ],
             ),
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.image_not_supported, size: 64, color: Colors.white),
-                SizedBox(height: 16),
+                const Icon(Icons.image_not_supported, size: 64, color: Colors.white),
+                const SizedBox(height: 16),
                 Text(
-                  'Submission not found',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.submissionNotFound,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -296,7 +297,7 @@ class _SingleSubmissionScreenState
   Widget _buildSubmissionDetail(SubmissionModel submission) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Photo'),
+        title: Text(AppLocalizations.of(context)!.photo),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         actions: [
@@ -472,10 +473,10 @@ class _EventInfoOverlay extends ConsumerWidget {
             width: 1,
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 12,
               height: 12,
               child: CircularProgressIndicator(
@@ -483,10 +484,10 @@ class _EventInfoOverlay extends ConsumerWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 6),
+            const SizedBox(width: 6),
             Text(
-              'Loading...',
-              style: TextStyle(
+              AppLocalizations.of(context)!.loading,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -620,14 +621,14 @@ class _SubmissionInfo extends ConsumerWidget {
                             }
                           },
                           itemBuilder: (context) => [
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Icon(Icons.delete, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text('Delete',
-                                      style: TextStyle(color: Colors.red)),
+                                  const Icon(Icons.delete, color: Colors.red),
+                                  const SizedBox(width: 8),
+                                  Text(AppLocalizations.of(context)!.delete,
+                                      style: const TextStyle(color: Colors.red)),
                                 ],
                               ),
                             ),

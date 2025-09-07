@@ -95,7 +95,7 @@ class SettingsScreen extends ConsumerWidget {
               MediaQuery.of(context).size.width * 0.04,
             ),
             children: [
-              _buildSectionHeader(context, 'App'),
+              _buildSectionHeader(context, AppLocalizations.of(context)!.app),
               _buildAppSection(context, ref),
               const SizedBox(height: 32),
               _buildDangerZone(context, ref),
@@ -156,8 +156,8 @@ class SettingsScreen extends ConsumerWidget {
           _buildSettingsListTile(
             context,
             icon: Icons.info,
-            title: 'About',
-            subtitle: 'Version 1.0.0',
+            title: AppLocalizations.of(context)!.about,
+            subtitle: AppLocalizations.of(context)!.version('1.0.0'),
             iconColor: AppColors.primaryCyan,
             onTap: () => _showAboutDialog(context),
           ),
@@ -170,7 +170,7 @@ class SettingsScreen extends ConsumerWidget {
           _buildSettingsListTile(
             context,
             icon: Icons.privacy_tip,
-            title: 'Privacy Policy',
+            title: AppLocalizations.of(context)!.privacyPolicy,
             subtitle: null,
             iconColor: AppColors.primaryCyan,
             onTap: () => _showPrivacyPolicy(context),
@@ -184,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
           _buildSettingsListTile(
             context,
             icon: Icons.help,
-            title: 'Help & Support',
+            title: AppLocalizations.of(context)!.helpAndSupport,
             subtitle: null,
             iconColor: AppColors.primaryCyan,
             onTap: () => _showHelpAndSupport(context),
@@ -225,8 +225,8 @@ class SettingsScreen extends ConsumerWidget {
       child: _buildSettingsListTile(
         context,
         icon: Icons.delete_forever,
-        title: 'Delete Account',
-        subtitle: 'Permanently delete your account and all data',
+        title: AppLocalizations.of(context)!.deleteAccount,
+        subtitle: AppLocalizations.of(context)!.permanentlyDeleteAccount,
         iconColor: AppColors.rosyBrown,
         onTap: () => _showDeleteAccountDialog(context, ref),
         showTrailing: false,

@@ -31,7 +31,8 @@
       "Bash(/mnt/c/Users/bugra/development/flutter/bin//flutter --version)",
       "Bash(bash:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/auth/presentation/screens/login_screen.dart)",
-      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/settings/presentation/screens/settings_screen.dart)"
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/settings/presentation/screens/settings_screen.dart)",
+      "Bash(dart run flutter_tools pub run intl_utils:generate:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

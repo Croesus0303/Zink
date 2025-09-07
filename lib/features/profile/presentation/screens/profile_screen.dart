@@ -182,8 +182,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     if (targetUserId == null) {
       AppLogger.w(
           'ProfileScreen: targetUserId is null, showing user not found');
-      return const Scaffold(
-        body: Center(child: Text('User not found')),
+      return Scaffold(
+        body: Center(child: Text(AppLocalizations.of(context)!.userNotFound)),
       );
     }
 
@@ -198,8 +198,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Loading...',
-              style: TextStyle(color: AppColors.textPrimary)),
+          title: Text(AppLocalizations.of(context)!.loading,
+              style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
@@ -223,8 +223,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Error',
-              style: TextStyle(color: AppColors.textPrimary)),
+          title: Text(AppLocalizations.of(context)!.error,
+              style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
@@ -241,7 +241,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Error loading profile: $error',
+                    AppLocalizations.of(context)!.errorLoadingProfile(error.toString()),
                     style: const TextStyle(color: AppColors.textPrimary),
                     textAlign: TextAlign.center,
                   ),
@@ -276,14 +276,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 16),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh,
+                              const Icon(Icons.refresh,
                                   color: Colors.white, size: 20),
-                              SizedBox(width: 8),
-                              Text('Retry',
-                                  style: TextStyle(
+                              const SizedBox(width: 8),
+                              Text(AppLocalizations.of(context)!.retry,
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold)),
@@ -313,8 +313,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Profile',
-                style: TextStyle(color: AppColors.textPrimary)),
+            title: Text(AppLocalizations.of(context)!.profile,
+                style: const TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(
@@ -360,18 +360,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Profile not set up yet',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.profileNotSetUp,
+                      style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Please complete your profile setup',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.pleaseCompleteProfileSetup,
+                      style: const TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -432,8 +432,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Profile',
-                style: TextStyle(color: AppColors.textPrimary)),
+            title: Text(AppLocalizations.of(context)!.profile,
+                style: const TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(

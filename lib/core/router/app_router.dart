@@ -13,6 +13,7 @@ import '../../features/messaging/presentation/screens/chat_screen.dart';
 import '../../features/messaging/presentation/screens/chats_list_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../utils/logger.dart';
+import '../../l10n/app_localizations.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -176,18 +177,18 @@ class AppRouter {
   // Add error page widget
   static Widget errorPageBuilder(BuildContext context, GoRouterState state) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Error')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.error)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
-            Text('Page not found: ${state.matchedLocation}'),
+            Text(AppLocalizations.of(context)!.pageNotFound(state.matchedLocation)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => context.go('/'),
-              child: const Text('Go Home'),
+              child: Text(AppLocalizations.of(context)!.goHome),
             ),
           ],
         ),

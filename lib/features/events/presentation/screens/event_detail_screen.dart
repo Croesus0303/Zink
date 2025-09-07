@@ -91,8 +91,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: const Text('Event Not Found',
-                  style: TextStyle(color: AppColors.textPrimary)),
+              title: Text(AppLocalizations.of(context)!.eventNotFound,
+                  style: const TextStyle(color: AppColors.textPrimary)),
               centerTitle: true,
             ),
             body: Container(
@@ -105,10 +105,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               child: Container(
                 decoration:
                     BoxDecoration(gradient: AppColors.auroraRadialGradient),
-                child: const Center(
+                child: Center(
                   child: Text(
-                    'Event not found',
-                    style: TextStyle(color: AppColors.textPrimary),
+                    AppLocalizations.of(context)!.eventNotFound,
+                    style: const TextStyle(color: AppColors.textPrimary),
                   ),
                 ),
               ),
@@ -122,8 +122,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Loading...',
-              style: TextStyle(color: AppColors.textPrimary)),
+          title: Text(AppLocalizations.of(context)!.loading,
+              style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
         body: Container(
@@ -149,8 +149,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text('Error',
-                style: TextStyle(color: AppColors.textPrimary)),
+            title: Text(AppLocalizations.of(context)!.error,
+                style: const TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
           body: Container(
@@ -168,7 +168,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Error loading event: $error',
+                      '${AppLocalizations.of(context)!.errorLoadingEvent}: $error',
                       style: const TextStyle(color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
@@ -211,15 +211,15 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.refresh,
+                                const Icon(Icons.refresh,
                                     color: Colors.white, size: 20),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Retry',
-                                  style: TextStyle(
+                                  AppLocalizations.of(context)!.retry,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -321,37 +321,39 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             gradient: AppColors.auroraRadialGradient,
           ),
           child: RefreshIndicator(
-          color: AppColors.pineGreen,
-          onRefresh: _onRefresh,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).padding.top + 
-                          kToolbarHeight + 20,
+            color: AppColors.pineGreen,
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).padding.top +
+                        kToolbarHeight +
+                        20,
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: _EventDetailWidget(event: event),
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: _EventDetailWidget(event: event),
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-              ),
-              SliverToBoxAdapter(
-                child: _SubmissionsWidget(event: event, eventId: widget.eventId),
-              ),
-              SliverToBoxAdapter(
-                child:
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              ),
-            ],
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.06),
+                ),
+                SliverToBoxAdapter(
+                  child:
+                      _SubmissionsWidget(event: event, eventId: widget.eventId),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02),
+                ),
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );
@@ -404,7 +406,8 @@ class _EventDetailWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildReferencePhotoSection(BuildContext context, EventModel event, WidgetRef ref) {
+  Widget _buildReferencePhotoSection(
+      BuildContext context, EventModel event, WidgetRef ref) {
     // If event is not expired, always show reference photo
     if (!event.isExpired) {
       return _buildFullReferenceSection(context, event);
@@ -412,7 +415,7 @@ class _EventDetailWidget extends ConsumerWidget {
 
     // If event is expired, check if there are submissions
     final submissionsAsync = ref.watch(submissionsProvider(event.id));
-    
+
     return submissionsAsync.when(
       data: (submissions) {
         // If expired and has submissions, show only description (winner widget will be shown below)
@@ -441,7 +444,7 @@ class _EventDetailWidget extends ConsumerWidget {
             ),
           );
         }
-        
+
         // If expired but no submissions, show full reference section
         return _buildFullReferenceSection(context, event);
       },
@@ -565,7 +568,8 @@ class _EventDetailWidget extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.primaryOrange.withValues(alpha: 0.9),
+                                    AppColors.primaryOrange
+                                        .withValues(alpha: 0.9),
                                     AppColors.rosyBrown.withValues(alpha: 0.9),
                                   ],
                                 ),
@@ -668,7 +672,9 @@ class _EventDetailWidget extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  event.isActive ? 'Active' : 'Ended',
+                  event.isActive
+                      ? AppLocalizations.of(context)!.active
+                      : AppLocalizations.of(context)!.ended,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -684,7 +690,7 @@ class _EventDetailWidget extends ConsumerWidget {
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                   Text(
-                    _formatTimeRemaining(event.endTime),
+                    _formatTimeRemaining(context, event.endTime),
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -700,7 +706,8 @@ class _EventDetailWidget extends ConsumerWidget {
           if (event.isActive)
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.02),
                 width: MediaQuery.of(context).size.width * 0.5,
                 height: MediaQuery.of(context).size.height * 0.06,
                 decoration: BoxDecoration(
@@ -753,17 +760,20 @@ class _EventDetailWidget extends ConsumerWidget {
                                 return Icon(
                                   Icons.camera_alt,
                                   color: Colors.white,
-                                  size: MediaQuery.of(context).size.width * 0.12,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.12,
                                 );
                               },
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.025),
                           Text(
-                            'Submit',
+                            AppLocalizations.of(context)!.submit,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: MediaQuery.of(context).size.width * 0.035,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -774,23 +784,22 @@ class _EventDetailWidget extends ConsumerWidget {
                 ),
               ),
             ),
-
         ],
       ),
     );
   }
 
-  String _formatTimeRemaining(DateTime endTime) {
+  String _formatTimeRemaining(BuildContext context, DateTime endTime) {
     final duration = endTime.difference(DateTime.now());
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
 
     if (hours > 0) {
-      return '${hours}h ${minutes}m left';
+      return AppLocalizations.of(context)!.hoursLeft(hours, minutes);
     } else if (minutes > 0) {
-      return '${minutes}m left';
+      return AppLocalizations.of(context)!.minutesLeft(minutes);
     } else {
-      return 'Ending soon';
+      return AppLocalizations.of(context)!.endingSoon;
     }
   }
 }
@@ -925,54 +934,54 @@ class _SubmissionsWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              height: MediaQuery.of(context).size.width * 0.25,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.rosyBrown.withValues(alpha: 0.4),
-                    AppColors.pineGreen.withValues(alpha: 0.3),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.width * 0.25,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.rosyBrown.withValues(alpha: 0.4),
+                      AppColors.pineGreen.withValues(alpha: 0.3),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  Icons.photo_library_outlined,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.12,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              Text(
+                AppLocalizations.of(context)!.noSubmissionsYet,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                      blurRadius: 8,
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                textAlign: TextAlign.center,
               ),
-              child: Icon(
-                Icons.photo_library_outlined,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.12,
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Text(
+                AppLocalizations.of(context)!.beFirstToSubmit,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: MediaQuery.of(context).size.width * 0.032,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.2,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            Text(
-              'No submissions yet',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: MediaQuery.of(context).size.width * 0.04,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Text(
-              'Be the first to submit a photo!',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: MediaQuery.of(context).size.width * 0.032,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.2,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
           ),
         ),
       );
@@ -995,9 +1004,9 @@ class _SubmissionsWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
-          const Text(
-            'Error loading submissions',
-            style: TextStyle(color: AppColors.textPrimary),
+          Text(
+            AppLocalizations.of(context)!.errorLoadingSubmissions,
+            style: const TextStyle(color: AppColors.textPrimary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -1022,14 +1031,14 @@ class _SubmissionsWidget extends ConsumerWidget {
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.refresh, color: Colors.white, size: 20),
-                      SizedBox(width: 8),
+                      const Icon(Icons.refresh, color: Colors.white, size: 20),
+                      const SizedBox(width: 8),
                       Text(
-                        'Retry',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.retry,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -1079,9 +1088,8 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected
-                ? Colors.white
-                : Colors.white.withValues(alpha: 0.8),
+            color:
+                isSelected ? Colors.white : Colors.white.withValues(alpha: 0.8),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 14,
           ),
@@ -1104,9 +1112,12 @@ class _SubmissionCard extends ConsumerWidget {
     final userDataAsync = ref.watch(userDataProvider(submission.uid));
     final likesStreamAsync = ref.watch(likesStreamProvider(
         (eventId: submission.eventId, submissionId: submission.id)));
+    final commentCountAsync = ref.watch(commentCountProvider(
+        (eventId: submission.eventId, submissionId: submission.id)));
 
     bool isLikedByCurrentUser = false;
     int currentLikeCount = submission.likeCount;
+    int currentCommentCount = 0;
 
     likesStreamAsync.whenData((likes) {
       currentLikeCount = likes.length;
@@ -1115,18 +1126,22 @@ class _SubmissionCard extends ConsumerWidget {
       }
     });
 
+    commentCountAsync.whenData((count) {
+      currentCommentCount = count;
+    });
+
     return userDataAsync.when(
       data: (user) => _buildCard(context, ref, user, currentUser,
-          isLikedByCurrentUser, currentLikeCount),
+          isLikedByCurrentUser, currentLikeCount, currentCommentCount),
       loading: () => _buildCard(context, ref, null, currentUser,
-          isLikedByCurrentUser, currentLikeCount),
+          isLikedByCurrentUser, currentLikeCount, currentCommentCount),
       error: (error, stack) => _buildCard(context, ref, null, currentUser,
-          isLikedByCurrentUser, currentLikeCount),
+          isLikedByCurrentUser, currentLikeCount, currentCommentCount),
     );
   }
 
   Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
-      dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount) {
+      dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount, int currentCommentCount) {
     return Container(
       margin: const EdgeInsets.only(bottom: 2.0),
       padding: const EdgeInsets.all(16.0),
@@ -1173,9 +1188,10 @@ class _SubmissionCard extends ConsumerWidget {
                             decoration: TextDecoration.none,
                           ),
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02),
                         Text(
-                          _formatSubmissionTime(submission.createdAt),
+                          _formatSubmissionTime(context, submission.createdAt),
                           style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: MediaQuery.of(context).size.width * 0.028,
@@ -1334,7 +1350,7 @@ class _SubmissionCard extends ConsumerWidget {
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Text(
-                        'Comments',
+                        AppLocalizations.of(context)!.comments,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -1352,16 +1368,16 @@ class _SubmissionCard extends ConsumerWidget {
     );
   }
 
-  String _formatSubmissionTime(DateTime dateTime) {
+  String _formatSubmissionTime(BuildContext context, DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
+      return AppLocalizations.of(context)!.minutesAgo(difference.inMinutes);
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
+      return AppLocalizations.of(context)!.hoursAgo(difference.inHours);
     } else {
-      return '${difference.inDays}d ago';
+      return AppLocalizations.of(context)!.daysAgoShort(difference.inDays);
     }
   }
 
@@ -1371,26 +1387,26 @@ class _SubmissionCard extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.midnightGreen,
-        title: const Text(
-          'Delete Post',
-          style: TextStyle(color: AppColors.textPrimary),
+        title: Text(
+          AppLocalizations.of(context)!.deletePost,
+          style: const TextStyle(color: AppColors.textPrimary),
         ),
-        content: const Text(
-          'Are you sure you want to delete this post? This action cannot be undone.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          AppLocalizations.of(context)!.sureDeletePost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppColors.pineGreen),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: const TextStyle(color: AppColors.pineGreen),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -1403,17 +1419,20 @@ class _SubmissionCard extends ConsumerWidget {
             submission.eventId, submission.id);
 
         if (context.mounted) {
-          CustomSnackBar.showSuccess(context, 'Post deleted successfully');
+          CustomSnackBar.showSuccess(
+              context, AppLocalizations.of(context)!.postDeletedSuccessfully);
         }
 
         // Refresh the submissions list and submission count
         ref.invalidate(submissionsProvider(submission.eventId));
         ref.invalidate(submissionsStreamProvider(submission.eventId));
-        ref.invalidate(userSubmissionCountForEventProvider((userId: submission.uid, eventId: submission.eventId)));
+        ref.invalidate(userSubmissionCountForEventProvider(
+            (userId: submission.uid, eventId: submission.eventId)));
       } catch (e) {
         AppLogger.e('Error deleting submission ${submission.id}', e);
         if (context.mounted) {
-          CustomSnackBar.showError(context, 'Failed to delete post');
+          CustomSnackBar.showError(
+              context, AppLocalizations.of(context)!.failedToDeletePost);
         }
       }
     }
@@ -1518,7 +1537,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                 ),
               );
             }
-            
+
             if (snapshot.hasError) {
               return Container(
                 margin: const EdgeInsets.only(top: 20),
@@ -1543,12 +1562,12 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                       width: 1,
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Ended',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.ended,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -1559,7 +1578,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                 ),
               );
             }
-            
+
             final winnerSubmission = snapshot.data!;
             return _buildWinnerWidget(context, ref, winnerSubmission);
           },
@@ -1594,12 +1613,12 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
               width: 1,
             ),
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Ended',
-                style: TextStyle(
+                AppLocalizations.of(context)!.ended,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -1612,20 +1631,19 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
     );
   }
 
-  Future<SubmissionModel> _determineWinner(List<SubmissionModel> submissions, WidgetRef ref) async {
+  Future<SubmissionModel> _determineWinner(
+      List<SubmissionModel> submissions, WidgetRef ref) async {
     if (submissions.isEmpty) {
       throw Exception('No submissions available');
     }
 
     // Create a list of submissions with their comment counts
     final submissionRankings = <_SubmissionRanking>[];
-    
+
     for (final submission in submissions) {
-      final commentCountAsync = await ref.read(commentCountProvider((
-        eventId: submission.eventId, 
-        submissionId: submission.id
-      )).future);
-      
+      final commentCountAsync = await ref.read(commentCountProvider(
+          (eventId: submission.eventId, submissionId: submission.id)).future);
+
       submissionRankings.add(_SubmissionRanking(
         submission: submission,
         likeCount: submission.likeCount,
@@ -1639,12 +1657,12 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
       if (a.likeCount != b.likeCount) {
         return b.likeCount.compareTo(a.likeCount);
       }
-      
+
       // Rule 2: If likes are tied, most comments wins
       if (a.commentCount != b.commentCount) {
         return b.commentCount.compareTo(a.commentCount);
       }
-      
+
       // Rule 3: If both likes and comments are tied, earliest upload wins
       return a.submission.createdAt.compareTo(b.submission.createdAt);
     });
@@ -1652,7 +1670,8 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
     return submissionRankings.first.submission;
   }
 
-  Widget _buildWinnerWidget(BuildContext context, WidgetRef ref, SubmissionModel winnerSubmission) {
+  Widget _buildWinnerWidget(
+      BuildContext context, WidgetRef ref, SubmissionModel winnerSubmission) {
     final userDataAsync = ref.watch(userDataProvider(winnerSubmission.uid));
 
     return Container(
@@ -1692,7 +1711,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
             // Winner announcement header
             Center(
               child: Text(
-                'SPOTLIGHT',
+                AppLocalizations.of(context)!.spotlight,
                 style: TextStyle(
                   foreground: Paint()
                     ..shader = const LinearGradient(
@@ -1753,7 +1772,8 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
                     child: GestureDetector(
-                      onTap: () => _showFullScreenImage(context, winnerSubmission.imageURL),
+                      onTap: () => _showFullScreenImage(
+                          context, winnerSubmission.imageURL),
                       child: CachedNetworkImage(
                         imageUrl: winnerSubmission.imageURL,
                         fit: BoxFit.cover,
@@ -1831,7 +1851,8 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -1856,13 +1877,15 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                           size: MediaQuery.of(context).size.width * 0.035,
                           shadows: [
                             Shadow(
-                              color: const Color(0xFFFF6F61).withValues(alpha: 0.4),
+                              color: const Color(0xFFFF6F61)
+                                  .withValues(alpha: 0.4),
                               blurRadius: 4,
                               offset: const Offset(0, 0),
                             ),
                           ],
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.01),
                         Text(
                           '${winnerSubmission.likeCount}',
                           style: TextStyle(
@@ -1953,7 +1976,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Anonymous Winner',
+                          AppLocalizations.of(context)!.anonymousWinner,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -1971,9 +1994,10 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Champion of this event!',
+                          AppLocalizations.of(context)!.championOfEvent,
                           style: TextStyle(
-                            color: AppColors.primaryOrange.withValues(alpha: 0.9),
+                            color:
+                                AppColors.primaryOrange.withValues(alpha: 0.9),
                             fontSize: MediaQuery.of(context).size.width * 0.03,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,

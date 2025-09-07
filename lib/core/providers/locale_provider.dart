@@ -18,26 +18,24 @@ class LocaleNotifier extends StateNotifier<Locale> {
   LocaleNotifier(this._prefs) : super(_loadLocale(_prefs));
 
   static Locale _loadLocale(SharedPreferences prefs) {
-    final languageCode = prefs.getString(_localeKey);
-    if (languageCode != null) {
-      return Locale(languageCode);
-    }
-    // Default to system locale or English
+    // Always default to English - language switching is disabled
     return const Locale('en');
   }
 
   Future<void> setLocale(Locale locale) async {
+    // Language switching is disabled - always keep English
+    if (locale.languageCode != 'en') {
+      return;
+    }
+    
     if (state == locale) return;
-
     state = locale;
     await _prefs.setString(_localeKey, locale.languageCode);
   }
 
   void toggleLocale() {
-    // Toggle between English and Turkish
-    final newLocale =
-        state.languageCode == 'en' ? const Locale('tr') : const Locale('en');
-    setLocale(newLocale);
+    // Language switching is disabled - do nothing
+    return;
   }
 }
 

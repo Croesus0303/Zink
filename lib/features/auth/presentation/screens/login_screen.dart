@@ -425,8 +425,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
+              labelText: AppLocalizations.of(context)!.email,
+              hintText: AppLocalizations.of(context)!.enterEmail,
               prefixIcon:
                   const Icon(Icons.email_outlined, color: AppColors.pineGreen),
               labelStyle: TextStyle(
@@ -438,11 +438,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Please enter your email';
+                return AppLocalizations.of(context)!.pleaseEnterEmail;
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                   .hasMatch(value.trim())) {
-                return 'Please enter a valid email';
+                return AppLocalizations.of(context)!.pleaseEnterValidEmail;
               }
               return null;
             },
@@ -466,8 +466,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
+              labelText: AppLocalizations.of(context)!.password,
+              hintText: AppLocalizations.of(context)!.enterPassword,
               prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -489,7 +489,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return AppLocalizations.of(context)!.pleaseEnterPassword;
               }
               return null;
             },
@@ -708,8 +708,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
+              labelText: AppLocalizations.of(context)!.email,
+              hintText: AppLocalizations.of(context)!.enterEmail,
               prefixIcon:
                   const Icon(Icons.email_outlined, color: AppColors.pineGreen),
               labelStyle: TextStyle(
@@ -721,11 +721,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Please enter your email';
+                return AppLocalizations.of(context)!.pleaseEnterEmail;
               }
               if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
                   .hasMatch(value.trim())) {
-                return 'Please enter a valid email';
+                return AppLocalizations.of(context)!.pleaseEnterValidEmail;
               }
               return null;
             },
@@ -754,8 +754,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
+              labelText: AppLocalizations.of(context)!.password,
+              hintText: AppLocalizations.of(context)!.enterPassword,
               prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.rosyBrown),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -777,10 +777,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return AppLocalizations.of(context)!.pleaseEnterPassword;
               }
               if (value.length < 6) {
-                return 'Password must be at least 6 characters';
+                return AppLocalizations.of(context)!.passwordTooShort;
               }
               return null;
             },
@@ -809,8 +809,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
-              labelText: 'Confirm Password',
-              hintText: 'Re-enter your password',
+              labelText: AppLocalizations.of(context)!.confirmPassword,
+              hintText: AppLocalizations.of(context)!.reenterPassword,
               prefixIcon:
                   const Icon(Icons.lock_outlined, color: AppColors.midnightGreen),
               suffixIcon: IconButton(
@@ -835,10 +835,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
+                return AppLocalizations.of(context)!.pleaseConfirmPassword;
               }
               if (value != _passwordController.text) {
-                return 'Passwords do not match';
+                return AppLocalizations.of(context)!.passwordsDoNotMatch;
               }
               return null;
             },

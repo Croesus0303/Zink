@@ -45,7 +45,9 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         });
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to take photo: $e');
+      if (mounted) {
+        _showErrorSnackBar(AppLocalizations.of(context)!.failedToTakePhoto(e.toString()));
+      }
     }
   }
 
@@ -64,19 +66,21 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         });
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to select photo: $e');
+      if (mounted) {
+        _showErrorSnackBar(AppLocalizations.of(context)!.failedToSelectPhoto(e.toString()));
+      }
     }
   }
 
   Future<void> _submitPhoto() async {
     if (_selectedImage == null) {
-      _showErrorSnackBar('Please select a photo first');
+      _showErrorSnackBar(AppLocalizations.of(context)!.pleaseSelectPhotoFirst);
       return;
     }
 
     final currentUser = ref.read(currentUserProvider);
     if (currentUser == null) {
-      _showErrorSnackBar('User not authenticated');
+      _showErrorSnackBar(AppLocalizations.of(context)!.userNotAuthenticated);
       return;
     }
 
@@ -101,16 +105,20 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         // Refresh the submission count provider for this specific event
         ref.invalidate(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: widget.eventId)));
         
-        _showSuccessSnackBar(
-          AppLocalizations.of(context)!.submissionSuccessful,
-        );
+        if (mounted) {
+          _showSuccessSnackBar(
+            AppLocalizations.of(context)!.submissionSuccessful,
+          );
 
-        // Navigate back to event detail
-        Navigator.of(context).pop();
+          // Navigate back to event detail
+          Navigator.of(context).pop();
+        }
       }
     } catch (e, stackTrace) {
       AppLogger.e('Failed to submit photo', e, stackTrace);
-      _showErrorSnackBar('Failed to submit photo: $e');
+      if (mounted) {
+        _showErrorSnackBar(AppLocalizations.of(context)!.failedToSubmitPhoto(e.toString()));
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -148,7 +156,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
               elevation: 0,
               title: Text(
-                'Event Not Found',
+                AppLocalizations.of(context)!.eventNotFound,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -201,7 +209,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.02),
                         Text(
-                          'Event not found',
+                          AppLocalizations.of(context)!.eventNotFound,
                           style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.045,
                             fontWeight: FontWeight.bold,
@@ -242,7 +250,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
             elevation: 0,
             title: Text(
-              'Error',
+              AppLocalizations.of(context)!.error,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -314,7 +322,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
                       Text(
-                        'Error loading event',
+                        AppLocalizations.of(context)!.errorLoadingEvent,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
@@ -375,7 +383,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                                       width: MediaQuery.of(context).size.width *
                                           0.02),
                                   Text(
-                                    'Retry',
+                                    AppLocalizations.of(context)!.retry,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize:
@@ -412,7 +420,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
           elevation: 0,
           title: Text(
-            'Authentication Required',
+            AppLocalizations.of(context)!.authenticationRequired,
             style: TextStyle(
               color: Colors.white,
               fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -431,7 +439,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
             child: Center(
               child: Text(
-                'Please sign in to submit photos',
+                AppLocalizations.of(context)!.pleaseSignInToSubmit,
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -698,7 +706,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                                     width: MediaQuery.of(context).size.width *
                                         0.03),
                                 Text(
-                                  'Submitting...',
+                                  AppLocalizations.of(context)!.submitting,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize:
@@ -735,7 +743,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         title: Text(
-          'Loading...',
+          AppLocalizations.of(context)!.loading,
           style: TextStyle(
             color: Colors.white,
             fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -768,7 +776,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
         title: Text(
-          'Error',
+          AppLocalizations.of(context)!.error,
           style: TextStyle(
             color: Colors.white,
             fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -791,7 +799,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Error loading submission data',
+                  AppLocalizations.of(context)!.errorLoadingSubmissionData,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -800,7 +808,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Go Back'),
+                  child: Text(AppLocalizations.of(context)!.goBack),
                 ),
               ],
             ),
@@ -886,7 +894,7 @@ class _SubmissionCountInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Submissions',
+                  AppLocalizations.of(context)!.submissions,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -971,7 +979,7 @@ class _SubmissionLimitMessage extends StatelessWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Text(
-            'Submission Limit Reached',
+            AppLocalizations.of(context)!.submissionLimitReached,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.045,
               fontWeight: FontWeight.bold,
@@ -987,7 +995,7 @@ class _SubmissionLimitMessage extends StatelessWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Text(
-            'You have used all your submissions for this event.',
+            AppLocalizations.of(context)!.usedAllSubmissions,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.035,
               color: AppColors.textSecondary,
@@ -1012,7 +1020,7 @@ class _ChallengeInfoSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Challenge',
+          AppLocalizations.of(context)!.challenge,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
@@ -1239,7 +1247,7 @@ class _PhotoSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Photo',
+          AppLocalizations.of(context)!.yourPhoto,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
@@ -1490,7 +1498,7 @@ class _PhotoSection extends StatelessWidget {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Text(
-                  'Add your photo',
+                  AppLocalizations.of(context)!.addYourPhoto,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.bold,
@@ -1634,7 +1642,7 @@ class _GuidelinesSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Submission Guidelines',
+          AppLocalizations.of(context)!.submissionGuidelines,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
@@ -1670,20 +1678,20 @@ class _GuidelinesSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _GuidelineItem(
+              _GuidelineItem(
                 icon: Icons.check_circle,
-                text: 'Make sure your photo matches the challenge theme',
+                text: AppLocalizations.of(context)!.matchChallengeTheme,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              const _GuidelineItem(
+              _GuidelineItem(
                 icon: Icons.check_circle,
-                text: 'Use good lighting and clear focus',
+                text: AppLocalizations.of(context)!.useGoodLighting,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              const _GuidelineItem(
+              _GuidelineItem(
                 icon: Icons.check_circle,
                 text:
-                    'Original photos only - no screenshots or downloaded images',
+                    AppLocalizations.of(context)!.originalPhotosOnly,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
               const _GuidelineItem(

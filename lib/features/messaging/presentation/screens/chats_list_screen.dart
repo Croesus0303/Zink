@@ -10,6 +10,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/glass_container.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ChatsListScreen extends ConsumerWidget {
   const ChatsListScreen({super.key});
@@ -26,7 +27,7 @@ class ChatsListScreen extends ConsumerWidget {
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
-          'Messages',
+          AppLocalizations.of(context)!.messages,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
@@ -161,7 +162,7 @@ class ChatsListScreen extends ConsumerWidget {
                                 height:
                                     MediaQuery.of(context).size.height * 0.025),
                             Text(
-                              'Error loading chats',
+                              AppLocalizations.of(context)!.errorLoadingChats,
                               style: TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.04,
@@ -230,7 +231,7 @@ class ChatsListScreen extends ConsumerWidget {
                                                     .width *
                                                 0.02),
                                         Text(
-                                          'Retry',
+                                          AppLocalizations.of(context)!.retry,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: MediaQuery.of(context)
@@ -314,7 +315,7 @@ class ChatsListScreen extends ConsumerWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               Text(
-                'No conversations yet',
+                AppLocalizations.of(context)!.noConversationsYet,
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.045,
                   fontWeight: FontWeight.bold,
@@ -329,7 +330,7 @@ class ChatsListScreen extends ConsumerWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Text(
-                'Start a conversation by visiting someone\'s profile',
+                AppLocalizations.of(context)!.noConversationsDescription,
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.035,
                   color: AppColors.textSecondary,
@@ -468,7 +469,7 @@ class _ChatListItem extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        otherUser?.displayName ?? 'Unknown User',
+                        otherUser?.displayName ?? AppLocalizations.of(context)!.unknownUser,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
@@ -528,7 +529,7 @@ class _ChatListItem extends ConsumerWidget {
                               ],
                             )
                           : Text(
-                              'No messages yet',
+                              AppLocalizations.of(context)!.noMessagesYet,
                               style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize:
@@ -712,7 +713,7 @@ class _ChatListItem extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Unknown User',
+                        AppLocalizations.of(context)!.unknownUser,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
@@ -722,7 +723,7 @@ class _ChatListItem extends ConsumerWidget {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.005),
                       Text(
-                        'Failed to load user data',
+                        AppLocalizations.of(context)!.failedToLoadUserData,
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: MediaQuery.of(context).size.width * 0.035,
@@ -767,7 +768,7 @@ class _ChatListItem extends ConsumerWidget {
                             final deleteChat = ref.read(deleteChatProvider);
                             await deleteChat(chat.id);
                             if (context.mounted) {
-                              CustomSnackBar.showSuccess(context, 'Chat deleted');
+                              CustomSnackBar.showSuccess(context, AppLocalizations.of(context)!.chatDeleted);
                             }
                           } catch (e) {
                             AppLogger.e('Error deleting chat', e);
@@ -815,9 +816,9 @@ class _ChatListItem extends ConsumerWidget {
                               ),
                             ),
                             const SizedBox(width: 16),
-                            const Text(
-                              'Delete Chat',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.deleteChat,
+                              style: const TextStyle(
                                 color: AppColors.primaryOrange,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -878,7 +879,7 @@ class _ChatListItem extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Delete Chat',
+                  AppLocalizations.of(context)!.deleteChat,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -892,11 +893,11 @@ class _ChatListItem extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    'Are you sure you want to delete this chat? This action cannot be undone.',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.sureDeleteChat,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
                     ),
@@ -931,10 +932,10 @@ class _ChatListItem extends ConsumerWidget {
                               child: Container(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
-                                child: const Center(
+                                child: Center(
                                   child: Text(
-                                    'Cancel',
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.cancel,
+                                    style: const TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -977,10 +978,10 @@ class _ChatListItem extends ConsumerWidget {
                               child: Container(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
-                                child: const Center(
+                                child: Center(
                                   child: Text(
-                                    'Delete',
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.delete,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,

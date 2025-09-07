@@ -10,6 +10,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String otherUserId;
@@ -48,7 +49,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       AppLogger.e('Error initializing chat', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Failed to load chat: $e');
+        CustomSnackBar.showError(context, AppLocalizations.of(context)!.failedToLoadChat(e.toString()));
       }
     }
   }
@@ -87,7 +88,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     } catch (e) {
       AppLogger.e('Error sending message', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Failed to send message: $e');
+        CustomSnackBar.showError(context, AppLocalizations.of(context)!.failedToSendMessage(e.toString()));
         // Restore the message text if sending failed
         _messageController.text = text;
       }
@@ -109,14 +110,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: otherUserAsync.when(
           data: (user) => _buildAppBarTitle(user),
           loading: () => Text(
-            'Loading...',
+            AppLocalizations.of(context)!.loading,
             style: TextStyle(
               color: Colors.white,
               fontSize: MediaQuery.of(context).size.width * 0.04,
             ),
           ),
           error: (_, __) => Text(
-            'User',
+            AppLocalizations.of(context)!.user,
             style: TextStyle(
               color: Colors.white,
               fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -265,7 +266,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         SizedBox(width: MediaQuery.of(context).size.width * 0.03),
         Expanded(
           child: Text(
-            user?.displayName ?? 'Unknown User',
+            user?.displayName ?? AppLocalizations.of(context)!.unknownUser,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.w600,
@@ -341,7 +342,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                   Text(
-                    'No messages yet',
+                    AppLocalizations.of(context)!.noMessagesYet,
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.045,
                       fontWeight: FontWeight.bold,
@@ -356,7 +357,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    'Start the conversation!',
+                    AppLocalizations.of(context)!.startConversation,
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: AppColors.textSecondary,
@@ -454,7 +455,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Text(
-                  'Error loading messages',
+                  AppLocalizations.of(context)!.errorLoadingMessages,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.bold,
@@ -511,7 +512,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 width:
                                     MediaQuery.of(context).size.width * 0.02),
                             Text(
-                              'Retry',
+                              AppLocalizations.of(context)!.retry,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize:
@@ -575,7 +576,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   fontSize: MediaQuery.of(context).size.width * 0.04,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Type a message...',
+                  hintText: AppLocalizations.of(context)!.typeMessage,
                   hintStyle: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: MediaQuery.of(context).size.width * 0.035,
