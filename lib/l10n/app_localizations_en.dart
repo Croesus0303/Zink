@@ -729,7 +729,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPastTasksYet => 'No past tasks yet';
 
   @override
-  String get notificationPermissionMessage => 'Allow permission to receive notifications about new tasks and updates.';
+  String get notificationPermissionMessage =>
+      'Allow permission to receive notifications about new tasks and updates.';
 
   @override
   String get notNow => 'Not Now';
@@ -741,10 +742,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
-  String get notificationPermissionGranted => 'Notification permission granted!';
+  String get notificationPermissionGranted =>
+      'Notification permission granted!';
 
   @override
-  String get notificationPermissionDenied => 'Notification permission denied. You can grant permission from settings.';
+  String get notificationPermissionDenied =>
+      'Notification permission denied. You can grant permission from settings.';
 
   @override
   String get today => 'Today';

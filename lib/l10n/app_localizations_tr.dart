@@ -734,7 +734,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noPastTasksYet => 'Henüz geçmiş görev yok';
 
   @override
-  String get notificationPermissionMessage => 'Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.';
+  String get notificationPermissionMessage =>
+      'Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.';
 
   @override
   String get notNow => 'Şimdi Değil';
@@ -749,7 +750,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notificationPermissionGranted => 'Bildirim izni verildi!';
 
   @override
-  String get notificationPermissionDenied => 'Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.';
+  String get notificationPermissionDenied =>
+      'Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.';
 
   @override
   String get today => 'Bugün';

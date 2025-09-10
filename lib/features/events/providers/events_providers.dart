@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data/models/event_model.dart';
 import '../data/services/events_service.dart';
 import '../../submissions/data/models/submission_model.dart';
@@ -8,6 +9,7 @@ import '../../social/data/models/like_model.dart';
 import '../../social/data/services/social_service.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/data/repositories/auth_repository.dart';
+import '../../../../core/utils/logger.dart';
 
 // Filter for submission feed
 enum SubmissionFilter { mostPopular, newest, oldest }
@@ -40,6 +42,79 @@ final activeEventProvider = FutureProvider<EventModel?>((ref) async {
 final pastEventsProvider = FutureProvider<List<EventModel>>((ref) async {
   final eventsService = ref.watch(eventsServiceProvider);
   return await eventsService.getAllPastEvents();
+});
+
+// Paginated past events state notifier
+class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventModel>>> {
+  final EventsService _eventsService;
+  DocumentSnapshot? _lastDocument;
+  bool _hasMoreData = true;
+  bool _isLoadingMore = false;
+  
+  PaginatedPastEventsNotifier(this._eventsService) : super(const AsyncValue.loading()) {
+    loadInitialEvents();
+  }
+  
+  Future<void> loadInitialEvents() async {
+    try {
+      state = const AsyncValue.loading();
+      final events = await _eventsService.getPaginatedPastEvents(limit: 5);
+      _hasMoreData = events.length == 5;
+      if (events.isNotEmpty) {
+        final snapshot = await FirebaseFirestore.instance
+            .collection(EventModel.collectionPath)
+            .doc(events.last.id)
+            .get();
+        _lastDocument = snapshot;
+      }
+      state = AsyncValue.data(events);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+  
+  Future<void> loadMoreEvents() async {
+    if (_isLoadingMore || !_hasMoreData || state.value == null) return;
+    
+    try {
+      _isLoadingMore = true;
+      final currentEvents = state.value!;
+      final newEvents = await _eventsService.getPaginatedPastEvents(
+        limit: 5, 
+        lastDocument: _lastDocument
+      );
+      
+      _hasMoreData = newEvents.length == 5;
+      if (newEvents.isNotEmpty) {
+        final snapshot = await FirebaseFirestore.instance
+            .collection(EventModel.collectionPath)
+            .doc(newEvents.last.id)
+            .get();
+        _lastDocument = snapshot;
+        state = AsyncValue.data([...currentEvents, ...newEvents]);
+      }
+    } catch (error, stackTrace) {
+      AppLogger.e('Error loading more events', error, stackTrace);
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+  
+  Future<void> refresh() async {
+    _lastDocument = null;
+    _hasMoreData = true;
+    _isLoadingMore = false;
+    await loadInitialEvents();
+  }
+  
+  bool get hasMoreData => _hasMoreData;
+  bool get isLoadingMore => _isLoadingMore;
+}
+
+// Paginated past events provider
+final paginatedPastEventsProvider = StateNotifierProvider<PaginatedPastEventsNotifier, AsyncValue<List<EventModel>>>((ref) {
+  final eventsService = ref.watch(eventsServiceProvider);
+  return PaginatedPastEventsNotifier(eventsService);
 });
 
 final eventProvider =

@@ -129,36 +129,45 @@ class HomeScreen extends ConsumerWidget {
                   ref.invalidate(pastEventsProvider);
                   await Future.delayed(const Duration(seconds: 1));
                 },
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).size.height *
-                              0.15), // Space for app bar
-                    ),
-                    const SliverToBoxAdapter(child: _NotificationPermissionPrompt()),
-                    const SliverToBoxAdapter(child: _WelcomeSection()),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 16.0),
-                        child: Text(
-                          AppLocalizations.of(context)!.pastTasks,
-                          style: TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: MediaQuery.of(context).size.width * 0.06,
-                            fontWeight: FontWeight.bold,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollInfo) {
+                    if (scrollInfo is ScrollEndNotification &&
+                        scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                      ref.read(paginatedPastEventsProvider.notifier).loadMoreEvents();
+                    }
+                    return false;
+                  },
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height *
+                                0.15), // Space for app bar
+                      ),
+                      const SliverToBoxAdapter(child: _NotificationPermissionPrompt()),
+                      const SliverToBoxAdapter(child: _WelcomeSection()),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 16.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.pastTasks,
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: MediaQuery.of(context).size.width * 0.06,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    _PastChallengesList(),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).size.height *
-                              0.04), // Bottom padding
-                    ),
-                  ],
+                      const _PaginatedPastChallengesList(),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height *
+                                0.04), // Bottom padding
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -584,13 +593,16 @@ class _WelcomeSection extends ConsumerWidget {
   }
 }
 
-class _PastChallengesList extends ConsumerWidget {
+class _PaginatedPastChallengesList extends ConsumerWidget {
+  const _PaginatedPastChallengesList();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pastEventsAsync = ref.watch(pastEventsProvider);
+    final pastEventsAsync = ref.watch(paginatedPastEventsProvider);
+    final notifier = ref.read(paginatedPastEventsProvider.notifier);
 
     return pastEventsAsync.when(
-      data: (pastEvents) => _buildList(context, pastEvents),
+      data: (pastEvents) => _buildList(context, pastEvents, notifier),
       loading: () => const SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.all(32.0),
@@ -612,7 +624,7 @@ class _PastChallengesList extends ConsumerWidget {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ElevatedButton(
-                  onPressed: () => ref.refresh(pastEventsProvider),
+                  onPressed: () => notifier.refresh(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.rosyBrown,
                     foregroundColor: Colors.white,
@@ -629,7 +641,7 @@ class _PastChallengesList extends ConsumerWidget {
     );
   }
 
-  Widget _buildList(BuildContext context, List<EventModel> pastEvents) {
+  Widget _buildList(BuildContext context, List<EventModel> pastEvents, PaginatedPastEventsNotifier notifier) {
     if (pastEvents.isEmpty) {
       return SliverToBoxAdapter(
         child: Container(
@@ -699,9 +711,22 @@ class _PastChallengesList extends ConsumerWidget {
       );
     }
 
+    final itemCount = pastEvents.length + (notifier.hasMoreData ? 1 : 0);
+    
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
+          if (index >= pastEvents.length) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Center(
+                child: notifier.isLoadingMore
+                    ? const CircularProgressIndicator(color: AppColors.rosyBrown)
+                    : const SizedBox.shrink(),
+              ),
+            );
+          }
+          
           final event = pastEvents[index];
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -938,7 +963,7 @@ class _PastChallengesList extends ConsumerWidget {
             ),
           );
         },
-        childCount: pastEvents.length,
+        childCount: itemCount,
       ),
     );
   }

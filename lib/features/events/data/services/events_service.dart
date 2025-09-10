@@ -120,6 +120,31 @@ class EventsService {
     }
   }
 
+  Future<List<EventModel>> getPaginatedPastEvents({int limit = 5, DocumentSnapshot? lastDocument}) async {
+    try {
+      final now = Timestamp.now();
+      Query query = _firestore
+          .collection(EventModel.collectionPath)
+          .where('endTime', isLessThan: now)
+          .orderBy('endTime', descending: true)
+          .limit(limit);
+      
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+      
+      final snapshot = await query.get();
+      
+      AppLogger.d('Fetched ${snapshot.docs.length} paginated past events from Firebase');
+      return snapshot.docs
+          .map((doc) => EventModel.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      AppLogger.e('Error fetching paginated past events from Firebase', e);
+      rethrow;
+    }
+  }
+
   Future<void> createEvent(EventModel event) async {
     try {
       await _firestore.collection(EventModel.collectionPath).add(event.toFirestore());
