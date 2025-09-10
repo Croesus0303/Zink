@@ -712,4 +712,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spotlight => 'SPOTLIGHT';
+
+  @override
+  String get pastTasks => 'Past Tasks';
+
+  @override
+  String get noActiveTasksRight => 'No active tasks right now';
+
+  @override
+  String get tasksLoading => 'Tasks loading...';
+
+  @override
+  String get errorLoadingTasks => 'Error occurred while loading tasks';
+
+  @override
+  String get noPastTasksYet => 'No past tasks yet';
+
+  @override
+  String get notificationPermissionMessage => 'Allow permission to receive notifications about new tasks and updates.';
+
+  @override
+  String get notNow => 'Not Now';
+
+  @override
+  String get allowPermission => 'Allow Permission';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationPermissionGranted => 'Notification permission granted!';
+
+  @override
+  String get notificationPermissionDenied => 'Notification permission denied. You can grant permission from settings.';
+
+  @override
+  String get today => 'Today';
 }

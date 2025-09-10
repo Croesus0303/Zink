@@ -1345,6 +1345,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SPOTLIGHT'**
   String get spotlight;
+
+  /// Past tasks header
+  ///
+  /// In en, this message translates to:
+  /// **'Past Tasks'**
+  String get pastTasks;
+
+  /// No active tasks message
+  ///
+  /// In en, this message translates to:
+  /// **'No active tasks right now'**
+  String get noActiveTasksRight;
+
+  /// Tasks loading message
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks loading...'**
+  String get tasksLoading;
+
+  /// Error loading tasks message
+  ///
+  /// In en, this message translates to:
+  /// **'Error occurred while loading tasks'**
+  String get errorLoadingTasks;
+
+  /// No past tasks message
+  ///
+  /// In en, this message translates to:
+  /// **'No past tasks yet'**
+  String get noPastTasksYet;
+
+  /// Notification permission request message
+  ///
+  /// In en, this message translates to:
+  /// **'Allow permission to receive notifications about new tasks and updates.'**
+  String get notificationPermissionMessage;
+
+  /// Not now button text
+  ///
+  /// In en, this message translates to:
+  /// **'Not Now'**
+  String get notNow;
+
+  /// Allow permission button text
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Permission'**
+  String get allowPermission;
+
+  /// Notifications header
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// Permission granted success message
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission granted!'**
+  String get notificationPermissionGranted;
+
+  /// Permission denied message
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission denied. You can grant permission from settings.'**
+  String get notificationPermissionDenied;
+
+  /// Today date text
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
 }
 
 class _AppLocalizationsDelegate

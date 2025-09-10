@@ -9,6 +9,7 @@ import '../../../../core/utils/logger.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -142,7 +143,7 @@ class HomeScreen extends ConsumerWidget {
                         padding:
                             const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 16.0),
                         child: Text(
-                          'Geçmiş Görevler',
+                          AppLocalizations.of(context)!.pastTasks,
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: MediaQuery.of(context).size.width * 0.06,
@@ -436,7 +437,7 @@ class _WelcomeSection extends ConsumerWidget {
           ),
           SizedBox(width: MediaQuery.of(context).size.width * 0.02),
           Text(
-            'Şu anda aktif görev bulunmuyor',
+            AppLocalizations.of(context)!.noActiveTasksRight,
             style: TextStyle(
               color: Colors.white,
               fontSize: MediaQuery.of(context).size.width * 0.038,
@@ -503,7 +504,7 @@ class _WelcomeSection extends ConsumerWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Text(
-            'Görevler yükleniyor...',
+            AppLocalizations.of(context)!.tasksLoading,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: MediaQuery.of(context).size.width * 0.055,
@@ -569,7 +570,7 @@ class _WelcomeSection extends ConsumerWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Text(
-            'Görevler yüklenirken hata oluştu',
+            AppLocalizations.of(context)!.errorLoadingTasks,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -618,7 +619,7 @@ class _PastChallengesList extends ConsumerWidget {
                     elevation: 4,
                     shadowColor: AppColors.rosyBrown.withValues(alpha: 0.3),
                   ),
-                  child: const Text('Retry'),
+                  child: Text(AppLocalizations.of(context)!.retry),
                 ),
               ],
             ),
@@ -678,7 +679,7 @@ class _PastChallengesList extends ConsumerWidget {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               Text(
-                'Henüz geçmiş görev yok',
+                AppLocalizations.of(context)!.noPastTasksYet,
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -868,7 +869,7 @@ class _PastChallengesList extends ConsumerWidget {
                                 ),
                               ),
                               child: Text(
-                                _formatDate(event.endTime),
+                                _formatDate(context, event.endTime),
                                 style: TextStyle(
                                   color: AppColors.rosyBrown,
                                   fontSize:
@@ -942,16 +943,16 @@ class _PastChallengesList extends ConsumerWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(BuildContext context, DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today';
+      return AppLocalizations.of(context)!.today;
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return AppLocalizations.of(context)!.yesterday('${date.hour}:${date.minute.toString().padLeft(2, '0')}');
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
+      return AppLocalizations.of(context)!.daysAgo(difference.inDays);
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }
@@ -1019,7 +1020,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Bildirimler',
+                      AppLocalizations.of(context)!.notifications,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: MediaQuery.of(context).size.width * 0.045,
@@ -1031,7 +1032,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.',
+                AppLocalizations.of(context)!.notificationPermissionMessage,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.9),
                   fontSize: MediaQuery.of(context).size.width * 0.038,
@@ -1065,7 +1066,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                           },
                           child: Center(
                             child: Text(
-                              'Şimdi Değil',
+                              AppLocalizations.of(context)!.notNow,
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.8),
                                 fontSize: 14,
@@ -1110,7 +1111,7 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                               
                               // Show success message
                               if (context.mounted) {
-                                CustomSnackBar.showSuccess(context, 'Bildirim izni verildi!');
+                                CustomSnackBar.showSuccess(context, AppLocalizations.of(context)!.notificationPermissionGranted);
                               }
                             } else {
                               // Dismiss the prompt since user rejected permission
@@ -1120,14 +1121,14 @@ class _NotificationPermissionPrompt extends ConsumerWidget {
                               
                               // Show error message
                               if (context.mounted) {
-                                CustomSnackBar.showError(context, 'Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.');
+                                CustomSnackBar.showError(context, AppLocalizations.of(context)!.notificationPermissionDenied);
                               }
                             }
                           },
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              'İzin Ver',
-                              style: TextStyle(
+                              AppLocalizations.of(context)!.allowPermission,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

@@ -233,5 +233,17 @@
   "profileNotSetUp": "Profil henüz ayarlanmamış",
   "pleaseCompleteProfileSetup": "Lütfen profil kurulumunu tamamlayın",
   "errorLoadingProfile": "Profil yüklenirken hata: {error}",
-  "spotlight": "ÖNEÇIKAN"
+  "spotlight": "ÖNEÇIKAN",
+  "pastTasks": "Geçmiş Görevler",
+  "noActiveTasksRight": "Şu anda aktif görev bulunmuyor",
+  "tasksLoading": "Görevler yükleniyor...",
+  "errorLoadingTasks": "Görevler yüklenirken hata oluştu",
+  "noPastTasksYet": "Henüz geçmiş görev yok",
+  "notificationPermissionMessage": "Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.",
+  "notNow": "Şimdi Değil",
+  "allowPermission": "İzin Ver",
+  "notifications": "Bildirimler",
+  "notificationPermissionGranted": "Bildirim izni verildi!",
+  "notificationPermissionDenied": "Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.",
+  "today": "Bugün"
 } 

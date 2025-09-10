@@ -988,5 +988,53 @@
   "spotlight": "SPOTLIGHT",
   "@spotlight": {
     "description": "Spotlight text"
+  },
+  "pastTasks": "Past Tasks",
+  "@pastTasks": {
+    "description": "Past tasks header"
+  },
+  "noActiveTasksRight": "No active tasks right now",
+  "@noActiveTasksRight": {
+    "description": "No active tasks message"
+  },
+  "tasksLoading": "Tasks loading...",
+  "@tasksLoading": {
+    "description": "Tasks loading message"
+  },
+  "errorLoadingTasks": "Error occurred while loading tasks",
+  "@errorLoadingTasks": {
+    "description": "Error loading tasks message"
+  },
+  "noPastTasksYet": "No past tasks yet",
+  "@noPastTasksYet": {
+    "description": "No past tasks message"
+  },
+  "notificationPermissionMessage": "Allow permission to receive notifications about new tasks and updates.",
+  "@notificationPermissionMessage": {
+    "description": "Notification permission request message"
+  },
+  "notNow": "Not Now",
+  "@notNow": {
+    "description": "Not now button text"
+  },
+  "allowPermission": "Allow Permission",
+  "@allowPermission": {
+    "description": "Allow permission button text"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications header"
+  },
+  "notificationPermissionGranted": "Notification permission granted!",
+  "@notificationPermissionGranted": {
+    "description": "Permission granted success message"
+  },
+  "notificationPermissionDenied": "Notification permission denied. You can grant permission from settings.",
+  "@notificationPermissionDenied": {
+    "description": "Permission denied message"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Today date text"
   }
 } 
