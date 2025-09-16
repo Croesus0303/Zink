@@ -33,7 +33,13 @@
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/auth/presentation/screens/login_screen.dart)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/settings/presentation/screens/settings_screen.dart)",
       "Bash(dart run flutter_tools pub run intl_utils:generate:*)",
-      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/home/presentation/screens/home_screen.dart)"
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze lib/features/home/presentation/screens/home_screen.dart)",
+      "Bash(sudo apt-get:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --help)",
+      "Bash(dart run:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

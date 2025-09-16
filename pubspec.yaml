@@ -76,6 +76,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   build_runner: ^2.4.7
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -120,3 +121,22 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_logo.png"
+  background_color: "#2D323C"  # Vibrant dark grey
+  theme_color: "#2D323C"
+  adaptive_icon_background: "#2D323C"
+  adaptive_icon_foreground: "assets/app_logo.png"
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#2D323C"  # Vibrant dark grey
+  image: "assets/app_logo.png"
+  android_12:
+    image: "assets/app_logo.png"
+    color: "#2D323C"
+  ios: true
+  android: true
