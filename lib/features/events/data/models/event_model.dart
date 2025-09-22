@@ -66,6 +66,11 @@ class EventModel {
     return DateTime.now().isAfter(endTime);
   }
 
+  bool get shouldShowSpotlight {
+    final spotlightTime = startTime.add(const Duration(hours: 6));
+    return DateTime.now().isAfter(spotlightTime);
+  }
+
   Duration get remainingTime {
     if (isExpired) return Duration.zero;
     return endTime.difference(DateTime.now());

@@ -408,17 +408,17 @@ class _EventDetailWidget extends ConsumerWidget {
 
   Widget _buildReferencePhotoSection(
       BuildContext context, EventModel event, WidgetRef ref) {
-    // If event is not expired, always show reference photo
-    if (!event.isExpired) {
+    // If spotlight should not be shown yet, always show reference photo
+    if (!event.shouldShowSpotlight) {
       return _buildFullReferenceSection(context, event);
     }
 
-    // If event is expired, check if there are submissions
+    // If spotlight should be shown, check if there are submissions
     final submissionsAsync = ref.watch(submissionsProvider(event.id));
 
     return submissionsAsync.when(
       data: (submissions) {
-        // If expired and has submissions, show only description (winner widget will be shown below)
+        // If spotlight should be shown and has submissions, show only description (winner widget will be shown below)
         if (submissions.isNotEmpty) {
           return Container(
             padding: const EdgeInsets.only(bottom: 16),
@@ -445,7 +445,7 @@ class _EventDetailWidget extends ConsumerWidget {
           );
         }
 
-        // If expired but no submissions, show full reference section
+        // If spotlight should be shown but no submissions, show full reference section
         return _buildFullReferenceSection(context, event);
       },
       loading: () => _buildFullReferenceSection(context, event),
@@ -618,8 +618,8 @@ class _EventDetailWidget extends ConsumerWidget {
   }
 
   Widget _buildStatusAndSubmitSection(BuildContext context, EventModel event) {
-    // If event is expired, show winner widget if there are submissions
-    if (event.isExpired) {
+    // If spotlight should be shown, show winner widget if there are submissions
+    if (event.shouldShowSpotlight) {
       return _WinnerAnnouncementWidget(eventId: event.id);
     }
 

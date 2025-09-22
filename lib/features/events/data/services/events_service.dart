@@ -65,15 +65,15 @@ class EventsService {
           .collection(EventModel.collectionPath)
           .where('startTime', isLessThanOrEqualTo: now)
           .where('endTime', isGreaterThan: now)
-          .orderBy('endTime', descending: false)
+          .orderBy('startTime', descending: true)
           .limit(1)
           .get();
-      
+
       if (snapshot.docs.isEmpty) {
         AppLogger.d('No active events found in Firebase');
         return null;
       }
-      
+
       AppLogger.d('Found active event in Firebase');
       return EventModel.fromFirestore(snapshot.docs.first);
     } catch (e) {
@@ -85,12 +85,23 @@ class EventsService {
   Future<List<EventModel>> getPastEvents() async {
     try {
       final now = Timestamp.now();
-      final snapshot = await _firestore
-          .collection(EventModel.collectionPath)
-          .where('endTime', isLessThan: now)
-          .orderBy('endTime', descending: true)
+      final activeEvent = await getActiveEvent();
+
+      Query query = _firestore
+          .collection(EventModel.collectionPath);
+
+      if (activeEvent != null) {
+        // Include all events with start time older than active event's start time
+        query = query.where('startTime', isLessThan: Timestamp.fromDate(activeEvent.startTime));
+      } else {
+        // If no active event, show only ended events
+        query = query.where('endTime', isLessThan: now);
+      }
+
+      final snapshot = await query
+          .orderBy('startTime', descending: true)
           .get();
-      
+
       AppLogger.d('Fetched ${snapshot.docs.length} past events from Firebase');
       return snapshot.docs
           .map((doc) => EventModel.fromFirestore(doc))
@@ -104,12 +115,23 @@ class EventsService {
   Future<List<EventModel>> getAllPastEvents() async {
     try {
       final now = Timestamp.now();
-      final snapshot = await _firestore
-          .collection(EventModel.collectionPath)
-          .where('endTime', isLessThan: now)
-          .orderBy('endTime', descending: true)
+      final activeEvent = await getActiveEvent();
+
+      Query query = _firestore
+          .collection(EventModel.collectionPath);
+
+      if (activeEvent != null) {
+        // Include all events with start time older than active event's start time
+        query = query.where('startTime', isLessThan: Timestamp.fromDate(activeEvent.startTime));
+      } else {
+        // If no active event, show only ended events
+        query = query.where('endTime', isLessThan: now);
+      }
+
+      final snapshot = await query
+          .orderBy('startTime', descending: true)
           .get();
-      
+
       AppLogger.d('Fetched ${snapshot.docs.length} all past events from Firebase');
       return snapshot.docs
           .map((doc) => EventModel.fromFirestore(doc))
@@ -123,18 +145,29 @@ class EventsService {
   Future<List<EventModel>> getPaginatedPastEvents({int limit = 5, DocumentSnapshot? lastDocument}) async {
     try {
       final now = Timestamp.now();
+      final activeEvent = await getActiveEvent();
+
       Query query = _firestore
-          .collection(EventModel.collectionPath)
-          .where('endTime', isLessThan: now)
-          .orderBy('endTime', descending: true)
+          .collection(EventModel.collectionPath);
+
+      if (activeEvent != null) {
+        // Include all events with start time older than active event's start time
+        query = query.where('startTime', isLessThan: Timestamp.fromDate(activeEvent.startTime));
+      } else {
+        // If no active event, show only ended events
+        query = query.where('endTime', isLessThan: now);
+      }
+
+      query = query
+          .orderBy('startTime', descending: true)
           .limit(limit);
-      
+
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument);
       }
-      
+
       final snapshot = await query.get();
-      
+
       AppLogger.d('Fetched ${snapshot.docs.length} paginated past events from Firebase');
       return snapshot.docs
           .map((doc) => EventModel.fromFirestore(doc))
