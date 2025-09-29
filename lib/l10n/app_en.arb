@@ -1036,5 +1036,26 @@
   "today": "Today",
   "@today": {
     "description": "Today date text"
+  },
+  "daysLeft": "{days}d left",
+  "@daysLeft": {
+    "description": "Days left format",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAndHoursLeft": "{days}d {hours}h left",
+  "@daysAndHoursLeft": {
+    "description": "Days and hours left format",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
   }
 } 

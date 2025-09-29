@@ -245,5 +245,7 @@
   "notifications": "Bildirimler",
   "notificationPermissionGranted": "Bildirim izni verildi!",
   "notificationPermissionDenied": "Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.",
-  "today": "Bugün"
+  "today": "Bugün",
+  "daysLeft": "{days}g kaldı",
+  "daysAndHoursLeft": "{days}g {hours}s kaldı"
 } 

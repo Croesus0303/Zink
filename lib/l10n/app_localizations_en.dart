@@ -751,4 +751,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String daysLeft(int days) {
+    return '${days}d left';
+  }
+
+  @override
+  String daysAndHoursLeft(int days, int hours) {
+    return '${days}d ${hours}h left';
+  }
 }

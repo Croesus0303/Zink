@@ -1417,6 +1417,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
+
+  /// Days left format
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d left'**
+  String daysLeft(int days);
+
+  /// Days and hours left format
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d {hours}h left'**
+  String daysAndHoursLeft(int days, int hours);
 }
 
 class _AppLocalizationsDelegate

@@ -886,20 +886,26 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: AppColors.rosyBrown.withValues(alpha: 0.1),
+                                color: event.isExpired
+                                    ? AppColors.midnightGreen.withValues(alpha: 0.6)
+                                    : AppColors.primaryCyan.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                                  color: event.isExpired
+                                      ? AppColors.midnightGreen.withValues(alpha: 0.8)
+                                      : AppColors.primaryCyan.withValues(alpha: 0.5),
                                   width: 1,
                                 ),
                               ),
                               child: Text(
-                                _formatDate(context, event.endTime),
+                                event.isExpired
+                                    ? AppLocalizations.of(context)!.ended
+                                    : AppLocalizations.of(context)!.active,
                                 style: TextStyle(
-                                  color: AppColors.rosyBrown,
+                                  color: Colors.white,
                                   fontSize:
-                                      MediaQuery.of(context).size.width * 0.03,
-                                  fontWeight: FontWeight.w500,
+                                      MediaQuery.of(context).size.width * 0.028,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -968,20 +974,6 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
     );
   }
 
-  String _formatDate(BuildContext context, DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays == 0) {
-      return AppLocalizations.of(context)!.today;
-    } else if (difference.inDays == 1) {
-      return AppLocalizations.of(context)!.yesterday('${date.hour}:${date.minute.toString().padLeft(2, '0')}');
-    } else if (difference.inDays < 7) {
-      return AppLocalizations.of(context)!.daysAgo(difference.inDays);
-    } else {
-      return '${date.day}/${date.month}/${date.year}';
-    }
-  }
 }
 
 class _NotificationPermissionPrompt extends ConsumerWidget {

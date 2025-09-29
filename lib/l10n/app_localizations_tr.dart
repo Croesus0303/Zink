@@ -755,4 +755,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get today => 'Bugün';
+
+  @override
+  String daysLeft(int days) {
+    return '${days}g kaldı';
+  }
+
+  @override
+  String daysAndHoursLeft(int days, int hours) {
+    return '${days}g ${hours}s kaldı';
+  }
 }

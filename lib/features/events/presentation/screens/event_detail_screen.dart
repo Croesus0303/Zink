@@ -408,17 +408,17 @@ class _EventDetailWidget extends ConsumerWidget {
 
   Widget _buildReferencePhotoSection(
       BuildContext context, EventModel event, WidgetRef ref) {
-    // If spotlight should not be shown yet, always show reference photo
-    if (!event.shouldShowSpotlight) {
+    // If event is still active, always show reference photo
+    if (!event.isExpired) {
       return _buildFullReferenceSection(context, event);
     }
 
-    // If spotlight should be shown, check if there are submissions
+    // If event has ended, check if there are submissions
     final submissionsAsync = ref.watch(submissionsProvider(event.id));
 
     return submissionsAsync.when(
       data: (submissions) {
-        // If spotlight should be shown and has submissions, show only description (winner widget will be shown below)
+        // If event has ended and has submissions, show only description (winner widget will be shown below)
         if (submissions.isNotEmpty) {
           return Container(
             padding: const EdgeInsets.only(bottom: 16),
@@ -445,7 +445,7 @@ class _EventDetailWidget extends ConsumerWidget {
           );
         }
 
-        // If spotlight should be shown but no submissions, show full reference section
+        // If event has ended but no submissions, show full reference section
         return _buildFullReferenceSection(context, event);
       },
       loading: () => _buildFullReferenceSection(context, event),
@@ -618,8 +618,8 @@ class _EventDetailWidget extends ConsumerWidget {
   }
 
   Widget _buildStatusAndSubmitSection(BuildContext context, EventModel event) {
-    // If spotlight should be shown, show winner widget if there are submissions
-    if (event.shouldShowSpotlight) {
+    // If event has ended, show winner widget
+    if (event.isExpired) {
       return _WinnerAnnouncementWidget(eventId: event.id);
     }
 
@@ -750,24 +750,6 @@ class _EventDetailWidget extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.12,
-                            height: MediaQuery.of(context).size.width * 0.12,
-                            child: Image.asset(
-                              'assets/app_logo.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.white,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.12,
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.025),
                           Text(
                             AppLocalizations.of(context)!.submit,
                             style: TextStyle(
@@ -791,10 +773,18 @@ class _EventDetailWidget extends ConsumerWidget {
 
   String _formatTimeRemaining(BuildContext context, DateTime endTime) {
     final duration = endTime.difference(DateTime.now());
-    final hours = duration.inHours;
+    final days = duration.inDays;
+    final hours = duration.inHours % 24;
     final minutes = duration.inMinutes % 60;
 
-    if (hours > 0) {
+    if (days > 0) {
+      if (hours > 0) {
+        // For now, fall back to showing days only since new localizations might not be available yet
+        return "${days}d ${hours}h left";
+      } else {
+        return "${days}d left";
+      }
+    } else if (hours > 0) {
       return AppLocalizations.of(context)!.hoursLeft(hours, minutes);
     } else if (minutes > 0) {
       return AppLocalizations.of(context)!.minutesLeft(minutes);
