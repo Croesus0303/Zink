@@ -39,7 +39,8 @@
       "Bash(python3:*)",
       "Bash(pip3 install:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --help)",
-      "Bash(dart run:*)"
+      "Bash(dart run:*)",
+      "Bash(touch:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
