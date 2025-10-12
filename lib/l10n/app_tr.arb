@@ -9,6 +9,7 @@
   "existingUserPrompt": "Zaten hesabın var mı? Devam etmek için giriş yap",
   "continueWithApple": "Apple ile Devam Et",
   "signOut": "Çıkış Yap",
+  "signOutConfirmation": "Çıkış yapmak istediğinizden emin misiniz?",
   "welcome": "Hoşgeldin {name}!",
   
   "home": "Ana Sayfa",

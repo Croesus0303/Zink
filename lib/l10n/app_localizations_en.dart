@@ -34,6 +34,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign Out';
 
   @override
+  String get signOutConfirmation => 'Are you sure you want to sign out?';
+
+  @override
   String welcome(String name) {
     return 'Welcome $name!';
   }

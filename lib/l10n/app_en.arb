@@ -33,6 +33,10 @@
   "@signOut": {
     "description": "Sign out button text"
   },
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "@signOutConfirmation": {
+    "description": "Sign out confirmation dialog message"
+  },
   "welcome": "Welcome {name}!",
   "@welcome": {
     "description": "Welcome message with user name",

@@ -643,34 +643,67 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   } else if (value == 'settings') {
                     context.push('/settings');
                   } else if (value == 'signOut') {
-                    try {
-                      final authService = ref.read(authServiceProvider);
-                      await authService.signOut();
-                    } catch (e) {
-                      if (context.mounted) {
-                        CustomSnackBar.showError(context, 'Sign out failed: ${e.toString()}');
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: AppColors.midnightGreen,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: AppColors.iceBorder,
+                            width: 1.5,
+                          ),
+                        ),
+                        title: Text(
+                          AppLocalizations.of(context)!.signOut,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Text(
+                          AppLocalizations.of(context)!.signOutConfirmation,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text(
+                              AppLocalizations.of(context)!.signOut,
+                              style: const TextStyle(
+                                color: AppColors.rosyBrown,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirmed == true) {
+                      try {
+                        final authService = ref.read(authServiceProvider);
+                        await authService.signOut();
+                      } catch (e) {
+                        if (context.mounted) {
+                          CustomSnackBar.showError(context, 'Sign out failed: ${e.toString()}');
+                        }
                       }
                     }
                   }
                 },
                 itemBuilder: (context) => [
-                  // Caret indicator
-                  PopupMenuItem<String>(
-                    enabled: false,
-                    height: 0,
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      margin: EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.02,
-                        bottom: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      child: Icon(
-                        Icons.keyboard_arrow_up,
-                        color: AppColors.iceBorder,
-                        size: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                    ),
-                  ),
                   // Edit Profile
                   PopupMenuItem<String>(
                     value: 'editProfile',

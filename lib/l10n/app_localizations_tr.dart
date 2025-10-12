@@ -34,6 +34,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get signOut => 'Çıkış Yap';
 
   @override
+  String get signOutConfirmation => 'Çıkış yapmak istediğinizden emin misiniz?';
+
+  @override
   String welcome(String name) {
     return 'Hoşgeldin $name!';
   }

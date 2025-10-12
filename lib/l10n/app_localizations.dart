@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Sign Out'**
   String get signOut;
 
+  /// Sign out confirmation dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get signOutConfirmation;
+
   /// Welcome message with user name
   ///
   /// In en, this message translates to:
