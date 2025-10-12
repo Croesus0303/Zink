@@ -40,7 +40,8 @@
       "Bash(pip3 install:*)",
       "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter --help)",
       "Bash(dart run:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(/mnt/c/Users/bugra/development/flutter/bin/flutter analyze:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

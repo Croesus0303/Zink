@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'dart:io';
 import '../../../../core/utils/logger.dart';
@@ -13,16 +14,19 @@ class AuthRepository {
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
+  final FirebaseMessaging _messaging;
 
   AuthRepository({
     required FirebaseAuth firebaseAuth,
     required GoogleSignIn googleSignIn,
     required FirebaseFirestore firestore,
     required FirebaseStorage storage,
+    required FirebaseMessaging messaging,
   })  : _firebaseAuth = firebaseAuth,
         _googleSignIn = googleSignIn,
         _firestore = firestore,
-        _storage = storage;
+        _storage = storage,
+        _messaging = messaging;
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
@@ -64,6 +68,8 @@ class AuthRepository {
           // Don't create document here - let onboarding handle it
         } else {
           AppLogger.i('Existing user signed in');
+          // Update FCM token for existing users
+          await updateFCMToken(userCredential.user!.uid);
         }
       }
 
@@ -129,6 +135,8 @@ class AuthRepository {
           }
         } else {
           AppLogger.i('Existing Apple user signed in');
+          // Update FCM token for existing users
+          await updateFCMToken(userCredential.user!.uid);
         }
       }
 
@@ -205,6 +213,9 @@ class AuthRepository {
         throw Exception('Username is already taken');
       }
 
+      // Get FCM token
+      final fcmToken = await _messaging.getToken();
+
       // Create the complete user document
       final userData = {
         'uid': user.uid,
@@ -216,6 +227,7 @@ class AuthRepository {
         'photoURL': user.photoURL,
         'socialLinks': {},
         'isOnboardingComplete': true,
+        if (fcmToken != null) 'fcmToken': fcmToken,
       };
 
       await _firestore
@@ -225,6 +237,9 @@ class AuthRepository {
 
       AppLogger.i(
           'User onboarding completed and document created for user: ${user.uid}');
+      if (fcmToken != null) {
+        AppLogger.i('FCM token stored during onboarding: ${fcmToken.substring(0, 20)}...');
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Failed to complete user onboarding', e, stackTrace);
       rethrow;
@@ -286,6 +301,8 @@ class AuthRepository {
           AppLogger.i('User document not found, will require onboarding');
         } else {
           AppLogger.i('Existing user signed in');
+          // Update FCM token for existing users
+          await updateFCMToken(userCredential.user!.uid);
         }
       }
 
@@ -520,6 +537,33 @@ class AuthRepository {
       // Don't rethrow here as storage deletion is not critical
     }
   }
+
+  Future<void> updateFCMToken(String userId) async {
+    try {
+      AppLogger.i('Updating FCM token for user: $userId');
+
+      // Get FCM token
+      final fcmToken = await _messaging.getToken();
+
+      if (fcmToken == null) {
+        AppLogger.w('FCM token is null, skipping update');
+        return;
+      }
+
+      // Update the user document with FCM token
+      await _firestore
+          .collection(UserModel.collectionPath)
+          .doc(userId)
+          .set({
+        'fcmToken': fcmToken,
+      }, SetOptions(merge: true));
+
+      AppLogger.i('FCM token updated successfully: ${fcmToken.substring(0, 20)}...');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to update FCM token', e, stackTrace);
+      // Don't rethrow - FCM token update failure shouldn't block login
+    }
+  }
 }
 
 // Providers
@@ -533,5 +577,6 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     googleSignIn: ref.watch(googleSignInProvider),
     firestore: FirebaseFirestore.instance,
     storage: FirebaseStorage.instance,
+    messaging: FirebaseMessaging.instance,
   );
 });
