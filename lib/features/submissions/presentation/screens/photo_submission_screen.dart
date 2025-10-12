@@ -104,7 +104,9 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       if (mounted) {
         // Refresh the submission count provider for this specific event
         ref.invalidate(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: widget.eventId)));
-        
+        // Refresh the submissions list for the event
+        ref.invalidate(submissionsProvider(widget.eventId));
+
         if (mounted) {
           _showSuccessSnackBar(
             AppLocalizations.of(context)!.submissionSuccessful,

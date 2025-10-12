@@ -124,6 +124,7 @@ class HomeScreen extends ConsumerWidget {
               // Main content
               RefreshIndicator(
                 color: AppColors.rosyBrown,
+                edgeOffset: MediaQuery.of(context).size.height * 0.15,
                 onRefresh: () async {
                   ref.invalidate(activeEventProvider);
                   ref.invalidate(pastEventsProvider);

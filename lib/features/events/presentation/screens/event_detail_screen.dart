@@ -323,6 +323,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           child: RefreshIndicator(
             color: AppColors.pineGreen,
             onRefresh: _onRefresh,
+            edgeOffset: MediaQuery.of(context).padding.top + kToolbarHeight,
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
