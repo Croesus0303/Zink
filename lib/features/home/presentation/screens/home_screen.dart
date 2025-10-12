@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
@@ -260,32 +261,49 @@ class _WelcomeSection extends ConsumerWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(26),
                           child: activeEvent.referenceImageURL.isNotEmpty
-                              ? Image.network(
-                                  activeEvent.referenceImageURL,
+                              ? CachedNetworkImage(
+                                  imageUrl: activeEvent.referenceImageURL,
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      decoration: const BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            AppColors.rosyBrown,
-                                            AppColors.pineGreen,
-                                            AppColors.midnightGreen,
-                                          ],
-                                        ),
+                                  placeholder: (context, url) => Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          AppColors.rosyBrown,
+                                          AppColors.pineGreen,
+                                          AppColors.midnightGreen,
+                                        ],
                                       ),
-                                      child: Icon(
-                                        Icons.photo_camera_outlined,
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
                                         color: Colors.white,
-                                        size:
-                                            MediaQuery.of(context).size.width * 0.2,
+                                        strokeWidth: 4,
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) => Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          AppColors.rosyBrown,
+                                          AppColors.pineGreen,
+                                          AppColors.midnightGreen,
+                                        ],
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.photo_camera_outlined,
+                                      color: Colors.white,
+                                      size:
+                                          MediaQuery.of(context).size.width * 0.2,
+                                    ),
+                                  ),
                                 )
                               : Container(
                                   decoration: const BoxDecoration(
@@ -326,26 +344,44 @@ class _WelcomeSection extends ConsumerWidget {
                               ],
                             ),
                             child: ClipOval(
-                              child: Image.network(
-                                activeEvent.badgeURL!,
+                              child: CachedNetworkImage(
+                                imageUrl: activeEvent.badgeURL!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppColors.primaryOrange.withValues(alpha: 0.8),
-                                          AppColors.rosyBrown.withValues(alpha: 0.8),
-                                        ],
+                                placeholder: (context, url) => Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.primaryOrange.withValues(alpha: 0.6),
+                                        AppColors.rosyBrown.withValues(alpha: 0.6),
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
                                       ),
                                     ),
-                                    child: Icon(
-                                      Icons.emoji_events,
-                                      color: Colors.white,
-                                      size: MediaQuery.of(context).size.width * 0.06,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.primaryOrange.withValues(alpha: 0.8),
+                                        AppColors.rosyBrown.withValues(alpha: 0.8),
+                                      ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                  child: Icon(
+                                    Icons.emoji_events,
+                                    color: Colors.white,
+                                    size: MediaQuery.of(context).size.width * 0.06,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -813,33 +849,55 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(18),
                                 child: event.referenceImageURL.isNotEmpty
-                                    ? Image.network(
-                                        event.referenceImageURL,
+                                    ? CachedNetworkImage(
+                                        imageUrl: event.referenceImageURL,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                                colors: [
-                                                  AppColors.rosyBrown
-                                                      .withValues(alpha: 0.4),
-                                                  AppColors.pineGreen
-                                                      .withValues(alpha: 0.3),
-                                                ],
+                                        placeholder: (context, url) => Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                AppColors.rosyBrown
+                                                    .withValues(alpha: 0.4),
+                                                AppColors.pineGreen
+                                                    .withValues(alpha: 0.3),
+                                              ],
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: SizedBox(
+                                              width: 32,
+                                              height: 32,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 3,
                                               ),
                                             ),
-                                            child: Icon(
-                                              Icons.photo_camera_outlined,
-                                              color: Colors.white,
-                                              size: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.08,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) => Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                AppColors.rosyBrown
+                                                    .withValues(alpha: 0.4),
+                                                AppColors.pineGreen
+                                                    .withValues(alpha: 0.3),
+                                              ],
                                             ),
-                                          );
-                                        },
+                                          ),
+                                          child: Icon(
+                                            Icons.photo_camera_outlined,
+                                            color: Colors.white,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.08,
+                                          ),
+                                        ),
                                       )
                                     : Container(
                                         decoration: BoxDecoration(
@@ -940,26 +998,44 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                             ],
                           ),
                           child: ClipOval(
-                            child: Image.network(
-                              event.badgeURL!,
+                            child: CachedNetworkImage(
+                              imageUrl: event.badgeURL!,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppColors.primaryOrange.withValues(alpha: 0.8),
-                                        AppColors.rosyBrown.withValues(alpha: 0.8),
-                                      ],
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.primaryOrange.withValues(alpha: 0.6),
+                                      AppColors.rosyBrown.withValues(alpha: 0.6),
+                                    ],
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
                                     ),
                                   ),
-                                  child: Icon(
-                                    Icons.emoji_events,
-                                    color: Colors.white,
-                                    size: MediaQuery.of(context).size.width * 0.04,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.primaryOrange.withValues(alpha: 0.8),
+                                      AppColors.rosyBrown.withValues(alpha: 0.8),
+                                    ],
                                   ),
-                                );
-                              },
+                                ),
+                                child: Icon(
+                                  Icons.emoji_events,
+                                  color: Colors.white,
+                                  size: MediaQuery.of(context).size.width * 0.04,
+                                ),
+                              ),
                             ),
                           ),
                         ),

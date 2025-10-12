@@ -1101,10 +1101,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   ],
                 ),
                 child: ClipOval(
-                  child: Image.network(
-                    badgeURL,
+                  child: CachedNetworkImage(
+                    imageUrl: badgeURL,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primaryOrange.withValues(alpha: 0.4),
+                            AppColors.rosyBrown.withValues(alpha: 0.4),
+                          ],
+                        ),
+                      ),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryOrange,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [

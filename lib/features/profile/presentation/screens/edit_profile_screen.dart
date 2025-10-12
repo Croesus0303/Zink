@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
 import '../../../auth/data/repositories/auth_repository.dart';
 import '../../../auth/data/models/user_model.dart';
@@ -389,7 +390,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             backgroundImage: _selectedImage != null
                                 ? FileImage(_selectedImage!) as ImageProvider
                                 : (widget.user.photoURL != null
-                                    ? NetworkImage(widget.user.photoURL!)
+                                    ? CachedNetworkImageProvider(widget.user.photoURL!)
                                         as ImageProvider
                                     : null),
                             child: _selectedImage == null && widget.user.photoURL == null

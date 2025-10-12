@@ -561,27 +561,46 @@ class _EventDetailWidget extends ConsumerWidget {
                         ],
                       ),
                       child: ClipOval(
-                        child: Image.network(
-                          event.badgeURL!,
+                        child: CachedNetworkImage(
+                          imageUrl: event.badgeURL!,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.primaryOrange
-                                        .withValues(alpha: 0.9),
-                                    AppColors.rosyBrown.withValues(alpha: 0.9),
-                                  ],
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primaryOrange
+                                      .withValues(alpha: 0.7),
+                                  AppColors.rosyBrown.withValues(alpha: 0.7),
+                                ],
+                              ),
+                            ),
+                            child: const Center(
+                              child: SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 3,
                                 ),
                               ),
-                              child: Icon(
-                                Icons.emoji_events,
-                                color: Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primaryOrange
+                                      .withValues(alpha: 0.9),
+                                  AppColors.rosyBrown.withValues(alpha: 0.9),
+                                ],
                               ),
-                            );
-                          },
+                            ),
+                            child: Icon(
+                              Icons.emoji_events,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
                         ),
                       ),
                     ),
