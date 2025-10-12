@@ -8,7 +8,10 @@ build/
 .metadata
 context.txt
 shortcuts.txt
-
+functions/node_modules/
+functions/package-lock.json
+functions/yarn.lock
+functions
 # Android
 android/.gradle/
 android/captures/
@@ -81,7 +84,6 @@ windows/*.[Cc]ache
 # Others
 .idea/
 *.iml 
-
 # Firebase
 google-services.json
 GoogleService-Info.plist
