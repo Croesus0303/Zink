@@ -338,14 +338,47 @@ class SettingsScreen extends ConsumerWidget {
 
 
   void _showAboutDialog(BuildContext context) {
-    showAboutDialog(
+    showDialog(
       context: context,
-      applicationName: 'Zink',
-      applicationVersion: '1.0.0',
-      applicationIcon: const Icon(Icons.camera_alt, size: 48),
-      children: [
-        const Text('A social photo sharing app for events and moments.'),
-      ],
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.backgroundSecondary,
+        title: const Text(
+          'About Zink',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.camera_alt, size: 48, color: AppColors.pineGreen),
+            const SizedBox(height: 16),
+            const Text(
+              'Zink',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Version 1.0.0',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'A social photo sharing app for events and moments.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 
