@@ -1149,13 +1149,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildTabContent(BuildContext context, WidgetRef ref,
       String targetUserId, bool isOwnProfile) {
-    return SliverFillRemaining(
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildUserSubmissions(context, ref, targetUserId),
-          _buildLikedSubmissions(context, ref, targetUserId),
-        ],
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildUserSubmissions(context, ref, targetUserId),
+            _buildLikedSubmissions(context, ref, targetUserId),
+          ],
+        ),
       ),
     );
   }
