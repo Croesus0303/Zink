@@ -654,7 +654,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         ),
                         content: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.midnightGreen.withValues(alpha: 0.95),
+                            color:
+                                AppColors.midnightGreen.withValues(alpha: 0.95),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
                               color: AppColors.iceBorder,
@@ -683,7 +684,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  AppLocalizations.of(context)!.signOutConfirmation,
+                                  AppLocalizations.of(context)!
+                                      .signOutConfirmation,
                                   style: const TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 16,
@@ -695,7 +697,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     TextButton(
-                                      onPressed: () => Navigator.of(context).pop(false),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
                                       child: Text(
                                         AppLocalizations.of(context)!.cancel,
                                         style: const TextStyle(
@@ -709,7 +712,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: [
-                                            AppColors.rosyBrown.withValues(alpha: 0.8),
+                                            AppColors.rosyBrown
+                                                .withValues(alpha: 0.8),
                                             AppColors.rosyBrown,
                                           ],
                                         ),
@@ -718,15 +722,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                       child: Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          borderRadius: BorderRadius.circular(12),
-                                          onTap: () => Navigator.of(context).pop(true),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          onTap: () =>
+                                              Navigator.of(context).pop(true),
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 20,
                                               vertical: 12,
                                             ),
                                             child: Text(
-                                              AppLocalizations.of(context)!.signOut,
+                                              AppLocalizations.of(context)!
+                                                  .signOut,
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -1043,56 +1050,82 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildSingleBadgePage(BuildContext context, List<String> badges) {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: 1,
-      ),
-      itemCount: badges.length,
-      itemBuilder: (context, index) {
-        final badgeURL = badges[index];
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.primaryOrange.withValues(alpha: 0.4),
-              width: 1.5,
+    return Column(
+      children: [
+        // Title section
+        Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 12),
+          child: Text(
+            'Badges',
+            style: TextStyle(
+              color: AppColors.warningColor,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.5),
+                  blurRadius: 8,
+                ),
+              ],
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
-          child: ClipOval(
-            child: Image.network(
-              badgeURL,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
+        ),
+        // GridView for badges
+        Expanded(
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 1,
+            ),
+            itemCount: badges.length,
+            itemBuilder: (context, index) {
+              final badgeURL = badges[index];
+              return Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primaryOrange.withValues(alpha: 0.6),
-                      AppColors.rosyBrown.withValues(alpha: 0.6),
-                    ],
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    badgeURL,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primaryOrange.withValues(alpha: 0.6),
+                            AppColors.rosyBrown.withValues(alpha: 0.6),
+                          ],
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.emoji_events,
+                        color: AppColors.primaryOrange,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
-                child: const Icon(
-                  Icons.emoji_events,
-                  color: AppColors.primaryOrange,
-                  size: 20,
-                ),
-              ),
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 
