@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserModel {
   final String uid;
   final String displayName;
-  final String? username;
+  final String username;
   final int? age;
   final String? photoURL;
   final Map<String, String> socialLinks;
@@ -13,7 +13,7 @@ class UserModel {
   UserModel({
     required this.uid,
     required this.displayName,
-    this.username,
+    required this.username,
     this.age,
     this.photoURL,
     Map<String, String>? socialLinks,
@@ -27,7 +27,7 @@ class UserModel {
     return UserModel(
       uid: doc.id,
       displayName: data['displayName'] ?? '',
-      username: data['username'],
+      username: data['username'] ?? '',
       age: data['age'],
       photoURL: data['photoURL'],
       socialLinks: Map<String, String>.from(data['socialLinks'] ?? {}),

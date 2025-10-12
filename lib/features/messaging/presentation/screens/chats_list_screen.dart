@@ -449,7 +449,7 @@ class _ChatListItem extends ConsumerWidget {
                         : null,
                     child: otherUser?.photoURL == null
                         ? Text(
-                            otherUser?.displayName
+                            otherUser?.username
                                     ?.substring(0, 1)
                                     .toUpperCase() ??
                                 '?',
@@ -469,7 +469,7 @@ class _ChatListItem extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        otherUser?.displayName ?? AppLocalizations.of(context)!.unknownUser,
+                        otherUser?.username ?? AppLocalizations.of(context)!.unknownUser,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,

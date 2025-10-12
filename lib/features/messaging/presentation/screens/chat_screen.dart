@@ -250,8 +250,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   : null,
               child: user?.photoURL == null
                   ? Text(
-                      (user?.displayName ?? '').isNotEmpty
-                          ? user!.displayName.substring(0, 1).toUpperCase()
+                      (user?.username ?? '').isNotEmpty
+                          ? user!.username.substring(0, 1).toUpperCase()
                           : '?',
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.035,
@@ -266,7 +266,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         SizedBox(width: MediaQuery.of(context).size.width * 0.03),
         Expanded(
           child: Text(
-            user?.displayName ?? AppLocalizations.of(context)!.unknownUser,
+            user?.username ?? AppLocalizations.of(context)!.unknownUser,
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.04,
               fontWeight: FontWeight.w600,
@@ -712,8 +712,8 @@ class _MessageBubble extends StatelessWidget {
                             : null,
                         child: otherUser?.photoURL == null
                             ? Text(
-                                (otherUser?.displayName ?? '').isNotEmpty
-                                    ? otherUser!.displayName.substring(0, 1).toUpperCase()
+                                (otherUser?.username ?? '').isNotEmpty
+                                    ? otherUser!.username.substring(0, 1).toUpperCase()
                                     : '?',
                                 style: TextStyle(
                                   fontSize:

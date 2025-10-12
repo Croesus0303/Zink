@@ -42,8 +42,8 @@ class ClickableUserAvatar extends StatelessWidget {
                 : null,
             child: user?.photoURL == null
                 ? Text(
-                    (user?.displayName ?? '').isNotEmpty 
-                        ? user!.displayName.substring(0, 1).toUpperCase() 
+                    (user?.username ?? '').isNotEmpty
+                        ? user!.username.substring(0, 1).toUpperCase()
                         : '?',
                     style: TextStyle(fontSize: radius * 0.8),
                   )
@@ -87,16 +87,16 @@ class ClickableUserName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final targetUserId = userId ?? user?.uid;
-    final displayName = user?.displayName ?? 'Unknown User';
-    
+    final username = user?.username ?? 'Unknown User';
+
     if (targetUserId == null) {
-      return Text(displayName, style: style);
+      return Text(username, style: style);
     }
 
     return GestureDetector(
       onTap: () => context.push('/profile/$targetUserId'),
       child: Text(
-        displayName,
+        username,
         style: (style ?? const TextStyle()).copyWith(
           decoration: style?.decoration ?? TextDecoration.underline,
           decorationColor: style?.color ?? Theme.of(context).primaryColor,

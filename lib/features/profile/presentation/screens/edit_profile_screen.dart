@@ -394,7 +394,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                     : null),
                             child: _selectedImage == null && widget.user.photoURL == null
                                 ? Text(
-                                    widget.user.displayName
+                                    widget.user.username
                                         .substring(0, 1)
                                         .toUpperCase(),
                                     style: TextStyle(

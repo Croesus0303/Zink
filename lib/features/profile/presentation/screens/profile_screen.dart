@@ -468,7 +468,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         title: Text(
           isOwnProfile
               ? AppLocalizations.of(context)!.profile
-              : user.displayName,
+              : user.username,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -1016,7 +1016,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           _buildSimpleAvatar(context, user),
           const SizedBox(height: 16),
           Text(
-            user?.displayName ?? 'Unknown User',
+            user?.username ?? 'Unknown User',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: MediaQuery.of(context).size.width * 0.065,

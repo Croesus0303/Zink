@@ -63,7 +63,7 @@ final updateUserMessagingDataProvider = Provider.autoDispose<Future<void> Functi
     final messagingService = ref.read(messagingServiceProvider);
     await messagingService.updateUserData(
       currentUser.uid,
-      userData.displayName,
+      userData.username,
       profileImageUrl ?? userData.photoURL,
       fcmToken,
     );
