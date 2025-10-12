@@ -530,68 +530,6 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             padding: EdgeInsets.zero,
           ),
         ),
-        actions: [
-          if (_selectedImage != null && !hasReachedLimit)
-            Container(
-              margin: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width * 0.03,
-                  top: 3,
-                  bottom: 3),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: _isSubmitting
-                      ? [
-                          AppColors.midnightGreen.withValues(alpha: 0.6),
-                          AppColors.midnightGreen.withValues(alpha: 0.4),
-                        ]
-                      : [
-                          AppColors.rosyBrown.withValues(alpha: 0.8),
-                          AppColors.rosyBrown.withValues(alpha: 0.9),
-                        ],
-                ),
-                borderRadius: BorderRadius.circular(15),
-                border:
-                    Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(15),
-                  onTap: _isSubmitting ? null : _submitPhoto,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.04,
-                        vertical: MediaQuery.of(context).size.height * 0.01),
-                    child: _isSubmitting
-                        ? SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.04,
-                            height: MediaQuery.of(context).size.width * 0.04,
-                            child: const CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(
-                            AppLocalizations.of(context)!.submit,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.035,
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -1215,10 +1153,17 @@ class _ChallengeInfoSection extends StatelessWidget {
 
   String _formatTimeRemaining(DateTime endTime) {
     final duration = endTime.difference(DateTime.now());
-    final hours = duration.inHours;
+    final days = duration.inDays;
+    final hours = duration.inHours % 24;
     final minutes = duration.inMinutes % 60;
 
-    if (hours > 0) {
+    if (days > 0) {
+      if (hours > 0) {
+        return '${days}d ${hours}h left';
+      } else {
+        return '${days}d left';
+      }
+    } else if (hours > 0) {
       return '${hours}h ${minutes}m left';
     } else if (minutes > 0) {
       return '${minutes}m left';

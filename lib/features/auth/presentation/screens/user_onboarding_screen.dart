@@ -103,11 +103,13 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      resizeToAvoidBottomInset: true,
-      body: Container(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset: true,
+        body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background.png'),
@@ -388,6 +390,7 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
