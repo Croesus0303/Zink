@@ -340,44 +340,101 @@ class SettingsScreen extends ConsumerWidget {
   void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundSecondary,
-        title: const Text(
-          'About Zink',
-          style: TextStyle(color: AppColors.textPrimary),
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.camera_alt, size: 48, color: AppColors.pineGreen),
-            const SizedBox(height: 16),
-            const Text(
-              'Zink',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+        content: Container(
+          decoration: BoxDecoration(
+            color: AppColors.midnightGreen.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Version 1.0.0',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'A social photo sharing app for events and moments.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textPrimary),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            ],
           ),
-        ],
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'About Zink',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Icon(Icons.camera_alt, size: 48, color: AppColors.pineGreen),
+                const SizedBox(height: 16),
+                const Text(
+                  'Zink',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Version 1.0.0',
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'A social photo sharing app for events and moments.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.pineGreen.withValues(alpha: 0.8),
+                        AppColors.pineGreen,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          'Close',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -385,70 +442,134 @@ class SettingsScreen extends ConsumerWidget {
   void _showPrivacyPolicy(BuildContext context) {
     showDialog(
       context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundSecondary,
-        title: const Text(
-          'Privacy Policy',
-          style: TextStyle(color: AppColors.textPrimary),
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        content: SizedBox(
+        content: Container(
           width: double.maxFinite,
-          height: 400,
-          child: SingleChildScrollView(
+          constraints: const BoxConstraints(maxHeight: 500),
+          decoration: BoxDecoration(
+            color: AppColors.midnightGreen.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Zink Privacy Policy',
+                  'Privacy Policy',
                   style: TextStyle(
+                    color: AppColors.textPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Zink Privacy Policy',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Last updated: ${DateTime.now().year}',
+                          style: const TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildPrivacySection(
+                          'Information We Collect',
+                          'We collect information you provide directly to us, such as when you create an account, post photos, or communicate with others through our service.',
+                        ),
+                        _buildPrivacySection(
+                          'How We Use Your Information',
+                          'We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.',
+                        ),
+                        _buildPrivacySection(
+                          'Information Sharing',
+                          'We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.',
+                        ),
+                        _buildPrivacySection(
+                          'Data Security',
+                          'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
+                        ),
+                        _buildPrivacySection(
+                          'Your Rights',
+                          'You have the right to access, update, or delete your personal information. You can do this through your account settings or by contacting us.',
+                        ),
+                        _buildPrivacySection(
+                          'Contact Us',
+                          'If you have any questions about this Privacy Policy, please contact us through the Help & Support section.',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Last updated: ${DateTime.now().year}',
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: AppColors.textSecondary,
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.pineGreen.withValues(alpha: 0.8),
+                          AppColors.pineGreen,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 12,
+                          ),
+                          child: Text(
+                            'Close',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                _buildPrivacySection(
-                  'Information We Collect',
-                  'We collect information you provide directly to us, such as when you create an account, post photos, or communicate with others through our service.',
-                ),
-                _buildPrivacySection(
-                  'How We Use Your Information',
-                  'We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.',
-                ),
-                _buildPrivacySection(
-                  'Information Sharing',
-                  'We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.',
-                ),
-                _buildPrivacySection(
-                  'Data Security',
-                  'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
-                ),
-                _buildPrivacySection(
-                  'Your Rights',
-                  'You have the right to access, update, or delete your personal information. You can do this through your account settings or by contacting us.',
-                ),
-                _buildPrivacySection(
-                  'Contact Us',
-                  'If you have any questions about this Privacy Policy, please contact us through the Help & Support section.',
                 ),
               ],
             ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }
@@ -484,70 +605,134 @@ class SettingsScreen extends ConsumerWidget {
   void _showHelpAndSupport(BuildContext context) {
     showDialog(
       context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundSecondary,
-        title: const Text(
-          'Help & Support',
-          style: TextStyle(color: AppColors.textPrimary),
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        content: SizedBox(
+        content: Container(
           width: double.maxFinite,
-          height: 350,
-          child: SingleChildScrollView(
+          constraints: const BoxConstraints(maxHeight: 500),
+          decoration: BoxDecoration(
+            color: AppColors.midnightGreen.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _buildHelpSection(
-                  context,
-                  'Frequently Asked Questions',
-                  [
-                    'How do I create an account?\nTap the sign up button and follow the prompts to create your account.',
-                    'How do I post a photo?\nTap the camera icon in the events section and select an active event.',
-                    'How do I like a submission?\nTap the heart icon below any photo submission.',
-                    'How do I edit my profile?\nGo to Profile > Menu > Edit Profile.',
-                  ],
+                const Text(
+                  'Help & Support',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildHelpSection(
+                          context,
+                          'Frequently Asked Questions',
+                          [
+                            'How do I create an account?\nTap the sign up button and follow the prompts to create your account.',
+                            'How do I post a photo?\nTap the camera icon in the events section and select an active event.',
+                            'How do I like a submission?\nTap the heart icon below any photo submission.',
+                            'How do I edit my profile?\nGo to Profile > Menu > Edit Profile.',
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _buildHelpSection(
+                          context,
+                          'Contact Support',
+                          [
+                            'Email: support@zinkapp.com',
+                            'Response time: 24-48 hours',
+                            'For urgent issues, please include "URGENT" in your subject line.',
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _buildHelpSection(
+                          context,
+                          'App Version',
+                          [
+                            'Version: 1.0.0',
+                            'Last updated: ${DateTime.now().year}',
+                            'Platform: Mobile App',
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _buildHelpSection(
+                          context,
+                          'Report a Bug',
+                          [
+                            'If you encounter any issues, please describe:',
+                            '• What you were doing when the problem occurred',
+                            '• Steps to reproduce the issue',
+                            '• Your device model and OS version',
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
-                _buildHelpSection(
-                  context,
-                  'Contact Support',
-                  [
-                    'Email: support@zinkapp.com',
-                    'Response time: 24-48 hours',
-                    'For urgent issues, please include "URGENT" in your subject line.',
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildHelpSection(
-                  context,
-                  'App Version',
-                  [
-                    'Version: 1.0.0',
-                    'Last updated: ${DateTime.now().year}',
-                    'Platform: Mobile App',
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildHelpSection(
-                  context,
-                  'Report a Bug',
-                  [
-                    'If you encounter any issues, please describe:',
-                    '• What you were doing when the problem occurred',
-                    '• Steps to reproduce the issue',
-                    '• Your device model and OS version',
-                  ],
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.pineGreen.withValues(alpha: 0.8),
+                          AppColors.pineGreen,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 12,
+                          ),
+                          child: Text(
+                            'Close',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }

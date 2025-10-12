@@ -411,20 +411,15 @@ class _EventInfoOverlay extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryCyan.withValues(alpha: 0.3),
-                        AppColors.primaryOrange.withValues(alpha: 0.2),
-                      ],
-                    ),
+                    color: AppColors.midnightGreen.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.primaryCyan.withValues(alpha: 0.4),
-                      width: 1,
+                      color: AppColors.iceBorder,
+                      width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryCyan.withValues(alpha: 0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -435,7 +430,7 @@ class _EventInfoOverlay extends ConsumerWidget {
                     children: [
                       const Icon(
                         Icons.event,
-                        color: Colors.white,
+                        color: AppColors.pineGreen,
                         size: 16,
                       ),
                       const SizedBox(width: 6),
@@ -444,7 +439,7 @@ class _EventInfoOverlay extends ConsumerWidget {
                         child: Text(
                           event.title,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -542,20 +537,15 @@ class _SubmissionInfo extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primaryCyan.withValues(alpha: 0.2),
-                  AppColors.primaryOrange.withValues(alpha: 0.1),
-                ],
-              ),
+              color: AppColors.midnightGreen.withValues(alpha: 0.95),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: AppColors.primaryCyan.withValues(alpha: 0.3),
-                width: 1,
+                color: AppColors.iceBorder,
+                width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryCyan.withValues(alpha: 0.2),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -582,13 +572,13 @@ class _SubmissionInfo extends ConsumerWidget {
                             userId: submission.uid,
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           Text(
                             _formatSubmissionTime(submission.createdAt),
-                            style: TextStyle(
-                              color: Colors.grey[400],
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
                               fontSize: 12,
                             ),
                           ),
@@ -598,51 +588,16 @@ class _SubmissionInfo extends ConsumerWidget {
                     // Show delete option if current user owns the submission
                     if (currentUser != null &&
                         currentUser.uid == submission.uid)
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryOrange.withValues(alpha: 0.3),
-                              AppColors.primaryOrange.withValues(alpha: 0.2),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color:
-                                AppColors.primaryOrange.withValues(alpha: 0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: PopupMenuButton<String>(
-                          onSelected: (value) async {
-                            if (value == 'delete') {
-                              await _showDeleteConfirmationDialog(
-                                  context, ref, submission);
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.delete, color: Colors.red),
-                                  const SizedBox(width: 8),
-                                  Text(AppLocalizations.of(context)!.delete,
-                                      style: const TextStyle(color: Colors.red)),
-                                ],
-                              ),
-                            ),
-                          ],
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.more_vert,
-                                color: Colors.white),
-                          ),
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: AppColors.rosyBrown),
+                        onPressed: () async {
+                          await _showDeleteConfirmationDialog(
+                              context, ref, submission);
+                        },
                       ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 // Actions
                 Row(
                   children: [
@@ -679,10 +634,10 @@ class _SubmissionInfo extends ConsumerWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.comment_outlined,
                               size: 20,
-                              color: Colors.grey[400],
+                              color: AppColors.pineGreen,
                             ),
                             const SizedBox(width: 4),
                             Consumer(
@@ -695,22 +650,22 @@ class _SubmissionInfo extends ConsumerWidget {
                                 return commentsAsync.when(
                                   data: (comments) => Text(
                                     comments.length.toString(),
-                                    style: TextStyle(
-                                      color: Colors.grey[400],
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  loading: () => Text(
+                                  loading: () => const Text(
                                     '0',
                                     style: TextStyle(
-                                      color: Colors.grey[400],
+                                      color: AppColors.textSecondary,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  error: (_, __) => Text(
+                                  error: (_, __) => const Text(
                                     '0',
                                     style: TextStyle(
-                                      color: Colors.grey[400],
+                                      color: AppColors.textSecondary,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -748,21 +703,104 @@ class _SubmissionInfo extends ConsumerWidget {
       BuildContext context, WidgetRef ref, SubmissionModel submission) async {
     final confirmed = await showDialog<bool>(
       context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (context) => AlertDialog(
-        title: const Text('Delete Post'),
-        content: const Text(
-            'Are you sure you want to delete this post? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        content: Container(
+          decoration: BoxDecoration(
+            color: AppColors.midnightGreen.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Delete Post',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Are you sure you want to delete this post? This action cannot be undone.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.rosyBrown.withValues(alpha: 0.8),
+                            AppColors.rosyBrown,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => Navigator.of(context).pop(true),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
 
