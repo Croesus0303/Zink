@@ -241,7 +241,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.errorLoadingProfile(error.toString()),
+                    AppLocalizations.of(context)!
+                        .errorLoadingProfile(error.toString()),
                     style: const TextStyle(color: AppColors.textPrimary),
                     textAlign: TextAlign.center,
                   ),
@@ -389,7 +390,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                            color:
+                                AppColors.primaryOrange.withValues(alpha: 0.4),
                             blurRadius: 12,
                             offset: const Offset(0, 6),
                           ),
@@ -466,9 +468,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
-          isOwnProfile
-              ? AppLocalizations.of(context)!.profile
-              : user.username,
+          isOwnProfile ? AppLocalizations.of(context)!.profile : user.username,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -697,7 +697,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         await authService.signOut();
                       } catch (e) {
                         if (context.mounted) {
-                          CustomSnackBar.showError(context, 'Sign out failed: ${e.toString()}');
+                          CustomSnackBar.showError(
+                              context, 'Sign out failed: ${e.toString()}');
                         }
                       }
                     }
@@ -1041,39 +1042,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildProfileInfoPage(BuildContext context, UserModel? user) {
-    return Container(
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildSimpleAvatar(context, user),
-          const SizedBox(height: 16),
-          Text(
-            user?.username ?? 'Unknown User',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: MediaQuery.of(context).size.width * 0.065,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                  blurRadius: 12,
-                ),
-                Shadow(
-                  color: AppColors.pineGreen.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  offset: const Offset(2, 2),
-                ),
-              ],
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildSimpleAvatar(context, user),
+            const SizedBox(height: 12),
+            Text(
+              user?.username ?? 'Unknown User',
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: MediaQuery.of(context).size.width * 0.06,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                    blurRadius: 12,
+                  ),
+                  Shadow(
+                    color: AppColors.pineGreen.withValues(alpha: 0.4),
+                    blurRadius: 8,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          _buildSocialMediaLinks(user),
-        ],
+            const SizedBox(height: 12),
+            _buildSocialMediaLinks(user),
+          ],
+        ),
       ),
     );
   }
-
 
   Widget _buildTabBar(BuildContext context) {
     return SliverToBoxAdapter(
@@ -1577,9 +1579,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-
-
-
   Widget _buildSocialMediaButton(String platform, String url) {
     final socialData = _getSocialMediaData(platform);
 
@@ -1589,30 +1588,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         width: MediaQuery.of(context).size.width * 0.12,
         height: MediaQuery.of(context).size.width * 0.12,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: socialData['gradient'] as List<Color>,
-          ),
+          color: AppColors.midnightGreen.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
+            color: AppColors.iceBorder.withValues(alpha: 0.3),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: (socialData['gradient'] as List<Color>)[0]
-                  .withValues(alpha: 0.4),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Icon(
-          socialData['icon'] as IconData,
-          color: Colors.white,
-          size: MediaQuery.of(context).size.width * 0.06,
-        ),
+        child: socialData.containsKey('image')
+            ? Padding(
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
+                child: Image.asset(
+                  socialData['image'] as String,
+                  color: AppColors.pineGreen,
+                  fit: BoxFit.contain,
+                ),
+              )
+            : Icon(
+                socialData['icon'] as IconData,
+                color: AppColors.pineGreen,
+                size: MediaQuery.of(context).size.width * 0.05,
+              ),
       ),
     );
   }
@@ -1661,78 +1665,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     switch (platform.toLowerCase()) {
       case 'instagram':
         return {
-          'icon': Icons.camera_alt,
-          'gradient': [
-            const Color(0xFF833AB4),
-            const Color(0xFFE1306C),
-            const Color(0xFFFD1D1D),
-            const Color(0xFFF77737),
-          ],
+          'image': 'assets/icons/instagram_logo.png',
         };
       case 'twitter':
       case 'x':
         return {
-          'icon': Icons.alternate_email,
-          'gradient': [
-            const Color(0xFF1DA1F2),
-            const Color(0xFF0084B4),
-          ],
+          'image': 'assets/icons/x_logo.png',
         };
       case 'github':
         return {
           'icon': Icons.code,
-          'gradient': [
-            const Color(0xFF333333),
-            const Color(0xFF000000),
-          ],
         };
       case 'youtube':
         return {
           'icon': Icons.play_arrow,
-          'gradient': [
-            const Color(0xFFFF0000),
-            const Color(0xFFCC0000),
-          ],
         };
       case 'facebook':
         return {
-          'icon': Icons.facebook,
-          'gradient': [
-            const Color(0xFF4267B2),
-            const Color(0xFF365899),
-          ],
+          'image': 'assets/icons/facebook_logo.png',
         };
       case 'tiktok':
         return {
           'icon': Icons.music_note,
-          'gradient': [
-            const Color(0xFF000000),
-            const Color(0xFF333333),
-          ],
         };
       case 'snapchat':
         return {
           'icon': Icons.camera,
-          'gradient': [
-            const Color(0xFFFFFC00),
-            const Color(0xFFCCCA00),
-          ],
         };
       case 'discord':
         return {
           'icon': Icons.chat,
-          'gradient': [
-            const Color(0xFF7289DA),
-            const Color(0xFF5B6DAE),
-          ],
         };
       default:
         return {
           'icon': Icons.link,
-          'gradient': [
-            AppColors.rosyBrown,
-            AppColors.rosyBrown.withValues(alpha: 0.8),
-          ],
         };
     }
   }

@@ -455,7 +455,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   controller: _instagramController,
                   label: 'Instagram',
                   hint: '@username',
-                  icon: Icons.camera_alt,
+                  imagePath: 'assets/icons/instagram_logo.png',
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.025),
 
@@ -463,7 +463,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   controller: _twitterController,
                   label: 'Twitter',
                   hint: '@handle',
-                  icon: Icons.social_distance,
+                  imagePath: 'assets/icons/x_logo.png',
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.025),
 
@@ -471,7 +471,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   controller: _facebookController,
                   label: 'Facebook',
                   hint: 'Profile name',
-                  icon: Icons.facebook,
+                  imagePath: 'assets/icons/facebook_logo.png',
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.06),
               ],
@@ -541,7 +541,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     required TextEditingController controller,
     required String label,
     required String hint,
-    required IconData icon,
+    IconData? icon,
+    String? imagePath,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -629,11 +630,22 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   width: 2,
                 ),
               ),
-              prefixIcon: Icon(
-                icon,
-                color: AppColors.pineGreen,
-                size: MediaQuery.of(context).size.width * 0.05,
-              ),
+              prefixIcon: imagePath != null
+                  ? Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
+                      child: Image.asset(
+                        imagePath,
+                        width: MediaQuery.of(context).size.width * 0.045,
+                        height: MediaQuery.of(context).size.width * 0.045,
+                        color: AppColors.pineGreen,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : Icon(
+                      icon,
+                      color: AppColors.pineGreen,
+                      size: MediaQuery.of(context).size.width * 0.045,
+                    ),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.045,
                 vertical: MediaQuery.of(context).size.height * 0.02,
