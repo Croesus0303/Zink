@@ -1061,5 +1061,74 @@
         "type": "int"
       }
     }
+  },
+
+  "noNotificationsYet": "No notifications yet",
+  "@noNotificationsYet": {
+    "description": "Empty state message for notifications"
+  },
+  "notificationsWillAppearHere": "You'll receive notifications about likes and comments here",
+  "@notificationsWillAppearHere": {
+    "description": "Description for empty notifications state"
+  },
+  "errorLoadingNotifications": "Error loading notifications",
+  "@errorLoadingNotifications": {
+    "description": "Error message when notifications fail to load"
+  },
+  "allNotificationsMarkedAsRead": "All notifications marked as read",
+  "@allNotificationsMarkedAsRead": {
+    "description": "Success message when all notifications are marked as read"
+  },
+  "failedToMarkNotificationsAsRead": "Failed to mark notifications as read",
+  "@failedToMarkNotificationsAsRead": {
+    "description": "Error message when marking notifications as read fails"
+  },
+  "failedToDeleteNotification": "Failed to delete notification",
+  "@failedToDeleteNotification": {
+    "description": "Error message when deleting a notification fails"
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Just now timestamp"
+  },
+  "minutesAgoShort": "{minutes}m ago",
+  "@minutesAgoShort": {
+    "description": "Minutes ago short format",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgoShort": "{hours}h ago", 
+  "@hoursAgoShort": {
+    "description": "Hours ago short format",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Yesterday text"
+  },
+  "daysAgoShort": "{days}d ago",
+  "@daysAgoShort": {
+    "description": "Days ago short format",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weeksAgoShort": "{weeks}w ago",
+  "@weeksAgoShort": {
+    "description": "Weeks ago short format", 
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
   }
 } 

@@ -662,9 +662,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this chat? This action cannot be undone.';
 
   @override
-  String yesterday(String time) {
-    return 'Yesterday $time';
-  }
+  String get yesterday => 'Yesterday';
 
   @override
   String daysAgo(int days) {
@@ -763,5 +761,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String daysAndHoursLeft(int days, int hours) {
     return '${days}d ${hours}h left';
+  }
+
+  @override
+  String get noNotificationsYet => 'No notifications yet';
+
+  @override
+  String get notificationsWillAppearHere =>
+      'You\'ll receive notifications about likes and comments here';
+
+  @override
+  String get errorLoadingNotifications => 'Error loading notifications';
+
+  @override
+  String get allNotificationsMarkedAsRead => 'All notifications marked as read';
+
+  @override
+  String get failedToMarkNotificationsAsRead =>
+      'Failed to mark notifications as read';
+
+  @override
+  String get failedToDeleteNotification => 'Failed to delete notification';
+
+  @override
+  String minutesAgoShort(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String hoursAgoShort(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String weeksAgoShort(int weeks) {
+    return '${weeks}w ago';
   }
 }

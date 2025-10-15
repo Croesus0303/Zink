@@ -1274,11 +1274,11 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this chat? This action cannot be undone.'**
   String get sureDeleteChat;
 
-  /// Yesterday timestamp format
+  /// Yesterday text
   ///
   /// In en, this message translates to:
-  /// **'Yesterday {time}'**
-  String yesterday(String time);
+  /// **'Yesterday'**
+  String get yesterday;
 
   /// Days ago format
   ///
@@ -1435,6 +1435,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days}d {hours}h left'**
   String daysAndHoursLeft(int days, int hours);
+
+  /// Empty state message for notifications
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotificationsYet;
+
+  /// Description for empty notifications state
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll receive notifications about likes and comments here'**
+  String get notificationsWillAppearHere;
+
+  /// Error message when notifications fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading notifications'**
+  String get errorLoadingNotifications;
+
+  /// Success message when all notifications are marked as read
+  ///
+  /// In en, this message translates to:
+  /// **'All notifications marked as read'**
+  String get allNotificationsMarkedAsRead;
+
+  /// Error message when marking notifications as read fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to mark notifications as read'**
+  String get failedToMarkNotificationsAsRead;
+
+  /// Error message when deleting a notification fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete notification'**
+  String get failedToDeleteNotification;
+
+  /// Minutes ago short format
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m ago'**
+  String minutesAgoShort(int minutes);
+
+  /// Hours ago short format
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h ago'**
+  String hoursAgoShort(int hours);
+
+  /// Weeks ago short format
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks}w ago'**
+  String weeksAgoShort(int weeks);
 }
 
 class _AppLocalizationsDelegate

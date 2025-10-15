@@ -58,7 +58,8 @@
       "Bash(NPM_CONFIG_CACHE=/tmp/npm-cache npm install --prefix functions)",
       "Bash(NPM_CONFIG_CACHE=/tmp/npm-cache npm install firebase-admin firebase-functions)",
       "Bash(firebase deploy:*)",
-      "Bash(firebase functions:log:*)"
+      "Bash(firebase functions:log:*)",
+      "Bash(firebase functions:delete:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -12,211 +12,211 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appName => 'Zink';
 
   @override
-  String get appTagline => 'Yapay Zeka Destekli Fotoğraf Görevleri';
+  String get appTagline => 'AI-Powered Photo Challenges';
 
   @override
-  String get continueWithGoogle => 'Google ile Devam Et';
+  String get continueWithGoogle => 'Continue with Google';
 
   @override
-  String get signInOrSignUp => 'Giriş Yap veya Kayıt Ol';
+  String get signInOrSignUp => 'Sign in or Sign up';
 
   @override
-  String get newUserPrompt => 'Zink\'te yeni misin? Google hesabınla kayıt ol';
+  String get newUserPrompt => 'New to Zink? Sign up with your Google account';
 
   @override
   String get existingUserPrompt =>
-      'Zaten hesabın var mı? Devam etmek için giriş yap';
+      'Already have an account? Sign in to continue';
 
   @override
-  String get continueWithApple => 'Apple ile Devam Et';
+  String get continueWithApple => 'Continue with Apple';
 
   @override
-  String get signOut => 'Çıkış Yap';
+  String get signOut => 'Sign Out';
 
   @override
-  String get signOutConfirmation => 'Çıkış yapmak istediğinizden emin misiniz?';
+  String get signOutConfirmation => 'Are you sure you want to sign out?';
 
   @override
   String welcome(String name) {
-    return 'Hoşgeldin $name!';
+    return 'Welcome $name!';
   }
 
   @override
-  String get home => 'Ana Sayfa';
+  String get home => 'Home';
 
   @override
-  String get noActiveChallenges => 'Şu anda aktif görev bulunmuyor';
+  String get noActiveChallenges => 'No active challenges right now';
 
   @override
-  String get activeChallenge => 'Aktif Görev';
+  String get activeChallenge => 'Active Challenge';
 
   @override
-  String get pastChallenges => 'Geçmiş Görevler';
+  String get pastChallenges => 'Past Challenges';
 
   @override
   String timeRemaining(String time) {
-    return 'Kalan Süre: $time';
+    return 'Time Remaining: $time';
   }
 
   @override
-  String get submitPhoto => 'Fotoğraf Gönder';
+  String get submitPhoto => 'Submit Photo';
 
   @override
-  String get takePhoto => 'Fotoğraf Çek';
+  String get takePhoto => 'Take Photo';
 
   @override
-  String get chooseFromGallery => 'Galeriden Seç';
+  String get chooseFromGallery => 'Choose from Gallery';
 
   @override
-  String get submissions => 'Gönderiler';
+  String get submissions => 'Submissions';
 
   @override
   String likes(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count beğeni',
-      one: '1 beğeni',
-      zero: 'Beğeni yok',
+      other: '$count likes',
+      one: '1 like',
+      zero: 'No likes',
     );
     return '$_temp0';
   }
 
   @override
-  String get comments => 'Yorumlar';
+  String get comments => 'Comments';
 
   @override
-  String get addComment => 'Yorum ekle...';
+  String get addComment => 'Add a comment...';
 
   @override
-  String get profile => 'Profil';
+  String get profile => 'Profile';
 
   @override
-  String get editProfile => 'Profili Düzenle';
+  String get editProfile => 'Edit Profile';
 
   @override
-  String get username => 'Kullanıcı Adı';
+  String get username => 'Username';
 
   @override
-  String get socialLinks => 'Sosyal Medya Bağlantıları';
+  String get socialLinks => 'Social Links';
 
   @override
-  String get myChallenges => 'Görevlerim';
+  String get myChallenges => 'My Challenges';
 
   @override
   String totalSubmissions(int count) {
-    return '$count Gönderi';
+    return '$count Submissions';
   }
 
   @override
-  String get mostPopular => 'En Popüler';
+  String get mostPopular => 'Most Popular';
 
   @override
-  String get newest => 'En Yeni';
+  String get newest => 'Newest';
 
   @override
-  String get oldest => 'En Eski';
+  String get oldest => 'Oldest';
 
   @override
-  String get loading => 'Yükleniyor...';
+  String get loading => 'Loading...';
 
   @override
-  String get error => 'Hata';
+  String get error => 'Error';
 
   @override
-  String get retry => 'Tekrar Dene';
+  String get retry => 'Retry';
 
   @override
-  String get cancel => 'İptal';
+  String get cancel => 'Cancel';
 
   @override
-  String get save => 'Kaydet';
+  String get save => 'Save';
 
   @override
-  String get delete => 'Sil';
+  String get delete => 'Delete';
 
   @override
-  String get confirm => 'Onayla';
+  String get confirm => 'Confirm';
 
   @override
-  String get somethingWentWrong => 'Bir şeyler yanlış gitti';
+  String get somethingWentWrong => 'Something went wrong';
 
   @override
-  String get newChallengeAvailable => 'Yeni görev mevcut!';
+  String get newChallengeAvailable => 'New challenge available!';
 
   @override
-  String get challengeEndingSoon => 'Görev yakında bitiyor!';
+  String get challengeEndingSoon => 'Challenge ending soon!';
 
   @override
-  String get submissionSuccessful => 'Fotoğraf başarıyla gönderildi!';
+  String get submissionSuccessful => 'Photo submitted successfully!';
 
   @override
-  String get submit => 'Gönder';
+  String get submit => 'Submit';
 
   @override
-  String get welcomeToZink => 'Zink\'e Hoşgeldin!';
+  String get welcomeToZink => 'Welcome to Zink!';
 
   @override
-  String get onboardingSubtitle => 'Başlamak için profilini ayarlayalım';
+  String get onboardingSubtitle => 'Let\'s set up your profile to get started';
 
   @override
-  String get chooseUsername => 'Kullanıcı adı seç';
+  String get chooseUsername => 'Choose a username';
 
   @override
-  String get enterUsername => 'Kullanıcı adını gir';
+  String get enterUsername => 'Enter your username';
 
   @override
-  String get whatsYourAge => 'Yaşın kaç?';
+  String get whatsYourAge => 'What\'s your age?';
 
   @override
-  String get enterAge => 'Yaşını gir';
+  String get enterAge => 'Enter your age';
 
   @override
-  String get completeSetup => 'Kurulumu Tamamla';
+  String get completeSetup => 'Complete Setup';
 
   @override
-  String get usernameRequired => 'Kullanıcı adı gerekli';
+  String get usernameRequired => 'Username is required';
 
   @override
-  String get usernameTooShort => 'Kullanıcı adı en az 3 karakter olmalı';
+  String get usernameTooShort => 'Username must be at least 3 characters';
 
   @override
-  String get usernameTooLong => 'Kullanıcı adı 20 karakterden az olmalı';
+  String get usernameTooLong => 'Username must be less than 20 characters';
 
   @override
   String get usernameInvalidChars =>
-      'Kullanıcı adı sadece harf, rakam ve alt çizgi içerebilir';
+      'Username can only contain letters, numbers, and underscores';
 
   @override
-  String get ageRequired => 'Yaş gerekli';
+  String get ageRequired => 'Age is required';
 
   @override
-  String get enterValidNumber => 'Lütfen geçerli bir sayı girin';
+  String get enterValidNumber => 'Please enter a valid number';
 
   @override
-  String get ageTooYoung => 'En az 13 yaşında olmalısınız';
+  String get ageTooYoung => 'You must be at least 13 years old';
 
   @override
-  String get enterValidAge => 'Lütfen geçerli bir yaş girin';
+  String get enterValidAge => 'Please enter a valid age';
 
   @override
   String get privacyNote =>
-      'Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz. Bilgileriniz güvenlidir ve sadece deneyiminizi geliştirmek için kullanılacaktır.';
+      'By continuing, you agree to our Terms of Service and Privacy Policy. Your information is secure and will only be used to enhance your experience.';
 
   @override
-  String get profilePicture => 'Profil Fotoğrafı';
+  String get profilePicture => 'Profile Picture';
 
   @override
-  String get changeProfilePicture => 'Profil Fotoğrafını Değiştir';
+  String get changeProfilePicture => 'Change Profile Picture';
 
   @override
-  String get displayName => 'Görünen Ad';
+  String get displayName => 'Display Name';
 
   @override
-  String get basicInformation => 'Temel Bilgiler';
+  String get basicInformation => 'Basic Information';
 
   @override
-  String get socialMediaLinks => 'Sosyal Medya Bağlantıları';
+  String get socialMediaLinks => 'Social Media Links';
 
   @override
   String get instagram => 'Instagram';
@@ -231,474 +231,468 @@ class AppLocalizationsTr extends AppLocalizations {
   String get linkedin => 'LinkedIn';
 
   @override
-  String get website => 'Web Sitesi';
+  String get website => 'Website';
 
   @override
-  String get settings => 'Ayarlar';
+  String get settings => 'Settings';
 
   @override
-  String get email => 'E-posta';
+  String get email => 'Email';
 
   @override
-  String get enterEmail => 'E-postanızı girin';
+  String get enterEmail => 'Enter your email';
 
   @override
-  String get password => 'Şifre';
+  String get password => 'Password';
 
   @override
-  String get enterPassword => 'Şifrenizi girin';
+  String get enterPassword => 'Enter your password';
 
   @override
-  String get confirmPassword => 'Şifreyi Onayla';
+  String get confirmPassword => 'Confirm Password';
 
   @override
-  String get reenterPassword => 'Şifrenizi tekrar girin';
+  String get reenterPassword => 'Re-enter your password';
 
   @override
-  String get pleaseEnterEmail => 'Lütfen e-postanızı girin';
+  String get pleaseEnterEmail => 'Please enter your email';
 
   @override
-  String get pleaseEnterValidEmail => 'Lütfen geçerli bir e-posta girin';
+  String get pleaseEnterValidEmail => 'Please enter a valid email';
 
   @override
-  String get pleaseEnterPassword => 'Lütfen şifrenizi girin';
+  String get pleaseEnterPassword => 'Please enter your password';
 
   @override
-  String get passwordTooShort => 'Şifre en az 6 karakter olmalı';
+  String get passwordTooShort => 'Password must be at least 6 characters';
 
   @override
-  String get pleaseConfirmPassword => 'Lütfen şifrenizi onaylayın';
+  String get pleaseConfirmPassword => 'Please confirm your password';
 
   @override
-  String get passwordsDoNotMatch => 'Şifreler eşleşmiyor';
+  String get passwordsDoNotMatch => 'Passwords do not match';
 
   @override
-  String get app => 'Uygulama';
+  String get app => 'App';
 
   @override
-  String get about => 'Hakkında';
+  String get about => 'About';
 
   @override
   String version(String version) {
-    return 'Sürüm $version';
+    return 'Version $version';
   }
 
   @override
-  String get privacyPolicy => 'Gizlilik Politikası';
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
-  String get helpAndSupport => 'Yardım ve Destek';
+  String get helpAndSupport => 'Help & Support';
 
   @override
-  String get deleteAccount => 'Hesabı Sil';
+  String get deleteAccount => 'Delete Account';
 
   @override
   String get permanentlyDeleteAccount =>
-      'Hesabınızı ve tüm verilerinizi kalıcı olarak silin';
+      'Permanently delete your account and all data';
 
   @override
-  String get close => 'Kapat';
+  String get close => 'Close';
 
   @override
   String get socialPhotoSharingApp =>
-      'Etkinlikler ve anlar için sosyal fotoğraf paylaşım uygulaması.';
+      'A social photo sharing app for events and moments.';
 
   @override
-  String get zinkPrivacyPolicy => 'Zink Gizlilik Politikası';
+  String get zinkPrivacyPolicy => 'Zink Privacy Policy';
 
   @override
   String lastUpdated(String year) {
-    return 'Son güncelleme: $year';
+    return 'Last updated: $year';
   }
 
   @override
-  String get informationWeCollect => 'Topladığımız Bilgiler';
+  String get informationWeCollect => 'Information We Collect';
 
   @override
-  String get howWeUseInformation => 'Bilgileri Nasıl Kullanırız';
+  String get howWeUseInformation => 'How We Use Your Information';
 
   @override
-  String get informationSharing => 'Bilgi Paylaşımı';
+  String get informationSharing => 'Information Sharing';
 
   @override
-  String get dataSecurity => 'Veri Güvenliği';
+  String get dataSecurity => 'Data Security';
 
   @override
-  String get yourRights => 'Haklarınız';
+  String get yourRights => 'Your Rights';
 
   @override
-  String get contactUs => 'Bize Ulaşın';
+  String get contactUs => 'Contact Us';
 
   @override
-  String get frequentlyAskedQuestions => 'Sık Sorulan Sorular';
+  String get frequentlyAskedQuestions => 'Frequently Asked Questions';
 
   @override
   String get howCreateAccount =>
-      'Nasıl hesap oluştururum?\nKayıt ol düğmesine dokunun ve hesabınızı oluşturmak için talimatları izleyin.';
+      'How do I create an account?\nTap the sign up button and follow the prompts to create your account.';
 
   @override
   String get howPostPhoto =>
-      'Nasıl fotoğraf paylaşırım?\nEtkinlikler bölümündeki kamera simgesine dokunun ve aktif bir etkinlik seçin.';
+      'How do I post a photo?\nTap the camera icon in the events section and select an active event.';
 
   @override
   String get howLikeSubmission =>
-      'Bir gönderiyi nasıl beğenirim?\nHerhangi bir fotoğraf gönderisinin altındaki kalp simgesine dokunun.';
+      'How do I like a submission?\nTap the heart icon below any photo submission.';
 
   @override
   String get howEditProfile =>
-      'Profilimi nasıl düzenlerim?\nProfil > Menü > Profili Düzenle\'ye gidin.';
+      'How do I edit my profile?\nGo to Profile > Menu > Edit Profile.';
 
   @override
-  String get contactSupport => 'Destek İletişim';
+  String get contactSupport => 'Contact Support';
 
   @override
-  String get emailSupport => 'E-posta: support@zinkapp.com';
+  String get emailSupport => 'Email: support@zinkapp.com';
 
   @override
-  String get responseTime => 'Yanıt süresi: 24-48 saat';
+  String get responseTime => 'Response time: 24-48 hours';
 
   @override
   String get urgentIssuesNote =>
-      'Acil durumlar için konu satırına \"ACİL\" yazın.';
+      'For urgent issues, please include \"URGENT\" in your subject line.';
 
   @override
-  String get appVersion => 'Uygulama Sürümü';
+  String get appVersion => 'App Version';
 
   @override
-  String get platformMobile => 'Platform: Mobil Uygulama';
+  String get platformMobile => 'Platform: Mobile App';
 
   @override
-  String get reportBug => 'Hata Bildir';
+  String get reportBug => 'Report a Bug';
 
   @override
   String get bugReportInstructions =>
-      'Herhangi bir sorunla karşılaştığınızda lütfen şunları açıklayın:\n• Sorun oluştuğunda ne yapıyordunuz\n• Sorunu yeniden oluşturmak için adımlar\n• Cihaz modeliniz ve işletim sistemi sürümü';
+      'If you encounter any issues, please describe:\n• What you were doing when the problem occurred\n• Steps to reproduce the issue\n• Your device model and OS version';
 
   @override
   String get actionCannotBeUndone =>
-      'Bu eylem geri alınamaz. Bu, hesabınızı ve tüm ilişkili verileri kalıcı olarak silecektir.';
+      'This action cannot be undone. This will permanently delete your account and all associated data.';
 
   @override
-  String get enterPasswordToConfirm => 'Onaylamak için lütfen şifrenizi girin:';
+  String get enterPasswordToConfirm => 'Please enter your password to confirm:';
 
   @override
-  String get passwordRequired => 'Şifre gerekli';
+  String get passwordRequired => 'Password is required';
 
   @override
-  String get accountDeletedSuccessfully => 'Hesap başarıyla silindi';
+  String get accountDeletedSuccessfully => 'Account deleted successfully';
 
   @override
-  String get incorrectPassword => 'Yanlış şifre. Lütfen tekrar deneyin.';
+  String get incorrectPassword => 'Incorrect password. Please try again.';
 
   @override
   String get tooManyFailedAttempts =>
-      'Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.';
+      'Too many failed attempts. Please try again later.';
 
   @override
   String get failedToDeleteAccount =>
-      'Hesap silinirken hata oluştu. Lütfen tekrar deneyin.';
+      'Failed to delete account. Please try again.';
 
   @override
-  String get finalConfirmation => 'Son Onay';
+  String get finalConfirmation => 'Final Confirmation';
 
   @override
   String get absolutelySureWarning =>
-      'Kesinlikle emin misiniz? Bu eylem geri alınamaz ve şunları kalıcı olarak silecektir:\n\n• Profil ve hesap verileriniz\n• Tüm gönderileriniz ve yarışma katılımlarınız\n• Sohbet geçmişiniz\n• Diğer tüm ilgili veriler\n\nBu eylem geri alınamaz.';
+      'Are you absolutely sure? This action cannot be undone and will permanently delete:\n\n• Your profile and account data\n• All your posts and submissions\n• Your chat history\n• All other associated data\n\nThis action is irreversible.';
 
   @override
-  String get yesDeleteMyAccount => 'Evet, Hesabımı Sil';
+  String get yesDeleteMyAccount => 'Yes, Delete My Account';
 
   @override
-  String get eventNotFound => 'Etkinlik Bulunamadı';
+  String get eventNotFound => 'Event Not Found';
 
   @override
-  String get errorLoadingEvent => 'Etkinlik yüklenirken hata';
+  String get errorLoadingEvent => 'Error loading event';
 
   @override
-  String get goBack => 'Geri Dön';
+  String get goBack => 'Go Back';
 
   @override
-  String get submissionLimitReached => 'Gönderim Sınırına Ulaşıldı';
+  String get submissionLimitReached => 'Submission Limit Reached';
 
   @override
   String get usedAllSubmissions =>
-      'Bu etkinlik için tüm gönderimlerinizi kullandınız.';
+      'You have used all your submissions for this event.';
 
   @override
-  String get challenge => 'Görev';
+  String get challenge => 'Challenge';
 
   @override
-  String get endingSoon => 'Yakında bitiyor';
+  String get endingSoon => 'Ending soon';
 
   @override
-  String get yourPhoto => 'Fotoğrafınız';
+  String get yourPhoto => 'Your Photo';
 
   @override
-  String get addYourPhoto => 'Fotoğrafınızı ekleyin';
+  String get addYourPhoto => 'Add your photo';
 
   @override
-  String get submissionGuidelines => 'Gönderim Kuralları';
+  String get submissionGuidelines => 'Submission Guidelines';
 
   @override
   String get matchChallengeTheme =>
-      'Fotoğrafınızın görev temasına uygun olduğundan emin olun';
+      'Make sure your photo matches the challenge theme';
 
   @override
-  String get useGoodLighting => 'İyi ışıklandırma ve net odak kullanın';
+  String get useGoodLighting => 'Use good lighting and clear focus';
 
   @override
   String get originalPhotosOnly =>
-      'Sadece orijinal fotoğraflar - ekran görüntüsü veya indirilen resimler kabul edilmez';
+      'Original photos only - no screenshots or downloaded images';
 
   @override
   String failedToTakePhoto(String error) {
-    return 'Fotoğraf çekilirken hata: $error';
+    return 'Failed to take photo: $error';
   }
 
   @override
   String failedToSelectPhoto(String error) {
-    return 'Fotoğraf seçilirken hata: $error';
+    return 'Failed to select photo: $error';
   }
 
   @override
-  String get pleaseSelectPhotoFirst => 'Lütfen önce bir fotoğraf seçin';
+  String get pleaseSelectPhotoFirst => 'Please select a photo first';
 
   @override
-  String get userNotAuthenticated => 'Kullanıcı kimlik doğrulaması yapılmamış';
+  String get userNotAuthenticated => 'User not authenticated';
 
   @override
   String failedToSubmitPhoto(String error) {
-    return 'Fotoğraf gönderilirken hata: $error';
+    return 'Failed to submit photo: $error';
   }
 
   @override
-  String get submitting => 'Gönderiliyor...';
+  String get submitting => 'Submitting...';
 
   @override
-  String get errorLoadingSubmissionData => 'Gönderim verileri yüklenirken hata';
+  String get errorLoadingSubmissionData => 'Error loading submission data';
 
   @override
-  String get authenticationRequired => 'Kimlik Doğrulama Gerekli';
+  String get authenticationRequired => 'Authentication Required';
 
   @override
-  String get pleaseSignInToSubmit =>
-      'Fotoğraf göndermek için lütfen giriş yapın';
+  String get pleaseSignInToSubmit => 'Please sign in to submit photos';
 
   @override
-  String get submissionNotFound => 'Gönderim Bulunamadı';
+  String get submissionNotFound => 'Submission Not Found';
 
   @override
-  String get errorLoadingSubmission => 'Gönderim yüklenirken hata';
+  String get errorLoadingSubmission => 'Error loading submission';
 
   @override
-  String get photo => 'Fotoğraf';
+  String get photo => 'Photo';
 
   @override
-  String get deletePost => 'Gönderiyi Sil';
+  String get deletePost => 'Delete Post';
 
   @override
   String get sureDeletePost =>
-      'Bu gönderiyi silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.';
+      'Are you sure you want to delete this post? This action cannot be undone.';
 
   @override
-  String get postDeletedSuccessfully => 'Gönderi başarıyla silindi';
+  String get postDeletedSuccessfully => 'Post deleted successfully';
 
   @override
-  String get failedToDeletePost => 'Gönderi silinirken hata oluştu';
+  String get failedToDeletePost => 'Failed to delete post';
 
   @override
-  String get messages => 'Mesajlar';
+  String get messages => 'Messages';
 
   @override
-  String get errorLoadingChats => 'Sohbetler yüklenirken hata';
+  String get errorLoadingChats => 'Error loading chats';
 
   @override
-  String get noConversationsYet => 'Henüz konuşma yok';
+  String get noConversationsYet => 'No conversations yet';
 
   @override
-  String get unknownUser => 'Bilinmeyen Kullanıcı';
+  String get unknownUser => 'Unknown User';
 
   @override
-  String get noMessagesYet => 'Henüz mesaj yok';
+  String get noMessagesYet => 'No messages yet';
 
   @override
-  String get failedToLoadUserData => 'Kullanıcı verileri yüklenemedi';
+  String get failedToLoadUserData => 'Failed to load user data';
 
   @override
-  String get chatDeleted => 'Sohbet silindi';
+  String get chatDeleted => 'Chat deleted';
 
   @override
-  String get deleteChat => 'Sohbeti Sil';
+  String get deleteChat => 'Delete Chat';
 
   @override
   String get justNow => 'Az önce';
 
   @override
-  String get user => 'Kullanıcı';
+  String get user => 'User';
 
   @override
-  String get errorLoadingMessages => 'Mesajlar yüklenirken hata';
+  String get errorLoadingMessages => 'Error loading messages';
 
   @override
-  String get typeMessage => 'Bir mesaj yazın...';
+  String get typeMessage => 'Type a message...';
 
   @override
-  String get userNotFound => 'Kullanıcı bulunamadı';
+  String get userNotFound => 'User not found';
 
   @override
   String pageNotFound(String location) {
-    return 'Sayfa bulunamadı: $location';
+    return 'Page not found: $location';
   }
 
   @override
-  String get goHome => 'Ana Sayfaya Git';
+  String get goHome => 'Go Home';
 
   @override
-  String get noSubmissionsYet => 'Henüz gönderim yok';
+  String get noSubmissionsYet => 'No submissions yet';
 
   @override
-  String get beFirstToSubmit => 'İlk fotoğrafı gönderen siz olun!';
+  String get beFirstToSubmit => 'Be the first to submit a photo!';
 
   @override
-  String get errorLoadingSubmissions => 'Gönderimler yüklenirken hata';
+  String get errorLoadingSubmissions => 'Error loading submissions';
 
   @override
-  String get anonymousWinner => 'Anonim Kazanan';
+  String get anonymousWinner => 'Anonymous Winner';
 
   @override
-  String get championOfEvent => 'Bu etkinliğin şampiyonu!';
+  String get championOfEvent => 'Champion of this event!';
 
   @override
-  String get storageTest => 'Depolama Testi';
+  String get storageTest => 'Storage Test';
 
   @override
-  String get testStorageConnection => 'Depolama Bağlantısını Test Et';
+  String get testStorageConnection => 'Test Storage Connection';
 
   @override
-  String get pickImageAndUpload => 'Resim Seç ve Yükle';
+  String get pickImageAndUpload => 'Pick Image & Upload';
 
   @override
-  String get selectedImage => 'Seçilen Resim:';
+  String get selectedImage => 'Selected Image:';
 
   @override
   String get accountExistsWithDifferentCredential =>
-      'Bu kimlik bilgisi ile farklı bir hesap zaten var.';
+      'An account already exists with a different credential.';
 
   @override
   String get credentialMalformedOrExpired =>
-      'Alınan kimlik bilgisi hatalı veya süresi dolmuş.';
+      'The credential received is malformed or has expired.';
 
   @override
   String get operationNotAllowed =>
-      'Bu işleme izin verilmiyor. Lütfen destek ile iletişime geçin.';
+      'This operation is not allowed. Please contact support.';
 
   @override
-  String get userAccountDisabled => 'Bu kullanıcı hesabı devre dışı bırakıldı.';
+  String get userAccountDisabled => 'This user account has been disabled.';
 
   @override
-  String get noUserFoundWithEmail =>
-      'Bu e-posta adresi ile kullanıcı bulunamadı.';
+  String get noUserFoundWithEmail => 'No user found with this email address.';
 
   @override
   String get incorrectPasswordTryAgain =>
-      'Yanlış şifre. Lütfen tekrar deneyin.';
+      'Incorrect password. Please try again.';
 
   @override
-  String get tooManyRequestsTryLater =>
-      'Çok fazla istek. Daha sonra tekrar deneyin.';
+  String get tooManyRequestsTryLater => 'Too many requests. Try again later.';
 
   @override
   String get networkErrorCheckConnection =>
-      'Ağ hatası. Lütfen bağlantınızı kontrol edin.';
+      'Network error. Please check your connection.';
 
   @override
   String get emailAlreadyRegistered =>
-      'Bu e-posta adresi zaten kayıtlı. Lütfen bunun yerine giriş yapın.';
+      'This email address is already registered. Please sign in instead.';
 
   @override
-  String get enterValidEmailAddress =>
-      'Lütfen geçerli bir e-posta adresi girin.';
+  String get enterValidEmailAddress => 'Please enter a valid email address.';
 
   @override
   String get passwordTooWeak =>
-      'Şifre çok zayıf. Lütfen daha güçlü bir şifre seçin.';
+      'Password is too weak. Please choose a stronger password.';
 
   @override
   String get signOutAndSignInAgain =>
-      'Bu isteği tekrar denemeden önce lütfen çıkış yapın ve tekrar giriş yapın.';
+      'Please sign out and sign in again before retrying this request.';
 
   @override
   String get verificationCodeInvalid =>
-      'Doğrulama kodu geçersiz. Lütfen tekrar deneyin.';
+      'The verification code is invalid. Please try again.';
 
   @override
   String get verificationIdInvalid =>
-      'Doğrulama kimliği geçersiz. Lütfen tekrar deneyin.';
+      'The verification ID is invalid. Please try again.';
 
   @override
   String get authenticationFailedTryAgain =>
-      'Kimlik doğrulama başarısız. Lütfen tekrar deneyin.';
+      'Authentication failed. Please try again.';
 
   @override
   String failedToLoadChat(String error) {
-    return 'Sohbet yüklenemedi: $error';
+    return 'Failed to load chat: $error';
   }
 
   @override
   String failedToSendMessage(String error) {
-    return 'Mesaj gönderilemedi: $error';
+    return 'Failed to send message: $error';
   }
 
   @override
   String get noConversationsDescription =>
-      'Birinin profilini ziyaret ederek bir konuşma başlatın';
+      'Start a conversation by visiting someone\'s profile';
 
   @override
-  String get startConversation => 'Konuşmayı başlat!';
+  String get startConversation => 'Start the conversation!';
 
   @override
   String failedToDeleteChat(String error) {
-    return 'Sohbet silinemedi: $error';
+    return 'Failed to delete chat: $error';
   }
 
   @override
   String get sureDeleteChat =>
-      'Bu sohbeti silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.';
+      'Are you sure you want to delete this chat? This action cannot be undone.';
 
   @override
-  String yesterday(String time) {
-    return 'Dün $time';
-  }
+  String get yesterday => 'Dün';
 
   @override
   String daysAgo(int days) {
-    return '$days gün önce';
+    return '$days days ago';
   }
 
   @override
   String hoursLeft(int hours, int minutes) {
-    return '${hours}s ${minutes}dk kaldı';
+    return '${hours}h ${minutes}m left';
   }
 
   @override
   String minutesLeft(int minutes) {
-    return '${minutes}dk kaldı';
+    return '${minutes}m left';
   }
 
   @override
-  String get active => 'Aktif';
+  String get active => 'Active';
 
   @override
-  String get ended => 'Bitti';
+  String get ended => 'Ended';
 
   @override
   String minutesAgo(int minutes) {
-    return '${minutes}dk önce';
+    return '${minutes}m ago';
   }
 
   @override
   String hoursAgo(int hours) {
-    return '${hours}s önce';
+    return '${hours}h ago';
   }
 
   @override
@@ -707,65 +701,101 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get profileNotSetUp => 'Profil henüz ayarlanmamış';
+  String get profileNotSetUp => 'Profile not set up yet';
 
   @override
-  String get pleaseCompleteProfileSetup =>
-      'Lütfen profil kurulumunu tamamlayın';
+  String get pleaseCompleteProfileSetup => 'Please complete your profile setup';
 
   @override
   String errorLoadingProfile(String error) {
-    return 'Profil yüklenirken hata: $error';
+    return 'Error loading profile: $error';
   }
 
   @override
-  String get spotlight => 'ÖNEÇIKAN';
+  String get spotlight => 'SPOTLIGHT';
 
   @override
-  String get pastTasks => 'Geçmiş Görevler';
+  String get pastTasks => 'Past Tasks';
 
   @override
-  String get noActiveTasksRight => 'Şu anda aktif görev bulunmuyor';
+  String get noActiveTasksRight => 'No active tasks right now';
 
   @override
-  String get tasksLoading => 'Görevler yükleniyor...';
+  String get tasksLoading => 'Tasks loading...';
 
   @override
-  String get errorLoadingTasks => 'Görevler yüklenirken hata oluştu';
+  String get errorLoadingTasks => 'Error occurred while loading tasks';
 
   @override
-  String get noPastTasksYet => 'Henüz geçmiş görev yok';
+  String get noPastTasksYet => 'No past tasks yet';
 
   @override
   String get notificationPermissionMessage =>
-      'Yeni görevler ve güncellemeler hakkında bildirim almak için izin verin.';
+      'Allow permission to receive notifications about new tasks and updates.';
 
   @override
-  String get notNow => 'Şimdi Değil';
+  String get notNow => 'Not Now';
 
   @override
-  String get allowPermission => 'İzin Ver';
+  String get allowPermission => 'Allow Permission';
 
   @override
   String get notifications => 'Bildirimler';
 
   @override
-  String get notificationPermissionGranted => 'Bildirim izni verildi!';
+  String get notificationPermissionGranted =>
+      'Notification permission granted!';
 
   @override
   String get notificationPermissionDenied =>
-      'Bildirim izni verilmedi. Ayarlardan izin verebilirsiniz.';
+      'Notification permission denied. You can grant permission from settings.';
 
   @override
-  String get today => 'Bugün';
+  String get today => 'Today';
 
   @override
   String daysLeft(int days) {
-    return '${days}g kaldı';
+    return '${days}d left';
   }
 
   @override
   String daysAndHoursLeft(int days, int hours) {
-    return '${days}g ${hours}s kaldı';
+    return '${days}d ${hours}h left';
+  }
+
+  @override
+  String get noNotificationsYet => 'Henüz bildirim yok';
+
+  @override
+  String get notificationsWillAppearHere =>
+      'Beğeniler ve yorumlar hakkında bildirimleri burada alacaksınız';
+
+  @override
+  String get errorLoadingNotifications => 'Bildirimler yüklenirken hata oluştu';
+
+  @override
+  String get allNotificationsMarkedAsRead =>
+      'Tüm bildirimler okundu olarak işaretlendi';
+
+  @override
+  String get failedToMarkNotificationsAsRead =>
+      'Bildirimler okundu olarak işaretlenemedi';
+
+  @override
+  String get failedToDeleteNotification => 'Bildirim silinemedi';
+
+  @override
+  String minutesAgoShort(int minutes) {
+    return '${minutes}dk önce';
+  }
+
+  @override
+  String hoursAgoShort(int hours) {
+    return '${hours}sa önce';
+  }
+
+  @override
+  String weeksAgoShort(int weeks) {
+    return '${weeks}h önce';
   }
 }

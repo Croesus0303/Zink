@@ -12,6 +12,7 @@ import '../../features/submissions/presentation/screens/single_submission_screen
 import '../../features/messaging/presentation/screens/chat_screen.dart';
 import '../../features/messaging/presentation/screens/chats_list_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../utils/logger.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -171,6 +172,11 @@ class AppRouter {
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/notifications',
+      name: 'notifications',
+      builder: (context, state) => const NotificationsScreen(),
     ),
   ];
 

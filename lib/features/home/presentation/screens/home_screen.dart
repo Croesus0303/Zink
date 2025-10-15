@@ -6,6 +6,7 @@ import '../../../auth/providers/auth_providers.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../events/presentation/screens/event_detail_screen.dart';
+import '../../../notifications/providers/notifications_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/app_colors.dart';
@@ -59,6 +60,87 @@ class HomeScreen extends ConsumerWidget {
         ),
         centerTitle: false,
         actions: [
+          // Notifications button
+          Container(
+            margin: const EdgeInsets.only(right: 6, left: 0, bottom: 3, top: 3),
+            decoration: BoxDecoration(
+              color: AppColors.primaryOrange.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final unreadCountAsync = ref.watch(enhancedUnreadNotificationsCountProvider);
+                
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    IconButton(
+                      onPressed: () => context.push('/notifications'),
+                      icon: Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width * 0.08,
+                        minHeight: MediaQuery.of(context).size.width * 0.08,
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                    // Unread count badge
+                    unreadCountAsync.when(
+                      data: (count) => count > 0
+                          ? Positioned(
+                              right: -2,
+                              top: -2,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryOrange,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primaryOrange.withValues(alpha: 0.6),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    count > 99 ? '99+' : count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: MediaQuery.of(context).size.width * 0.024,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          // Messages button
           Container(
             margin: const EdgeInsets.only(right: 6, left: 0, bottom: 3, top: 3),
             decoration: BoxDecoration(
@@ -83,6 +165,7 @@ class HomeScreen extends ConsumerWidget {
               padding: EdgeInsets.zero,
             ),
           ),
+          // Profile button
           Container(
             margin: const EdgeInsets.only(right: 12, bottom: 3, top: 3),
             decoration: BoxDecoration(
