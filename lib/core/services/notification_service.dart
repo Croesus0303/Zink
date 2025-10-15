@@ -73,7 +73,14 @@ class NotificationService {
   Future<void> subscribeToTopic(String topic) async {
     try {
       // Ensure we have a valid FCM token before subscribing
-      final token = await _messaging.getToken();
+      String? token;
+      try {
+        token = await _messaging.getToken();
+      } catch (tokenError) {
+        AppLogger.e('Failed to get FCM token for topic subscription: $tokenError');
+        return; // Don't subscribe if we can't get token
+      }
+
       if (token == null) {
         AppLogger.e('Cannot subscribe to topic: No FCM token available');
         return;
@@ -84,7 +91,7 @@ class NotificationService {
           'Successfully subscribed to topic: $topic with token: ${token.substring(0, 20)}...');
     } catch (e) {
       AppLogger.e('Failed to subscribe to topic $topic', e);
-      rethrow; // Re-throw to see the actual error
+      // Don't rethrow - topic subscription failure shouldn't block other operations
     }
   }
 

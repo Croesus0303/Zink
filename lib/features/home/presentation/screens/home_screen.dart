@@ -19,6 +19,92 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch all essential data first to determine loading state
+    final authStateAsync = ref.watch(authStateProvider);
+    final currentUserDataAsync = ref.watch(currentUserDataProvider);
+    final activeEventAsync = ref.watch(activeEventProvider);
+    final pastEventsAsync = ref.watch(paginatedPastEventsProvider);
+    final unreadCountAsync = ref.watch(enhancedUnreadNotificationsCountProvider);
+    final unreadMessagesCountAsync = ref.watch(unreadMessagesCountAsyncProvider);
+    final shouldShowPromptAsync = ref.watch(shouldShowNotificationPromptProvider);
+
+    // Check if critical data is still loading - especially important for first login
+    // Note: FCM token is not included as it's not essential for basic UI functionality
+    final isLoading = authStateAsync.isLoading ||
+                     currentUserDataAsync.isLoading ||
+                     activeEventAsync.isLoading || 
+                     pastEventsAsync.isLoading || 
+                     unreadCountAsync.isLoading || 
+                     unreadMessagesCountAsync.isLoading ||
+                     shouldShowPromptAsync.isLoading;
+
+    // Show loading screen while essential data loads
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+          title: Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: Image.asset(
+                  'assets/app_logo.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.camera_alt,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.04),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.015),
+                        Text(
+                          'Zink',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width * 0.045,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          centerTitle: false,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.auroraRadialGradient,
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.rosyBrown,
+                strokeWidth: 4,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Once all data is loaded, show the full UI
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
@@ -72,73 +158,67 @@ class HomeScreen extends ConsumerWidget {
                 width: 1,
               ),
             ),
-            child: Consumer(
-              builder: (context, ref, child) {
-                final unreadCountAsync = ref.watch(enhancedUnreadNotificationsCountProvider);
-                
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    IconButton(
-                      onPressed: () => context.push('/notifications'),
-                      icon: Icon(
-                        Icons.notifications_outlined,
-                        color: Colors.white,
-                        size: MediaQuery.of(context).size.width * 0.04,
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: MediaQuery.of(context).size.width * 0.08,
-                        minHeight: MediaQuery.of(context).size.width * 0.08,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                    // Unread count badge
-                    unreadCountAsync.when(
-                      data: (count) => count > 0
-                          ? Positioned(
-                              right: -2,
-                              top: -2,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.05,
-                                height: MediaQuery.of(context).size.width * 0.05,
-                                constraints: BoxConstraints(
-                                  minWidth: MediaQuery.of(context).size.width * 0.05,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryOrange,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primaryOrange.withValues(alpha: 0.6),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    count > 99 ? '99+' : count.toString(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: MediaQuery.of(context).size.width * 0.024,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  onPressed: () => context.push('/notifications'),
+                  icon: Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.04,
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width * 0.08,
+                    minHeight: MediaQuery.of(context).size.width * 0.08,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                // Unread count badge
+                unreadCountAsync.when(
+                  data: (count) => count > 0
+                      ? Positioned(
+                          right: -2,
+                          top: -2,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryOrange,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
                               ),
-                            )
-                          : const SizedBox.shrink(),
-                      loading: () => const SizedBox.shrink(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-                  ],
-                );
-              },
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primaryOrange.withValues(alpha: 0.6),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                count > 99 ? '99+' : count.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: MediaQuery.of(context).size.width * 0.024,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ],
             ),
           ),
           // Messages button
@@ -152,73 +232,67 @@ class HomeScreen extends ConsumerWidget {
                 width: 1,
               ),
             ),
-            child: Consumer(
-              builder: (context, ref, child) {
-                final unreadMessagesCountAsync = ref.watch(unreadMessagesCountAsyncProvider);
-                
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    IconButton(
-                      onPressed: () => context.push('/chats'),
-                      icon: Icon(
-                        Icons.chat_bubble_outline,
-                        color: Colors.white,
-                        size: MediaQuery.of(context).size.width * 0.04,
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: MediaQuery.of(context).size.width * 0.08,
-                        minHeight: MediaQuery.of(context).size.width * 0.08,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                    // Unread count badge
-                    unreadMessagesCountAsync.when(
-                      data: (count) => count > 0
-                          ? Positioned(
-                              right: -2,
-                              top: -2,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.05,
-                                height: MediaQuery.of(context).size.width * 0.05,
-                                constraints: BoxConstraints(
-                                  minWidth: MediaQuery.of(context).size.width * 0.05,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.rosyBrown,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    count > 99 ? '99+' : count.toString(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: MediaQuery.of(context).size.width * 0.024,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  onPressed: () => context.push('/chats'),
+                  icon: Icon(
+                    Icons.chat_bubble_outline,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.04,
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width * 0.08,
+                    minHeight: MediaQuery.of(context).size.width * 0.08,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                // Unread count badge
+                unreadMessagesCountAsync.when(
+                  data: (count) => count > 0
+                      ? Positioned(
+                          right: -2,
+                          top: -2,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            constraints: BoxConstraints(
+                              minWidth: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.rosyBrown,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
                               ),
-                            )
-                          : const SizedBox.shrink(),
-                      loading: () => const SizedBox.shrink(),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-                  ],
-                );
-              },
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                count > 99 ? '99+' : count.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: MediaQuery.of(context).size.width * 0.024,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ],
             ),
           ),
           // Profile button

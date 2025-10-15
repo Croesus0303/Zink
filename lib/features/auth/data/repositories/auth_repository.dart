@@ -213,8 +213,17 @@ class AuthRepository {
         throw Exception('Username is already taken');
       }
 
-      // Get FCM token
-      final fcmToken = await _messaging.getToken();
+      // Get FCM token (optional - don't fail onboarding if this fails)
+      String? fcmToken;
+      try {
+        fcmToken = await _messaging.getToken();
+        if (fcmToken != null) {
+          AppLogger.i('FCM token retrieved during onboarding: ${fcmToken.substring(0, 20)}...');
+        }
+      } catch (e) {
+        AppLogger.w('Failed to get FCM token during onboarding (continuing anyway): $e');
+        // Continue with onboarding even if FCM token fails
+      }
 
       // Create the complete user document
       final userData = {
@@ -237,9 +246,6 @@ class AuthRepository {
 
       AppLogger.i(
           'User onboarding completed and document created for user: ${user.uid}');
-      if (fcmToken != null) {
-        AppLogger.i('FCM token stored during onboarding: ${fcmToken.substring(0, 20)}...');
-      }
     } catch (e, stackTrace) {
       AppLogger.e('Failed to complete user onboarding', e, stackTrace);
       rethrow;

@@ -187,7 +187,104 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       );
     }
 
+    // Watch all essential profile data first
+    final authStateAsync = ref.watch(authStateProvider);
+    final currentUserDataAsync = ref.watch(currentUserDataProvider);
     final userDataAsync = ref.watch(userDataProvider(targetUserId));
+    final userSubmissionsAsync = ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
+    final userLikedSubmissionsAsync = ref.watch(userLikedSubmissionsProvider(targetUserId));
+    final userBadgesAsync = ref.watch(userBadgesProvider(targetUserId));
+
+    // Check if critical data is still loading - especially important for first login
+    final isLoading = authStateAsync.isLoading ||
+                     currentUserDataAsync.isLoading ||
+                     userDataAsync.isLoading || 
+                     userSubmissionsAsync.isLoading || 
+                     userLikedSubmissionsAsync.isLoading ||
+                     userBadgesAsync.isLoading;
+
+    // Show loading screen while essential data loads
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+          elevation: 0,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+          title: Text(
+            AppLocalizations.of(context)!.loading,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+            ),
+          ),
+          centerTitle: true,
+          leading: Container(
+            margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.15),
+                  AppColors.pineGreen.withValues(alpha: 0.08),
+                  Colors.white.withValues(alpha: 0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: AppColors.iceBorder,
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.08),
+                  blurRadius: 8,
+                  offset: const Offset(-1, -1),
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(1, 1),
+                ),
+              ],
+            ),
+            child: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.04,
+              ),
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width * 0.08,
+                minHeight: MediaQuery.of(context).size.width * 0.08,
+              ),
+              padding: EdgeInsets.zero,
+            ),
+          ),
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.pineGreen,
+                strokeWidth: 4,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return userDataAsync.when(
       data: (user) =>
@@ -1280,9 +1377,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     return submissionsAsync.when(
       data: (submissions) => _buildSubmissionGrid(submissions),
-      loading: () => const Center(
-        child: CircularProgressIndicator(color: AppColors.pineGreen),
-      ),
+      loading: () => _buildSubmissionGrid([]), // Show empty grid while loading
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1351,9 +1446,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     return likedSubmissionsAsync.when(
       data: (submissions) => _buildLikedSubmissionGrid(submissions),
-      loading: () => const Center(
-        child: CircularProgressIndicator(color: AppColors.pineGreen),
-      ),
+      loading: () => _buildLikedSubmissionGrid([]), // Show empty grid while loading
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
