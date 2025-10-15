@@ -45,6 +45,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         setState(() {
           _chatId = chat.id;
         });
+        
+        // Mark chat as read when entering the chat screen
+        try {
+          final markAsRead = ref.read(markChatAsReadProvider);
+          await markAsRead(chat.id);
+          AppLogger.i('Marked chat ${chat.id} as read');
+        } catch (e) {
+          AppLogger.w('Failed to mark chat as read: $e');
+        }
       }
     } catch (e) {
       AppLogger.e('Error initializing chat', e);

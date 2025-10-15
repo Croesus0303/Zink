@@ -22,6 +22,21 @@ class MessagingService {
       if (chatSnapshot.exists && chatSnapshot.value != null) {
         // Chat exists, load it
         final chatData = Map<String, dynamic>.from(chatSnapshot.value as Map<Object?, Object?>);
+        
+        // Migrate existing chats that don't have unreadCount field
+        if (chatData['unreadCount'] == null) {
+          final participants = Map<String, bool>.from(chatData['participants'] as Map<Object?, Object?>);
+          final unreadCount = <String, int>{};
+          for (final participantId in participants.keys) {
+            unreadCount[participantId] = 0;
+          }
+          
+          // Update the chat with the unreadCount field
+          await _chatsRef.child(chatId).child('unreadCount').set(unreadCount);
+          chatData['unreadCount'] = unreadCount;
+          AppLogger.i('Migrated chat $chatId to include unreadCount field');
+        }
+        
         AppLogger.i('Found existing chat: $chatId');
         return ChatModel.fromMap(chatId, chatData);
       } else {
@@ -31,6 +46,10 @@ class MessagingService {
           participants: {
             currentUserId: true,
             otherUserId: true,
+          },
+          unreadCount: {
+            currentUserId: 0,
+            otherUserId: 0,
           },
         );
 
@@ -120,7 +139,7 @@ class MessagingService {
     }
   }
 
-  // Send a message
+  // Send a message with atomic unread count update
   Future<void> sendMessage(String chatId, String senderId, String text) async {
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -139,13 +158,43 @@ class MessagingService {
         timestamp: timestamp,
       );
 
-      // Use transaction to ensure atomicity
-      await _database.ref().update({
+      // Get chat participants to increment unread count for the recipient
+      final chatSnapshot = await _chatsRef.child(chatId).get();
+      Map<String, dynamic> unreadCountUpdates = {};
+      
+      if (chatSnapshot.exists) {
+        final chatData = Map<String, dynamic>.from(chatSnapshot.value as Map);
+        final participants = Map<String, bool>.from(chatData['participants'] as Map<Object?, Object?>);
+        var currentUnreadCount = chatData['unreadCount'] as Map<Object?, Object?>? ?? {};
+        
+        // Initialize unreadCount if it doesn't exist (migration for existing chats)
+        if (currentUnreadCount.isEmpty) {
+          currentUnreadCount = {};
+          for (final participantId in participants.keys) {
+            currentUnreadCount[participantId] = 0;
+          }
+          // Save the initialized unreadCount
+          await _chatsRef.child(chatId).child('unreadCount').set(currentUnreadCount);
+        }
+        
+        // Increment unread count for all participants except the sender
+        for (final participantId in participants.keys) {
+          if (participantId != senderId) {
+            final currentCount = currentUnreadCount[participantId] as int? ?? 0;
+            unreadCountUpdates['chats/$chatId/unreadCount/$participantId'] = currentCount + 1;
+          }
+        }
+      }
+
+      // Use atomic transaction to ensure consistency
+      final updates = <String, dynamic>{
         'messages/$chatId/$messageId': message.toMap(),
         'chats/$chatId/lastMessage': lastMessage.toMap(),
-      });
+        ...unreadCountUpdates,
+      };
 
-      AppLogger.i('Sent message in chat $chatId');
+      await _database.ref().update(updates);
+      AppLogger.i('Sent message in chat $chatId with unread count updates');
     } catch (e) {
       AppLogger.e('Error sending message in chat $chatId', e);
       rethrow;
@@ -198,15 +247,77 @@ class MessagingService {
     }
   }
 
-  // Mark chat as read (for future implementation)
+  // Mark chat as read - reset unread count atomically
   Future<void> markChatAsRead(String chatId, String userId) async {
     try {
-      await _chatsRef.child(chatId).child('readBy').child(userId).set(DateTime.now().millisecondsSinceEpoch);
-      AppLogger.d('Marked chat $chatId as read by $userId');
+      // Use atomic transaction to update both readBy and reset unread count
+      final updates = <String, dynamic>{
+        'chats/$chatId/readBy/$userId': DateTime.now().millisecondsSinceEpoch,
+        'chats/$chatId/unreadCount/$userId': 0,
+      };
+
+      await _database.ref().update(updates);
+      AppLogger.i('Marked chat $chatId as read by $userId and reset unread count');
     } catch (e) {
       AppLogger.e('Error marking chat $chatId as read', e);
       rethrow;
     }
+  }
+
+  // Get total unread message count for a user (sum of unread counts from all chats)
+  Stream<int> getUnreadMessageCount(String userId) {
+    try {
+      return _chatsRef
+          .orderByChild('participants/$userId')
+          .equalTo(true)
+          .onValue
+          .map((event) {
+        int totalUnreadCount = 0;
+        
+        if (event.snapshot.exists && event.snapshot.value != null) {
+          final chatsData = Map<String, dynamic>.from(event.snapshot.value as Map<Object?, Object?>);
+          
+          for (final entry in chatsData.entries) {
+            try {
+              final chatData = Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
+              final chat = ChatModel.fromMap(entry.key.toString(), chatData);
+              
+              // Get unread count directly from chat model
+              totalUnreadCount += chat.getUnreadCount(userId);
+            } catch (e) {
+              AppLogger.w('Error parsing chat ${entry.key} for unread count: $e');
+            }
+          }
+        }
+        
+        AppLogger.d('User $userId has $totalUnreadCount total unread messages');
+        return totalUnreadCount;
+      });
+    } catch (e) {
+      AppLogger.e('Error getting unread count for user $userId', e);
+      return Stream.value(0);
+    }
+  }
+
+  // Get unread message count for a specific chat (using efficient unreadCount field)
+  Future<int> getUnreadCountForChat(String chatId, String userId) async {
+    try {
+      final chat = await _chatsRef.child(chatId).get();
+      if (!chat.exists) return 0;
+      
+      final chatData = Map<String, dynamic>.from(chat.value as Map);
+      final chatModel = ChatModel.fromMap(chatId, chatData);
+      
+      return chatModel.getUnreadCount(userId);
+    } catch (e) {
+      AppLogger.e('Error getting unread count for chat $chatId', e);
+      return 0;
+    }
+  }
+
+  // Get unread message count for a specific chat (simplified for UI)
+  int getUnreadCountForChatSimple(ChatModel chat, String userId) {
+    return chat.getUnreadCount(userId);
   }
 }
 

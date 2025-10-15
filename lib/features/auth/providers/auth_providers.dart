@@ -54,6 +54,8 @@ class AuthService {
     try {
       final result = await _authRepository.signInWithGoogle();
       if (result != null) {
+        // Invalidate event providers to refresh data after successful sign in
+        _invalidateEventProviders();
         return AuthResult.success();
       } else {
         return AuthResult.cancelled();
@@ -72,6 +74,8 @@ class AuthService {
     try {
       final result = await _authRepository.signInWithApple();
       if (result != null) {
+        // Invalidate event providers to refresh data after successful sign in
+        _invalidateEventProviders();
         return AuthResult.success();
       } else {
         return AuthResult.cancelled();
@@ -95,6 +99,8 @@ class AuthService {
         password: password,
       );
       if (result != null) {
+        // Invalidate event providers to refresh data after successful sign in
+        _invalidateEventProviders();
         return AuthResult.success();
       } else {
         return AuthResult.failure('Sign in failed');
@@ -229,6 +235,19 @@ class AuthService {
       }
       rethrow;
     }
+  }
+
+  void _invalidateEventProviders() {
+    // Small delay to ensure auth state has propagated
+    Future.delayed(const Duration(milliseconds: 100), () {
+      // Invalidate event providers to force fresh data load after sign in
+      _ref.invalidate(activeEventProvider);
+      _ref.invalidate(pastEventsProvider);
+      _ref.invalidate(eventsProvider);
+      _ref.invalidate(eventsStreamProvider);
+      _ref.invalidate(paginatedPastEventsProvider);
+      AppLogger.i('Event providers invalidated after successful sign in');
+    });
   }
 
   String _getErrorMessage(FirebaseAuthException e) {

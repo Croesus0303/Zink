@@ -385,23 +385,49 @@ class _ChatListItem extends ConsumerWidget {
   Widget _buildChatItem(BuildContext context, WidgetRef ref, dynamic otherUser,
       String otherUserId) {
     final currentUser = ref.watch(currentUserProvider);
+    
+    if (currentUser == null) {
+      return const SizedBox.shrink();
+    }
+    
+    final hasUnread = chat.hasUnreadMessages(currentUser.uid);
 
     return Container(
       margin:
           EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
       decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
+        gradient: hasUnread 
+          ? LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.rosyBrown.withValues(alpha: 0.3),
+                AppColors.rosyBrown.withValues(alpha: 0.25),
+                AppColors.primaryOrange.withValues(alpha: 0.2),
+                AppColors.rosyBrown.withValues(alpha: 0.15),
+              ],
+            )
+          : AppColors.iceGlassGradient,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.iceBorder, width: 1.5),
+        border: Border.all(
+          color: hasUnread 
+            ? AppColors.rosyBrown.withValues(alpha: 0.6)
+            : AppColors.iceBorder, 
+          width: hasUnread ? 2.5 : 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
+            color: hasUnread 
+              ? AppColors.rosyBrown.withValues(alpha: 0.25)
+              : Colors.white.withValues(alpha: 0.08),
+            blurRadius: hasUnread ? 20 : 15,
             offset: const Offset(-2, -2),
           ),
           BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.15),
-            blurRadius: 15,
+            color: hasUnread 
+              ? AppColors.rosyBrown.withValues(alpha: 0.3)
+              : AppColors.rosyBrown.withValues(alpha: 0.15),
+            blurRadius: hasUnread ? 20 : 15,
             offset: const Offset(2, 2),
           ),
         ],
@@ -489,7 +515,7 @@ class _ChatListItem extends ConsumerWidget {
                           ? Row(
                               children: [
                                 if (chat.lastMessage!.senderId ==
-                                    currentUser?.uid)
+                                    currentUser.uid)
                                   Container(
                                     margin: EdgeInsets.only(
                                         right:
@@ -572,7 +598,49 @@ class _ChatListItem extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      // Future: Add unread badge here
+                      // Unread count badge
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.008),
+                      Builder(
+                        builder: (context) {
+                          final count = chat.getUnreadCount(currentUser.uid);
+                          
+                          return count > 0 
+                            ? Container(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.rosyBrown,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    count > 99 ? '99+' : count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: MediaQuery.of(context).size.width * 0.025,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink();
+                        },
+                      ),
                     ],
                   ),
                 ],

@@ -7,6 +7,7 @@ import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../events/presentation/screens/event_detail_screen.dart';
 import '../../../notifications/providers/notifications_providers.dart';
+import '../../../messaging/providers/messaging_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/app_colors.dart';
@@ -151,18 +152,73 @@ class HomeScreen extends ConsumerWidget {
                 width: 1,
               ),
             ),
-            child: IconButton(
-              onPressed: () => context.push('/chats'),
-              icon: Icon(
-                Icons.chat_bubble_outline,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.04,
-              ),
-              constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width * 0.08,
-                minHeight: MediaQuery.of(context).size.width * 0.08,
-              ),
-              padding: EdgeInsets.zero,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final unreadMessagesCountAsync = ref.watch(unreadMessagesCountAsyncProvider);
+                
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    IconButton(
+                      onPressed: () => context.push('/chats'),
+                      icon: Icon(
+                        Icons.chat_bubble_outline,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width * 0.08,
+                        minHeight: MediaQuery.of(context).size.width * 0.08,
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                    // Unread count badge
+                    unreadMessagesCountAsync.when(
+                      data: (count) => count > 0
+                          ? Positioned(
+                              right: -2,
+                              top: -2,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                constraints: BoxConstraints(
+                                  minWidth: MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.rosyBrown,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    count > 99 ? '99+' : count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: MediaQuery.of(context).size.width * 0.024,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           // Profile button

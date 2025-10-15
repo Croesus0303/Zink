@@ -117,19 +117,30 @@ final chatExistsProvider = FutureProvider.autoDispose.family<bool, String>((ref,
   }
 });
 
-// Unread messages count provider (for future implementation)
-final unreadMessagesCountProvider = Provider.autoDispose<int>((ref) {
-  final chats = ref.watch(userChatsProvider);
+// Unread messages count provider
+final unreadMessagesCountProvider = StreamProvider.autoDispose<int>((ref) {
   final currentUser = ref.watch(currentUserProvider);
   
-  return chats.when(
-    data: (chatList) {
-      if (currentUser == null) return 0;
-      
-      // For now, return 0. This can be implemented later with read receipts
-      return 0;
-    },
-    loading: () => 0,
-    error: (_, __) => 0,
-  );
+  if (currentUser == null) {
+    return Stream.value(0);
+  }
+
+  final messagingService = ref.watch(messagingServiceProvider);
+  return messagingService.getUnreadMessageCount(currentUser.uid);
+});
+
+// Unread messages count as AsyncValue for easier consumption  
+final unreadMessagesCountAsyncProvider = Provider.autoDispose<AsyncValue<int>>((ref) {
+  return ref.watch(unreadMessagesCountProvider);
+});
+
+// Get unread count for a specific chat (using efficient method)
+final chatUnreadCountProvider = Provider.autoDispose.family<int, ChatModel>((ref, chat) {
+  final currentUser = ref.watch(currentUserProvider);
+  
+  if (currentUser == null) {
+    return 0;
+  }
+
+  return chat.getUnreadCount(currentUser.uid);
 });

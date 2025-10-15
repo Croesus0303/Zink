@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../data/models/event_model.dart';
 import '../data/services/events_service.dart';
 import '../../submissions/data/models/submission_model.dart';
@@ -9,6 +10,7 @@ import '../../social/data/models/like_model.dart';
 import '../../social/data/services/social_service.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/data/repositories/auth_repository.dart';
+import '../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 
 // Filter for submission feed
@@ -34,12 +36,16 @@ final eventsProvider = FutureProvider<List<EventModel>>((ref) async {
 
 // Active event provider
 final activeEventProvider = FutureProvider<EventModel?>((ref) async {
+  // Watch auth state to ensure this provider refreshes when user signs in/out
+  ref.watch(authStateProvider);
   final eventsService = ref.watch(eventsServiceProvider);
   return await eventsService.getActiveEvent();
 });
 
 // Past events provider
 final pastEventsProvider = FutureProvider<List<EventModel>>((ref) async {
+  // Watch auth state to ensure this provider refreshes when user signs in/out
+  ref.watch(authStateProvider);
   final eventsService = ref.watch(eventsServiceProvider);
   return await eventsService.getAllPastEvents();
 });
@@ -114,7 +120,16 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
 // Paginated past events provider
 final paginatedPastEventsProvider = StateNotifierProvider<PaginatedPastEventsNotifier, AsyncValue<List<EventModel>>>((ref) {
   final eventsService = ref.watch(eventsServiceProvider);
-  return PaginatedPastEventsNotifier(eventsService);
+  final notifier = PaginatedPastEventsNotifier(eventsService);
+  
+  // Listen to auth state changes and refresh when user signs in/out
+  ref.listen<AsyncValue<User?>>(authStateProvider, (previous, next) {
+    if (previous?.value != next.value) {
+      notifier.refresh();
+    }
+  });
+  
+  return notifier;
 });
 
 final eventProvider =
