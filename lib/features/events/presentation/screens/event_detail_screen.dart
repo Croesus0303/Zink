@@ -40,7 +40,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
   void _refreshEventData() {
     // Refresh event data
-    ref.invalidate(eventsProvider);
+    ref.invalidate(eventProvider(widget.eventId));
     ref.invalidate(submissionsProvider(widget.eventId));
 
     // Refresh social data
@@ -74,17 +74,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsAsync = ref.watch(eventsProvider);
+    final eventAsync = ref.watch(eventProvider(widget.eventId));
 
-    return eventsAsync.when(
-      data: (events) {
-        try {
-          final event = events.firstWhere(
-            (e) => e.id == widget.eventId,
-            orElse: () => throw Exception('Event not found'),
-          );
-          return _buildEventDetail(event);
-        } catch (e) {
+    return eventAsync.when(
+      data: (event) {
+        if (event == null) {
           return Scaffold(
             backgroundColor: Colors.transparent,
             extendBodyBehindAppBar: true,
@@ -115,6 +109,13 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             ),
           );
         }
+
+        // For expired events, pre-load submissions to prevent Spotlight flicker
+        if (event.isExpired) {
+          return _buildExpiredEventWithPreloadedData(event);
+        }
+
+        return _buildEventDetail(event);
       },
       loading: () => Scaffold(
         backgroundColor: Colors.transparent,
@@ -207,7 +208,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: () => ref.refresh(eventsProvider),
+                          onTap: () => ref.refresh(eventProvider(widget.eventId)),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
@@ -237,6 +238,46 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildExpiredEventWithPreloadedData(EventModel event) {
+    final submissionsAsync = ref.watch(submissionsProvider(widget.eventId));
+
+    return submissionsAsync.when(
+      data: (submissions) {
+        // All data is loaded, show the complete event detail
+        return _buildEventDetail(event);
+      },
+      loading: () => Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(AppLocalizations.of(context)!.loading,
+              style: const TextStyle(color: AppColors.textPrimary)),
+          centerTitle: true,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.pineGreen),
+            ),
+          ),
+        ),
+      ),
+      error: (error, stack) {
+        AppLogger.e('Error loading submissions for expired event', error, stack);
+        return _buildEventDetail(event); // Show event detail even if submissions fail
       },
     );
   }
@@ -1609,64 +1650,51 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
           );
         }
 
-        // Return a FutureBuilder to handle the async winner determination
-        return FutureBuilder<SubmissionModel>(
-          future: _determineWinner(submissions, ref),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: const Center(
-                  child: CircularProgressIndicator(color: AppColors.pineGreen),
+        // Determine winner synchronously since submissions are already loaded
+        try {
+          final winnerSubmission = _determineWinnerSync(submissions, ref);
+          return _buildWinnerWidget(context, ref, winnerSubmission);
+        } catch (e) {
+          // If there's an error determining the winner, show ended status
+          return Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.midnightGreen.withValues(alpha: 0.9),
+                    AppColors.midnightGreen.withValues(alpha: 0.7),
+                    AppColors.midnightGreen.withValues(alpha: 0.8),
+                  ],
                 ),
-              );
-            }
-
-            if (snapshot.hasError) {
-              return Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.midnightGreen.withValues(alpha: 0.9),
-                        AppColors.midnightGreen.withValues(alpha: 0.7),
-                        AppColors.midnightGreen.withValues(alpha: 0.8),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.ended,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
                 ),
-              );
-            }
-
-            final winnerSubmission = snapshot.data!;
-            return _buildWinnerWidget(context, ref, winnerSubmission);
-          },
-        );
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.ended,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
       },
       loading: () => Container(
         margin: const EdgeInsets.only(top: 20),
@@ -1713,6 +1741,30 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  SubmissionModel _determineWinnerSync(
+      List<SubmissionModel> submissions, WidgetRef ref) {
+    if (submissions.isEmpty) {
+      throw Exception('No submissions available');
+    }
+
+    // Create a list of submissions with their like counts
+    // For the synchronous version, we'll use the like count from the submission model
+    // and sort primarily by likes, then by creation time
+    final sortedSubmissions = List<SubmissionModel>.from(submissions);
+
+    sortedSubmissions.sort((a, b) {
+      // Rule 1: Most likes wins
+      if (a.likeCount != b.likeCount) {
+        return b.likeCount.compareTo(a.likeCount);
+      }
+
+      // Rule 2: If likes are tied, earliest upload wins (simplified rule)
+      return a.createdAt.compareTo(b.createdAt);
+    });
+
+    return sortedSubmissions.first;
   }
 
   Future<SubmissionModel> _determineWinner(
