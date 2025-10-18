@@ -311,6 +311,11 @@ class TimelinePostCard extends ConsumerWidget {
     final likesStreamAsync = ref.watch(likesStreamProvider(
         (eventId: post.submission.eventId, submissionId: post.submission.id)));
 
+    // Don't render if user data is not loaded yet
+    if (userDataAsync.isLoading || !userDataAsync.hasValue || userDataAsync.value == null) {
+      return const SizedBox.shrink();
+    }
+
     bool isLikedByCurrentUser = false;
     int currentLikeCount = post.submission.likeCount;
 
@@ -356,67 +361,24 @@ class TimelinePostCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Profile photo on far left
-              userDataAsync.when(
-                data: (user) => ClickableUserAvatar(
-                  user: user,
-                  userId: post.submission.uid,
-                  radius: MediaQuery.of(context).size.width * 0.045,
-                ),
-                loading: () => Container(
-                  width: MediaQuery.of(context).size.width * 0.09,
-                  height: MediaQuery.of(context).size.width * 0.09,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.pineGreen.withValues(alpha: 0.3),
-                  ),
-                ),
-                error: (_, __) => Container(
-                  width: MediaQuery.of(context).size.width * 0.09,
-                  height: MediaQuery.of(context).size.width * 0.09,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [AppColors.rosyBrown, AppColors.pineGreen],
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: MediaQuery.of(context).size.width * 0.045,
-                  ),
-                ),
+              ClickableUserAvatar(
+                user: userDataAsync.value!,
+                userId: post.submission.uid,
+                radius: MediaQuery.of(context).size.width * 0.045,
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               // Username centered with profile photo
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.025),
-                  child: userDataAsync.when(
-                    data: (user) => ClickableUserName(
-                      user: user,
-                      userId: post.submission.uid,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                        fontSize: MediaQuery.of(context).size.width * 0.035,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
-                    loading: () => Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: AppColors.pineGreen.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    error: (_, __) => Text(
-                      AppLocalizations.of(context)!.unknown,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                        fontSize: MediaQuery.of(context).size.width * 0.035,
-                      ),
+                  child: ClickableUserName(
+                    user: userDataAsync.value!,
+                    userId: post.submission.uid,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),
