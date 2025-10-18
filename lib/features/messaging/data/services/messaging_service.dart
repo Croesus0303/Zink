@@ -319,6 +319,7 @@ class MessagingService {
   int getUnreadCountForChatSimple(ChatModel chat, String userId) {
     return chat.getUnreadCount(userId);
   }
+
 }
 
 final messagingServiceProvider = Provider<MessagingService>((ref) {

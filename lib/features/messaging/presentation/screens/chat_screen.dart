@@ -35,6 +35,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   void initState() {
     super.initState();
     _initializeChat();
+    _scrollController.addListener(_onScroll);
   }
 
   void _initializeChat() async {
@@ -66,19 +67,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _scrollToBottom() {
+  void _onScroll() {
     if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+      // With reverse ListView, we load more when reaching the maxScrollExtent (top of reversed list)
+      // Only load when very close to prevent premature loading
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 5) {
+        if (_chatId != null) {
+          ref.read(paginatedMessagesProvider(_chatId!).notifier).loadMoreMessages();
+        }
+      }
     }
   }
+
 
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty || _chatId == null) return;
@@ -90,10 +95,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       final sendMessage = ref.read(sendMessageProvider);
       await sendMessage(_chatId!, text);
 
-      // Scroll to bottom after sending message
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
+      // With reverse ListView, new messages automatically appear at bottom
     } catch (e) {
       AppLogger.e('Error sending message', e);
       if (mounted) {
@@ -198,11 +200,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 child: _chatId != null
                     ? otherUserAsync.when(
                         data: (otherUser) =>
-                            _buildMessagesList(currentUser, otherUser),
+                            _buildPaginatedMessagesList(currentUser, otherUser),
                         loading: () => const Center(
                             child: CircularProgressIndicator(
                                 color: AppColors.pineGreen)),
-                        error: (_, __) => _buildMessagesList(currentUser, null),
+                        error: (_, __) => _buildPaginatedMessagesList(currentUser, null),
                       )
                     : const Center(
                         child: CircularProgressIndicator(
@@ -294,252 +296,300 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  Widget _buildMessagesList(dynamic currentUser, UserModel? otherUser) {
-    final messagesAsync = ref.watch(chatMessagesProvider(_chatId!));
+  Widget _buildPaginatedMessagesList(dynamic currentUser, UserModel? otherUser) {
+    final paginatedState = ref.watch(paginatedMessagesProvider(_chatId!));
 
-    return messagesAsync.when(
-      data: (messages) {
-        if (messages.isEmpty) {
-          return Center(
-            child: Container(
-              margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
-              decoration: BoxDecoration(
-                gradient: AppColors.iceGlassGradient,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.iceBorder, width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    blurRadius: 15,
-                    offset: const Offset(-2, -2),
-                  ),
-                  BoxShadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                    blurRadius: 15,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
+    if (paginatedState.messages.isEmpty && !paginatedState.isLoading) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+          decoration: BoxDecoration(
+            gradient: AppColors.iceGlassGradient,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.08),
+                blurRadius: 15,
+                offset: const Offset(-2, -2),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: MediaQuery.of(context).size.width * 0.2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.8),
-                          AppColors.rosyBrown.withValues(alpha: 0.6),
+              BoxShadow(
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
+                blurRadius: 15,
+                offset: const Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                height: MediaQuery.of(context).size.width * 0.2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.pineGreen.withValues(alpha: 0.8),
+                      AppColors.rosyBrown.withValues(alpha: 0.6),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.chat_bubble_outline,
+                  size: MediaQuery.of(context).size.width * 0.1,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              Text(
+                AppLocalizations.of(context)!.noMessagesYet,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Text(
+                AppLocalizations.of(context)!.startConversation,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.035,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (paginatedState.error != null) {
+      return Center(
+        child: Container(
+          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+          decoration: BoxDecoration(
+            gradient: AppColors.iceGlassGradient,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.08),
+                blurRadius: 15,
+                offset: const Offset(-2, -2),
+              ),
+              BoxShadow(
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
+                blurRadius: 15,
+                offset: const Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                height: MediaQuery.of(context).size.width * 0.2,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.rosyBrown.withValues(alpha: 0.8),
+                      AppColors.rosyBrown.withValues(alpha: 0.6),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.error,
+                  size: MediaQuery.of(context).size.width * 0.1,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              Text(
+                AppLocalizations.of(context)!.errorLoadingMessages,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.pineGreen.withValues(alpha: 0.8),
+                      AppColors.pineGreen.withValues(alpha: 0.9),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pineGreen.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => ref.refresh(paginatedMessagesProvider(_chatId!)),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.06,
+                        vertical: MediaQuery.of(context).size.height * 0.015,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                          SizedBox(
+                              width:
+                                  MediaQuery.of(context).size.width * 0.02),
+                          Text(
+                            AppLocalizations.of(context)!.retry,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pineGreen.withValues(alpha: 0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.chat_bubble_outline,
-                      size: MediaQuery.of(context).size.width * 0.1,
-                      color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-                  Text(
-                    AppLocalizations.of(context)!.noMessagesYet,
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.045,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                      shadows: [
-                        Shadow(
-                          color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                          blurRadius: 8,
-                        ),
-                      ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // With reverse ListView, it naturally starts at bottom - no manual handling needed
+
+    return Stack(
+      children: [
+        // Messages list
+        Column(
+          children: [
+            // Invisible spacer for loading indicator
+            if (paginatedState.isLoading && paginatedState.messages.isNotEmpty && paginatedState.isInitialized)
+              const SizedBox(height: 40),
+            
+            Expanded(
+              child: paginatedState.messages.isEmpty && !paginatedState.isInitialized
+                  ? const Center(
+                      child: CircularProgressIndicator(color: AppColors.pineGreen))
+                  : ListView.builder(
+                      controller: _scrollController,
+                      reverse: true, // This makes the list start from bottom
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.02,
+                        bottom: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      itemCount: paginatedState.messages.length,
+                      itemBuilder: (context, index) {
+                        // Reverse the index since we're using reverse: true
+                        final reverseIndex = paginatedState.messages.length - 1 - index;
+                        final message = paginatedState.messages[reverseIndex];
+                        final isMe = currentUser?.uid == message.senderId;
+                        final isLastMessage = reverseIndex == paginatedState.messages.length - 1;
+                        final nextMessage = reverseIndex < paginatedState.messages.length - 1 
+                            ? paginatedState.messages[reverseIndex + 1] 
+                            : null;
+                        final showAvatar = isLastMessage ||
+                            (nextMessage != null &&
+                                nextMessage.senderId != message.senderId);
+
+                        return _MessageBubble(
+                          message: message,
+                          isMe: isMe,
+                          showAvatar: showAvatar && !isMe,
+                          otherUser: otherUser,
+                        );
+                      },
                     ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  Text(
-                    AppLocalizations.of(context)!.startConversation,
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.035,
-                      color: AppColors.textSecondary,
+            ),
+          ],
+        ),
+        
+        // Floating loading indicator at the top (where older messages load)
+        if (paginatedState.isLoading && paginatedState.messages.isNotEmpty && paginatedState.isInitialized)
+          Positioned(
+            top: 10,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 30,
+              alignment: Alignment.center,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.pineGreen.withValues(alpha: 0.9),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
                   ),
-                ],
+                ),
               ),
             ),
-          );
-        }
-
-        // Auto-scroll to bottom when new messages arrive
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom();
-        });
-
-        return ListView.builder(
-          controller: _scrollController,
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.02,
-            bottom: MediaQuery.of(context).size.height * 0.02,
           ),
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            final isMe = currentUser?.uid == message.senderId;
-            final isLastMessage = index == messages.length - 1;
-            final nextMessage =
-                index < messages.length - 1 ? messages[index + 1] : null;
-            final showAvatar = isLastMessage ||
-                (nextMessage != null &&
-                    nextMessage.senderId != message.senderId);
-
-            return _MessageBubble(
-              message: message,
-              isMe: isMe,
-              showAvatar: showAvatar && !isMe,
-              otherUser: otherUser,
-            );
-          },
-        );
-      },
-      loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.pineGreen)),
-      error: (error, stack) {
-        AppLogger.e('Error loading messages', error, stack);
-        return Center(
-          child: Container(
-            margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
-            decoration: BoxDecoration(
-              gradient: AppColors.iceGlassGradient,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.iceBorder, width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  blurRadius: 15,
-                  offset: const Offset(-2, -2),
-                ),
-                BoxShadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                  blurRadius: 15,
-                  offset: const Offset(2, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  height: MediaQuery.of(context).size.width * 0.2,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.rosyBrown.withValues(alpha: 0.8),
-                        AppColors.rosyBrown.withValues(alpha: 0.6),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.error,
-                    size: MediaQuery.of(context).size.width * 0.1,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-                Text(
-                  AppLocalizations.of(context)!.errorLoadingMessages,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.04,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                    shadows: [
-                      Shadow(
-                        color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.pineGreen.withValues(alpha: 0.8),
-                        AppColors.pineGreen.withValues(alpha: 0.9),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.pineGreen.withValues(alpha: 0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: () => ref.refresh(chatMessagesProvider(_chatId!)),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.06,
-                          vertical: MediaQuery.of(context).size.height * 0.015,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.refresh,
-                              color: Colors.white,
-                              size: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            Text(
-                              AppLocalizations.of(context)!.retry,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      ],
     );
   }
 
