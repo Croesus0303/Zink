@@ -218,11 +218,11 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{No likes} =1{1 like} other{{count} likes}}'**
   String likes(int count);
 
-  /// Comments section title
+  /// Comment count text
   ///
   /// In en, this message translates to:
-  /// **'Comments'**
-  String get comments;
+  /// **'{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}'**
+  String commentCount(int count);
 
   /// Add comment placeholder text
   ///
@@ -1274,11 +1274,11 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete this chat? This action cannot be undone.'**
   String get sureDeleteChat;
 
-  /// Yesterday text
+  /// Yesterday timestamp format
   ///
   /// In en, this message translates to:
-  /// **'Yesterday'**
-  String get yesterday;
+  /// **'Yesterday {time}'**
+  String yesterdayAt(String time);
 
   /// Days ago format
   ///
@@ -1327,6 +1327,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days}d ago'**
   String daysAgoShort(int days);
+
+  /// Comments section title
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
 
   /// Profile not set up message
   ///
@@ -1484,11 +1490,53 @@ abstract class AppLocalizations {
   /// **'{hours}h ago'**
   String hoursAgoShort(int hours);
 
+  /// Yesterday text
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
   /// Weeks ago short format
   ///
   /// In en, this message translates to:
   /// **'{weeks}w ago'**
   String weeksAgoShort(int weeks);
+
+  /// Timeline tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get timeline;
+
+  /// Events tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
+  String get events;
+
+  /// Empty timeline message
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get noPostsYet;
+
+  /// Empty timeline subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Check back later for new posts'**
+  String get checkBackLater;
+
+  /// Timeline error message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading timeline'**
+  String get errorLoadingTimeline;
+
+  /// Unknown user fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
 }
 
 class _AppLocalizationsDelegate

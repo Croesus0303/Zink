@@ -100,8 +100,8 @@
       }
     }
   },
-  "comments": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
-  "@comments": {
+  "commentCount": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
+  "@commentCount": {
     "description": "Comment count text",
     "placeholders": {
       "count": {
@@ -890,8 +890,8 @@
   "@sureDeleteChat": {
     "description": "Delete chat confirmation message"
   },
-  "yesterday": "Yesterday {time}",
-  "@yesterday": {
+  "yesterdayAt": "Yesterday {time}",
+  "@yesterdayAt": {
     "description": "Yesterday timestamp format",
     "placeholders": {
       "time": {
@@ -1130,5 +1130,30 @@
         "type": "int"
       }
     }
+  },
+
+  "timeline": "Timeline",
+  "@timeline": {
+    "description": "Timeline tab label"
+  },
+  "events": "Events", 
+  "@events": {
+    "description": "Events tab label"
+  },
+  "noPostsYet": "No posts yet",
+  "@noPostsYet": {
+    "description": "Empty timeline message"
+  },
+  "checkBackLater": "Check back later for new posts",
+  "@checkBackLater": {
+    "description": "Empty timeline subtitle"
+  },
+  "errorLoadingTimeline": "Error loading timeline",
+  "@errorLoadingTimeline": {
+    "description": "Timeline error message"
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown user fallback"
   }
 } 

@@ -59,7 +59,10 @@
       "Bash(NPM_CONFIG_CACHE=/tmp/npm-cache npm install firebase-admin firebase-functions)",
       "Bash(firebase deploy:*)",
       "Bash(firebase functions:log:*)",
-      "Bash(firebase functions:delete:*)"
+      "Bash(firebase functions:delete:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(timeout 10 flutter run --debug 2 >& 1)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

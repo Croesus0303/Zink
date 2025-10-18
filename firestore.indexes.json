@@ -1,25 +1,11 @@
 {
   "indexes": [
     {
-      "collectionGroup": "notifications",
-      "queryScope": "COLLECTION",
+      "collectionGroup": "submissions",
+      "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
           "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "notifications", 
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "seen",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt", 
           "order": "DESCENDING"
         }
       ]

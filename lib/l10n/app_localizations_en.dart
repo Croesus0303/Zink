@@ -83,7 +83,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get comments => 'Comments';
+  String commentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comments',
+      one: '1 comment',
+      zero: 'No comments',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get addComment => 'Add a comment...';
@@ -662,7 +671,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this chat? This action cannot be undone.';
 
   @override
-  String get yesterday => 'Yesterday';
+  String yesterdayAt(String time) {
+    return 'Yesterday $time';
+  }
 
   @override
   String daysAgo(int days) {
@@ -699,6 +710,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String daysAgoShort(int days) {
     return '${days}d ago';
   }
+
+  @override
+  String get comments => 'Comments';
 
   @override
   String get profileNotSetUp => 'Profile not set up yet';
@@ -794,7 +808,28 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get yesterday => 'Yesterday';
+
+  @override
   String weeksAgoShort(int weeks) {
     return '${weeks}w ago';
   }
+
+  @override
+  String get timeline => 'Timeline';
+
+  @override
+  String get events => 'Events';
+
+  @override
+  String get noPostsYet => 'No posts yet';
+
+  @override
+  String get checkBackLater => 'Check back later for new posts';
+
+  @override
+  String get errorLoadingTimeline => 'Error loading timeline';
+
+  @override
+  String get unknown => 'Unknown';
 }

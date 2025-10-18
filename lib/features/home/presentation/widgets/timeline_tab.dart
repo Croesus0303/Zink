@@ -1,0 +1,729 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../../../auth/providers/auth_providers.dart';
+import '../../../events/providers/events_providers.dart';
+import '../../../social/presentation/widgets/like_button.dart';
+import '../../../social/presentation/widgets/comment_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/clickable_user_avatar.dart';
+import '../../../../shared/widgets/app_colors.dart';
+import '../providers/timeline_providers.dart';
+
+class TimelineTab extends ConsumerStatefulWidget {
+  const TimelineTab({super.key});
+
+  @override
+  ConsumerState<TimelineTab> createState() => _TimelineTabState();
+}
+
+class _TimelineTabState extends ConsumerState<TimelineTab> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= 
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(timelinePostsProvider.notifier).loadMorePosts();
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    ref.read(timelinePostsProvider.notifier).refresh();
+    await Future.delayed(const Duration(seconds: 1));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final timelinePostsAsync = ref.watch(timelinePostsProvider);
+    final notifier = ref.read(timelinePostsProvider.notifier);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: RefreshIndicator(
+          color: AppColors.rosyBrown,
+          onRefresh: _onRefresh,
+          child: timelinePostsAsync.when(
+            data: (posts) => _buildTimeline(context, posts, notifier),
+            loading: () => const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.rosyBrown,
+                strokeWidth: 4,
+              ),
+            ),
+            error: (error, stack) => _buildErrorWidget(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeline(BuildContext context, List<TimelinePost> posts, TimelinePostsNotifier notifier) {
+    if (posts.isEmpty) {
+      return _buildEmptyTimeline(context);
+    }
+
+    return CustomScrollView(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              if (index >= posts.length) {
+                // Loading indicator for pagination
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.iceGlassGradient,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.iceBorder,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: notifier.isLoadingMore
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const CircularProgressIndicator(
+                                color: AppColors.rosyBrown,
+                                strokeWidth: 3,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Loading more posts...',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.032,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                );
+              }
+              
+              final post = posts[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: TimelinePostCard(post: post),
+              );
+            },
+            childCount: posts.length + (notifier.hasMoreData ? 1 : 0),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+      ],
+    );
+  }
+
+  Widget _buildEmptyTimeline(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(32.0),
+        decoration: BoxDecoration(
+          gradient: AppColors.iceGlassGradient,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: AppColors.iceBorder,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.08),
+              blurRadius: 15,
+              offset: const Offset(-2, -2),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 15,
+              offset: const Offset(2, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.width * 0.3,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.rosyBrown.withValues(alpha: 0.4),
+                    AppColors.pineGreen.withValues(alpha: 0.3),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Icon(
+                Icons.timeline,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.14,
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            Text(
+              AppLocalizations.of(context)!.noPostsYet,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: AppColors.rosyBrown.withValues(alpha: 0.5),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Text(
+              AppLocalizations.of(context)!.checkBackLater,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: MediaQuery.of(context).size.width * 0.035,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.2,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(32.0),
+        decoration: BoxDecoration(
+          gradient: AppColors.iceGlassGradient,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: AppColors.iceBorder,
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: AppColors.rosyBrown,
+              size: MediaQuery.of(context).size.width * 0.12,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Text(
+              AppLocalizations.of(context)!.errorLoadingTimeline,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: MediaQuery.of(context).size.width * 0.045,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.rosyBrown.withValues(alpha: 0.8),
+                    AppColors.pineGreen.withValues(alpha: 0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => ref.read(timelinePostsProvider.notifier).refresh(),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.refresh, color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.retry,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TimelinePostCard extends ConsumerWidget {
+  final TimelinePost post;
+
+  const TimelinePostCard({
+    super.key,
+    required this.post,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
+    final userDataAsync = ref.watch(userDataProvider(post.submission.uid));
+    final eventDataAsync = ref.watch(eventProvider(post.submission.eventId));
+    final likesStreamAsync = ref.watch(likesStreamProvider(
+        (eventId: post.submission.eventId, submissionId: post.submission.id)));
+
+    bool isLikedByCurrentUser = false;
+    int currentLikeCount = post.submission.likeCount;
+
+    likesStreamAsync.whenData((likes) {
+      currentLikeCount = likes.length;
+      if (currentUser != null) {
+        isLikedByCurrentUser = likes.any((like) => like.uid == currentUser.uid);
+      }
+    });
+
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        gradient: AppColors.iceGlassGradient,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.iceBorder,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.08),
+            blurRadius: 15,
+            offset: const Offset(-2, -2),
+          ),
+          BoxShadow(
+            color: AppColors.rosyBrown.withValues(alpha: 0.15),
+            blurRadius: 15,
+            offset: const Offset(2, 2),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with user info and event
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile photo on far left
+              userDataAsync.when(
+                data: (user) => ClickableUserAvatar(
+                  user: user,
+                  userId: post.submission.uid,
+                  radius: MediaQuery.of(context).size.width * 0.045,
+                ),
+                loading: () => Container(
+                  width: MediaQuery.of(context).size.width * 0.09,
+                  height: MediaQuery.of(context).size.width * 0.09,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.pineGreen.withValues(alpha: 0.3),
+                  ),
+                ),
+                error: (_, __) => Container(
+                  width: MediaQuery.of(context).size.width * 0.09,
+                  height: MediaQuery.of(context).size.width * 0.09,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [AppColors.rosyBrown, AppColors.pineGreen],
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.045,
+                  ),
+                ),
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+              // Username centered with profile photo
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.025),
+                  child: userDataAsync.when(
+                    data: (user) => ClickableUserName(
+                      user: user,
+                      userId: post.submission.uid,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                    loading: () => Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: AppColors.pineGreen.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    error: (_, __) => Text(
+                      AppLocalizations.of(context)!.unknown,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Date and event name in right column
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Date in top right
+                  Text(
+                    _formatSubmissionTime(context, post.submission.createdAt),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: MediaQuery.of(context).size.width * 0.032,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.003),
+                  // Event name in bottom right
+                  eventDataAsync.when(
+                    data: (event) => event != null
+                        ? InkWell(
+                            onTap: () => context.push('/event/${event.id}'),
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.event,
+                                    color: AppColors.primaryOrange,
+                                    size: MediaQuery.of(context).size.width * 0.03,
+                                  ),
+                                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                                  Text(
+                                    event.title,
+                                    style: TextStyle(
+                                      color: AppColors.primaryOrange,
+                                      fontSize: MediaQuery.of(context).size.width * 0.028,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                    loading: () => Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    error: (_, __) => const SizedBox.shrink(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+
+          // Post image
+          AspectRatio(
+            aspectRatio: 0.85, // Make it taller than square (1.0)
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.rosyBrown.withValues(alpha: 0.6),
+                    AppColors.pineGreen.withValues(alpha: 0.5),
+                    AppColors.midnightGreen.withValues(alpha: 0.4),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Container(
+                margin: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: GestureDetector(
+                    onTap: () => _showFullScreenImage(context, post.submission.imageURL),
+                    child: CachedNetworkImage(
+                      imageUrl: post.submission.imageURL,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.midnightGreen.withValues(alpha: 0.4),
+                              AppColors.rosyBrown.withValues(alpha: 0.3),
+                            ],
+                          ),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 4,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.midnightGreen.withValues(alpha: 0.4),
+                              AppColors.rosyBrown.withValues(alpha: 0.3),
+                            ],
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+
+          // Actions (like and comment)
+          Row(
+            children: [
+              LikeButton(
+                eventId: post.submission.eventId,
+                submissionId: post.submission.id,
+                initialLikeCount: currentLikeCount,
+                initialIsLiked: isLikedByCurrentUser,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.015),
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    useSafeArea: true,
+                    enableDrag: true,
+                    builder: (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: CommentSheet(
+                        eventId: post.submission.eventId,
+                        submissionId: post.submission.id,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                    vertical: MediaQuery.of(context).size.height * 0.01,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.pineGreen.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.pineGreen.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.comment_outlined,
+                        size: MediaQuery.of(context).size.width * 0.04,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      Text(
+                        AppLocalizations.of(context)!.comments,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.032,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatSubmissionTime(BuildContext context, DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 60) {
+      return AppLocalizations.of(context)!.minutesAgo(difference.inMinutes);
+    } else if (difference.inHours < 24) {
+      return AppLocalizations.of(context)!.hoursAgo(difference.inHours);
+    } else {
+      return AppLocalizations.of(context)!.daysAgoShort(difference.inDays);
+    }
+  }
+
+  void _showFullScreenImage(BuildContext context, String imageUrl) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
+      ),
+    );
+  }
+}
+
+class _FullScreenImageViewer extends StatelessWidget {
+  final String imageUrl;
+
+  const _FullScreenImageViewer({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.midnightGreen,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.pineGreen,
+        elevation: 0,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: 0.15),
+                AppColors.pineGreen.withValues(alpha: 0.08),
+                Colors.white.withValues(alpha: 0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.iceBorder, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.06),
+                blurRadius: 6,
+                offset: const Offset(-1, -1),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 6,
+                offset: const Offset(1, 1),
+              ),
+            ],
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close, color: AppColors.pineGreen),
+          ),
+        ),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          panEnabled: true,
+          scaleEnabled: true,
+          minScale: 0.5,
+          maxScale: 3.0,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.contain,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(color: AppColors.pineGreen),
+            ),
+            errorWidget: (context, url, error) => const Center(
+              child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
