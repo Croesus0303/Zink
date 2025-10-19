@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../auth/providers/auth_providers.dart';
 import '../data/models/notification_model.dart';
@@ -165,3 +166,5 @@ final clearOldNotificationsProvider = FutureProvider<void>((ref) async {
   final service = ref.watch(notificationsServiceProvider);
   await service.clearOldNotifications(currentUser.uid);
 });
+
+// Clean, simple approach - no complex pagination provider needed

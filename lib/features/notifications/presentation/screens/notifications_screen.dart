@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/notifications_providers.dart';
 import '../../data/models/notification_model.dart';
+import '../../data/services/notifications_service.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
@@ -18,38 +19,55 @@ class NotificationsScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  List<NotificationModel> _unreadNotificationsOnEntry = [];
+  String? _currentUserId;
+  NotificationsService? _notificationsService;
+  late ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
-    _markAllNotificationsAsReadOnEntry();
-  }
-
-  void _markAllNotificationsAsReadOnEntry() {
-    // Only mark notifications as locally read for UI feedback
-    // Don't automatically persist to Firebase - let users decide when to mark as read
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    
+    // Store references we'll need in dispose
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _currentUserId = ref.read(currentUserProvider)?.uid;
+      _notificationsService = ref.read(notificationsServiceProvider);
+      
+      // Track unread notifications when entering the page
       final notificationsAsync = ref.read(userNotificationsStreamProvider);
       notificationsAsync.whenData((notifications) {
-        final unreadIds = notifications
-            .where((n) => !n.seen)
-            .map((n) => n.id)
-            .toList();
-        
-        if (unreadIds.isNotEmpty) {
-          // Only mark them as locally read for UI feedback
-          // Don't automatically persist to Firebase to prevent notifications from "disappearing"
-          ref.read(notificationReadStateProvider.notifier).markAllAsReadLocally(unreadIds);
-        }
+        _unreadNotificationsOnEntry = notifications.where((n) => !n.seen).toList();
       });
     });
   }
 
+  void _onScroll() {
+    // Simple approach - shows all notifications without pagination for now
+  }
 
   @override
   void dispose() {
-    // Don't use ref in dispose to avoid disposal errors
-    // Read state persistence is handled automatically by the providers
+    // Mark notifications as read using stored references (safe to use after disposal)
+    _markAllNotificationsAsReadOnExit();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _markAllNotificationsAsReadOnExit() {
+    if (_unreadNotificationsOnEntry.isNotEmpty && 
+        _currentUserId != null && 
+        _notificationsService != null) {
+      
+      // Use stored service reference (safe after disposal)
+      _notificationsService!.markAllNotificationsAsRead(_currentUserId!).then((_) {
+        AppLogger.i('Marked ${_unreadNotificationsOnEntry.length} notifications as read on page exit');
+      }).catchError((e) {
+        AppLogger.e('Error marking notifications as read on exit', e);
+      });
+    }
   }
 
   @override
@@ -143,7 +161,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   Widget _buildNotificationsList() {
-    final notificationsAsync = ref.watch(enhancedNotificationsProvider);
+    // Use the simple real-time stream for all notifications
+    final notificationsAsync = ref.watch(userNotificationsStreamProvider);
 
     return notificationsAsync.when(
       data: (notifications) {
@@ -228,6 +247,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         }
 
         return ListView.builder(
+          controller: _scrollController,
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).size.height * 0.02,
             bottom: MediaQuery.of(context).size.height * 0.02,
@@ -381,12 +401,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   void _handleNotificationTap(NotificationModel notification) {
-    // Mark as locally read if not already read (only for UI feedback)
-    if (!notification.seen) {
-      ref.read(notificationReadStateProvider.notifier).markAsReadLocally(notification.id);
-    }
-
-    // Navigate based on notification type
+    // Navigate based on notification type without marking as read
+    // Read state will be updated when user leaves the notifications page
     if (notification.eventId != null && notification.submissionId != null) {
       // Navigate to single submission screen
       context.push('/submission/${notification.eventId}/${notification.submissionId}');

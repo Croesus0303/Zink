@@ -13,7 +13,7 @@ class NotificationsService {
       return _database
           .ref('notifications/$userId')
           .orderByChild('createdAt')
-          .limitToLast(100) // Get latest 100 notifications (increased from 50)
+          .limitToLast(50) // Get only the 50 most recent notifications
           .onValue
           .map((event) {
         final data = event.snapshot.value;
@@ -47,6 +47,59 @@ class NotificationsService {
     } catch (e, stackTrace) {
       AppLogger.e('Error setting up notifications stream', e, stackTrace);
       return Stream.value([]);
+    }
+  }
+
+  // Get paginated notifications (for pagination support)
+  Future<List<NotificationModel>> getPaginatedNotifications(
+    String userId, {
+    int limit = 10,
+    int? startAfterTimestamp,
+  }) async {
+    try {
+      AppLogger.i('Getting paginated notifications for user: $userId, limit: $limit, startAfter: $startAfterTimestamp');
+      
+      Query query = _database
+          .ref('notifications/$userId')
+          .orderByChild('createdAt');
+
+      if (startAfterTimestamp != null) {
+        // Get notifications older than the given timestamp
+        query = query.endBefore(startAfterTimestamp);
+      }
+      
+      query = query.limitToLast(limit);
+      
+      final snapshot = await query.get();
+      
+      if (!snapshot.exists) {
+        AppLogger.i('No paginated notifications found');
+        return [];
+      }
+      
+      final Map<String, dynamic> notificationsMap = Map<String, dynamic>.from(snapshot.value as Map);
+      final List<NotificationModel> notifications = [];
+      
+      notificationsMap.forEach((key, value) {
+        try {
+          final notification = NotificationModel.fromRealtimeDatabase(
+            key, 
+            Map<String, dynamic>.from(value as Map)
+          );
+          notifications.add(notification);
+        } catch (e, stackTrace) {
+          AppLogger.e('Error parsing paginated notification: $key', e, stackTrace);
+        }
+      });
+      
+      // Sort by createdAt descending (most recent first)
+      notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      
+      AppLogger.i('Received ${notifications.length} paginated notifications');
+      return notifications;
+    } catch (e, stackTrace) {
+      AppLogger.e('Error getting paginated notifications', e, stackTrace);
+      return [];
     }
   }
 
