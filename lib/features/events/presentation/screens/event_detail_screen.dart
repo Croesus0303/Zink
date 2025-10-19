@@ -208,7 +208,8 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          onTap: () => ref.refresh(eventProvider(widget.eventId)),
+                          onTap: () =>
+                              ref.refresh(eventProvider(widget.eventId)),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
@@ -276,8 +277,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         ),
       ),
       error: (error, stack) {
-        AppLogger.e('Error loading submissions for expired event', error, stack);
-        return _buildEventDetail(event); // Show event detail even if submissions fail
+        AppLogger.e(
+            'Error loading submissions for expired event', error, stack);
+        return _buildEventDetail(
+            event); // Show event detail even if submissions fail
       },
     );
   }
@@ -1191,8 +1194,14 @@ class _SubmissionCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildCard(BuildContext context, WidgetRef ref, UserModel? user,
-      dynamic currentUser, bool isLikedByCurrentUser, int currentLikeCount, int currentCommentCount) {
+  Widget _buildCard(
+      BuildContext context,
+      WidgetRef ref,
+      UserModel? user,
+      dynamic currentUser,
+      bool isLikedByCurrentUser,
+      int currentLikeCount,
+      int currentCommentCount) {
     return Container(
       margin: const EdgeInsets.only(bottom: 2.0),
       padding: const EdgeInsets.all(16.0),
@@ -1765,45 +1774,6 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
     });
 
     return sortedSubmissions.first;
-  }
-
-  Future<SubmissionModel> _determineWinner(
-      List<SubmissionModel> submissions, WidgetRef ref) async {
-    if (submissions.isEmpty) {
-      throw Exception('No submissions available');
-    }
-
-    // Create a list of submissions with their comment counts
-    final submissionRankings = <_SubmissionRanking>[];
-
-    for (final submission in submissions) {
-      final commentCountAsync = await ref.read(commentCountProvider(
-          (eventId: submission.eventId, submissionId: submission.id)).future);
-
-      submissionRankings.add(_SubmissionRanking(
-        submission: submission,
-        likeCount: submission.likeCount,
-        commentCount: commentCountAsync,
-      ));
-    }
-
-    // Sort according to the rules
-    submissionRankings.sort((a, b) {
-      // Rule 1: Most likes wins
-      if (a.likeCount != b.likeCount) {
-        return b.likeCount.compareTo(a.likeCount);
-      }
-
-      // Rule 2: If likes are tied, most comments wins
-      if (a.commentCount != b.commentCount) {
-        return b.commentCount.compareTo(a.commentCount);
-      }
-
-      // Rule 3: If both likes and comments are tied, earliest upload wins
-      return a.submission.createdAt.compareTo(b.submission.createdAt);
-    });
-
-    return submissionRankings.first.submission;
   }
 
   Widget _buildWinnerWidget(

@@ -6,6 +6,7 @@ import '../../../auth/data/models/user_model.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../providers/messaging_providers.dart';
 import '../../data/models/message_model.dart';
+import '../../data/models/chat_model.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
@@ -30,6 +31,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String? _chatId;
+  Future<void> Function(String)? _markAsReadFunction;
 
   @override
   void initState() {
@@ -45,16 +47,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (mounted) {
         setState(() {
           _chatId = chat.id;
+          // Store the mark as read function while ref is still valid
+          _markAsReadFunction = ref.read(markChatAsReadProvider);
         });
         
-        // Mark chat as read when entering the chat screen
-        try {
-          final markAsRead = ref.read(markChatAsReadProvider);
-          await markAsRead(chat.id);
-          AppLogger.i('Marked chat ${chat.id} as read');
-        } catch (e) {
-          AppLogger.w('Failed to mark chat as read: $e');
-        }
       }
     } catch (e) {
       AppLogger.e('Error initializing chat', e);
@@ -62,6 +58,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         CustomSnackBar.showError(context, AppLocalizations.of(context)!.failedToLoadChat(e.toString()));
       }
     }
+  }
+
+  @override
+  void deactivate() {
+    // Mark chat as read when leaving the chat screen
+    if (_chatId != null && _markAsReadFunction != null) {
+      try {
+        final chatId = _chatId!;
+        _markAsReadFunction!(chatId).then((_) {
+          AppLogger.i('Marked chat $chatId as read on exit');
+        }).catchError((e) {
+          AppLogger.w('Failed to mark chat as read on exit: $e');
+        });
+      } catch (e) {
+        AppLogger.w('Error marking chat as read on exit: $e');
+      }
+    }
+    super.deactivate();
   }
 
   @override
@@ -96,6 +110,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       await sendMessage(_chatId!, text);
 
       // With reverse ListView, new messages automatically appear at bottom
+      
+      // Mark chat as read when sending a message (user has seen the conversation)
+      if (_chatId != null && _markAsReadFunction != null) {
+        try {
+          _markAsReadFunction!(_chatId!);
+        } catch (e) {
+          AppLogger.w('Error marking chat as read after sending: $e');
+        }
+      }
     } catch (e) {
       AppLogger.e('Error sending message', e);
       if (mounted) {
@@ -298,6 +321,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Widget _buildPaginatedMessagesList(dynamic currentUser, UserModel? otherUser) {
     final paginatedState = ref.watch(paginatedMessagesProvider(_chatId!));
+    
+    // Watch chat for real-time read receipt updates
+    final chatAsync = ref.watch(chatStreamProvider(widget.otherUserId));
+    final chat = chatAsync.value;
 
     if (paginatedState.messages.isEmpty && !paginatedState.isLoading) {
       return Center(
@@ -549,6 +576,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           isMe: isMe,
                           showAvatar: showAvatar && !isMe,
                           otherUser: otherUser,
+                          chat: chat,
+                          currentUserId: currentUser?.uid,
                         );
                       },
                     ),
@@ -702,12 +731,16 @@ class _MessageBubble extends StatelessWidget {
   final bool isMe;
   final bool showAvatar;
   final UserModel? otherUser;
+  final ChatModel? chat;
+  final String? currentUserId;
 
   const _MessageBubble({
     required this.message,
     required this.isMe,
     required this.showAvatar,
     this.otherUser,
+    this.chat,
+    this.currentUserId,
   });
 
   @override
@@ -863,18 +896,70 @@ class _MessageBubble extends StatelessWidget {
                       : 0,
               right: isMe ? MediaQuery.of(context).size.width * 0.02 : 0,
             ),
-            child: Text(
-              _formatTime(message.createdAt),
-              style: TextStyle(
-                color: AppColors.rosyBrown.withValues(alpha: 0.8),
-                fontSize: MediaQuery.of(context).size.width * 0.025,
-                fontWeight: FontWeight.w400,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _formatTime(message.createdAt),
+                  style: TextStyle(
+                    color: AppColors.rosyBrown.withValues(alpha: 0.8),
+                    fontSize: MediaQuery.of(context).size.width * 0.025,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                if (isMe && _shouldShowReadReceipt())
+                  Container(
+                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+                    child: Icon(
+                      _getReadReceiptIcon(),
+                      size: MediaQuery.of(context).size.width * 0.03,
+                      color: _getReadReceiptColor(),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  bool _shouldShowReadReceipt() {
+    return isMe && chat != null && currentUserId != null;
+  }
+
+  IconData _getReadReceiptIcon() {
+    if (_isMessageRead()) {
+      return Icons.done_all; // Double check mark for read
+    } else {
+      return Icons.done; // Single check mark for delivered
+    }
+  }
+
+  Color _getReadReceiptColor() {
+    if (_isMessageRead()) {
+      return AppColors.pineGreen; // Green for read
+    } else {
+      return AppColors.rosyBrown.withValues(alpha: 0.6); // Gray for delivered
+    }
+  }
+
+  bool _isMessageRead() {
+    if (chat?.readBy == null || currentUserId == null) return false;
+    
+    // Get the other participant's ID
+    final otherUserId = chat!.participantIds.firstWhere(
+      (id) => id != currentUserId,
+      orElse: () => '',
+    );
+    
+    if (otherUserId.isEmpty) return false;
+    
+    // Check if the other user has read the chat after this message was sent
+    final lastReadTimestamp = chat!.readBy![otherUserId];
+    if (lastReadTimestamp == null) return false;
+    
+    return lastReadTimestamp >= message.timestamp;
   }
 
   String _formatTime(DateTime dateTime) {

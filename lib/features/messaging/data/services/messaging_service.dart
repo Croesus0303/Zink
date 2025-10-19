@@ -14,29 +14,32 @@ class MessagingService {
   DatabaseReference get _usersRef => _database.ref('users');
 
   // Get or create a chat between two users
-  Future<ChatModel> getOrCreateChat(String currentUserId, String otherUserId) async {
+  Future<ChatModel> getOrCreateChat(
+      String currentUserId, String otherUserId) async {
     try {
       final chatId = ChatModel.generateChatId(currentUserId, otherUserId);
       final chatSnapshot = await _chatsRef.child(chatId).get();
 
       if (chatSnapshot.exists && chatSnapshot.value != null) {
         // Chat exists, load it
-        final chatData = Map<String, dynamic>.from(chatSnapshot.value as Map<Object?, Object?>);
-        
+        final chatData = Map<String, dynamic>.from(
+            chatSnapshot.value as Map<Object?, Object?>);
+
         // Migrate existing chats that don't have unreadCount field
         if (chatData['unreadCount'] == null) {
-          final participants = Map<String, bool>.from(chatData['participants'] as Map<Object?, Object?>);
+          final participants = Map<String, bool>.from(
+              chatData['participants'] as Map<Object?, Object?>);
           final unreadCount = <String, int>{};
           for (final participantId in participants.keys) {
             unreadCount[participantId] = 0;
           }
-          
+
           // Update the chat with the unreadCount field
           await _chatsRef.child(chatId).child('unreadCount').set(unreadCount);
           chatData['unreadCount'] = unreadCount;
           AppLogger.i('Migrated chat $chatId to include unreadCount field');
         }
-        
+
         AppLogger.i('Found existing chat: $chatId');
         return ChatModel.fromMap(chatId, chatData);
       } else {
@@ -58,7 +61,9 @@ class MessagingService {
         return newChat;
       }
     } catch (e) {
-      AppLogger.e('Error getting or creating chat between $currentUserId and $otherUserId', e);
+      AppLogger.e(
+          'Error getting or creating chat between $currentUserId and $otherUserId',
+          e);
       rethrow;
     }
   }
@@ -72,27 +77,29 @@ class MessagingService {
           .onValue
           .map((event) {
         final chats = <ChatModel>[];
-        
+
         if (event.snapshot.exists && event.snapshot.value != null) {
-          final chatsData = Map<String, dynamic>.from(event.snapshot.value as Map<Object?, Object?>);
-          
+          final chatsData = Map<String, dynamic>.from(
+              event.snapshot.value as Map<Object?, Object?>);
+
           for (final entry in chatsData.entries) {
             try {
-              final chatData = Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
+              final chatData = Map<String, dynamic>.from(
+                  entry.value as Map<Object?, Object?>);
               chats.add(ChatModel.fromMap(entry.key.toString(), chatData));
             } catch (e) {
               AppLogger.w('Error parsing chat ${entry.key}: $e');
             }
           }
         }
-        
+
         // Sort by last message timestamp
         chats.sort((a, b) {
           final aTimestamp = a.lastMessage?.timestamp ?? 0;
           final bTimestamp = b.lastMessage?.timestamp ?? 0;
           return bTimestamp.compareTo(aTimestamp);
         });
-        
+
         AppLogger.d('Fetched ${chats.length} chats for user $userId');
         return chats;
       });
@@ -111,30 +118,122 @@ class MessagingService {
           .onValue
           .map((event) {
         final messages = <MessageModel>[];
-        
+
         if (event.snapshot.exists && event.snapshot.value != null) {
-          final messagesData = Map<String, dynamic>.from(event.snapshot.value as Map<Object?, Object?>);
-          
+          final messagesData = Map<String, dynamic>.from(
+              event.snapshot.value as Map<Object?, Object?>);
+
           for (final entry in messagesData.entries) {
             try {
-              final messageData = Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
-              final message = MessageModel.fromMap(entry.key.toString(), messageData);
-              AppLogger.d('Parsed message: ${message.text} from ${message.senderId}');
+              final messageData = Map<String, dynamic>.from(
+                  entry.value as Map<Object?, Object?>);
+              final message =
+                  MessageModel.fromMap(entry.key.toString(), messageData);
               messages.add(message);
             } catch (e) {
-              AppLogger.e('Error parsing message ${entry.key}: $e, data: ${entry.value}');
+              AppLogger.e(
+                  'Error parsing message ${entry.key}: $e, data: ${entry.value}');
             }
           }
         }
-        
+
         // Sort by timestamp (newest last for chat UI)
         messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        
-        AppLogger.d('Fetched ${messages.length} messages for chat $chatId');
+
         return messages;
       });
     } catch (e) {
       AppLogger.e('Error getting messages for chat $chatId', e);
+      return Stream.error(e);
+    }
+  }
+
+  // Get real-time stream for a specific chat
+  Stream<ChatModel> getChatStream(String chatId) {
+    try {
+      return _chatsRef.child(chatId).onValue.map((event) {
+        if (event.snapshot.exists && event.snapshot.value != null) {
+          final chatData = Map<String, dynamic>.from(
+              event.snapshot.value as Map<Object?, Object?>);
+          return ChatModel.fromMap(chatId, chatData);
+        } else {
+          throw Exception('Chat not found');
+        }
+      });
+    } catch (e) {
+      AppLogger.e('Error getting chat stream for $chatId', e);
+      return Stream.error(e);
+    }
+  }
+
+  // Get paginated messages (server-side pagination)
+  Future<List<MessageModel>> getPaginatedMessages(String chatId,
+      {int limit = 10, int? endBefore}) async {
+    try {
+      Query query = _messagesRef
+          .child(chatId)
+          .orderByChild('timestamp')
+          .limitToLast(limit);
+
+      final snapshot = await query.get();
+      final messages = <MessageModel>[];
+
+      if (snapshot.exists && snapshot.value != null) {
+        final messagesData =
+            Map<String, dynamic>.from(snapshot.value as Map<Object?, Object?>);
+
+        for (final entry in messagesData.entries) {
+          try {
+            final messageData =
+                Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
+            final message =
+                MessageModel.fromMap(entry.key.toString(), messageData);
+            messages.add(message);
+          } catch (e) {
+            AppLogger.e(
+                'Error parsing message ${entry.key}: $e, data: ${entry.value}');
+          }
+        }
+      }
+
+      // Sort by timestamp (newest last for chat UI)
+      messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+      return messages;
+    } catch (e) {
+      AppLogger.e('Error getting paginated messages for chat $chatId', e);
+      return [];
+    }
+  }
+
+  // Listen for new messages after a certain timestamp
+  Stream<MessageModel> getNewMessagesAfter(String chatId, int afterTimestamp) {
+    try {
+      return _messagesRef
+          .child(chatId)
+          .orderByChild('timestamp')
+          .startAfter(afterTimestamp)
+          .onChildAdded
+          .map((event) {
+        try {
+          if (event.snapshot.value == null) {
+            throw Exception('Message snapshot value is null');
+          }
+
+          final messageData = Map<String, dynamic>.from(
+              event.snapshot.value as Map<Object?, Object?>);
+          final message =
+              MessageModel.fromMap(event.snapshot.key!, messageData);
+          return message;
+        } catch (e) {
+          AppLogger.e(
+              'Error parsing new message: $e, snapshot: ${event.snapshot.value}');
+          rethrow;
+        }
+      });
+    } catch (e) {
+      AppLogger.e(
+          'Error setting up listener for new messages in chat $chatId', e);
       return Stream.error(e);
     }
   }
@@ -144,7 +243,7 @@ class MessagingService {
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final messageId = _messagesRef.child(chatId).push().key!;
-      
+
       final message = MessageModel(
         id: messageId,
         senderId: senderId,
@@ -161,12 +260,14 @@ class MessagingService {
       // Get chat participants to increment unread count for the recipient
       final chatSnapshot = await _chatsRef.child(chatId).get();
       Map<String, dynamic> unreadCountUpdates = {};
-      
+
       if (chatSnapshot.exists) {
         final chatData = Map<String, dynamic>.from(chatSnapshot.value as Map);
-        final participants = Map<String, bool>.from(chatData['participants'] as Map<Object?, Object?>);
-        var currentUnreadCount = chatData['unreadCount'] as Map<Object?, Object?>? ?? {};
-        
+        final participants = Map<String, bool>.from(
+            chatData['participants'] as Map<Object?, Object?>);
+        var currentUnreadCount =
+            chatData['unreadCount'] as Map<Object?, Object?>? ?? {};
+
         // Initialize unreadCount if it doesn't exist (migration for existing chats)
         if (currentUnreadCount.isEmpty) {
           currentUnreadCount = {};
@@ -174,14 +275,18 @@ class MessagingService {
             currentUnreadCount[participantId] = 0;
           }
           // Save the initialized unreadCount
-          await _chatsRef.child(chatId).child('unreadCount').set(currentUnreadCount);
+          await _chatsRef
+              .child(chatId)
+              .child('unreadCount')
+              .set(currentUnreadCount);
         }
-        
+
         // Increment unread count for all participants except the sender
         for (final participantId in participants.keys) {
           if (participantId != senderId) {
             final currentCount = currentUnreadCount[participantId] as int? ?? 0;
-            unreadCountUpdates['chats/$chatId/unreadCount/$participantId'] = currentCount + 1;
+            unreadCountUpdates['chats/$chatId/unreadCount/$participantId'] =
+                currentCount + 1;
           }
         }
       }
@@ -202,7 +307,8 @@ class MessagingService {
   }
 
   // Update user data in Realtime Database for messaging
-  Future<void> updateUserData(String userId, String username, String? profileImageUrl, String? fcmToken) async {
+  Future<void> updateUserData(String userId, String username,
+      String? profileImageUrl, String? fcmToken) async {
     try {
       final userData = {
         'username': username,
@@ -222,7 +328,7 @@ class MessagingService {
   Future<Map<String, dynamic>?> getUserData(String userId) async {
     try {
       final snapshot = await _usersRef.child(userId).get();
-      
+
       if (snapshot.exists) {
         return Map<String, dynamic>.from(snapshot.value as Map);
       }
@@ -257,7 +363,8 @@ class MessagingService {
       };
 
       await _database.ref().update(updates);
-      AppLogger.i('Marked chat $chatId as read by $userId and reset unread count');
+      AppLogger.i(
+          'Marked chat $chatId as read by $userId and reset unread count');
     } catch (e) {
       AppLogger.e('Error marking chat $chatId as read', e);
       rethrow;
@@ -273,23 +380,26 @@ class MessagingService {
           .onValue
           .map((event) {
         int totalUnreadCount = 0;
-        
+
         if (event.snapshot.exists && event.snapshot.value != null) {
-          final chatsData = Map<String, dynamic>.from(event.snapshot.value as Map<Object?, Object?>);
-          
+          final chatsData = Map<String, dynamic>.from(
+              event.snapshot.value as Map<Object?, Object?>);
+
           for (final entry in chatsData.entries) {
             try {
-              final chatData = Map<String, dynamic>.from(entry.value as Map<Object?, Object?>);
+              final chatData = Map<String, dynamic>.from(
+                  entry.value as Map<Object?, Object?>);
               final chat = ChatModel.fromMap(entry.key.toString(), chatData);
-              
+
               // Get unread count directly from chat model
               totalUnreadCount += chat.getUnreadCount(userId);
             } catch (e) {
-              AppLogger.w('Error parsing chat ${entry.key} for unread count: $e');
+              AppLogger.w(
+                  'Error parsing chat ${entry.key} for unread count: $e');
             }
           }
         }
-        
+
         AppLogger.d('User $userId has $totalUnreadCount total unread messages');
         return totalUnreadCount;
       });
@@ -304,10 +414,10 @@ class MessagingService {
     try {
       final chat = await _chatsRef.child(chatId).get();
       if (!chat.exists) return 0;
-      
+
       final chatData = Map<String, dynamic>.from(chat.value as Map);
       final chatModel = ChatModel.fromMap(chatId, chatData);
-      
+
       return chatModel.getUnreadCount(userId);
     } catch (e) {
       AppLogger.e('Error getting unread count for chat $chatId', e);
@@ -319,7 +429,6 @@ class MessagingService {
   int getUnreadCountForChatSimple(ChatModel chat, String userId) {
     return chat.getUnreadCount(userId);
   }
-
 }
 
 final messagingServiceProvider = Provider<MessagingService>((ref) {
