@@ -169,19 +169,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final authState = ref.watch(authStateProvider);
     final isOwnProfile =
         widget.userId == null || widget.userId == currentUser?.uid;
     final targetUserId = widget.userId ?? currentUser?.uid;
 
-    // Debug logging
-    AppLogger.i(
-        'ProfileScreen: currentUser?.uid = ${currentUser?.uid}, widget.userId = ${widget.userId}, targetUserId = $targetUserId');
-    AppLogger.i('ProfileScreen: authState = ${authState.toString()}');
-
     if (targetUserId == null) {
-      AppLogger.w(
-          'ProfileScreen: targetUserId is null, showing user not found');
       return Scaffold(
         body: Center(child: Text(AppLocalizations.of(context)!.userNotFound)),
       );
