@@ -62,7 +62,8 @@
       "Bash(firebase functions:delete:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(timeout 10 flutter run --debug 2 >& 1)"
+      "Bash(timeout 10 flutter run --debug 2 >& 1)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

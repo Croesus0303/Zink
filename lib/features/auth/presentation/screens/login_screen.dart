@@ -31,7 +31,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
     _tabController.addListener(_onTabChanged);
 
     // Clear form when screen is initialized (in case user logged out)
