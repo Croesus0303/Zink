@@ -93,23 +93,35 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                AppColors.midnightGreen.withValues(alpha: 0.95),
+                AppColors.midnightGreen.withValues(alpha: 1.0),
+                AppColors.pineGreen.withValues(alpha: 0.85),
                 AppColors.midnightGreen.withValues(alpha: 0.98),
               ],
+              stops: const [0.0, 0.5, 1.0],
             ),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              color: AppColors.iceBorder,
+              width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
+                color: Colors.white.withValues(alpha: 0.08),
                 blurRadius: 20,
-                offset: const Offset(0, -5),
+                offset: const Offset(-3, -3),
+              ),
+              BoxShadow(
+                color: AppColors.rosyBrown.withValues(alpha: 0.15),
+                blurRadius: 20,
+                offset: const Offset(3, 3),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 30,
+                offset: const Offset(0, -8),
               ),
             ],
           ),
@@ -121,14 +133,27 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                   // Handle bar
                   Container(
                     margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01, 
-                      bottom: MediaQuery.of(context).size.height * 0.015
+                      top: MediaQuery.of(context).size.height * 0.012,
+                      bottom: MediaQuery.of(context).size.height * 0.02
                     ),
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    height: MediaQuery.of(context).size.height * 0.005,
+                    width: MediaQuery.of(context).size.width * 0.12,
+                    height: MediaQuery.of(context).size.height * 0.006,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(2),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.white.withValues(alpha: 0.35),
+                          Colors.transparent,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
                   // Header
@@ -192,18 +217,37 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 Colors.white.withValues(alpha: 0.05),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: AppColors.iceBorder,
                               width: 1,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                blurRadius: 8,
+                                offset: const Offset(-1, -1),
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.05),
+                                blurRadius: 8,
+                                offset: const Offset(1, 1),
+                              ),
+                            ],
                           ),
-                          child: IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: MediaQuery.of(context).size.width * 0.045,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => Navigator.of(context).pop(),
+                              borderRadius: BorderRadius.circular(16),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  size: MediaQuery.of(context).size.width * 0.05,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -363,20 +407,24 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.white.withValues(alpha: 0.08),
-                                  AppColors.pineGreen.withValues(alpha: 0.05),
-                                  Colors.white.withValues(alpha: 0.03),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(24),
+                              gradient: AppColors.iceGlassGradient,
+                              borderRadius: BorderRadius.circular(28),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
-                                width: 1,
+                                color: AppColors.iceBorder,
+                                width: 1.5,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withValues(alpha: 0.06),
+                                  blurRadius: 6,
+                                  offset: const Offset(-1, -1),
+                                ),
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 6,
+                                  offset: const Offset(1, 1),
+                                ),
+                              ],
                             ),
                             child: TextField(
                               controller: _commentController,
@@ -409,16 +457,31 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                               colors: [
-                                AppColors.rosyBrown.withValues(alpha: 0.8),
                                 AppColors.rosyBrown.withValues(alpha: 0.9),
+                                AppColors.rosyBrown.withValues(alpha: 0.8),
+                                AppColors.rosyBrown.withValues(alpha: 0.85),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(24),
                             border: Border.all(
                               color: Colors.white.withValues(alpha: 0.3),
-                              width: 1,
+                              width: 1.5,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                blurRadius: 6,
+                                offset: const Offset(-1, -1),
+                              ),
+                              BoxShadow(
+                                color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                                blurRadius: 8,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
                           ),
                           child: IconButton(
                             onPressed: _isSubmitting ? null : _addComment,
@@ -472,22 +535,22 @@ class _CommentItem extends ConsumerWidget {
   Widget _buildCommentItem(BuildContext context, UserModel? user) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.008),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(alpha: 0.05),
-            AppColors.pineGreen.withValues(alpha: 0.03),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.1),
-          width: 1,
-        ),
+        gradient: AppColors.iceGlassGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(-1, -1),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(1, 1),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
