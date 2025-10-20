@@ -709,20 +709,31 @@ class _FullScreenImageViewer extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(
-        child: InteractiveViewer(
-          panEnabled: true,
-          scaleEnabled: true,
-          minScale: 0.5,
-          maxScale: 3.0,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.contain,
-            placeholder: (context, url) => const Center(
-              child: CircularProgressIndicator(color: AppColors.pineGreen),
-            ),
-            errorWidget: (context, url, error) => const Center(
-              child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
+      body: SafeArea(
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: InteractiveViewer(
+              panEnabled: true,
+              scaleEnabled: true,
+              minScale: 0.5,
+              maxScale: 3.0,
+              child: Center(
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  alignment: Alignment.center,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(color: AppColors.pineGreen),
+                  ),
+                  errorWidget: (context, url, error) => const Center(
+                    child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
