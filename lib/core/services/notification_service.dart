@@ -217,7 +217,7 @@ class NotificationService {
       final settings = await _messaging.requestPermission(
         alert: true,
         announcement: false,
-        badge: true,
+        badge: false,
         carPlay: false,
         criticalAlert: false,
         provisional: false,
