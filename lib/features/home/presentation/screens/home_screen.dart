@@ -21,17 +21,36 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final GlobalKey<TimelineTabState> _timelineKey = GlobalKey<TimelineTabState>();
+  final GlobalKey<EventsTabState> _eventsKey = GlobalKey<EventsTabState>();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _onTabChanged() {
+    // Intentionally empty - tab change detection happens in onTap handler
+  }
+
+  void _handleTabTap(int index) {
+    if (_tabController.index == index) {
+      // User tapped on the already active tab - scroll to top
+      if (index == 0) {
+        _timelineKey.currentState?.scrollToTop();
+      } else if (index == 1) {
+        _eventsKey.currentState?.scrollToTop();
+      }
+    }
   }
 
   @override
@@ -118,6 +137,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         ),
         child: TabBar(
           controller: _tabController,
+          onTap: _handleTabTap,
           labelColor: AppColors.primaryOrange,
           unselectedLabelColor: Colors.white.withValues(alpha: 0.6),
           indicatorColor: AppColors.primaryOrange,
@@ -164,9 +184,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
               // Main content area
               TabBarView(
                 controller: _tabController,
-                children: const [
-                  TimelineTab(),
-                  EventsTab(),
+                children: [
+                  TimelineTab(key: _timelineKey),
+                  EventsTab(key: _eventsKey),
                 ],
               ),
               // Notification permission prompt overlay

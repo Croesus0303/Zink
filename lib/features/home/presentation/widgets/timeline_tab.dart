@@ -15,11 +15,12 @@ class TimelineTab extends ConsumerStatefulWidget {
   const TimelineTab({super.key});
 
   @override
-  ConsumerState<TimelineTab> createState() => _TimelineTabState();
+  ConsumerState<TimelineTab> createState() => TimelineTabState();
 }
 
-class _TimelineTabState extends ConsumerState<TimelineTab> {
+class TimelineTabState extends ConsumerState<TimelineTab> {
   final ScrollController _scrollController = ScrollController();
+  bool _showScrollToTop = false;
 
   @override
   void initState() {
@@ -34,9 +35,28 @@ class _TimelineTabState extends ConsumerState<TimelineTab> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= 
+    // Load more posts when near bottom
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       ref.read(timelinePostsProvider.notifier).loadMorePosts();
+    }
+
+    // Show/hide scroll to top button
+    final shouldShow = _scrollController.position.pixels > 300;
+    if (shouldShow != _showScrollToTop) {
+      setState(() {
+        _showScrollToTop = shouldShow;
+      });
+    }
+  }
+
+  void scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -51,22 +71,75 @@ class _TimelineTabState extends ConsumerState<TimelineTab> {
     final notifier = ref.read(timelinePostsProvider.notifier);
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: RefreshIndicator(
-          color: AppColors.rosyBrown,
-          onRefresh: _onRefresh,
-          child: timelinePostsAsync.when(
-            data: (posts) => _buildTimeline(context, posts, notifier),
-            loading: () => const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.rosyBrown,
-                strokeWidth: 4,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: RefreshIndicator(
+              color: AppColors.rosyBrown,
+              onRefresh: _onRefresh,
+              child: timelinePostsAsync.when(
+                data: (posts) => _buildTimeline(context, posts, notifier),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.rosyBrown,
+                    strokeWidth: 4,
+                  ),
+                ),
+                error: (error, stack) => _buildErrorWidget(context),
               ),
             ),
-            error: (error, stack) => _buildErrorWidget(context),
           ),
-        ),
+          // Scroll to top button
+          if (_showScrollToTop)
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.02,
+              right: MediaQuery.of(context).size.width * 0.05,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _showScrollToTop ? 1.0 : 0.0,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.primaryOrange.withValues(alpha: 0.95),
+                          AppColors.rosyBrown.withValues(alpha: 0.95),
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: InkWell(
+                      onTap: scrollToTop,
+                      customBorder: const CircleBorder(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.arrow_upward,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

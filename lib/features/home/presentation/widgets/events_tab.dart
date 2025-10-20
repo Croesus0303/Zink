@@ -9,40 +9,130 @@ import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class EventsTab extends ConsumerWidget {
+class EventsTab extends ConsumerStatefulWidget {
   const EventsTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EventsTab> createState() => EventsTabState();
+}
+
+class EventsTabState extends ConsumerState<EventsTab> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showScrollToTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Load more events when near bottom
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(paginatedPastEventsProvider.notifier).loadMoreEvents();
+    }
+
+    // Show/hide scroll to top button
+    final shouldShow = _scrollController.position.pixels > 300;
+    if (shouldShow != _showScrollToTop) {
+      setState(() {
+        _showScrollToTop = shouldShow;
+      });
+    }
+  }
+
+  void scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: RefreshIndicator(
-          color: AppColors.rosyBrown,
-          onRefresh: () async {
-            ref.invalidate(activeEventProvider);
-            ref.invalidate(pastEventsProvider);
-            await Future.delayed(const Duration(seconds: 1));
-          },
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (scrollInfo) {
-              if (scrollInfo is ScrollEndNotification &&
-                  scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
-                ref.read(paginatedPastEventsProvider.notifier).loadMoreEvents();
-              }
-              return false;
-            },
-            child: const CustomScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(child: _WelcomeSection()),
-                SliverToBoxAdapter(child: _PastEventsHeader()),
-                _PaginatedPastChallengesList(),
-                SliverToBoxAdapter(child: SizedBox(height: 20)),
-              ],
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: RefreshIndicator(
+              color: AppColors.rosyBrown,
+              onRefresh: () async {
+                ref.invalidate(activeEventProvider);
+                ref.invalidate(pastEventsProvider);
+                await Future.delayed(const Duration(seconds: 1));
+              },
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: const [
+                  SliverToBoxAdapter(child: _WelcomeSection()),
+                  SliverToBoxAdapter(child: _PastEventsHeader()),
+                  _PaginatedPastChallengesList(),
+                  SliverToBoxAdapter(child: SizedBox(height: 20)),
+                ],
+              ),
             ),
           ),
-        ),
+          // Scroll to top button
+          if (_showScrollToTop)
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.02,
+              right: MediaQuery.of(context).size.width * 0.05,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: _showScrollToTop ? 1.0 : 0.0,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withValues(alpha: 0.95),
+                          AppColors.rosyBrown.withValues(alpha: 0.95),
+                        ],
+                      ),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: InkWell(
+                      onTap: scrollToTop,
+                      customBorder: const CircleBorder(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.arrow_upward,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
