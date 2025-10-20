@@ -12,6 +12,7 @@ class LikeButton extends ConsumerStatefulWidget {
   final int initialLikeCount;
   final bool initialIsLiked;
   final VoidCallback? onLikeChanged;
+  final void Function(Future<void> Function())? onLikeController;
 
   const LikeButton({
     super.key,
@@ -20,6 +21,7 @@ class LikeButton extends ConsumerStatefulWidget {
     required this.initialLikeCount,
     this.initialIsLiked = false,
     this.onLikeChanged,
+    this.onLikeController,
   });
 
   @override
@@ -36,6 +38,9 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
     super.initState();
     _isLiked = widget.initialIsLiked;
     _likeCount = widget.initialLikeCount;
+
+    // Expose the toggleLike method to parent widget
+    widget.onLikeController?.call(_toggleLike);
   }
 
   @override

@@ -1153,7 +1153,7 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-class _SubmissionCard extends ConsumerWidget {
+class _SubmissionCard extends ConsumerStatefulWidget {
   final SubmissionModel submission;
 
   const _SubmissionCard({
@@ -1161,16 +1161,27 @@ class _SubmissionCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SubmissionCard> createState() => _SubmissionCardState();
+}
+
+class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
+  Future<void> Function()? _toggleLike;
+
+  @override
+  Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final userDataAsync = ref.watch(userDataProvider(submission.uid));
-    final likesStreamAsync = ref.watch(likesStreamProvider(
-        (eventId: submission.eventId, submissionId: submission.id)));
-    final commentCountAsync = ref.watch(commentCountProvider(
-        (eventId: submission.eventId, submissionId: submission.id)));
+    final userDataAsync = ref.watch(userDataProvider(widget.submission.uid));
+    final likesStreamAsync = ref.watch(likesStreamProvider((
+      eventId: widget.submission.eventId,
+      submissionId: widget.submission.id
+    )));
+    final commentCountAsync = ref.watch(commentCountProvider((
+      eventId: widget.submission.eventId,
+      submissionId: widget.submission.id
+    )));
 
     bool isLikedByCurrentUser = false;
-    int currentLikeCount = submission.likeCount;
+    int currentLikeCount = widget.submission.likeCount;
     int currentCommentCount = 0;
 
     likesStreamAsync.whenData((likes) {
@@ -1228,7 +1239,7 @@ class _SubmissionCard extends ConsumerWidget {
             children: [
               ClickableUserAvatar(
                 user: user,
-                userId: submission.uid,
+                userId: widget.submission.uid,
                 radius: MediaQuery.of(context).size.width * 0.035,
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -1240,7 +1251,7 @@ class _SubmissionCard extends ConsumerWidget {
                       children: [
                         ClickableUserName(
                           user: user,
-                          userId: submission.uid,
+                          userId: widget.submission.uid,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary,
@@ -1251,7 +1262,8 @@ class _SubmissionCard extends ConsumerWidget {
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.02),
                         Text(
-                          _formatSubmissionTime(context, submission.createdAt),
+                          _formatSubmissionTime(
+                              context, widget.submission.createdAt),
                           style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: MediaQuery.of(context).size.width * 0.028,
@@ -1263,7 +1275,8 @@ class _SubmissionCard extends ConsumerWidget {
                 ),
               ),
               // Show delete option if current user owns the submission
-              if (currentUser != null && currentUser.uid == submission.uid)
+              if (currentUser != null &&
+                  currentUser.uid == widget.submission.uid)
                 Container(
                   decoration: BoxDecoration(
                     color: AppColors.pineGreen.withValues(alpha: 0.2),
@@ -1276,7 +1289,7 @@ class _SubmissionCard extends ConsumerWidget {
                   child: IconButton(
                     onPressed: () async {
                       await _showDeleteConfirmationDialog(
-                          context, ref, submission);
+                          context, ref, widget.submission);
                     },
                     icon: Icon(
                       Icons.delete,
@@ -1315,10 +1328,15 @@ class _SubmissionCard extends ConsumerWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: GestureDetector(
-                    onTap: () =>
-                        _showFullScreenImage(context, submission.imageURL),
+                    onTap: () => _showFullScreenImage(
+                        context, widget.submission.imageURL),
+                    onDoubleTap: () async {
+                      if (_toggleLike != null) {
+                        await _toggleLike!();
+                      }
+                    },
                     child: CachedNetworkImage(
-                      imageUrl: submission.imageURL,
+                      imageUrl: widget.submission.imageURL,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         decoration: BoxDecoration(
@@ -1362,10 +1380,13 @@ class _SubmissionCard extends ConsumerWidget {
           Row(
             children: [
               LikeButton(
-                eventId: submission.eventId,
-                submissionId: submission.id,
+                eventId: widget.submission.eventId,
+                submissionId: widget.submission.id,
                 initialLikeCount: currentLikeCount,
                 initialIsLiked: isLikedByCurrentUser,
+                onLikeController: (toggleLike) {
+                  _toggleLike = toggleLike;
+                },
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.015),
               InkWell(
@@ -1381,8 +1402,8 @@ class _SubmissionCard extends ConsumerWidget {
                         bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
                       child: CommentSheet(
-                        eventId: submission.eventId,
-                        submissionId: submission.id,
+                        eventId: widget.submission.eventId,
+                        submissionId: widget.submission.id,
                       ),
                     ),
                   );
@@ -1410,7 +1431,7 @@ class _SubmissionCard extends ConsumerWidget {
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Text(
-                        AppLocalizations.of(context)!.comments,
+                        '$currentCommentCount',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -1580,18 +1601,6 @@ class _SubmissionCard extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _SubmissionRanking {
-  final SubmissionModel submission;
-  final int likeCount;
-  final int commentCount;
-
-  _SubmissionRanking({
-    required this.submission,
-    required this.likeCount,
-    required this.commentCount,
-  });
 }
 
 class _WinnerAnnouncementWidget extends ConsumerWidget {

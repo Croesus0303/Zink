@@ -295,7 +295,7 @@ class _TimelineTabState extends ConsumerState<TimelineTab> {
   }
 }
 
-class TimelinePostCard extends ConsumerWidget {
+class TimelinePostCard extends ConsumerStatefulWidget {
   final TimelinePost post;
 
   const TimelinePostCard({
@@ -304,12 +304,19 @@ class TimelinePostCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TimelinePostCard> createState() => _TimelinePostCardState();
+}
+
+class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
+  Future<void> Function()? _toggleLike;
+
+  @override
+  Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final userDataAsync = ref.watch(userDataProvider(post.submission.uid));
-    final eventDataAsync = ref.watch(eventProvider(post.submission.eventId));
+    final userDataAsync = ref.watch(userDataProvider(widget.post.submission.uid));
+    final eventDataAsync = ref.watch(eventProvider(widget.post.submission.eventId));
     final likesStreamAsync = ref.watch(likesStreamProvider(
-        (eventId: post.submission.eventId, submissionId: post.submission.id)));
+        (eventId: widget.post.submission.eventId, submissionId: widget.post.submission.id)));
 
     // Don't render if user data is not loaded yet
     if (userDataAsync.isLoading || !userDataAsync.hasValue || userDataAsync.value == null) {
@@ -317,7 +324,7 @@ class TimelinePostCard extends ConsumerWidget {
     }
 
     bool isLikedByCurrentUser = false;
-    int currentLikeCount = post.submission.likeCount;
+    int currentLikeCount = widget.post.submission.likeCount;
 
     likesStreamAsync.whenData((likes) {
       currentLikeCount = likes.length;
@@ -363,7 +370,7 @@ class TimelinePostCard extends ConsumerWidget {
               // Profile photo on far left
               ClickableUserAvatar(
                 user: userDataAsync.value!,
-                userId: post.submission.uid,
+                userId: widget.post.submission.uid,
                 radius: MediaQuery.of(context).size.width * 0.045,
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -373,7 +380,7 @@ class TimelinePostCard extends ConsumerWidget {
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.025),
                   child: ClickableUserName(
                     user: userDataAsync.value!,
-                    userId: post.submission.uid,
+                    userId: widget.post.submission.uid,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
@@ -389,7 +396,7 @@ class TimelinePostCard extends ConsumerWidget {
                 children: [
                   // Date in top right
                   Text(
-                    _formatSubmissionTime(context, post.submission.createdAt),
+                    _formatSubmissionTime(context, widget.post.submission.createdAt),
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: MediaQuery.of(context).size.width * 0.032,
@@ -481,9 +488,14 @@ class TimelinePostCard extends ConsumerWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: GestureDetector(
-                    onTap: () => _showFullScreenImage(context, post.submission.imageURL),
+                    onTap: () => _showFullScreenImage(context, widget.post.submission.imageURL),
+                    onDoubleTap: () async {
+                      if (_toggleLike != null) {
+                        await _toggleLike!();
+                      }
+                    },
                     child: CachedNetworkImage(
-                      imageUrl: post.submission.imageURL,
+                      imageUrl: widget.post.submission.imageURL,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         decoration: BoxDecoration(
@@ -533,64 +545,18 @@ class TimelinePostCard extends ConsumerWidget {
           Row(
             children: [
               LikeButton(
-                eventId: post.submission.eventId,
-                submissionId: post.submission.id,
+                eventId: widget.post.submission.eventId,
+                submissionId: widget.post.submission.id,
                 initialLikeCount: currentLikeCount,
                 initialIsLiked: isLikedByCurrentUser,
+                onLikeController: (toggleLike) {
+                  _toggleLike = toggleLike;
+                },
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.015),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    useSafeArea: true,
-                    enableDrag: true,
-                    builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: CommentSheet(
-                        eventId: post.submission.eventId,
-                        submissionId: post.submission.id,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.03,
-                    vertical: MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.pineGreen.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.comment_outlined,
-                        size: MediaQuery.of(context).size.width * 0.04,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                      Text(
-                        AppLocalizations.of(context)!.comments,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _CommentButton(
+                eventId: widget.post.submission.eventId,
+                submissionId: widget.post.submission.id,
               ),
             ],
           ),
@@ -617,6 +583,81 @@ class TimelinePostCard extends ConsumerWidget {
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
+      ),
+    );
+  }
+}
+
+class _CommentButton extends ConsumerWidget {
+  final String eventId;
+  final String submissionId;
+
+  const _CommentButton({
+    required this.eventId,
+    required this.submissionId,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commentCountAsync = ref.watch(commentCountProvider(
+        (eventId: eventId, submissionId: submissionId)));
+
+    int currentCommentCount = 0;
+    commentCountAsync.whenData((count) {
+      currentCommentCount = count;
+    });
+
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          useSafeArea: true,
+          enableDrag: true,
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: CommentSheet(
+              eventId: eventId,
+              submissionId: submissionId,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.03,
+          vertical: MediaQuery.of(context).size.height * 0.01,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.pineGreen.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.pineGreen.withValues(alpha: 0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.comment_outlined,
+              size: MediaQuery.of(context).size.width * 0.04,
+              color: Colors.white,
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Text(
+              '$currentCommentCount',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: MediaQuery.of(context).size.width * 0.032,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
