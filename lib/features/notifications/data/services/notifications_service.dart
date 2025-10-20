@@ -9,27 +9,25 @@ class NotificationsService {
   Stream<List<NotificationModel>> getUserNotificationsStream(String userId) {
     try {
       AppLogger.i('Setting up notifications stream for user: $userId');
-      
+
       return _database
           .ref('notifications/$userId')
-          .orderByChild('createdAt')
-          .limitToLast(50) // Get only the 50 most recent notifications
           .onValue
           .map((event) {
         final data = event.snapshot.value;
-        
+
         if (data == null) {
           AppLogger.i('No notifications found for user');
           return <NotificationModel>[];
         }
-        
+
         final Map<String, dynamic> notificationsMap = Map<String, dynamic>.from(data as Map);
         final List<NotificationModel> notifications = [];
-        
+
         notificationsMap.forEach((key, value) {
           try {
             final notification = NotificationModel.fromRealtimeDatabase(
-              key, 
+              key,
               Map<String, dynamic>.from(value as Map)
             );
             notifications.add(notification);
@@ -37,10 +35,10 @@ class NotificationsService {
             AppLogger.e('Error parsing notification: $key', e, stackTrace);
           }
         });
-        
+
         // Sort by createdAt descending (most recent first)
         notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        
+
         AppLogger.i('Received ${notifications.length} notifications');
         return notifications;
       });

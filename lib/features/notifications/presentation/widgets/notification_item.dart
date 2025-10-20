@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/notification_model.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class NotificationItem extends StatelessWidget {
@@ -17,15 +18,35 @@ class NotificationItem extends StatelessWidget {
     required this.onDismiss,
   });
 
+  String _getUsername() {
+    if (notification.type == NotificationType.like) {
+      return notification.likerUsername ?? 'Someone';
+    } else {
+      return notification.commenterUsername ?? 'Someone';
+    }
+  }
+
+  String _getUserId() {
+    if (notification.type == NotificationType.like) {
+      return notification.likerUserId ?? '';
+    } else {
+      return notification.commenterUserId ?? '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final username = _getUsername();
+    final userId = _getUserId();
+
     return Dismissible(
       key: Key(notification.id),
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onDismiss(),
       background: Container(
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.01,
+        margin: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.04,
+          vertical: MediaQuery.of(context).size.height * 0.005,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -34,7 +55,7 @@ class NotificationItem extends StatelessWidget {
               AppColors.rosyBrown.withValues(alpha: 0.6),
             ],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(0),
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.symmetric(
@@ -47,8 +68,9 @@ class NotificationItem extends StatelessWidget {
         ),
       ),
       child: Container(
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.01,
+        margin: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.04,
+          vertical: MediaQuery.of(context).size.height * 0.006,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -56,170 +78,166 @@ class NotificationItem extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: isUnread
                 ? [
-                    Colors.white.withValues(alpha: 0.18),
-                    AppColors.primaryOrange.withValues(alpha: 0.12),
-                    AppColors.rosyBrown.withValues(alpha: 0.08),
-                    Colors.white.withValues(alpha: 0.06),
+                    Colors.white.withValues(alpha: 0.16),
+                    AppColors.pineGreen.withValues(alpha: 0.06),
+                    Colors.white.withValues(alpha: 0.04),
                   ]
                 : [
-                    Colors.white.withValues(alpha: 0.12),
-                    AppColors.rosyBrown.withValues(alpha: 0.06),
-                    AppColors.pineGreen.withValues(alpha: 0.04),
-                    Colors.white.withValues(alpha: 0.03),
+                    Colors.white.withValues(alpha: 0.08),
+                    AppColors.pineGreen.withValues(alpha: 0.03),
+                    Colors.white.withValues(alpha: 0.02),
                   ],
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isUnread
-                ? AppColors.primaryOrange.withValues(alpha: 0.3)
-                : AppColors.iceBorder,
-            width: isUnread ? 1.5 : 1,
+            color: AppColors.iceBorder.withValues(alpha: 0.2),
+            width: 0.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: isUnread
-                  ? AppColors.primaryOrange.withValues(alpha: 0.15)
-                  : Colors.white.withValues(alpha: 0.06),
-              blurRadius: isUnread ? 12 : 8,
-              offset: const Offset(-1, -1),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isUnread ? 0.08 : 0.04),
-              blurRadius: 8,
-              offset: const Offset(1, 1),
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(16),
             onTap: onTap,
+            borderRadius: BorderRadius.circular(16),
             child: Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.04,
+                vertical: MediaQuery.of(context).size.height * 0.015,
+              ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Notification icon
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.12,
-                    height: MediaQuery.of(context).size.width * 0.12,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: notification.type == NotificationType.like
-                            ? [
-                                AppColors.rosyBrown.withValues(alpha: 0.8),
-                                AppColors.rosyBrown.withValues(alpha: 0.9),
-                              ]
-                            : [
-                                AppColors.pineGreen.withValues(alpha: 0.8),
-                                AppColors.pineGreen.withValues(alpha: 0.9),
-                              ],
+                  // User avatar with badge
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Main avatar
+                      ClickableUserAvatar(
+                        userId: userId,
+                        username: username,
+                        radius: MediaQuery.of(context).size.width * 0.065,
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (notification.type == NotificationType.like
-                                  ? AppColors.rosyBrown
-                                  : AppColors.pineGreen)
-                              .withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                      // Badge icon (like/comment indicator)
+                      Positioned(
+                        right: -2,
+                        bottom: -2,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: notification.type == NotificationType.like
+                                ? AppColors.rosyBrown
+                                : AppColors.pineGreen,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            notification.type == NotificationType.like
+                                ? Icons.favorite
+                                : Icons.chat_bubble,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.03,
+                          ),
                         ),
-                      ],
-                    ),
-                    child: Icon(
-                      notification.type == NotificationType.like
-                          ? Icons.favorite
-                          : Icons.comment,
-                      color: Colors.white,
-                      size: MediaQuery.of(context).size.width * 0.06,
-                    ),
+                      ),
+                    ],
                   ),
-                  
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                  
+
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.035),
+
                   // Notification content
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Title
-                        Text(
-                          notification.title,
-                          style: TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontWeight: isUnread ? FontWeight.bold : FontWeight.w600,
-                            shadows: isUnread
-                                ? [
-                                    Shadow(
-                                      color: AppColors.primaryOrange.withValues(alpha: 0.5),
-                                      blurRadius: 6,
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                        
-                        // Message
-                        Text(
-                          notification.message,
-                          style: TextStyle(
-                            color: isUnread
-                                ? AppColors.textPrimary.withValues(alpha: 0.9)
-                                : AppColors.textSecondary,
-                            fontSize: MediaQuery.of(context).size.width * 0.035,
-                            fontWeight: isUnread ? FontWeight.w500 : FontWeight.w400,
-                            height: 1.3,
+                        // Username and action message
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: username,
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.038,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.1,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ',
+                                style: TextStyle(
+                                  fontSize: MediaQuery.of(context).size.width * 0.038,
+                                ),
+                              ),
+                              TextSpan(
+                                text: notification.type == NotificationType.like
+                                    ? 'liked your post'
+                                    : 'commented on your post',
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: MediaQuery.of(context).size.width * 0.038,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.008),
-                        
-                        // Time
+
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.006),
+
+                        // Timestamp
                         Text(
                           _formatTime(context, notification.createdAt),
                           style: TextStyle(
-                            color: isUnread
-                                ? AppColors.primaryOrange.withValues(alpha: 0.8)
-                                : AppColors.rosyBrown.withValues(alpha: 0.6),
-                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                            color: AppColors.textSecondary.withValues(alpha: 0.7),
+                            fontSize: MediaQuery.of(context).size.width * 0.033,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  
-                  // Unread indicator
+
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+
+                  // Unread indicator dot
                   if (isUnread)
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.025,
-                      height: MediaQuery.of(context).size.width * 0.025,
+                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
+                      width: MediaQuery.of(context).size.width * 0.022,
+                      height: MediaQuery.of(context).size.width * 0.022,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrangeDark,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryOrange.withValues(alpha: 0.5),
-                            blurRadius: 6,
+                            color: AppColors.primaryOrangeDark.withValues(alpha: 0.4),
+                            blurRadius: 4,
                             offset: const Offset(0, 0),
                           ),
                         ],
                       ),
                     )
                   else
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.022),
                 ],
               ),
             ),
@@ -237,12 +255,14 @@ class NotificationItem extends StatelessWidget {
       return AppLocalizations.of(context)!.justNow;
     } else if (difference.inHours < 1) {
       return AppLocalizations.of(context)!.minutesAgoShort(difference.inMinutes);
-    } else if (difference.inDays < 1) {
+    } else if (difference.inHours < 24) {
       return AppLocalizations.of(context)!.hoursAgoShort(difference.inHours);
     } else if (difference.inDays == 1) {
       return AppLocalizations.of(context)!.yesterday;
     } else if (difference.inDays < 7) {
-      return AppLocalizations.of(context)!.daysAgoShort(difference.inDays);
+      // Show day name (e.g., "Monday", "Tuesday")
+      final weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      return weekdays[dateTime.weekday % 7];
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
       return AppLocalizations.of(context)!.weeksAgoShort(weeks);

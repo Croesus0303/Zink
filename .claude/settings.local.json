@@ -63,7 +63,8 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(timeout 10 flutter run --debug 2 >& 1)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Read(//mnt/c/Users/bugra/Desktop/SS/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

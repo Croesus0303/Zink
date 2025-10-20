@@ -249,16 +249,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         return ListView.builder(
           controller: _scrollController,
           padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.02,
+            top: MediaQuery.of(context).size.height * 0.01,
             bottom: MediaQuery.of(context).size.height * 0.02,
-            left: MediaQuery.of(context).size.width * 0.04,
-            right: MediaQuery.of(context).size.width * 0.04,
           ),
           itemCount: notifications.length,
           itemBuilder: (context, index) {
             final notification = notifications[index];
             final isUnread = ref.watch(isNotificationUnreadProvider(notification));
-            
+
             return NotificationItem(
               notification: notification,
               isUnread: isUnread,
