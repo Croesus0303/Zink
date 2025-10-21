@@ -151,6 +151,33 @@ class AuthRepository {
     try {
       AppLogger.i('Starting sign out');
 
+      final user = currentUser;
+
+      // Delete FCM token and unsubscribe from topics before signing out
+      if (user != null) {
+        try {
+          // Delete FCM token from Firestore
+          await _firestore
+              .collection(UserModel.collectionPath)
+              .doc(user.uid)
+              .set({
+            'fcmToken': FieldValue.delete(),
+          }, SetOptions(merge: true));
+          AppLogger.i('FCM token deleted from Firestore');
+
+          // Unsubscribe from all_users topic
+          await _messaging.unsubscribeFromTopic('all_users');
+          AppLogger.i('Unsubscribed from all_users topic');
+
+          // Delete the FCM token from the device
+          await _messaging.deleteToken();
+          AppLogger.i('FCM token deleted from device');
+        } catch (fcmError) {
+          AppLogger.w('FCM cleanup failed (non-critical): $fcmError');
+          // Continue with sign out even if FCM cleanup fails
+        }
+      }
+
       // Sign out from all authentication providers
       await Future.wait([
         _firebaseAuth.signOut(),
@@ -219,6 +246,14 @@ class AuthRepository {
         fcmToken = await _messaging.getToken();
         if (fcmToken != null) {
           AppLogger.i('FCM token retrieved during onboarding: ${fcmToken.substring(0, 20)}...');
+
+          // Subscribe to all_users topic if we have a token
+          try {
+            await _messaging.subscribeToTopic('all_users');
+            AppLogger.i('Subscribed to all_users topic during onboarding');
+          } catch (topicError) {
+            AppLogger.w('Failed to subscribe to all_users topic (non-critical): $topicError');
+          }
         }
       } catch (e) {
         AppLogger.w('Failed to get FCM token during onboarding (continuing anyway): $e');
@@ -485,6 +520,15 @@ class AuthRepository {
 
       AppLogger.i('Starting account deletion for user: ${user.uid}');
 
+      // Clean up FCM token and unsubscribe from topics
+      try {
+        await _messaging.unsubscribeFromTopic('all_users');
+        await _messaging.deleteToken();
+        AppLogger.i('FCM token and topic subscription cleaned up');
+      } catch (fcmError) {
+        AppLogger.w('FCM cleanup failed during account deletion (non-critical): $fcmError');
+      }
+
       // Delete user data from Firestore
       await _deleteUserData(user.uid);
 
@@ -565,6 +609,15 @@ class AuthRepository {
       }, SetOptions(merge: true));
 
       AppLogger.i('FCM token updated successfully: ${fcmToken.substring(0, 20)}...');
+
+      // Subscribe to all_users topic
+      try {
+        await _messaging.subscribeToTopic('all_users');
+        AppLogger.i('Subscribed to all_users topic after token update');
+      } catch (topicError) {
+        AppLogger.w('Failed to subscribe to all_users topic (non-critical): $topicError');
+        // Continue even if topic subscription fails
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Failed to update FCM token', e, stackTrace);
       // Don't rethrow - FCM token update failure shouldn't block login
