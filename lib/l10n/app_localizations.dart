@@ -908,6 +908,18 @@ abstract class AppLocalizations {
   /// **'Original photos only - no screenshots or downloaded images'**
   String get originalPhotosOnly;
 
+  /// Camera permission denied message
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to take photos'**
+  String get cameraPermissionDenied;
+
+  /// Photo library permission denied message
+  ///
+  /// In en, this message translates to:
+  /// **'Photo library permission is required to select photos'**
+  String get photoLibraryPermissionDenied;
+
   /// Failed to take photo error
   ///
   /// In en, this message translates to:

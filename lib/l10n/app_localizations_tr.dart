@@ -444,6 +444,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get originalPhotosOnly => 'Sadece orijinal fotoğraflar kabul edilir';
 
   @override
+  String get cameraPermissionDenied =>
+      'Fotoğraf çekmek için kamera izni gereklidir';
+
+  @override
+  String get photoLibraryPermissionDenied =>
+      'Fotoğraf seçmek için fotoğraf kitaplığı izni gereklidir';
+
+  @override
   String failedToTakePhoto(String error) {
     return 'Fotoğraf çekilemedi: $error';
   }

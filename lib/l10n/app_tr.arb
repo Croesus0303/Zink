@@ -136,6 +136,8 @@
   "matchChallengeTheme": "Fotoğrafınızın yarışma temasına uygun olduğundan emin olun",
   "useGoodLighting": "İyi aydınlatma ve net odak kullanın",
   "originalPhotosOnly": "Sadece orijinal fotoğraflar kabul edilir",
+  "cameraPermissionDenied": "Fotoğraf çekmek için kamera izni gereklidir",
+  "photoLibraryPermissionDenied": "Fotoğraf seçmek için fotoğraf kitaplığı izni gereklidir",
   "failedToTakePhoto": "Fotoğraf çekilemedi: {error}",
   "failedToSelectPhoto": "Fotoğraf seçilemedi: {error}",
   "pleaseSelectPhotoFirst": "Lütfen önce bir fotoğraf seçin",

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../events/providers/events_providers.dart';
 import '../../../events/data/models/event_model.dart';
 import '../../../submissions/data/services/submissions_service.dart';
@@ -32,6 +33,45 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
 
   Future<void> _pickImageFromCamera() async {
     try {
+      // Check camera permission
+      var cameraStatus = await Permission.camera.status;
+
+      AppLogger.d('Camera permission status: $cameraStatus');
+
+      // If permission is not granted, request it
+      if (!cameraStatus.isGranted) {
+        AppLogger.d('Requesting camera permission...');
+        cameraStatus = await Permission.camera.request();
+        AppLogger.d('Camera permission after request: $cameraStatus');
+
+        // If permanently denied, show settings dialog
+        if (cameraStatus.isPermanentlyDenied) {
+          if (mounted) {
+            _showPermissionSettingsDialog();
+          }
+          return;
+        }
+
+        // If still denied after request, show error
+        if (cameraStatus.isDenied) {
+          if (mounted) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.cameraPermissionDenied);
+          }
+          return;
+        }
+
+        // If still not granted (restricted, limited, etc.), show error
+        if (!cameraStatus.isGranted) {
+          if (mounted) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.cameraPermissionDenied);
+          }
+          return;
+        }
+      }
+
+      AppLogger.d('Camera permission granted, opening camera...');
+
+      // Permission is granted, proceed with taking photo
       final XFile? image = await _picker.pickImage(
         source: ImageSource.camera,
         imageQuality: 80,
@@ -45,14 +85,129 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         });
       }
     } catch (e) {
+      AppLogger.e('Error picking image from camera', e);
       if (mounted) {
         _showErrorSnackBar(AppLocalizations.of(context)!.failedToTakePhoto(e.toString()));
       }
     }
   }
 
+  void _showPermissionSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.95),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(
+            color: AppColors.iceBorder,
+            width: 1.5,
+          ),
+        ),
+        title: Text(
+          'Camera Permission Required',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+          ),
+        ),
+        content: Text(
+          'Camera access is needed to take photos. Please grant permission in your device settings.',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: MediaQuery.of(context).size.width * 0.038,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: MediaQuery.of(context).size.width * 0.038,
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.pineGreen.withValues(alpha: 0.8),
+                  AppColors.pineGreen.withValues(alpha: 0.9),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  openAppSettings();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Text(
+                    'Open Settings',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.width * 0.038,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _pickImageFromGallery() async {
     try {
+      // Check photo library permission
+      var photoStatus = await Permission.photos.status;
+
+      AppLogger.d('Photo library permission status: $photoStatus');
+
+      // If permission is not granted, request it
+      if (!photoStatus.isGranted) {
+        AppLogger.d('Requesting photo library permission...');
+        photoStatus = await Permission.photos.request();
+        AppLogger.d('Photo library permission after request: $photoStatus');
+
+        // If permanently denied, show settings dialog
+        if (photoStatus.isPermanentlyDenied) {
+          if (mounted) {
+            _showPhotoLibraryPermissionDialog();
+          }
+          return;
+        }
+
+        // If still denied after request, show error
+        if (photoStatus.isDenied) {
+          if (mounted) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.photoLibraryPermissionDenied);
+          }
+          return;
+        }
+
+        // If still not granted (restricted, limited, etc.), show error
+        if (!photoStatus.isGranted) {
+          if (mounted) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.photoLibraryPermissionDenied);
+          }
+          return;
+        }
+      }
+
+      AppLogger.d('Photo library permission granted, opening gallery...');
+
+      // Permission is granted, proceed with selecting photo
       final XFile? image = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 80,
@@ -66,10 +221,86 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         });
       }
     } catch (e) {
+      AppLogger.e('Error picking image from gallery', e);
       if (mounted) {
         _showErrorSnackBar(AppLocalizations.of(context)!.failedToSelectPhoto(e.toString()));
       }
     }
+  }
+
+  void _showPhotoLibraryPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.95),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(
+            color: AppColors.iceBorder,
+            width: 1.5,
+          ),
+        ),
+        title: Text(
+          'Photo Library Permission Required',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: MediaQuery.of(context).size.width * 0.045,
+          ),
+        ),
+        content: Text(
+          'Photo library access is needed to select photos. Please grant permission in your device settings.',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: MediaQuery.of(context).size.width * 0.038,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: MediaQuery.of(context).size.width * 0.038,
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.pineGreen.withValues(alpha: 0.8),
+                  AppColors.pineGreen.withValues(alpha: 0.9),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  openAppSettings();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Text(
+                    'Open Settings',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.width * 0.038,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _submitPhoto() async {

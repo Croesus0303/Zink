@@ -460,6 +460,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Original photos only - no screenshots or downloaded images';
 
   @override
+  String get cameraPermissionDenied =>
+      'Camera permission is required to take photos';
+
+  @override
+  String get photoLibraryPermissionDenied =>
+      'Photo library permission is required to select photos';
+
+  @override
   String failedToTakePhoto(String error) {
     return 'Failed to take photo: $error';
   }

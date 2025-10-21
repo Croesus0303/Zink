@@ -595,6 +595,14 @@
   "@originalPhotosOnly": {
     "description": "Submission guideline 3"
   },
+  "cameraPermissionDenied": "Camera permission is required to take photos",
+  "@cameraPermissionDenied": {
+    "description": "Camera permission denied message"
+  },
+  "photoLibraryPermissionDenied": "Photo library permission is required to select photos",
+  "@photoLibraryPermissionDenied": {
+    "description": "Photo library permission denied message"
+  },
   "failedToTakePhoto": "Failed to take photo: {error}",
   "@failedToTakePhoto": {
     "description": "Failed to take photo error",
