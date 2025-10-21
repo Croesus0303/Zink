@@ -55,7 +55,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         // If still denied after request, show error
         if (cameraStatus.isDenied) {
           if (mounted) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.cameraPermissionDenied);
+            _showErrorSnackBar(
+                AppLocalizations.of(context)!.cameraPermissionDenied);
           }
           return;
         }
@@ -63,7 +64,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         // If still not granted (restricted, limited, etc.), show error
         if (!cameraStatus.isGranted) {
           if (mounted) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.cameraPermissionDenied);
+            _showErrorSnackBar(
+                AppLocalizations.of(context)!.cameraPermissionDenied);
           }
           return;
         }
@@ -87,7 +89,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     } catch (e) {
       AppLogger.e('Error picking image from camera', e);
       if (mounted) {
-        _showErrorSnackBar(AppLocalizations.of(context)!.failedToTakePhoto(e.toString()));
+        _showErrorSnackBar(
+            AppLocalizations.of(context)!.failedToTakePhoto(e.toString()));
       }
     }
   }
@@ -149,7 +152,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                   openAppSettings();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   child: Text(
                     'Open Settings',
                     style: TextStyle(
@@ -191,7 +195,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         // If still denied after request, show error
         if (photoStatus.isDenied) {
           if (mounted) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.photoLibraryPermissionDenied);
+            _showErrorSnackBar(
+                AppLocalizations.of(context)!.photoLibraryPermissionDenied);
           }
           return;
         }
@@ -199,7 +204,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         // If still not granted (restricted, limited, etc.), show error
         if (!photoStatus.isGranted) {
           if (mounted) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.photoLibraryPermissionDenied);
+            _showErrorSnackBar(
+                AppLocalizations.of(context)!.photoLibraryPermissionDenied);
           }
           return;
         }
@@ -223,7 +229,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     } catch (e) {
       AppLogger.e('Error picking image from gallery', e);
       if (mounted) {
-        _showErrorSnackBar(AppLocalizations.of(context)!.failedToSelectPhoto(e.toString()));
+        _showErrorSnackBar(
+            AppLocalizations.of(context)!.failedToSelectPhoto(e.toString()));
       }
     }
   }
@@ -285,7 +292,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                   openAppSettings();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   child: Text(
                     'Open Settings',
                     style: TextStyle(
@@ -334,7 +342,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
 
       if (mounted) {
         // Refresh the submission count provider for this specific event
-        ref.invalidate(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: widget.eventId)));
+        ref.invalidate(userSubmissionCountForEventProvider(
+            (userId: currentUser.uid, eventId: widget.eventId)));
         // Refresh the submissions list for the event
         ref.invalidate(submissionsProvider(widget.eventId));
 
@@ -350,7 +359,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     } catch (e, stackTrace) {
       AppLogger.e('Failed to submit photo', e, stackTrace);
       if (mounted) {
-        _showErrorSnackBar(AppLocalizations.of(context)!.failedToSubmitPhoto(e.toString()));
+        _showErrorSnackBar(
+            AppLocalizations.of(context)!.failedToSubmitPhoto(e.toString()));
       }
     } finally {
       if (mounted) {
@@ -644,7 +654,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
 
   Widget _buildSubmissionScreen(BuildContext context, EventModel event) {
     final currentUser = ref.watch(currentUserProvider);
-    
+
     if (currentUser == null) {
       return Scaffold(
         backgroundColor: Colors.transparent,
@@ -684,16 +694,19 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       );
     }
 
-    final submissionCountAsync = ref.watch(userSubmissionCountForEventProvider((userId: currentUser.uid, eventId: event.id)));
+    final submissionCountAsync = ref.watch(userSubmissionCountForEventProvider(
+        (userId: currentUser.uid, eventId: event.id)));
 
     return submissionCountAsync.when(
-      data: (submissionCount) => _buildSubmissionScreenContent(context, event, submissionCount),
+      data: (submissionCount) =>
+          _buildSubmissionScreenContent(context, event, submissionCount),
       loading: () => _buildLoadingScreen(context),
       error: (error, stack) => _buildErrorScreen(context, error),
     );
   }
 
-  Widget _buildSubmissionScreenContent(BuildContext context, EventModel event, int submissionCount) {
+  Widget _buildSubmissionScreenContent(
+      BuildContext context, EventModel event, int submissionCount) {
     const maxSubmissions = 3;
     final hasReachedLimit = submissionCount >= maxSubmissions;
 
@@ -780,37 +793,33 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                      // Challenge info
-                      _ChallengeInfoSection(event: event),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      // Submission count info
-                      _SubmissionCountInfo(
-                        submissionCount: submissionCount,
-                        maxSubmissions: maxSubmissions,
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      // Photo selection/preview or limit message
-                      if (hasReachedLimit)
-                        _SubmissionLimitMessage()
-                      else
-                        _PhotoSection(
-                          selectedImage: _selectedImage,
-                          onTakePhoto: _pickImageFromCamera,
-                          onChooseFromGallery: _pickImageFromGallery,
-                          onRemovePhoto: () {
-                            setState(() {
-                              _selectedImage = null;
-                            });
-                          },
-                        ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      // Guidelines
-                      if (!hasReachedLimit) _GuidelinesSection(),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.12),
+                  // Challenge info
+                  _ChallengeInfoSection(event: event),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                  // Submission count info
+                  _SubmissionCountInfo(
+                    submissionCount: submissionCount,
+                    maxSubmissions: maxSubmissions,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                  // Photo selection/preview or limit message
+                  if (hasReachedLimit)
+                    _SubmissionLimitMessage()
+                  else
+                    _PhotoSection(
+                      selectedImage: _selectedImage,
+                      onTakePhoto: _pickImageFromCamera,
+                      onChooseFromGallery: _pickImageFromGallery,
+                      onRemovePhoto: () {
+                        setState(() {
+                          _selectedImage = null;
+                        });
+                      },
+                    ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                  // Guidelines
+                  if (!hasReachedLimit) _GuidelinesSection(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 ],
               ),
             ),
@@ -820,7 +829,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       bottomNavigationBar: _selectedImage != null && !hasReachedLimit
           ? SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -864,14 +874,16 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                             children: [
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.05,
-                                height: MediaQuery.of(context).size.width * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.05,
                                 child: const CircularProgressIndicator(
                                   strokeWidth: 2,
                                   color: Colors.white,
                                 ),
                               ),
                               SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.03),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.03),
                               Text(
                                 AppLocalizations.of(context)!.submitting,
                                 style: TextStyle(
@@ -1100,7 +1112,8 @@ class _SubmissionLimitMessage extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
+        border: Border.all(
+            color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
@@ -1339,7 +1352,8 @@ class _ChallengeInfoSection extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.pineGreen.withValues(alpha: 0.3),
+                                color:
+                                    AppColors.pineGreen.withValues(alpha: 0.3),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -1858,12 +1872,6 @@ class _GuidelinesSection extends StatelessWidget {
               _GuidelineItem(
                 icon: Icons.check_circle,
                 text: AppLocalizations.of(context)!.useGoodLighting,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              _GuidelineItem(
-                icon: Icons.check_circle,
-                text:
-                    AppLocalizations.of(context)!.originalPhotosOnly,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
               const _GuidelineItem(
