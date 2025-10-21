@@ -205,7 +205,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           elevation: 0,
           toolbarHeight: MediaQuery.of(context).size.height * 0.065,
           title: Text(
-            AppLocalizations.of(context)!.loading,
+            AppLocalizations.of(context)!.profile,
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -287,7 +287,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: Text(AppLocalizations.of(context)!.loading,
+          title: Text(AppLocalizations.of(context)!.profile,
               style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
