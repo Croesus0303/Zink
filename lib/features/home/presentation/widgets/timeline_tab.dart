@@ -148,7 +148,11 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (index >= posts.length) {
-            // Loading indicator for pagination
+            // Loading indicator for pagination - only show if actually loading
+            if (!notifier.isLoadingMore) {
+              return const SizedBox.shrink();
+            }
+
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
               padding: const EdgeInsets.all(20.0),
@@ -161,26 +165,24 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                 ),
               ),
               child: Center(
-                child: notifier.isLoadingMore
-                    ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const CircularProgressIndicator(
-                            color: AppColors.rosyBrown,
-                            strokeWidth: 3,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Loading more posts...',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: MediaQuery.of(context).size.width * 0.032,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(
+                      color: AppColors.rosyBrown,
+                      strokeWidth: 3,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Loading more posts...',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: MediaQuery.of(context).size.width * 0.032,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -372,13 +374,15 @@ class _TimelineContent extends ConsumerWidget {
         }
         return parentState._buildTimeline(context, posts, notifier);
       },
-      loading: () {
-        final parentState = context.findAncestorStateOfType<TimelineTabState>();
-        if (parentState == null) {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
-        }
-        return parentState._buildTimeline(context, [], notifier);
-      },
+      loading: () => const SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.rosyBrown,
+            strokeWidth: 4,
+          ),
+        ),
+      ),
       error: (error, stack) {
         final parentState = context.findAncestorStateOfType<TimelineTabState>();
         if (parentState == null) {
