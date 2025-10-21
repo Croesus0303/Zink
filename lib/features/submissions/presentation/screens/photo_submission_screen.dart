@@ -467,8 +467,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
     final hasReachedLimit = submissionCount >= maxSubmissions;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
         backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
         elevation: 0,
@@ -542,16 +541,14 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
         ),
         child: Container(
           decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.04),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                       // Challenge info
                       _ChallengeInfoSection(event: event),
                       SizedBox(
@@ -583,91 +580,88 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                       if (!hasReachedLimit) _GuidelinesSection(),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.12),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: _selectedImage != null && !hasReachedLimit
-          ? Container(
-              margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: _isSubmitting
-                        ? [
-                            AppColors.midnightGreen.withValues(alpha: 0.6),
-                            AppColors.midnightGreen.withValues(alpha: 0.4),
-                          ]
-                        : [
-                            AppColors.rosyBrown.withValues(alpha: 0.8),
-                            AppColors.rosyBrown.withValues(alpha: 0.9),
-                          ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+          ? SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: _isSubmitting
+                          ? [
+                              AppColors.midnightGreen.withValues(alpha: 0.6),
+                              AppColors.midnightGreen.withValues(alpha: 0.4),
+                            ]
+                          : [
+                              AppColors.rosyBrown,
+                              AppColors.rosyBrown.withValues(alpha: 0.8),
+                            ],
                     ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
                     borderRadius: BorderRadius.circular(16),
-                    onTap: _isSubmitting ? null : _submitPhoto,
-                    child: Container(
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _isSubmitting ? null : _submitPhoto,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
                       padding: EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.02),
-                      child: _isSubmitting
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.03),
-                                Text(
-                                  AppLocalizations.of(context)!.submitting,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.04,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Text(
-                              AppLocalizations.of(context)!.submitPhoto,
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
+                    child: _isSubmitting
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.03),
+                              Text(
+                                AppLocalizations.of(context)!.submitting,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            AppLocalizations.of(context)!.submitPhoto,
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                   ),
                 ),
               ),
