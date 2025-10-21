@@ -27,13 +27,16 @@ class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>
     loadInitialPosts();
   }
   
-  Future<void> loadInitialPosts() async {
+  Future<void> loadInitialPosts({bool keepCache = false}) async {
     try {
-      state = const AsyncValue.loading();
+      // Only show loading state if we don't have cached data
+      if (!keepCache) {
+        state = const AsyncValue.loading();
+      }
       final posts = await _fetchTimelinePosts(limit: _pageSize);
       // Set hasMoreData based on whether we got a full page
       _hasMoreData = posts.length == _pageSize;
-      
+
       state = AsyncValue.data(posts);
     } catch (error, stackTrace) {
       AppLogger.e('Error loading initial timeline posts', error, stackTrace);
@@ -73,7 +76,8 @@ class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>
     _lastDocument = null;
     _hasMoreData = true;
     _isLoadingMore = false;
-    await loadInitialPosts();
+    // Keep cache while refreshing to avoid blank screen
+    await loadInitialPosts(keepCache: true);
   }
 
   Future<List<TimelinePost>> _fetchTimelinePosts({

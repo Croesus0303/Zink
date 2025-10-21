@@ -67,9 +67,6 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
 
   @override
   Widget build(BuildContext context) {
-    final timelinePostsAsync = ref.watch(timelinePostsProvider);
-    final notifier = ref.read(timelinePostsProvider.notifier);
-
     return SafeArea(
       child: Stack(
         children: [
@@ -78,15 +75,13 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
             child: RefreshIndicator(
               color: AppColors.rosyBrown,
               onRefresh: _onRefresh,
-              child: timelinePostsAsync.when(
-                data: (posts) => _buildTimeline(context, posts, notifier),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.rosyBrown,
-                    strokeWidth: 4,
-                  ),
-                ),
-                error: (error, stack) => _buildErrorWidget(context),
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: const [
+                  _TimelineContent(),
+                  SliverToBoxAdapter(child: SizedBox(height: 20)),
+                ],
               ),
             ),
           ),
@@ -146,65 +141,58 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
 
   Widget _buildTimeline(BuildContext context, List<TimelinePost> posts, TimelinePostsNotifier notifier) {
     if (posts.isEmpty) {
-      return _buildEmptyTimeline(context);
+      return SliverToBoxAdapter(child: _buildEmptyTimeline(context));
     }
 
-    return CustomScrollView(
-      controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(),
-      slivers: [
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              if (index >= posts.length) {
-                // Loading indicator for pagination
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                  padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.iceGlassGradient,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.iceBorder,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Center(
-                    child: notifier.isLoadingMore
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const CircularProgressIndicator(
-                                color: AppColors.rosyBrown,
-                                strokeWidth: 3,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Loading more posts...',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: MediaQuery.of(context).size.width * 0.032,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                );
-              }
-              
-              final post = posts[index];
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                child: TimelinePostCard(post: post),
-              );
-            },
-            childCount: posts.length + (notifier.hasMoreData ? 1 : 0),
-          ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 20)),
-      ],
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= posts.length) {
+            // Loading indicator for pagination
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                gradient: AppColors.iceGlassGradient,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.iceBorder,
+                  width: 1.5,
+                ),
+              ),
+              child: Center(
+                child: notifier.isLoadingMore
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(
+                            color: AppColors.rosyBrown,
+                            strokeWidth: 3,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Loading more posts...',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            );
+          }
+
+          final post = posts[index];
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: TimelinePostCard(post: post),
+          );
+        },
+        childCount: posts.length + (notifier.hasMoreData ? 1 : 0),
+      ),
     );
   }
 
@@ -364,6 +352,42 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TimelineContent extends ConsumerWidget {
+  const _TimelineContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timelinePostsAsync = ref.watch(timelinePostsProvider);
+    final notifier = ref.read(timelinePostsProvider.notifier);
+
+    return timelinePostsAsync.when(
+      data: (posts) {
+        final parentState = context.findAncestorStateOfType<TimelineTabState>();
+        if (parentState == null) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        return parentState._buildTimeline(context, posts, notifier);
+      },
+      loading: () {
+        final parentState = context.findAncestorStateOfType<TimelineTabState>();
+        if (parentState == null) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        return parentState._buildTimeline(context, [], notifier);
+      },
+      error: (error, stack) {
+        final parentState = context.findAncestorStateOfType<TimelineTabState>();
+        if (parentState == null) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+        return SliverToBoxAdapter(
+          child: parentState._buildErrorWidget(context),
+        );
+      },
     );
   }
 }
