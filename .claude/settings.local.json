@@ -64,7 +64,9 @@
       "Bash(mv:*)",
       "Bash(timeout 10 flutter run --debug 2 >& 1)",
       "Bash(tree:*)",
-      "Read(//mnt/c/Users/bugra/Desktop/SS/**)"
+      "Read(//mnt/c/Users/bugra/Desktop/SS/**)",
+      "Bash(claude --version)",
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter analyze:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
