@@ -241,5 +241,17 @@
   "noPostsYet": "Henüz gönderi yok",
   "checkBackLater": "Yeni gönderiler için daha sonra tekrar kontrol edin",
   "errorLoadingTimeline": "Zaman tüneli yüklenirken hata oluştu",
-  "unknown": "Bilinmeyen"
+  "unknown": "Bilinmeyen",
+  "levelSystem": "Seviye Sistemi",
+  "levelCurious": "Meraklı",
+  "levelSharing": "Paylaşan",
+  "levelConnecting": "Bağlanan",
+  "levelContributing": "Katkıda Bulunan",
+  "levelSupporting": "Destekleyen",
+  "levelTrusted": "Güvenilir",
+  "levelGuide": "Rehber",
+  "currentLevel": "Mevcut",
+  "startingLevel": "Başlangıç seviyesi",
+  "requiresBadges": "{count} rozet gerektirir",
+  "levelNumber": "Seviye {number}"
 }

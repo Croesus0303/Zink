@@ -14,6 +14,7 @@ import 'storage_test_screen.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../shared/widgets/glassy_button.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -30,14 +31,11 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  PageController? _pageController;
-  int _currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _pageController = PageController();
+    _tabController = TabController(length: 4, vsync: this);
 
     // Reload profile data when entering the screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -162,7 +160,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   void dispose() {
     _tabController.dispose();
-    _pageController?.dispose();
     super.dispose();
   }
 
@@ -183,81 +180,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final authStateAsync = ref.watch(authStateProvider);
     final currentUserDataAsync = ref.watch(currentUserDataProvider);
     final userDataAsync = ref.watch(userDataProvider(targetUserId));
-    final userSubmissionsAsync = ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
-    final userLikedSubmissionsAsync = ref.watch(userLikedSubmissionsProvider(targetUserId));
+    final userSubmissionsAsync =
+        ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
+    final userLikedSubmissionsAsync =
+        ref.watch(userLikedSubmissionsProvider(targetUserId));
     final userBadgesAsync = ref.watch(userBadgesProvider(targetUserId));
 
     // Check if critical data is still loading - especially important for first login
     final isLoading = authStateAsync.isLoading ||
-                     currentUserDataAsync.isLoading ||
-                     userDataAsync.isLoading || 
-                     userSubmissionsAsync.isLoading || 
-                     userLikedSubmissionsAsync.isLoading ||
-                     userBadgesAsync.isLoading;
+        currentUserDataAsync.isLoading ||
+        userDataAsync.isLoading ||
+        userSubmissionsAsync.isLoading ||
+        userLikedSubmissionsAsync.isLoading ||
+        userBadgesAsync.isLoading;
 
     // Show loading screen while essential data loads
     if (isLoading) {
       return Scaffold(
         backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-          elevation: 0,
-          toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-          title: Text(
-            AppLocalizations.of(context)!.profile,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: MediaQuery.of(context).size.width * 0.045,
-            ),
-          ),
-          centerTitle: true,
-          leading: Container(
-            margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 0.15),
-                  AppColors.pineGreen.withValues(alpha: 0.08),
-                  Colors.white.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: AppColors.iceBorder,
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(-1, -1),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(1, 1),
-                ),
-              ],
-            ),
-            child: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.04,
-              ),
-              constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width * 0.08,
-                minHeight: MediaQuery.of(context).size.width * 0.08,
-              ),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -283,14 +223,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           _buildProfile(context, ref, user, isOwnProfile, targetUserId),
       loading: () => Scaffold(
         backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(AppLocalizations.of(context)!.profile,
-              style: const TextStyle(color: AppColors.textPrimary)),
-          centerTitle: true,
-        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -308,14 +240,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       ),
       error: (error, stack) => Scaffold(
         backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(AppLocalizations.of(context)!.error,
-              style: const TextStyle(color: AppColors.textPrimary)),
-          centerTitle: true,
-        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -399,14 +323,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       if (isOwnProfile) {
         return Scaffold(
           backgroundColor: Colors.transparent,
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: Text(AppLocalizations.of(context)!.profile,
-                style: const TextStyle(color: AppColors.textPrimary)),
-            centerTitle: true,
-          ),
           body: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -494,13 +410,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 32, vertical: 18),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.edit, color: Colors.white, size: 20),
-                                SizedBox(width: 12),
-                                Text('Complete Setup',
-                                    style: TextStyle(
+                                const Icon(Icons.edit, color: Colors.white, size: 20),
+                                const SizedBox(width: 12),
+                                Text(AppLocalizations.of(context)!.completeSetup,
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
@@ -519,14 +435,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       } else {
         return Scaffold(
           backgroundColor: Colors.transparent,
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: Text(AppLocalizations.of(context)!.profile,
-                style: const TextStyle(color: AppColors.textPrimary)),
-            centerTitle: true,
-          ),
           body: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -551,881 +459,516 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-        elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-        title: Text(
-          isOwnProfile ? AppLocalizations.of(context)!.profile : user.username,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: MediaQuery.of(context).size.width * 0.045,
+      body: Stack(
+        children: [
+          // Background image - full screen
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        centerTitle: true,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
+          // Gradient overlay - full screen
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
             ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
+          ),
+          // Main content
+          Column(
+            children: [
+              // Tab content with proper padding
+              Expanded(
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildHomeTab(context, ref, targetUserId),
+                        _buildUserSubmissions(context, ref, targetUserId),
+                        _buildLikedSubmissions(context, ref, targetUserId),
+                        _buildBadgesTab(context, ref, targetUserId),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
+              // Bottom tab bar
+              _buildBottomTabBar(context),
             ],
           ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-        actions: [
-          if (!isOwnProfile)
-            Container(
-              margin: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width * 0.02,
-                  top: 3,
-                  bottom: 3),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.15),
-                    AppColors.pineGreen.withValues(alpha: 0.08),
-                    Colors.white.withValues(alpha: 0.05),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: AppColors.iceBorder, width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(-1, -1),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(1, 1),
-                  ),
-                ],
+          // Back button (top left) - moved to top of stack for proper click handling
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: MediaQuery.of(context).size.width * 0.04,
+            child: Material(
+              color: Colors.transparent,
+              child: GlassyIconButton(
+                icon: Icons.arrow_back,
+                onPressed: () => Navigator.of(context).pop(),
+                iconSize: MediaQuery.of(context).size.width * 0.05,
+                buttonSize: MediaQuery.of(context).size.width * 0.12,
               ),
-              child: IconButton(
-                onPressed: () => context.push('/chat/$targetUserId'),
-                icon: Icon(
-                  Icons.message,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.width * 0.04,
+            ),
+          ),
+          // Message or Settings button (top right) - moved to top of stack for proper click handling
+          if (!isOwnProfile)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8,
+              right: MediaQuery.of(context).size.width * 0.04,
+              child: Material(
+                color: Colors.transparent,
+                child: GlassyIconButton(
+                  icon: Icons.message,
+                  onPressed: () => context.push('/chat/$targetUserId'),
+                  tooltip: AppLocalizations.of(context)!.messages,
+                  iconSize: MediaQuery.of(context).size.width * 0.05,
+                  buttonSize: MediaQuery.of(context).size.width * 0.12,
                 ),
-                tooltip: 'Send Message',
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width * 0.08,
-                  minHeight: MediaQuery.of(context).size.width * 0.08,
-                ),
-                padding: EdgeInsets.zero,
               ),
             ),
           if (isOwnProfile)
-            Container(
-              margin: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width * 0.04,
-                  top: 3,
-                  bottom: 3),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.15),
-                    AppColors.rosyBrown.withValues(alpha: 0.08),
-                    Colors.white.withValues(alpha: 0.05),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: AppColors.iceBorder, width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(-1, -1),
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8,
+              right: MediaQuery.of(context).size.width * 0.04,
+              child: Material(
+                color: Colors.transparent,
+                child: GlassyButton(
+                  borderRadius: 15,
+                  constraints: BoxConstraints.tightFor(
+                    width: MediaQuery.of(context).size.width * 0.12,
+                    height: MediaQuery.of(context).size.width * 0.12,
                   ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(1, 1),
+                  child: PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * 0.05,
                   ),
-                ],
-              ),
-              child: PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.width * 0.04,
-                ),
-                color: AppColors.midnightGreen.withValues(alpha: 0.98),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: AppColors.iceBorder,
-                    width: 1.5,
+                  color: AppColors.midnightGreen.withValues(alpha: 0.98),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: AppColors.iceBorder,
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                elevation: 12,
-                offset: Offset(0, MediaQuery.of(context).size.height * 0.02),
-                position: PopupMenuPosition.under,
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width * 0.45,
-                  maxWidth: MediaQuery.of(context).size.width * 0.52,
-                ),
-                menuPadding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
-                onSelected: (value) async {
-                  if (value == 'editProfile') {
-                    {
-                      Navigator.of(context)
-                          .push(
-                        MaterialPageRoute(
-                          builder: (context) => EditProfileScreen(user: user),
-                        ),
-                      )
-                          .then((_) {
-                        _refreshProfileData();
-                      });
-                    }
-                  } else if (value == 'testStorage') {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const StorageTestScreen(),
-                      ),
-                    );
-                  } else if (value == 'settings') {
-                    context.push('/settings');
-                  } else if (value == 'signOut') {
-                    final confirmed = await showDialog<bool>(
-                      context: context,
-                      barrierColor: Colors.black.withValues(alpha: 0.6),
-                      builder: (context) => AlertDialog(
-                        backgroundColor: Colors.transparent,
-                        contentPadding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        content: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                AppColors.midnightGreen.withValues(alpha: 0.95),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: AppColors.iceBorder,
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
+                  elevation: 12,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.02),
+                  position: PopupMenuPosition.under,
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width * 0.45,
+                    maxWidth: MediaQuery.of(context).size.width * 0.52,
+                  ),
+                  menuPadding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
+                  onSelected: (value) async {
+                    if (value == 'editProfile') {
+                      {
+                        Navigator.of(context)
+                            .push(
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(user: user),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.signOut,
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                  ),
+                        )
+                            .then((_) {
+                          _refreshProfileData();
+                        });
+                      }
+                    } else if (value == 'testStorage') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const StorageTestScreen(),
+                        ),
+                      );
+                    } else if (value == 'settings') {
+                      context.push('/settings');
+                    } else if (value == 'signOut') {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        barrierColor: Colors.black.withValues(alpha: 0.6),
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Colors.transparent,
+                          contentPadding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          content: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.midnightGreen
+                                  .withValues(alpha: 0.95),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: AppColors.iceBorder,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
                                 ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  AppLocalizations.of(context)!
-                                      .signOutConfirmation,
-                                  style: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 16,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 24),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.cancel,
-                                        style: const TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 16,
-                                        ),
-                                      ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.signOut,
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            AppColors.rosyBrown
-                                                .withValues(alpha: 0.8),
-                                            AppColors.rosyBrown,
-                                          ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .signOutConfirmation,
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 16,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.cancel,
+                                          style: const TextStyle(
+                                            color: AppColors.textSecondary,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              AppColors.rosyBrown
+                                                  .withValues(alpha: 0.8),
+                                              AppColors.rosyBrown,
+                                            ],
+                                          ),
                                           borderRadius:
                                               BorderRadius.circular(12),
-                                          onTap: () =>
-                                              Navigator.of(context).pop(true),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 12,
-                                            ),
-                                            child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .signOut,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            onTap: () =>
+                                                Navigator.of(context).pop(true),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 12,
+                                              ),
+                                              child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .signOut,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+
+                      if (confirmed == true) {
+                        try {
+                          final authService = ref.read(authServiceProvider);
+                          await authService.signOut();
+                        } catch (e) {
+                          if (context.mounted) {
+                            CustomSnackBar.showError(
+                                context, 'Sign out failed: ${e.toString()}');
+                          }
+                        }
+                      }
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    // Edit Profile
+                    PopupMenuItem<String>(
+                      value: 'editProfile',
+                      child: _buildMenuItem(
+                        context: context,
+                        icon: Icons.edit,
+                        label: AppLocalizations.of(context)!.editProfile,
+                        isPrimary: true,
+                      ),
+                    ),
+                    // Settings
+                    PopupMenuItem<String>(
+                      value: 'settings',
+                      child: _buildMenuItem(
+                        context: context,
+                        icon: Icons.settings,
+                        label: AppLocalizations.of(context)!.settings,
+                        isPrimary: false,
+                      ),
+                    ),
+                    // Divider for Sign Out
+                    PopupMenuItem<String>(
+                      enabled: false,
+                      height: 1,
+                      child: Container(
+                        height: 1,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.02,
+                          vertical: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.rosyBrown.withValues(alpha: 0.3),
+                              AppColors.rosyBrown.withValues(alpha: 0.1),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Sign Out
+                    PopupMenuItem<String>(
+                      value: 'signOut',
+                      child: _buildMenuItem(
+                        context: context,
+                        icon: Icons.logout,
+                        label: AppLocalizations.of(context)!.signOut,
+                        isPrimary: false,
+                        isDestructive: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Centered Profile text - moved to top of stack
+          Positioned(
+            top: MediaQuery.of(context).padding.top +
+                8 +
+                (MediaQuery.of(context).size.width * 0.08 / 2) -
+                (MediaQuery.of(context).size.width * 0.045 / 2),
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Text(
+                isOwnProfile
+                    ? AppLocalizations.of(context)!.profile
+                    : user.username,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomTabBar(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.08,
+          vertical: MediaQuery.of(context).size.height * 0.01,
+        ),
+        height: MediaQuery.of(context).size.height * 0.065,
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildTabBubble(context, 0, Icons.home),
+            _buildTabBubble(context, 1, Icons.grid_on),
+            _buildTabBubble(context, 2, Icons.favorite),
+            _buildTabBubble(context, 3, Icons.emoji_events),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabBubble(BuildContext context, int index, IconData icon) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _tabController.animateTo(index),
+        child: AnimatedBuilder(
+          animation: _tabController.animation!,
+          builder: (context, child) {
+            final animationValue = _tabController.animation!.value;
+            final distance = (animationValue - index).abs();
+            final progress = 1.0 - distance.clamp(0.0, 1.0);
+
+            // Animate width - wider bubbles, even wider when active
+            final baseWidth = MediaQuery.of(context).size.width * 0.14;
+            final activeWidth = MediaQuery.of(context).size.width * 0.16;
+            final width = baseWidth + (activeWidth - baseWidth) * progress;
+
+            // Animate between pine green and rosy brown
+            final decoration = BoxDecoration.lerp(
+              createPineGreenDecoration(borderRadius: 20),
+              createRosyBrownDecoration(borderRadius: 20),
+              progress,
+            );
+
+            // Calculate shine opacity
+            final shineAlphaTop = 0.3 + (0.2 * progress);
+            final shineAlphaBottom = 0.15 + (0.1 * progress);
+
+            // Calculate icon opacity and size
+            final iconAlpha = 0.7 + (0.3 * progress);
+            final iconSize = 22.0 + (2.0 * progress);
+
+            return Center(
+              child: Container(
+                width: width,
+                height: MediaQuery.of(context).size.height * 0.045,
+                decoration: decoration,
+                child: Stack(
+                  children: [
+                    // Glassy shine overlay - always present for crystalline effect
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              center: Alignment.topLeft,
+                              radius: 1.2,
+                              colors: [
+                                Colors.white.withValues(alpha: shineAlphaTop),
+                                Colors.white.withValues(alpha: shineAlphaBottom),
+                                Colors.transparent,
                               ],
+                              stops: const [0.0, 0.3, 1.0],
                             ),
                           ),
                         ),
                       ),
-                    );
-
-                    if (confirmed == true) {
-                      try {
-                        final authService = ref.read(authServiceProvider);
-                        await authService.signOut();
-                      } catch (e) {
-                        if (context.mounted) {
-                          CustomSnackBar.showError(
-                              context, 'Sign out failed: ${e.toString()}');
-                        }
-                      }
-                    }
-                  }
-                },
-                itemBuilder: (context) => [
-                  // Edit Profile
-                  PopupMenuItem<String>(
-                    value: 'editProfile',
-                    child: _buildMenuItem(
-                      context: context,
-                      icon: Icons.edit,
-                      label: AppLocalizations.of(context)!.editProfile,
-                      isPrimary: true,
                     ),
-                  ),
-                  // Settings
-                  PopupMenuItem<String>(
-                    value: 'settings',
-                    child: _buildMenuItem(
-                      context: context,
-                      icon: Icons.settings,
-                      label: AppLocalizations.of(context)!.settings,
-                      isPrimary: false,
-                    ),
-                  ),
-                  // Divider for Sign Out
-                  PopupMenuItem<String>(
-                    enabled: false,
-                    height: 1,
-                    child: Container(
-                      height: 1,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.02,
-                        vertical: MediaQuery.of(context).size.height * 0.01,
+                    // Icon
+                    Center(
+                      child: Icon(
+                        icon,
+                        color: Colors.white.withValues(alpha: iconAlpha),
+                        size: iconSize,
                       ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.rosyBrown.withValues(alpha: 0.3),
-                            AppColors.rosyBrown.withValues(alpha: 0.1),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Sign Out
-                  PopupMenuItem<String>(
-                    value: 'signOut',
-                    child: _buildMenuItem(
-                      context: context,
-                      icon: Icons.logout,
-                      label: AppLocalizations.of(context)!.signOut,
-                      isPrimary: false,
-                      isDestructive: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).padding.top +
-                      MediaQuery.of(context).size.height * 0.065,
-                ), // Dynamic space for status bar + app bar
-              ),
-              _buildProfileHeader(context, user, isOwnProfile),
-              _buildTabBar(context),
-              _buildTabContent(context, ref, targetUserId, isOwnProfile),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader(
-      BuildContext context, UserModel? user, bool isOwnProfile) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
-        decoration: BoxDecoration(
-          gradient: AppColors.iceGlassGradient,
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(
-            color: AppColors.iceBorder,
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.1),
-              blurRadius: 20,
-              offset: const Offset(-2, -2),
-            ),
-            BoxShadow(
-              color: AppColors.rosyBrown.withValues(alpha: 0.15),
-              blurRadius: 15,
-              offset: const Offset(2, 2),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.45, // Fixed height
-          child: Column(
-            children: [
-              // Page indicators at top - dynamic based on number of pages
-              Container(
-                height: 20,
-                margin: const EdgeInsets.only(top: 8, bottom: 8),
-                child: _buildDynamicPageIndicators(context, ref, user),
-              ),
-              // PageView takes remaining space
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    if (mounted) {
-                      setState(() {
-                        _currentPageIndex = index;
-                      });
-                    }
-                  },
-                  children: _buildAllPages(context, ref, user),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDynamicPageIndicators(
-      BuildContext context, WidgetRef ref, UserModel? user) {
-    if (user == null) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.pineGreen.withValues(alpha: 0.8),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 0.5,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
-    return badgesAsync.when(
-      data: (badges) {
-        final displayBadges = badges;
-
-        // Calculate total pages: 1 profile page + badge pages (25 badges per page)
-        final badgePages =
-            displayBadges.isEmpty ? 0 : ((displayBadges.length - 1) ~/ 25 + 1);
-        final totalPages = 1 + badgePages;
-
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(totalPages, (index) {
-            Color dotColor;
-            if (index == 0) {
-              // Profile page - green when active
-              dotColor = _currentPageIndex == 0
-                  ? AppColors.pineGreen.withValues(alpha: 0.8)
-                  : Colors.white.withValues(alpha: 0.6);
-            } else {
-              // Badge pages - orange when active
-              dotColor = _currentPageIndex == index
-                  ? AppColors.primaryOrange.withValues(alpha: 0.8)
-                  : Colors.white.withValues(alpha: 0.6);
-            }
-
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: dotColor,
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  width: 0.5,
-                ),
-              ),
-            );
-          }),
-        );
-      },
-      loading: () => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.pineGreen.withValues(alpha: 0.8),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 0.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-      error: (error, stack) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.pineGreen.withValues(alpha: 0.8),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 0.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _buildAllPages(
-      BuildContext context, WidgetRef ref, UserModel? user) {
-    List<Widget> pages = [];
-
-    // First page: Profile info
-    pages.add(_buildProfileInfoPage(context, user));
-
-    if (user == null) return pages;
-
-    final badgesAsync = ref.watch(userBadgesProvider(user.uid));
-    return badgesAsync.when(
-      data: (badges) {
-        final displayBadges = badges;
-
-        if (displayBadges.isEmpty) return pages;
-
-        // Create badge pages (25 badges per page)
-        const badgesPerPage = 25;
-        for (int i = 0; i < displayBadges.length; i += badgesPerPage) {
-          final endIndex = (i + badgesPerPage < displayBadges.length)
-              ? i + badgesPerPage
-              : displayBadges.length;
-          final pageBadges = displayBadges.sublist(i, endIndex);
-          pages.add(_buildSingleBadgePage(context, pageBadges));
-        }
-
-        return pages;
-      },
-      loading: () => pages,
-      error: (error, stack) => pages,
-    );
-  }
-
-  Widget _buildSingleBadgePage(BuildContext context, List<String> badges) {
-    return Column(
-      children: [
-        // Title section
-        Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 12),
-          child: Text(
-            'Badges',
-            style: TextStyle(
-              color: AppColors.warningColor,
-              fontSize: MediaQuery.of(context).size.width * 0.045,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-              shadows: [
-                Shadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.5),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-          ),
-        ),
-        // GridView for badges
-        Expanded(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1,
-            ),
-            itemCount: badges.length,
-            itemBuilder: (context, index) {
-              final badgeURL = badges[index];
-              return Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: badgeURL,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primaryOrange.withValues(alpha: 0.4),
-                            AppColors.rosyBrown.withValues(alpha: 0.4),
-                          ],
-                        ),
-                      ),
-                      child: const Center(
-                        child: SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            color: AppColors.primaryOrange,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primaryOrange.withValues(alpha: 0.6),
-                            AppColors.rosyBrown.withValues(alpha: 0.6),
-                          ],
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.emoji_events,
-                        color: AppColors.primaryOrange,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileInfoPage(BuildContext context, UserModel? user) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildSimpleAvatar(context, user),
-            const SizedBox(height: 12),
-            Text(
-              user?.username ?? 'Unknown User',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: MediaQuery.of(context).size.width * 0.06,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                    blurRadius: 12,
-                  ),
-                  Shadow(
-                    color: AppColors.pineGreen.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
               ),
-            ),
-            const SizedBox(height: 12),
-            _buildSocialMediaLinks(user),
-          ],
+            );
+          },
         ),
       ),
     );
   }
+}
 
-  Widget _buildTabBar(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05,
-          vertical: MediaQuery.of(context).size.height * 0.02,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.12),
-              AppColors.pineGreen.withValues(alpha: 0.08),
-              Colors.white.withValues(alpha: 0.05),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppColors.iceBorder,
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.08),
-              blurRadius: 8,
-              offset: const Offset(-1, -1),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(1, 1),
-            ),
-          ],
-        ),
-        child: TabBar(
-          controller: _tabController,
-          indicator: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.pineGreen.withValues(alpha: 0.8),
-                AppColors.rosyBrown.withValues(alpha: 0.6),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.pineGreen.withValues(alpha: 0.4),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          labelColor: Colors.white,
-          unselectedLabelColor: AppColors.textSecondary,
-          labelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: MediaQuery.of(context).size.width * 0.04,
-          ),
-          tabs: const [
-            Tab(text: '  Posts  '),
-            Tab(text: '  Liked  '),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabContent(BuildContext context, WidgetRef ref,
-      String targetUserId, bool isOwnProfile) {
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.6,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildUserSubmissions(context, ref, targetUserId),
-            _buildLikedSubmissions(context, ref, targetUserId),
-          ],
-        ),
-      ),
-    );
-  }
-
+extension on _ProfileScreenState {
   Widget _buildUserSubmissions(
       BuildContext context, WidgetRef ref, String targetUserId) {
     final submissionsAsync =
         ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
 
     return submissionsAsync.when(
-      data: (submissions) => _buildSubmissionGrid(submissions),
-      loading: () => _buildSubmissionGrid([]), // Show empty grid while loading
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Error loading submissions',
-              style: TextStyle(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.pineGreen.withValues(alpha: 0.8),
-                    AppColors.pineGreen.withValues(alpha: 0.9),
+      data: (submissions) => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: _buildSubmissionGrid(submissions),
+      ),
+      loading: () => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: _buildSubmissionGrid([]),
+      ), // Show empty grid while loading
+      error: (error, stack) => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Error loading submissions',
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.pineGreen.withValues(alpha: 0.8),
+                      AppColors.pineGreen.withValues(alpha: 0.9),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pineGreen.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.pineGreen.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => ref.refresh(
-                      userSubmissionsFromUserCollectionProvider(targetUserId)),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.refresh, color: Colors.white, size: 20),
-                        SizedBox(width: 8),
-                        Text('Retry',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => ref.refresh(
+                        userSubmissionsFromUserCollectionProvider(
+                            targetUserId)),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.refresh, color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.retry,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1437,64 +980,73 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         ref.watch(userLikedSubmissionsProvider(targetUserId));
 
     return likedSubmissionsAsync.when(
-      data: (submissions) => _buildLikedSubmissionGrid(submissions),
-      loading: () => _buildLikedSubmissionGrid([]), // Show empty grid while loading
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Error loading liked submissions',
-              style: TextStyle(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.rosyBrown.withValues(alpha: 0.8),
-                    AppColors.rosyBrown.withValues(alpha: 0.9),
+      data: (submissions) => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: _buildLikedSubmissionGrid(submissions),
+      ),
+      loading: () => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: _buildLikedSubmissionGrid([]),
+      ), // Show empty grid while loading
+      error: (error, stack) => Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Error loading liked submissions',
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.rosyBrown.withValues(alpha: 0.8),
+                      AppColors.rosyBrown.withValues(alpha: 0.9),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () =>
-                      ref.refresh(userLikedSubmissionsProvider(targetUserId)),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.refresh, color: Colors.white, size: 20),
-                        SizedBox(width: 8),
-                        Text('Retry',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () =>
+                        ref.refresh(userLikedSubmissionsProvider(targetUserId)),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.refresh, color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.retry,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1513,9 +1065,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -1586,9 +1138,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -1674,6 +1226,293 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
+  Widget _buildHomeTab(
+      BuildContext context, WidgetRef ref, String targetUserId) {
+    final userDataAsync = ref.watch(userDataProvider(targetUserId));
+    final badgesAsync = ref.watch(userBadgesProvider(targetUserId));
+    final currentUser = ref.watch(currentUserProvider);
+    final isOwnProfile = targetUserId == currentUser?.uid;
+
+    return userDataAsync.when(
+      data: (user) {
+        // Get badges for the physics background
+        final badges = badgesAsync.maybeWhen(
+          data: (badgesList) => badgesList,
+          orElse: () => <String>[],
+        );
+
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          padding: const EdgeInsets.only(top: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Profile picture and username section
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _buildSimpleAvatar(context, user),
+                  if (isOwnProfile)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: GlassyIconButton(
+                          icon: Icons.edit,
+                          shape: BoxShape.circle,
+                          onPressed: user != null
+                              ? () {
+                                  Navigator.of(context)
+                                      .push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditProfileScreen(user: user),
+                                    ),
+                                  )
+                                      .then((_) {
+                                    _refreshProfileData();
+                                  });
+                                }
+                              : null,
+                          iconSize: MediaQuery.of(context).size.width * 0.05,
+                          buttonSize: MediaQuery.of(context).size.width * 0.12,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                user?.username ?? 'Unknown User',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.06,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      blurRadius: 12,
+                    ),
+                    Shadow(
+                      color: AppColors.pineGreen.withValues(alpha: 0.4),
+                      blurRadius: 8,
+                      offset: const Offset(2, 2),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildSocialMediaLinks(user),
+
+              const SizedBox(height: 48),
+
+              // Level badge
+              SizedBox(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildLevelBadge(context, badges.length),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.pineGreen,
+        ),
+      ),
+      error: (error, stack) => const Center(
+        child: Text(
+          'Error loading profile',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadgesTab(
+      BuildContext context, WidgetRef ref, String targetUserId) {
+    final badgesAsync = ref.watch(userBadgesProvider(targetUserId));
+
+    return badgesAsync.when(
+      data: (badges) {
+        // Calculate level for empty state display
+        final levelInfo = _getLevelInfo(badges.length);
+        final level = levelInfo['level'] as int;
+
+        if (badges.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 56),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/levels/level_$level.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'No badges yet',
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 72, 16, 16),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1,
+          ),
+          itemCount: badges.length,
+          itemBuilder: (context, index) {
+            final badgeURL = badges[index];
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: badgeURL,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryOrange.withValues(alpha: 0.4),
+                          AppColors.rosyBrown.withValues(alpha: 0.4),
+                        ],
+                      ),
+                    ),
+                    child: const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryOrange,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) {
+                    // Show level image for error state
+                    final levelInfo = _getLevelInfo(badges.length);
+                    final level = levelInfo['level'] as int;
+                    return Image.asset(
+                      'assets/levels/level_$level.png',
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primaryOrange,
+        ),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Error loading badges',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primaryOrange.withValues(alpha: 0.8),
+                    AppColors.primaryOrange.withValues(alpha: 0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => ref.refresh(userBadgesProvider(targetUserId)),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.refresh, color: Colors.white, size: 20),
+                        SizedBox(width: 8),
+                        Text('Retry',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSocialMediaLinks(UserModel? user) {
     if (user?.socialLinks.isEmpty ?? true) {
       return const SizedBox.shrink();
@@ -1689,51 +1528,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.04,
-        vertical: MediaQuery.of(context).size.height * 0.015,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(alpha: 0.12),
-            AppColors.pineGreen.withValues(alpha: 0.08),
-            Colors.white.withValues(alpha: 0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.iceBorder,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
-          ),
-        ],
-      ),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 8,
-        alignment: WrapAlignment.center,
-        children: validSocialLinks.map((entry) {
-          return _buildSocialMediaButton(entry.key, entry.value);
-        }).toList(),
-      ),
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      alignment: WrapAlignment.center,
+      children: validSocialLinks.map((entry) {
+        return _buildSocialMediaButton(entry.key, entry.value);
+      }).toList(),
     );
   }
 
   Widget _buildSimpleAvatar(BuildContext context, UserModel? user) {
+    final photoURL = user?.photoURL;
+    final hasPhoto = photoURL != null && photoURL.isNotEmpty;
+    final username = user?.username ?? 'U';
+    final firstLetter = username.isNotEmpty ? username[0].toUpperCase() : 'U';
+
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -1756,16 +1566,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       ),
       padding: const EdgeInsets.all(4),
       child: CircleAvatar(
-        radius: MediaQuery.of(context).size.width * 0.13,
+        radius: MediaQuery.of(context).size.width * 0.22,
         backgroundColor: Colors.transparent,
-        backgroundImage: user?.photoURL != null && user!.photoURL!.isNotEmpty
-            ? CachedNetworkImageProvider(user.photoURL!)
-            : null,
-        child: user?.photoURL == null || user!.photoURL!.isEmpty
-            ? Icon(
-                Icons.person,
-                size: MediaQuery.of(context).size.width * 0.13,
-                color: Colors.white,
+        backgroundImage: hasPhoto ? CachedNetworkImageProvider(photoURL) : null,
+        child: !hasPhoto
+            ? Text(
+                firstLetter,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.18,
+                  fontWeight: FontWeight.bold,
+                ),
               )
             : null,
       ),
@@ -2018,5 +1829,353 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       username = username.substring(1);
     }
     return username;
+  }
+
+  // Level system helper methods
+  String _getLevelName(BuildContext context, int level) {
+    switch (level) {
+      case 1:
+        return AppLocalizations.of(context)!.levelCurious;
+      case 2:
+        return AppLocalizations.of(context)!.levelSharing;
+      case 3:
+        return AppLocalizations.of(context)!.levelConnecting;
+      case 4:
+        return AppLocalizations.of(context)!.levelContributing;
+      case 5:
+        return AppLocalizations.of(context)!.levelSupporting;
+      case 6:
+        return AppLocalizations.of(context)!.levelTrusted;
+      case 7:
+        return AppLocalizations.of(context)!.levelGuide;
+      default:
+        return AppLocalizations.of(context)!.levelCurious;
+    }
+  }
+
+  Map<String, dynamic> _getLevelInfo(int badgeCount) {
+    // Level thresholds: 1:0, 2:5, 3:12, 4:20, 5:30, 6:42, 7:56
+    const levels = [
+      {'level': 1, 'threshold': 0},
+      {'level': 2, 'threshold': 5},
+      {'level': 3, 'threshold': 12},
+      {'level': 4, 'threshold': 20},
+      {'level': 5, 'threshold': 30},
+      {'level': 6, 'threshold': 42},
+      {'level': 7, 'threshold': 56},
+    ];
+
+    for (int i = levels.length - 1; i >= 0; i--) {
+      if (badgeCount >= (levels[i]['threshold'] as int)) {
+        return levels[i];
+      }
+    }
+    return levels[0];
+  }
+
+  Widget _buildLevelBadge(BuildContext context, int badgeCount) {
+    final levelInfo = _getLevelInfo(badgeCount);
+    final level = levelInfo['level'] as int;
+    final levelName = _getLevelName(context, level);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.deferToChild,
+      onTap: () => _showLevelTooltip(context, badgeCount),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.45,
+            height: MediaQuery.of(context).size.width * 0.45,
+            child: Image.asset(
+              'assets/levels/level_$level.png',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryOrange.withValues(alpha: 0.3),
+                        AppColors.rosyBrown.withValues(alpha: 0.3),
+                      ],
+                    ),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.emoji_events,
+                      color: AppColors.primaryOrange,
+                      size: 80,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Text(
+            levelName,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLevelTooltip(BuildContext context, int currentBadgeCount) {
+    final currentLevelInfo = _getLevelInfo(currentBadgeCount);
+    final currentLevel = currentLevelInfo['level'] as int;
+
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.7),
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.midnightGreen.withValues(alpha: 0.95),
+                AppColors.midnightGreen.withValues(alpha: 0.98),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.primaryOrange.withValues(alpha: 0.4),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primaryOrange.withValues(alpha: 0.3),
+                      AppColors.rosyBrown.withValues(alpha: 0.3),
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(22),
+                    topRight: Radius.circular(22),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.emoji_events,
+                      color: AppColors.primaryOrange,
+                      size: 28,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.levelSystem,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              // Levels list
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    _buildLevelRow(context, 1, 0, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 2, 5, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 3, 12, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 4, 20, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 5, 30, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 6, 42, currentLevel, currentBadgeCount),
+                    _buildLevelRow(context, 7, 56, currentLevel, currentBadgeCount),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLevelRow(BuildContext context, int level, int threshold, int currentLevel, int currentBadgeCount) {
+    final isUnlocked = level <= currentLevel;
+    final isCurrent = level == currentLevel;
+    final name = _getLevelName(context, level);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: isCurrent
+            ? LinearGradient(
+                colors: [
+                  AppColors.primaryOrange.withValues(alpha: 0.3),
+                  AppColors.rosyBrown.withValues(alpha: 0.3),
+                ],
+              )
+            : LinearGradient(
+                colors: [
+                  AppColors.midnightGreen.withValues(alpha: 0.3),
+                  AppColors.midnightGreen.withValues(alpha: 0.2),
+                ],
+              ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isCurrent
+              ? AppColors.primaryOrange.withValues(alpha: 0.5)
+              : isUnlocked
+                  ? AppColors.pineGreen.withValues(alpha: 0.3)
+                  : AppColors.textSecondary.withValues(alpha: 0.2),
+          width: 2,
+        ),
+        boxShadow: isCurrent
+            ? [
+                BoxShadow(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      child: Row(
+        children: [
+          // Level image
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isUnlocked
+                    ? AppColors.primaryOrange.withValues(alpha: 0.5)
+                    : AppColors.textSecondary.withValues(alpha: 0.3),
+                width: 2,
+              ),
+            ),
+            child: ClipOval(
+              child: isUnlocked
+                  ? Image.asset(
+                      'assets/levels/level_$level.png',
+                      fit: BoxFit.cover,
+                    )
+                  : ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        Colors.grey.withValues(alpha: 0.7),
+                        BlendMode.saturation,
+                      ),
+                      child: Image.asset(
+                        'assets/levels/level_$level.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Level info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.levelNumber(level),
+                      style: TextStyle(
+                        color: isUnlocked
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary.withValues(alpha: 0.6),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (isCurrent)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.currentLevel,
+                          style: const TextStyle(
+                            color: AppColors.primaryOrange,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: isUnlocked
+                        ? AppColors.primaryOrange
+                        : AppColors.textSecondary.withValues(alpha: 0.5),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  threshold == 0
+                      ? AppLocalizations.of(context)!.startingLevel
+                      : AppLocalizations.of(context)!.requiresBadges(threshold),
+                  style: TextStyle(
+                    color: isUnlocked
+                        ? AppColors.textSecondary
+                        : AppColors.textSecondary.withValues(alpha: 0.5),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Lock/Check icon
+          Icon(
+            isUnlocked ? Icons.check_circle : Icons.lock,
+            color: isUnlocked
+                ? AppColors.pineGreen
+                : AppColors.textSecondary.withValues(alpha: 0.4),
+            size: 28,
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -66,7 +66,9 @@
       "Bash(tree:*)",
       "Read(//mnt/c/Users/bugra/Desktop/SS/**)",
       "Bash(claude --version)",
-      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter analyze:*)"
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter analyze:*)",
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter pub:*)",
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter gen-l10n:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

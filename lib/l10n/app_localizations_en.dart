@@ -840,4 +840,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknown => 'Unknown';
+
+  @override
+  String get levelSystem => 'Level System';
+
+  @override
+  String get levelCurious => 'Curious';
+
+  @override
+  String get levelSharing => 'Sharing';
+
+  @override
+  String get levelConnecting => 'Connecting';
+
+  @override
+  String get levelContributing => 'Contributing';
+
+  @override
+  String get levelSupporting => 'Supporting';
+
+  @override
+  String get levelTrusted => 'Trusted';
+
+  @override
+  String get levelGuide => 'Guide';
+
+  @override
+  String get currentLevel => 'Current';
+
+  @override
+  String get startingLevel => 'Starting level';
+
+  @override
+  String requiresBadges(int count) {
+    return 'Requires $count badges';
+  }
+
+  @override
+  String levelNumber(int number) {
+    return 'Level $number';
+  }
 }

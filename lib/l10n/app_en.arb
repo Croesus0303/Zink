@@ -1163,5 +1163,63 @@
   "unknown": "Unknown",
   "@unknown": {
     "description": "Unknown user fallback"
+  },
+  "levelSystem": "Level System",
+  "@levelSystem": {
+    "description": "Level system dialog title"
+  },
+  "levelCurious": "Curious",
+  "@levelCurious": {
+    "description": "Level 1 name"
+  },
+  "levelSharing": "Sharing",
+  "@levelSharing": {
+    "description": "Level 2 name"
+  },
+  "levelConnecting": "Connecting",
+  "@levelConnecting": {
+    "description": "Level 3 name"
+  },
+  "levelContributing": "Contributing",
+  "@levelContributing": {
+    "description": "Level 4 name"
+  },
+  "levelSupporting": "Supporting",
+  "@levelSupporting": {
+    "description": "Level 5 name"
+  },
+  "levelTrusted": "Trusted",
+  "@levelTrusted": {
+    "description": "Level 6 name"
+  },
+  "levelGuide": "Guide",
+  "@levelGuide": {
+    "description": "Level 7 name"
+  },
+  "currentLevel": "Current",
+  "@currentLevel": {
+    "description": "Current level badge text"
+  },
+  "startingLevel": "Starting level",
+  "@startingLevel": {
+    "description": "Starting level description"
+  },
+  "requiresBadges": "Requires {count} badges",
+  "@requiresBadges": {
+    "description": "Badge requirement text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "levelNumber": "Level {number}",
+  "@levelNumber": {
+    "description": "Level number text",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
   }
 } 

@@ -1549,6 +1549,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown'**
   String get unknown;
+
+  /// Level system dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Level System'**
+  String get levelSystem;
+
+  /// Level 1 name
+  ///
+  /// In en, this message translates to:
+  /// **'Curious'**
+  String get levelCurious;
+
+  /// Level 2 name
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing'**
+  String get levelSharing;
+
+  /// Level 3 name
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting'**
+  String get levelConnecting;
+
+  /// Level 4 name
+  ///
+  /// In en, this message translates to:
+  /// **'Contributing'**
+  String get levelContributing;
+
+  /// Level 5 name
+  ///
+  /// In en, this message translates to:
+  /// **'Supporting'**
+  String get levelSupporting;
+
+  /// Level 6 name
+  ///
+  /// In en, this message translates to:
+  /// **'Trusted'**
+  String get levelTrusted;
+
+  /// Level 7 name
+  ///
+  /// In en, this message translates to:
+  /// **'Guide'**
+  String get levelGuide;
+
+  /// Current level badge text
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get currentLevel;
+
+  /// Starting level description
+  ///
+  /// In en, this message translates to:
+  /// **'Starting level'**
+  String get startingLevel;
+
+  /// Badge requirement text
+  ///
+  /// In en, this message translates to:
+  /// **'Requires {count} badges'**
+  String requiresBadges(int count);
+
+  /// Level number text
+  ///
+  /// In en, this message translates to:
+  /// **'Level {number}'**
+  String levelNumber(int number);
 }
 
 class _AppLocalizationsDelegate

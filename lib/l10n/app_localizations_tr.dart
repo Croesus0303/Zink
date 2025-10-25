@@ -820,4 +820,44 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get unknown => 'Bilinmeyen';
+
+  @override
+  String get levelSystem => 'Seviye Sistemi';
+
+  @override
+  String get levelCurious => 'Meraklı';
+
+  @override
+  String get levelSharing => 'Paylaşan';
+
+  @override
+  String get levelConnecting => 'Bağlanan';
+
+  @override
+  String get levelContributing => 'Katkıda Bulunan';
+
+  @override
+  String get levelSupporting => 'Destekleyen';
+
+  @override
+  String get levelTrusted => 'Güvenilir';
+
+  @override
+  String get levelGuide => 'Rehber';
+
+  @override
+  String get currentLevel => 'Mevcut';
+
+  @override
+  String get startingLevel => 'Başlangıç seviyesi';
+
+  @override
+  String requiresBadges(int count) {
+    return '$count rozet gerektirir';
+  }
+
+  @override
+  String levelNumber(int number) {
+    return 'Seviye $number';
+  }
 }
