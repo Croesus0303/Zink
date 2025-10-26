@@ -776,12 +776,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     : user.username,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.045,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.043,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.7),
                   shadows: [
                     Shadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
                       blurRadius: 8,
                     ),
                   ],
@@ -802,7 +802,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           vertical: MediaQuery.of(context).size.height * 0.01,
         ),
         height: MediaQuery.of(context).size.height * 0.065,
-        color: Colors.transparent,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.08),
+          border: Border(
+            top: BorderSide(
+              color: Colors.white.withValues(alpha: 0.15),
+              width: 1.5,
+            ),
+          ),
+          boxShadow: [
+            // Sharper upward shadow for depth
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -843,15 +859,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             final shineAlphaTop = 0.3 + (0.2 * progress);
             final shineAlphaBottom = 0.15 + (0.1 * progress);
 
-            // Calculate icon opacity and size
-            final iconAlpha = 0.7 + (0.3 * progress);
+            // Calculate icon opacity and size - consistent 0.8 for inactive
+            final iconAlpha = 0.8 + (0.2 * progress);
             final iconSize = 22.0 + (2.0 * progress);
+
+            // Unified coral accent - rgba(230, 120, 90, 0.25)
+            const coralGlow = Color(0xFFE6785A); // rgb(230, 120, 90)
 
             return Center(
               child: Container(
                 width: width,
                 height: MediaQuery.of(context).size.height * 0.045,
-                decoration: decoration,
+                decoration: decoration!.copyWith(
+                  boxShadow: [
+                    if (progress > 0.1)
+                      BoxShadow(
+                        color: coralGlow.withValues(alpha: 0.25 * progress),
+                        blurRadius: 16 * progress,
+                        spreadRadius: 2 * progress,
+                      ),
+                    ...(decoration.boxShadow ?? []),
+                  ],
+                ),
                 child: Stack(
                   children: [
                     // Glassy shine overlay - always present for crystalline effect
@@ -1240,33 +1269,26 @@ extension on _ProfileScreenState {
           orElse: () => <String>[],
         );
 
-        return SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.only(top: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Profile picture and username section
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _buildSimpleAvatar(context, user),
+        return Stack(
+          children: [
+            // Main content
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 12),
+                // Profile picture and username section
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _buildSimpleAvatar(context, user),
                   if (isOwnProfile)
                     Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.3),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                          onPressed: user != null
+                      bottom: 4,
+                      right: 4,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: user != null
                               ? () {
                                   Navigator.of(context)
                                       .push(
@@ -1280,21 +1302,60 @@ extension on _ProfileScreenState {
                                   });
                                 }
                               : null,
-                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                          constraints: const BoxConstraints(),
+                          borderRadius: BorderRadius.circular(100),
+                          splashColor: AppColors.primaryOrange.withValues(alpha: 0.3),
+                          highlightColor: AppColors.primaryOrange.withValues(alpha: 0.15),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.092,
+                            height: MediaQuery.of(context).size.width * 0.092,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                // Primary shadow - rgba(0,0,0,0.35) blur 6px, offset 2px down
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                                // White rim light
+                                BoxShadow(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 0),
+                                  spreadRadius: 0.5,
+                                ),
+                                // Coral glow for accent
+                                BoxShadow(
+                                  color: AppColors.primaryOrange.withValues(alpha: 0.25),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.041,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Text(
                 user?.username ?? 'Unknown User',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: MediaQuery.of(context).size.width * 0.06,
-                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.053,
+                  fontWeight: FontWeight.w600,
                   shadows: [
                     Shadow(
                       color: AppColors.rosyBrown.withValues(alpha: 0.6),
@@ -1308,23 +1369,44 @@ extension on _ProfileScreenState {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+
+              // Social media buttons
               _buildSocialMediaLinks(user),
+              const SizedBox(height: 24),
 
-              const SizedBox(height: 48),
-
-              // Level badge
-              SizedBox(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: Align(
-                  alignment: Alignment.topCenter,
+              // Level badge - flexible to fit available space
+              Expanded(
+                child: Center(
                   child: _buildLevelBadge(context, badges.length),
                 ),
               ),
             ],
           ),
-        );
+          // Subtle lighting gradient overlay for 3-layer depth on OLED
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.0),
+                      Colors.black.withValues(alpha: 0.02),
+                      Colors.black.withValues(alpha: 0.05),
+                      Colors.black.withValues(alpha: 0.08),
+                      Colors.black.withValues(alpha: 0.1),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.2, 0.35, 0.5, 0.65, 1.0],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
       },
       loading: () => const Center(
         child: CircularProgressIndicator(
@@ -1534,11 +1616,37 @@ extension on _ProfileScreenState {
     }
 
     return Wrap(
-      spacing: 16,
-      runSpacing: 8,
+      spacing: 24,
+      runSpacing: 12,
       alignment: WrapAlignment.center,
       children: validSocialLinks.map((entry) {
         return _buildSocialMediaButton(entry.key, entry.value);
+      }).toList(),
+    );
+  }
+
+  Widget _buildVerticalSocialMediaLinks(UserModel? user) {
+    if (user?.socialLinks.isEmpty ?? true) {
+      return const SizedBox.shrink();
+    }
+
+    // Filter out only valid social links
+    final validSocialLinks = user!.socialLinks.entries
+        .where((entry) => _isValidURL(entry.value))
+        .toList();
+
+    // If no valid social links, don't show the section
+    if (validSocialLinks.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: validSocialLinks.map((entry) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _buildSocialMediaButton(entry.key, entry.value),
+        );
       }).toList(),
     );
   }
@@ -1561,17 +1669,35 @@ extension on _ProfileScreenState {
             AppColors.midnightGreen,
           ],
         ),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.35),
+          width: 3,
+        ),
         boxShadow: [
+          // Deeper primary shadow for z-depth
           BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.4),
-            blurRadius: 20,
+            color: AppColors.rosyBrown.withValues(alpha: 0.6),
+            blurRadius: 28,
+            offset: const Offset(0, 12),
+            spreadRadius: 2,
+          ),
+          // Secondary shadow for depth
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 16,
             offset: const Offset(0, 8),
+          ),
+          // Highlight for 3D effect
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: const Offset(-4, -4),
           ),
         ],
       ),
       padding: const EdgeInsets.all(4),
       child: CircleAvatar(
-        radius: MediaQuery.of(context).size.width * 0.22,
+        radius: MediaQuery.of(context).size.width * 0.171,
         backgroundColor: Colors.transparent,
         backgroundImage: hasPhoto ? CachedNetworkImageProvider(photoURL) : null,
         child: !hasPhoto
@@ -1579,8 +1705,14 @@ extension on _ProfileScreenState {
                 firstLetter,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: MediaQuery.of(context).size.width * 0.18,
+                  fontSize: MediaQuery.of(context).size.width * 0.135,
                   fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
                 ),
               )
             : null,
@@ -1591,41 +1723,36 @@ extension on _ProfileScreenState {
   Widget _buildSocialMediaButton(String platform, String url) {
     final socialData = _getSocialMediaData(platform);
 
-    return GestureDetector(
-      onTap: () => _launchURL(url, platform),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.12,
-        height: MediaQuery.of(context).size.width * 0.12,
-        decoration: BoxDecoration(
-          color: AppColors.midnightGreen.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.iceBorder.withValues(alpha: 0.3),
-            width: 1,
+    // Coral tint color for tap/hover - #EE8D6F with 10% overlay
+    const coralTint = Color(0xFFEE8D6F);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _launchURL(url, platform),
+        borderRadius: BorderRadius.circular(10),
+        splashColor: coralTint.withValues(alpha: 0.1),
+        highlightColor: coralTint.withValues(alpha: 0.1),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.12,
+          height: MediaQuery.of(context).size.width * 0.12,
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
+          decoration: BoxDecoration(
+            color: AppColors.rosyBrown.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(10),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: socialData.containsKey('image')
-            ? Padding(
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
-                child: Image.asset(
+          child: socialData.containsKey('image')
+              ? Image.asset(
                   socialData['image'] as String,
-                  color: AppColors.pineGreen,
+                  color: Colors.white.withValues(alpha: 0.9),
                   fit: BoxFit.contain,
+                )
+              : Icon(
+                  socialData['icon'] as IconData,
+                  color: Colors.white.withValues(alpha: 0.9),
+                  size: MediaQuery.of(context).size.width * 0.05,
                 ),
-              )
-            : Icon(
-                socialData['icon'] as IconData,
-                color: AppColors.pineGreen,
-                size: MediaQuery.of(context).size.width * 0.05,
-              ),
+        ),
       ),
     );
   }
@@ -1884,15 +2011,14 @@ extension on _ProfileScreenState {
     final levelName = _getLevelName(context, level);
 
     return GestureDetector(
-      behavior: HitTestBehavior.deferToChild,
+      behavior: HitTestBehavior.opaque,
       onTap: () => _showLevelTooltip(context, badgeCount),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 12),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.45,
-            height: MediaQuery.of(context).size.width * 0.45,
+            width: MediaQuery.of(context).size.width * 0.48,
+            height: MediaQuery.of(context).size.width * 0.48,
             child: Image.asset(
               'assets/levels/level_$level.png',
               fit: BoxFit.cover,
@@ -1918,13 +2044,74 @@ extension on _ProfileScreenState {
               },
             ),
           ),
-          Text(
-            levelName,
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: MediaQuery.of(context).size.width * 0.05,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+            decoration: BoxDecoration(
+              color: AppColors.rosyBrown.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+              boxShadow: [
+                // Soft drop shadow
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+                // Subtle coral glow
+                BoxShadow(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                // Reflection highlight overlay - top third
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 12,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.1),
+                          Colors.transparent,
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                // Text content
+                Text(
+                  levelName,
+                  style: TextStyle(
+                    color: const Color(0xFFFFF4F0), // Off-white #FFF4F0
+                    fontSize: MediaQuery.of(context).size.width * 0.037,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
+                    shadows: [
+                      // Soft drop shadow
+                      Shadow(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
