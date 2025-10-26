@@ -10,7 +10,6 @@ import '../../../submissions/data/models/submission_model.dart';
 import '../../../submissions/presentation/screens/single_submission_screen.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'edit_profile_screen.dart';
-import 'storage_test_screen.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
@@ -37,108 +36,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
 
+    // Listen to tab animation for smooth transitions
+    _tabController.animation!.addListener(() {
+      setState(() {});
+    });
+
     // Reload profile data when entering the screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshProfileData();
     });
-  }
-
-  Widget _buildMenuItem({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required bool isPrimary,
-    bool isDestructive = false,
-  }) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.06,
-      margin: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.015,
-        vertical: MediaQuery.of(context).size.height * 0.005,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.04,
-        vertical: MediaQuery.of(context).size.height * 0.015,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDestructive
-              ? [
-                  AppColors.rosyBrown.withValues(alpha: 0.15),
-                  AppColors.rosyBrown.withValues(alpha: 0.08),
-                ]
-              : isPrimary
-                  ? [
-                      AppColors.pineGreen.withValues(alpha: 0.2),
-                      AppColors.pineGreen.withValues(alpha: 0.1),
-                    ]
-                  : [
-                      AppColors.midnightGreen.withValues(alpha: 0.2),
-                      AppColors.midnightGreen.withValues(alpha: 0.1),
-                    ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDestructive
-              ? AppColors.rosyBrown.withValues(alpha: 0.4)
-              : isPrimary
-                  ? AppColors.pineGreen.withValues(alpha: 0.4)
-                  : AppColors.iceBorder.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isDestructive
-                ? AppColors.rosyBrown.withValues(alpha: 0.1)
-                : isPrimary
-                    ? AppColors.pineGreen.withValues(alpha: 0.1)
-                    : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.08,
-            height: MediaQuery.of(context).size.width * 0.08,
-            decoration: BoxDecoration(
-              color: isDestructive
-                  ? AppColors.rosyBrown.withValues(alpha: 0.2)
-                  : isPrimary
-                      ? AppColors.pineGreen.withValues(alpha: 0.2)
-                      : AppColors.iceBorder.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              color: isDestructive
-                  ? AppColors.rosyBrown
-                  : isPrimary
-                      ? AppColors.pineGreen
-                      : Colors.white.withValues(alpha: 0.9),
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-          ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: MediaQuery.of(context).size.width * 0.036,
-                fontWeight: isPrimary ? FontWeight.w600 : FontWeight.w500,
-                letterSpacing: 0.3,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   void _refreshProfileData() {
@@ -486,7 +392,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        _buildHomeTab(context, ref, targetUserId),
+                        _buildHomeTab(context, ref, targetUserId, isOwnProfile),
                         _buildUserSubmissions(context, ref, targetUserId),
                         _buildLikedSubmissions(context, ref, targetUserId),
                         _buildBadgesTab(context, ref, targetUserId),
@@ -535,52 +441,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             Positioned(
               top: MediaQuery.of(context).padding.top + 8,
               right: MediaQuery.of(context).size.width * 0.04,
-              child: PopupMenuButton<String>(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                    size: MediaQuery.of(context).size.width * 0.08,
-                  ),
-                  padding: EdgeInsets.zero,
-                  color: AppColors.midnightGreen.withValues(alpha: 0.98),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                      color: AppColors.iceBorder,
-                      width: 1.5,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Settings button
+                  IconButton(
+                    onPressed: () => context.push('/settings'),
+                    icon: Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.07,
                     ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
-                  elevation: 12,
-                  offset: Offset(0, MediaQuery.of(context).size.height * 0.02),
-                  position: PopupMenuPosition.under,
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width * 0.45,
-                    maxWidth: MediaQuery.of(context).size.width * 0.52,
-                  ),
-                  menuPadding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
-                  onSelected: (value) async {
-                    if (value == 'editProfile') {
-                      {
-                        Navigator.of(context)
-                            .push(
-                          MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(user: user),
-                          ),
-                        )
-                            .then((_) {
-                          _refreshProfileData();
-                        });
-                      }
-                    } else if (value == 'testStorage') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const StorageTestScreen(),
-                        ),
-                      );
-                    } else if (value == 'settings') {
-                      context.push('/settings');
-                    } else if (value == 'signOut') {
+                  const SizedBox(width: 8),
+                  // Sign Out button
+                  IconButton(
+                    onPressed: () async {
                       final confirmed = await showDialog<bool>(
                         context: context,
                         barrierColor: Colors.black.withValues(alpha: 0.6),
@@ -592,11 +470,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           ),
                           content: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.midnightGreen
+                              color: AppColors.rosyBrown
                                   .withValues(alpha: 0.95),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: AppColors.iceBorder,
+                                color: Colors.white.withValues(alpha: 0.3),
                                 width: 1.5,
                               ),
                               boxShadow: [
@@ -675,9 +553,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                                 AppLocalizations.of(context)!
                                                     .signOut,
                                                 style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.textPrimary,
                                                   fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
                                             ),
@@ -697,6 +575,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         try {
                           final authService = ref.read(authServiceProvider);
                           await authService.signOut();
+                          if (context.mounted) {
+                            context.go('/login');
+                          }
                         } catch (e) {
                           if (context.mounted) {
                             CustomSnackBar.showError(
@@ -704,63 +585,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           }
                         }
                       }
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    // Edit Profile
-                    PopupMenuItem<String>(
-                      value: 'editProfile',
-                      child: _buildMenuItem(
-                        context: context,
-                        icon: Icons.edit,
-                        label: AppLocalizations.of(context)!.editProfile,
-                        isPrimary: true,
-                      ),
+                    },
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.07,
                     ),
-                    // Settings
-                    PopupMenuItem<String>(
-                      value: 'settings',
-                      child: _buildMenuItem(
-                        context: context,
-                        icon: Icons.settings,
-                        label: AppLocalizations.of(context)!.settings,
-                        isPrimary: false,
-                      ),
-                    ),
-                    // Divider for Sign Out
-                    PopupMenuItem<String>(
-                      enabled: false,
-                      height: 1,
-                      child: Container(
-                        height: 1,
-                        margin: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.02,
-                          vertical: MediaQuery.of(context).size.height * 0.01,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.rosyBrown.withValues(alpha: 0.3),
-                              AppColors.rosyBrown.withValues(alpha: 0.1),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Sign Out
-                    PopupMenuItem<String>(
-                      value: 'signOut',
-                      child: _buildMenuItem(
-                        context: context,
-                        icon: Icons.logout,
-                        label: AppLocalizations.of(context)!.signOut,
-                        isPrimary: false,
-                        isDestructive: true,
-                      ),
-                    ),
-                  ],
-                ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
               ),
+            ),
           // Centered Profile text - moved to top of stack
           Positioned(
             top: MediaQuery.of(context).padding.top +
@@ -930,15 +766,15 @@ extension on _ProfileScreenState {
 
     return submissionsAsync.when(
       data: (submissions) => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: _buildSubmissionGrid(submissions),
       ),
       loading: () => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: _buildSubmissionGrid([]),
       ), // Show empty grid while loading
       error: (error, stack) => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1009,15 +845,15 @@ extension on _ProfileScreenState {
 
     return likedSubmissionsAsync.when(
       data: (submissions) => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: _buildLikedSubmissionGrid(submissions),
       ),
       loading: () => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: _buildLikedSubmissionGrid([]),
       ), // Show empty grid while loading
       error: (error, stack) => Padding(
-        padding: const EdgeInsets.only(top: 56),
+        padding: const EdgeInsets.only(top: 16),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1255,11 +1091,9 @@ extension on _ProfileScreenState {
   }
 
   Widget _buildHomeTab(
-      BuildContext context, WidgetRef ref, String targetUserId) {
+      BuildContext context, WidgetRef ref, String targetUserId, bool isOwnProfile) {
     final userDataAsync = ref.watch(userDataProvider(targetUserId));
     final badgesAsync = ref.watch(userBadgesProvider(targetUserId));
-    final currentUser = ref.watch(currentUserProvider);
-    final isOwnProfile = targetUserId == currentUser?.uid;
 
     return userDataAsync.when(
       data: (user) {
@@ -1276,79 +1110,79 @@ extension on _ProfileScreenState {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 12),
-                // Profile picture and username section
+                // Profile picture with edit button
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
                     _buildSimpleAvatar(context, user),
-                  if (isOwnProfile)
-                    Positioned(
-                      bottom: 4,
-                      right: 4,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: user != null
-                              ? () {
-                                  Navigator.of(context)
-                                      .push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditProfileScreen(user: user),
-                                    ),
-                                  )
-                                      .then((_) {
-                                    _refreshProfileData();
-                                  });
-                                }
-                              : null,
-                          borderRadius: BorderRadius.circular(100),
-                          splashColor: AppColors.primaryOrange.withValues(alpha: 0.3),
-                          highlightColor: AppColors.primaryOrange.withValues(alpha: 0.15),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.092,
-                            height: MediaQuery.of(context).size.width * 0.092,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                // Primary shadow - rgba(0,0,0,0.35) blur 6px, offset 2px down
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.35),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2),
-                                ),
-                                // White rim light
-                                BoxShadow(
+                    if (isOwnProfile)
+                      Positioned(
+                        bottom: 4,
+                        right: 4,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              if (user != null) {
+                                Navigator.of(context)
+                                    .push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfileScreen(user: user),
+                                  ),
+                                )
+                                    .then((_) {
+                                  _refreshProfileData();
+                                });
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(100),
+                            splashColor: AppColors.primaryOrange.withValues(alpha: 0.3),
+                            highlightColor: AppColors.primaryOrange.withValues(alpha: 0.15),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.092,
+                              height: MediaQuery.of(context).size.width * 0.092,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                                border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.15),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 0),
-                                  spreadRadius: 0.5,
+                                  width: 1,
                                 ),
-                                // Coral glow for accent
-                                BoxShadow(
-                                  color: AppColors.primaryOrange.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                              size: MediaQuery.of(context).size.width * 0.041,
+                                boxShadow: [
+                                  // Primary shadow
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.35),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                  // White rim light
+                                  BoxShadow(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 0),
+                                    spreadRadius: 0.5,
+                                  ),
+                                  // Coral glow for accent
+                                  BoxShadow(
+                                    color: AppColors.primaryOrange.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.041,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 20),
+                  ],
+                ),
+                const SizedBox(height: 20),
               Text(
                 user?.username ?? 'Unknown User',
                 textAlign: TextAlign.center,
@@ -1437,7 +1271,7 @@ extension on _ProfileScreenState {
 
         if (badges.isEmpty) {
           return Padding(
-            padding: const EdgeInsets.only(top: 56),
+            padding: const EdgeInsets.only(top: 16),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1471,7 +1305,7 @@ extension on _ProfileScreenState {
         }
 
         return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 72, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 12,
@@ -1621,32 +1455,6 @@ extension on _ProfileScreenState {
       alignment: WrapAlignment.center,
       children: validSocialLinks.map((entry) {
         return _buildSocialMediaButton(entry.key, entry.value);
-      }).toList(),
-    );
-  }
-
-  Widget _buildVerticalSocialMediaLinks(UserModel? user) {
-    if (user?.socialLinks.isEmpty ?? true) {
-      return const SizedBox.shrink();
-    }
-
-    // Filter out only valid social links
-    final validSocialLinks = user!.socialLinks.entries
-        .where((entry) => _isValidURL(entry.value))
-        .toList();
-
-    // If no valid social links, don't show the section
-    if (validSocialLinks.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: validSocialLinks.map((entry) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _buildSocialMediaButton(entry.key, entry.value),
-        );
       }).toList(),
     );
   }
