@@ -35,9 +35,9 @@ class GlassyButton extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.7),
-                  AppColors.rosyBrown.withValues(alpha: 0.5),
-                  AppColors.rosyBrown.withValues(alpha: 0.6),
+                  AppColors.midnightGreen.withValues(alpha: 0.9),
+                  AppColors.midnightGreen.withValues(alpha: 0.85),
+                  AppColors.midnightGreen.withValues(alpha: 0.9),
                 ],
                 stops: const [0.0, 0.5, 1.0],
               ),
@@ -53,7 +53,7 @@ class GlassyButton extends StatelessWidget {
                   offset: const Offset(-2, -2),
                 ),
                 BoxShadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                  color: AppColors.midnightGreen.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(2, 2),
                 ),

@@ -503,14 +503,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
             left: MediaQuery.of(context).size.width * 0.04,
-            child: Material(
-              color: Colors.transparent,
-              child: GlassyIconButton(
-                icon: Icons.arrow_back,
-                onPressed: () => Navigator.of(context).pop(),
-                iconSize: MediaQuery.of(context).size.width * 0.05,
-                buttonSize: MediaQuery.of(context).size.width * 0.12,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.08,
               ),
+              onPressed: () => Navigator.of(context).pop(),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
           ),
           // Message or Settings button (top right) - moved to top of stack for proper click handling
@@ -518,35 +519,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             Positioned(
               top: MediaQuery.of(context).padding.top + 8,
               right: MediaQuery.of(context).size.width * 0.04,
-              child: Material(
-                color: Colors.transparent,
-                child: GlassyIconButton(
-                  icon: Icons.message,
-                  onPressed: () => context.push('/chat/$targetUserId'),
-                  tooltip: AppLocalizations.of(context)!.messages,
-                  iconSize: MediaQuery.of(context).size.width * 0.05,
-                  buttonSize: MediaQuery.of(context).size.width * 0.12,
+              child: IconButton(
+                icon: Icon(
+                  Icons.message,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.08,
                 ),
+                onPressed: () => context.push('/chat/$targetUserId'),
+                tooltip: AppLocalizations.of(context)!.messages,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
               ),
             ),
           if (isOwnProfile)
             Positioned(
               top: MediaQuery.of(context).padding.top + 8,
               right: MediaQuery.of(context).size.width * 0.04,
-              child: Material(
-                color: Colors.transparent,
-                child: GlassyButton(
-                  borderRadius: 15,
-                  constraints: BoxConstraints.tightFor(
-                    width: MediaQuery.of(context).size.width * 0.12,
-                    height: MediaQuery.of(context).size.width * 0.12,
-                  ),
-                  child: PopupMenuButton<String>(
+              child: PopupMenuButton<String>(
                   icon: Icon(
                     Icons.more_vert,
                     color: Colors.white,
-                    size: MediaQuery.of(context).size.width * 0.05,
+                    size: MediaQuery.of(context).size.width * 0.08,
                   ),
+                  padding: EdgeInsets.zero,
                   color: AppColors.midnightGreen.withValues(alpha: 0.98),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -766,8 +761,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   ],
                 ),
               ),
-            ),
-          ),
           // Centered Profile text - moved to top of stack
           Positioned(
             top: MediaQuery.of(context).padding.top +
@@ -783,9 +776,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     : user.username,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppColors.textPrimary,
                   fontSize: MediaQuery.of(context).size.width * 0.045,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      blurRadius: 8,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1256,11 +1255,17 @@ extension on _ProfileScreenState {
                     Positioned(
                       bottom: 0,
                       right: 0,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: GlassyIconButton(
-                          icon: Icons.edit,
+                      child: Container(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.06,
+                          ),
                           onPressed: user != null
                               ? () {
                                   Navigator.of(context)
@@ -1275,8 +1280,8 @@ extension on _ProfileScreenState {
                                   });
                                 }
                               : null,
-                          iconSize: MediaQuery.of(context).size.width * 0.05,
-                          buttonSize: MediaQuery.of(context).size.width * 0.12,
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                          constraints: const BoxConstraints(),
                         ),
                       ),
                     ),
