@@ -126,64 +126,63 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                  Text(
-                    AppLocalizations.of(context)!
-                        .errorLoadingProfile(error.toString()),
-                    style: const TextStyle(color: AppColors.textPrimary),
-                    textAlign: TextAlign.center,
+              Text(
+                AppLocalizations.of(context)!
+                    .errorLoadingProfile(error.toString()),
+                style: const TextStyle(color: AppColors.textPrimary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.pineGreen.withValues(alpha: 0.8),
+                      AppColors.pineGreen.withValues(alpha: 0.9),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.8),
-                          AppColors.pineGreen.withValues(alpha: 0.9),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pineGreen.withValues(alpha: 0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => ref.refresh(userDataProvider(targetUserId)),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.refresh,
+                              color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)!.retry,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pineGreen.withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () =>
-                            ref.refresh(userDataProvider(targetUserId)),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 16),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.refresh,
-                                  color: Colors.white, size: 20),
-                              const SizedBox(width: 8),
-                              Text(AppLocalizations.of(context)!.retry,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
+          ),
         ),
+      ),
     );
   }
 
@@ -195,111 +194,111 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         return Scaffold(
           backgroundColor: AppColors.midnightGreen,
           body: Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: MediaQuery.of(context).size.width * 0.3,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.rosyBrown,
-                            AppColors.pineGreen,
-                            AppColors.midnightGreen,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.person_outline,
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        color: Colors.white,
-                      ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: MediaQuery.of(context).size.width * 0.3,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.rosyBrown,
+                        AppColors.pineGreen,
+                        AppColors.midnightGreen,
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppLocalizations.of(context)!.profileNotSetUp,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      AppLocalizations.of(context)!.pleaseCompleteProfileSetup,
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primaryOrange.withValues(alpha: 0.8),
-                            AppColors.primaryOrangeDark
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                AppColors.primaryOrange.withValues(alpha: 0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () => context.go('/onboarding'),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 18),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.edit, color: Colors.white, size: 20),
-                                const SizedBox(width: 12),
-                                Text(AppLocalizations.of(context)!.completeSetup,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.person_outline,
+                    size: MediaQuery.of(context).size.width * 0.15,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 24),
+                Text(
+                  AppLocalizations.of(context)!.profileNotSetUp,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  AppLocalizations.of(context)!.pleaseCompleteProfileSetup,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryOrange.withValues(alpha: 0.8),
+                        AppColors.primaryOrangeDark
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () => context.go('/onboarding'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 18),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.edit,
+                                color: Colors.white, size: 20),
+                            const SizedBox(width: 12),
+                            Text(AppLocalizations.of(context)!.completeSetup,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       } else {
         return const Scaffold(
           backgroundColor: AppColors.midnightGreen,
           body: Center(
-              child: Text(
-                'User not found',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
-              ),
+            child: Text(
+              'User not found',
+              style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
             ),
+          ),
         );
       }
     }
@@ -403,7 +402,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           ),
                           content: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.rosyBrown
+                              color: AppColors.midnightGreen
                                   .withValues(alpha: 0.95),
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
@@ -565,38 +564,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildBottomTabBar(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.08,
-          vertical: 8,
-        ),
-        height: MediaQuery.of(context).size.height * 0.065,
-        decoration: BoxDecoration(
-          color: AppColors.midnightGreen,
-          border: Border(
-            top: BorderSide(
-              color: Colors.white.withValues(alpha: 0.15),
-              width: 1.5,
-            ),
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.08,
+        vertical: 8,
+      ),
+      height: MediaQuery.of(context).size.height * 0.065,
+      decoration: BoxDecoration(
+        color: AppColors.midnightGreen,
+        border: Border(
+          top: BorderSide(
+            color: Colors.white.withValues(alpha: 0.15),
+            width: 1.5,
           ),
-          boxShadow: [
-            // Sharper upward shadow for depth
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, -4),
-            ),
-          ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildTabBubble(context, 0, Icons.home),
-            _buildTabBubble(context, 1, Icons.grid_on),
-            _buildTabBubble(context, 2, Icons.favorite),
-            _buildTabBubble(context, 3, Icons.emoji_events),
-          ],
-        ),
+        boxShadow: [
+          // Sharper upward shadow for depth
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 8,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildTabBubble(context, 0, Icons.home),
+          _buildTabBubble(context, 1, Icons.grid_on),
+          _buildTabBubble(context, 2, Icons.favorite),
+          _buildTabBubble(context, 3, Icons.emoji_events),
+        ],
+      ),
     );
   }
 
@@ -662,7 +661,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                               radius: 1.2,
                               colors: [
                                 Colors.white.withValues(alpha: shineAlphaTop),
-                                Colors.white.withValues(alpha: shineAlphaBottom),
+                                Colors.white
+                                    .withValues(alpha: shineAlphaBottom),
                                 Colors.transparent,
                               ],
                               stops: const [0.0, 0.3, 1.0],
@@ -750,7 +750,8 @@ extension on _ProfileScreenState {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.refresh, color: Colors.white, size: 20),
+                          const Icon(Icons.refresh,
+                              color: Colors.white, size: 20),
                           const SizedBox(width: 8),
                           Text(AppLocalizations.of(context)!.retry,
                               style: const TextStyle(
@@ -828,7 +829,8 @@ extension on _ProfileScreenState {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.refresh, color: Colors.white, size: 20),
+                          const Icon(Icons.refresh,
+                              color: Colors.white, size: 20),
                           const SizedBox(width: 8),
                           Text(AppLocalizations.of(context)!.retry,
                               style: const TextStyle(
@@ -1001,8 +1003,8 @@ extension on _ProfileScreenState {
     );
   }
 
-  Widget _buildHomeTab(
-      BuildContext context, WidgetRef ref, String targetUserId, bool isOwnProfile) {
+  Widget _buildHomeTab(BuildContext context, WidgetRef ref, String targetUserId,
+      bool isOwnProfile) {
     final userDataAsync = ref.watch(userDataProvider(targetUserId));
     final badges = ref.watch(userBadgesProvider(targetUserId));
 
@@ -1045,14 +1047,17 @@ extension on _ProfileScreenState {
                               }
                             },
                             borderRadius: BorderRadius.circular(100),
-                            splashColor: AppColors.primaryOrange.withValues(alpha: 0.3),
-                            highlightColor: AppColors.primaryOrange.withValues(alpha: 0.15),
+                            splashColor:
+                                AppColors.primaryOrange.withValues(alpha: 0.3),
+                            highlightColor:
+                                AppColors.primaryOrange.withValues(alpha: 0.15),
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.092,
                               height: MediaQuery.of(context).size.width * 0.092,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                                color:
+                                    AppColors.rosyBrown.withValues(alpha: 0.6),
                                 border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.15),
                                   width: 1,
@@ -1073,7 +1078,8 @@ extension on _ProfileScreenState {
                                   ),
                                   // Coral glow for accent
                                   BoxShadow(
-                                    color: AppColors.primaryOrange.withValues(alpha: 0.25),
+                                    color: AppColors.primaryOrange
+                                        .withValues(alpha: 0.25),
                                     blurRadius: 10,
                                     offset: const Offset(0, 3),
                                   ),
@@ -1091,42 +1097,42 @@ extension on _ProfileScreenState {
                   ],
                 ),
                 const SizedBox(height: 20),
-              Text(
-                user?.username ?? 'Unknown User',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: MediaQuery.of(context).size.width * 0.053,
-                  fontWeight: FontWeight.w600,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                      blurRadius: 12,
-                    ),
-                    Shadow(
-                      color: AppColors.pineGreen.withValues(alpha: 0.4),
-                      blurRadius: 8,
-                      offset: const Offset(2, 2),
-                    ),
-                  ],
+                Text(
+                  user?.username ?? 'Unknown User',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: MediaQuery.of(context).size.width * 0.053,
+                    fontWeight: FontWeight.w600,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                        blurRadius: 12,
+                      ),
+                      Shadow(
+                        color: AppColors.pineGreen.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              // Social media buttons
-              _buildSocialMediaLinks(user),
-              const SizedBox(height: 24),
+                // Social media buttons
+                _buildSocialMediaLinks(user),
+                const SizedBox(height: 24),
 
-              // Level badge - flexible to fit available space
-              Expanded(
-                child: Center(
-                  child: _buildLevelBadge(context, badgeCount),
+                // Level badge - flexible to fit available space
+                Expanded(
+                  child: Center(
+                    child: _buildLevelBadge(context, badgeCount),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      );
+              ],
+            ),
+          ],
+        );
       },
       loading: () => const Center(
         child: CircularProgressIndicator(
@@ -1189,78 +1195,78 @@ extension on _ProfileScreenState {
     }
 
     return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1,
-          ),
-          itemCount: badges.length,
-          itemBuilder: (context, index) {
-            final badgeData = badges[index];
-            final badgeURL = badgeData['badgeURL'] ?? '';
-            final eventId = badgeData['eventId'] ?? '';
-            return GestureDetector(
-              onTap: () {
-                if (eventId.isNotEmpty) {
-                  context.push('/event/$eventId');
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: badgeURL,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primaryOrange.withValues(alpha: 0.4),
-                            AppColors.rosyBrown.withValues(alpha: 0.4),
-                          ],
-                        ),
-                      ),
-                      child: const Center(
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: AppColors.primaryOrange,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) {
-                      // Show level image for error state
-                      final levelInfo = _getLevelInfo(badges.length);
-                      final level = levelInfo['level'] as int;
-                      return Image.asset(
-                        'assets/levels/level_$level.png',
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
-                ),
-              ),
-            );
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 1,
+      ),
+      itemCount: badges.length,
+      itemBuilder: (context, index) {
+        final badgeData = badges[index];
+        final badgeURL = badgeData['badgeURL'] ?? '';
+        final eventId = badgeData['eventId'] ?? '';
+        return GestureDetector(
+          onTap: () {
+            if (eventId.isNotEmpty) {
+              context.push('/event/$eventId');
+            }
           },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: badgeURL,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primaryOrange.withValues(alpha: 0.4),
+                        AppColors.rosyBrown.withValues(alpha: 0.4),
+                      ],
+                    ),
+                  ),
+                  child: const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryOrange,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) {
+                  // Show level image for error state
+                  final levelInfo = _getLevelInfo(badges.length);
+                  final level = levelInfo['level'] as int;
+                  return Image.asset(
+                    'assets/levels/level_$level.png',
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            ),
+          ),
         );
+      },
+    );
   }
 
   Widget _buildSocialMediaLinks(UserModel? user) {
@@ -1640,21 +1646,9 @@ extension on _ProfileScreenState {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryOrange.withValues(alpha: 0.3),
-                        AppColors.rosyBrown.withValues(alpha: 0.3),
-                      ],
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.emoji_events,
-                      color: AppColors.primaryOrange,
-                      size: 80,
-                    ),
+                    color: Colors.transparent,
                   ),
                 );
               },
@@ -1666,22 +1660,12 @@ extension on _ProfileScreenState {
             decoration: BoxDecoration(
               color: AppColors.rosyBrown.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 1.5,
-              ),
               boxShadow: [
                 // Soft drop shadow
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.25),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
-                ),
-                // Subtle coral glow
-                BoxShadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -1758,13 +1742,9 @@ extension on _ProfileScreenState {
               ],
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: AppColors.primaryOrange.withValues(alpha: 0.4),
-              width: 2,
-            ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -1779,7 +1759,7 @@ extension on _ProfileScreenState {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.primaryOrange.withValues(alpha: 0.3),
+                      AppColors.rosyBrown.withValues(alpha: 0.3),
                       AppColors.rosyBrown.withValues(alpha: 0.3),
                     ],
                   ),
@@ -1790,12 +1770,6 @@ extension on _ProfileScreenState {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.emoji_events,
-                      color: AppColors.primaryOrange,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.levelSystem,
@@ -1807,7 +1781,8 @@ extension on _ProfileScreenState {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                      icon: const Icon(Icons.close,
+                          color: AppColors.textSecondary),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -1819,13 +1794,20 @@ extension on _ProfileScreenState {
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(16),
                   children: [
-                    _buildLevelRow(context, 1, 0, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 2, 5, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 3, 12, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 4, 20, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 5, 30, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 6, 42, currentLevel, currentBadgeCount),
-                    _buildLevelRow(context, 7, 56, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 1, 0, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 2, 5, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 3, 12, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 4, 20, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 5, 30, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 6, 42, currentLevel, currentBadgeCount),
+                    _buildLevelRow(
+                        context, 7, 56, currentLevel, currentBadgeCount),
                   ],
                 ),
               ),
@@ -1836,7 +1818,8 @@ extension on _ProfileScreenState {
     );
   }
 
-  Widget _buildLevelRow(BuildContext context, int level, int threshold, int currentLevel, int currentBadgeCount) {
+  Widget _buildLevelRow(BuildContext context, int level, int threshold,
+      int currentLevel, int currentBadgeCount) {
     final isUnlocked = level <= currentLevel;
     final isCurrent = level == currentLevel;
     final name = _getLevelName(context, level);
@@ -1931,7 +1914,8 @@ extension on _ProfileScreenState {
                     const SizedBox(width: 8),
                     if (isCurrent)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.primaryOrange.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8),
