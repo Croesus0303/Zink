@@ -10,226 +10,125 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-        elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-        title: Text(
-          AppLocalizations.of(context)!.settings,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: MediaQuery.of(context).size.width * 0.045,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: ListView(
+      backgroundColor: AppColors.midnightGreen,
+      body: Stack(
+        children: [
+          // Main content
+          ListView(
             padding: EdgeInsets.fromLTRB(
-              MediaQuery.of(context).size.width * 0.04,
-              MediaQuery.of(context).padding.top +
-                  MediaQuery.of(context).size.height * 0.065 +
-                  16,
-              MediaQuery.of(context).size.width * 0.04,
+              0,
+              MediaQuery.of(context).padding.top + 60,
+              0,
               MediaQuery.of(context).size.width * 0.04,
             ),
             children: [
-              _buildSectionHeader(context, AppLocalizations.of(context)!.app),
               _buildAppSection(context, ref),
               const SizedBox(height: 32),
               _buildDangerZone(context, ref),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: MediaQuery.of(context).size.width * 0.055,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          letterSpacing: 0.5,
-          shadows: [
-            Shadow(
-              color: AppColors.rosyBrown.withValues(alpha: 0.6),
-              blurRadius: 8,
+          // Back button (top left)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: MediaQuery.of(context).size.width * 0.04,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.08,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
-          ],
-        ),
+          ),
+          // Title (top center)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: IgnorePointer(
+                child: Text(
+                  AppLocalizations.of(context)!.settings,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.043,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withValues(alpha: 0.7),
+                    shadows: [
+                      Shadow(
+                        color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildAppSection(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.midnightGreen.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.iceBorder,
-          width: 1,
+    return Column(
+      children: [
+        _buildSettingsListTile(
+          context,
+          icon: Icons.info_outline,
+          title: AppLocalizations.of(context)!.about,
+          subtitle: AppLocalizations.of(context)!.version('1.0.0'),
+          iconColor: Colors.white.withValues(alpha: 0.65),
+          onTap: () => _showAboutDialog(context),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
-          ),
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.15),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-      child: Column(
-        children: [
-          _buildSettingsListTile(
-            context,
-            icon: Icons.info,
-            title: AppLocalizations.of(context)!.about,
-            subtitle: AppLocalizations.of(context)!.version('1.0.0'),
-            iconColor: AppColors.primaryCyan,
-            onTap: () => _showAboutDialog(context),
-          ),
-          Divider(
-            height: 1,
-            color: AppColors.primaryCyan.withValues(alpha: 0.2),
-            indent: 16,
-            endIndent: 16,
-          ),
-          _buildSettingsListTile(
-            context,
-            icon: Icons.privacy_tip,
-            title: AppLocalizations.of(context)!.privacyPolicy,
-            subtitle: null,
-            iconColor: AppColors.primaryCyan,
-            onTap: () => _showPrivacyPolicy(context),
-          ),
-          Divider(
-            height: 1,
-            color: AppColors.primaryCyan.withValues(alpha: 0.2),
-            indent: 16,
-            endIndent: 16,
-          ),
-          _buildSettingsListTile(
-            context,
-            icon: Icons.help,
-            title: AppLocalizations.of(context)!.helpAndSupport,
-            subtitle: null,
-            iconColor: AppColors.primaryCyan,
-            onTap: () => _showHelpAndSupport(context),
-          ),
-        ],
-      ),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.white.withValues(alpha: 0.2),
+          indent: 0,
+          endIndent: 0,
+        ),
+        _buildSettingsListTile(
+          context,
+          icon: Icons.privacy_tip_outlined,
+          title: AppLocalizations.of(context)!.privacyPolicy,
+          subtitle: null,
+          iconColor: Colors.white.withValues(alpha: 0.65),
+          onTap: () => _showPrivacyPolicy(context),
+        ),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.white.withValues(alpha: 0.2),
+          indent: 0,
+          endIndent: 0,
+        ),
+        _buildSettingsListTile(
+          context,
+          icon: Icons.help_outline,
+          title: AppLocalizations.of(context)!.helpAndSupport,
+          subtitle: null,
+          iconColor: Colors.white.withValues(alpha: 0.65),
+          onTap: () => _showHelpAndSupport(context),
+        ),
+      ],
     );
   }
 
   Widget _buildDangerZone(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.rosyBrown.withValues(alpha: 0.15),
-            AppColors.rosyBrown.withValues(alpha: 0.08),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.rosyBrown.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
-          ),
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.2),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
       child: _buildSettingsListTile(
         context,
-        icon: Icons.delete_forever,
+        icon: Icons.delete_outline,
         title: AppLocalizations.of(context)!.deleteAccount,
         subtitle: AppLocalizations.of(context)!.permanentlyDeleteAccount,
         iconColor: AppColors.rosyBrown,
         onTap: () => _showDeleteAccountDialog(context, ref),
         showTrailing: false,
+        isDangerous: true,
       ),
     );
   }
@@ -242,55 +141,32 @@ class SettingsScreen extends ConsumerWidget {
     required Color iconColor,
     required VoidCallback onTap,
     bool showTrailing = true,
+    bool isDangerous = false,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
-        child: Container(
-          margin: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.005),
+        splashColor: isDangerous
+            ? AppColors.rosyBrown.withValues(alpha: 0.15)
+            : null,
+        highlightColor: isDangerous
+            ? AppColors.rosyBrown.withValues(alpha: 0.1)
+            : null,
+        child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.04,
             vertical: MediaQuery.of(context).size.height * 0.015,
           ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.pineGreen.withValues(alpha: 0.1),
-                AppColors.rosyBrown.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.iceBorder.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.1,
-                height: MediaQuery.of(context).size.width * 0.1,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.pineGreen.withValues(alpha: 0.2),
-                      AppColors.pineGreen.withValues(alpha: 0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: iconColor.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
                 child: Icon(
                   icon,
-                  color: Colors.white,
-                  size: MediaQuery.of(context).size.width * 0.05,
+                  color: iconColor,
+                  size: MediaQuery.of(context).size.width * 0.06,
                 ),
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.04),
@@ -303,8 +179,17 @@ class SettingsScreen extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.042,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: isDangerous ? AppColors.rosyBrown : Colors.white,
                         letterSpacing: 0.3,
+                        shadows: isDangerous
+                            ? [
+                                Shadow(
+                                  color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : null,
                       ),
                     ),
                     if (subtitle != null) ...[
@@ -314,7 +199,7 @@ class SettingsScreen extends ConsumerWidget {
                         subtitle,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.038,
-                          color: Colors.white,
+                          color: Colors.white.withValues(alpha: 0.7),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -325,7 +210,7 @@ class SettingsScreen extends ConsumerWidget {
               if (showTrailing)
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white.withValues(alpha: 0.6),
                   size: MediaQuery.of(context).size.width * 0.05,
                 ),
             ],
@@ -377,7 +262,11 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Icon(Icons.camera_alt, size: 48, color: AppColors.pineGreen),
+                Image.asset(
+                  'assets/app_logo.png',
+                  width: 80,
+                  height: 80,
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'Zink',
@@ -403,8 +292,8 @@ class SettingsScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.pineGreen.withValues(alpha: 0.8),
-                        AppColors.pineGreen,
+                        AppColors.rosyBrown.withValues(alpha: 0.8),
+                        AppColors.rosyBrown,
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -537,8 +426,8 @@ class SettingsScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.8),
-                          AppColors.pineGreen,
+                          AppColors.rosyBrown.withValues(alpha: 0.8),
+                          AppColors.rosyBrown,
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -700,8 +589,8 @@ class SettingsScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.8),
-                          AppColors.pineGreen,
+                          AppColors.rosyBrown.withValues(alpha: 0.8),
+                          AppColors.rosyBrown,
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
