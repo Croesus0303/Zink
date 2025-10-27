@@ -362,7 +362,7 @@ class SubmissionsService {
     }
   }
 
-  Future<List<String>> getUserBadges(String userId) async {
+  Future<List<Map<String, String>>> getUserBadges(String userId) async {
     try {
       final snapshot = await _firestore
           .collection('users')
@@ -372,23 +372,26 @@ class SubmissionsService {
 
       AppLogger.d(
           'Fetched ${snapshot.docs.length} submissions for badge extraction for user $userId');
-      
-      final badgeURLs = <String>{};
+
+      final badgeMap = <String, String>{};
 
       for (final doc in snapshot.docs) {
         final data = doc.data();
         final badgeURL = data['badgeURL'] as String?;
-        
-        if (badgeURL != null && badgeURL.isNotEmpty) {
-          badgeURLs.add(badgeURL);
+        final eventId = data['eventId'] as String?;
+
+        if (badgeURL != null && badgeURL.isNotEmpty && eventId != null) {
+          badgeMap[badgeURL] = eventId;
         }
       }
 
-      final uniqueBadges = badgeURLs.toList();
-      AppLogger.d('Found ${uniqueBadges.length} unique badges for user $userId');
-      return uniqueBadges;
+      final badgesWithEvents = badgeMap.entries
+          .map((entry) => {'badgeURL': entry.key, 'eventId': entry.value})
+          .toList();
+      AppLogger.d('Found ${badgesWithEvents.length} unique badges with event IDs for user $userId');
+      return badgesWithEvents;
     } catch (e) {
-      AppLogger.e('Error fetching user badges for $userId', e);
+      AppLogger.e('Error fetching user badges with event IDs for $userId', e);
       return [];
     }
   }

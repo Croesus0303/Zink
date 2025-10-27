@@ -59,7 +59,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       ref.invalidate(userLikedSubmissionsProvider(targetUserId));
       ref.invalidate(userSubmissionCountProvider(targetUserId));
       ref.invalidate(userLikeCountFromUserCollectionProvider(targetUserId));
-      ref.invalidate(userBadgesProvider(targetUserId));
+      // Note: userBadgesProvider is derived from submissions, no need to invalidate
     }
   }
 
@@ -90,35 +90,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
     final userLikedSubmissionsAsync =
         ref.watch(userLikedSubmissionsProvider(targetUserId));
-    final userBadgesAsync = ref.watch(userBadgesProvider(targetUserId));
 
     // Check if critical data is still loading - especially important for first login
     final isLoading = authStateAsync.isLoading ||
         currentUserDataAsync.isLoading ||
         userDataAsync.isLoading ||
         userSubmissionsAsync.isLoading ||
-        userLikedSubmissionsAsync.isLoading ||
-        userBadgesAsync.isLoading;
+        userLikedSubmissionsAsync.isLoading;
 
     // Show loading screen while essential data loads
     if (isLoading) {
-      return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            child: const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.pineGreen,
-                strokeWidth: 4,
-              ),
-            ),
+      return const Scaffold(
+        backgroundColor: AppColors.midnightGreen,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.pineGreen,
+            strokeWidth: 4,
           ),
         ),
       );
@@ -127,38 +114,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return userDataAsync.when(
       data: (user) =>
           _buildProfile(context, ref, user, isOwnProfile, targetUserId),
-      loading: () => Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.pineGreen),
-            ),
-          ),
+      loading: () => const Scaffold(
+        backgroundColor: AppColors.midnightGreen,
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.pineGreen),
         ),
       ),
       error: (error, stack) => Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+        backgroundColor: AppColors.midnightGreen,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
                   Text(
                     AppLocalizations.of(context)!
                         .errorLoadingProfile(error.toString()),
@@ -216,9 +183,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 ],
               ),
             ),
-          ),
         ),
-      ),
     );
   }
 
@@ -228,19 +193,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     if (user == null) {
       if (isOwnProfile) {
         return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              decoration:
-                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
-              child: Center(
-                child: Column(
+          backgroundColor: AppColors.midnightGreen,
+          body: Center(
+              child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
@@ -335,51 +290,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   ],
                 ),
               ),
-            ),
-          ),
         );
       } else {
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
+        return const Scaffold(
+          backgroundColor: AppColors.midnightGreen,
+          body: Center(
+              child: Text(
+                'User not found',
+                style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
               ),
             ),
-            child: Container(
-              decoration:
-                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
-              child: const Center(
-                child: Text(
-                  'User not found',
-                  style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
-                ),
-              ),
-            ),
-          ),
         );
       }
     }
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.midnightGreen,
       body: Stack(
         children: [
-          // Background image - full screen
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-          // Gradient overlay - full screen
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            ),
-          ),
           // Main content
           Column(
             children: [
@@ -400,6 +328,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ),
                   ),
                 ),
+              ),
+              // Spacer between content and tabs
+              Container(
+                height: 8,
+                color: AppColors.midnightGreen,
               ),
               // Bottom tab bar
               _buildBottomTabBar(context),
@@ -631,15 +564,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildBottomTabBar(BuildContext context) {
-    return SafeArea(
-      child: Container(
+    return Container(
+        margin: const EdgeInsets.only(bottom: 20),
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.08,
-          vertical: MediaQuery.of(context).size.height * 0.01,
+          vertical: 8,
         ),
         height: MediaQuery.of(context).size.height * 0.065,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.08),
+          color: AppColors.midnightGreen,
           border: Border(
             top: BorderSide(
               color: Colors.white.withValues(alpha: 0.15),
@@ -664,7 +597,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             _buildTabBubble(context, 3, Icons.emoji_events),
           ],
         ),
-      ),
     );
   }
 
@@ -927,11 +859,11 @@ extension on _ProfileScreenState {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: 3,
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -1000,11 +932,11 @@ extension on _ProfileScreenState {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: 3,
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -1060,27 +992,6 @@ extension on _ProfileScreenState {
                       ),
                     ),
                   ),
-                  // Like indicator in the top right corner
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                          width: 0.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.favorite,
-                        color: AppColors.rosyBrown,
-                        size: 16,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -1093,15 +1004,12 @@ extension on _ProfileScreenState {
   Widget _buildHomeTab(
       BuildContext context, WidgetRef ref, String targetUserId, bool isOwnProfile) {
     final userDataAsync = ref.watch(userDataProvider(targetUserId));
-    final badgesAsync = ref.watch(userBadgesProvider(targetUserId));
+    final badges = ref.watch(userBadgesProvider(targetUserId));
 
     return userDataAsync.when(
       data: (user) {
-        // Get badges for the physics background
-        final badges = badgesAsync.maybeWhen(
-          data: (badgesList) => badgesList,
-          orElse: () => <String>[],
-        );
+        // Get badge count for level calculation
+        final badgeCount = badges.length;
 
         return Stack(
           children: [
@@ -1109,7 +1017,7 @@ extension on _ProfileScreenState {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 12),
+                const SizedBox(height: 48),
                 // Profile picture with edit button
                 Stack(
                   clipBehavior: Clip.none,
@@ -1212,32 +1120,10 @@ extension on _ProfileScreenState {
               // Level badge - flexible to fit available space
               Expanded(
                 child: Center(
-                  child: _buildLevelBadge(context, badges.length),
+                  child: _buildLevelBadge(context, badgeCount),
                 ),
               ),
             ],
-          ),
-          // Subtle lighting gradient overlay for 3-layer depth on OLED
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.0),
-                      Colors.black.withValues(alpha: 0.02),
-                      Colors.black.withValues(alpha: 0.05),
-                      Colors.black.withValues(alpha: 0.08),
-                      Colors.black.withValues(alpha: 0.1),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.2, 0.35, 0.5, 0.65, 1.0],
-                  ),
-                ),
-              ),
-            ),
           ),
         ],
       );
@@ -1261,51 +1147,49 @@ extension on _ProfileScreenState {
 
   Widget _buildBadgesTab(
       BuildContext context, WidgetRef ref, String targetUserId) {
-    final badgesAsync = ref.watch(userBadgesProvider(targetUserId));
+    final badges = ref.watch(userBadgesProvider(targetUserId));
 
-    return badgesAsync.when(
-      data: (badges) {
-        // Calculate level for empty state display
-        final levelInfo = _getLevelInfo(badges.length);
-        final level = levelInfo['level'] as int;
+    // Calculate level for empty state display
+    final levelInfo = _getLevelInfo(badges.length);
+    final level = levelInfo['level'] as int;
 
-        if (badges.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                        width: 2,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/levels/level_$level.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+    if (badges.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.width * 0.3,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                    width: 2,
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'No badges yet',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/levels/level_$level.png',
+                    fit: BoxFit.cover,
                   ),
-                ],
+                ),
               ),
-            ),
-          );
-        }
+              const SizedBox(height: 16),
+              const Text(
+                'No badges yet',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
-        return GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+    return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 12,
@@ -1314,124 +1198,69 @@ extension on _ProfileScreenState {
           ),
           itemCount: badges.length,
           itemBuilder: (context, index) {
-            final badgeURL = badges[index];
-            return Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+            final badgeData = badges[index];
+            final badgeURL = badgeData['badgeURL'] ?? '';
+            final eventId = badgeData['eventId'] ?? '';
+            return GestureDetector(
+              onTap: () {
+                if (eventId.isNotEmpty) {
+                  context.push('/event/$eventId');
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                    width: 2,
                   ),
-                ],
-              ),
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: badgeURL,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primaryOrange.withValues(alpha: 0.4),
-                          AppColors.rosyBrown.withValues(alpha: 0.4),
-                        ],
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
                     ),
-                    child: const Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: AppColors.primaryOrange,
-                          strokeWidth: 2,
+                  ],
+                ),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: badgeURL,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primaryOrange.withValues(alpha: 0.4),
+                            AppColors.rosyBrown.withValues(alpha: 0.4),
+                          ],
+                        ),
+                      ),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryOrange,
+                            strokeWidth: 2,
+                          ),
                         ),
                       ),
                     ),
+                    errorWidget: (context, url, error) {
+                      // Show level image for error state
+                      final levelInfo = _getLevelInfo(badges.length);
+                      final level = levelInfo['level'] as int;
+                      return Image.asset(
+                        'assets/levels/level_$level.png',
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
-                  errorWidget: (context, url, error) {
-                    // Show level image for error state
-                    final levelInfo = _getLevelInfo(badges.length);
-                    final level = levelInfo['level'] as int;
-                    return Image.asset(
-                      'assets/levels/level_$level.png',
-                      fit: BoxFit.cover,
-                    );
-                  },
                 ),
               ),
             );
           },
         );
-      },
-      loading: () => const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primaryOrange,
-        ),
-      ),
-      error: (error, stack) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Error loading badges',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryOrange.withValues(alpha: 0.8),
-                    AppColors.primaryOrange.withValues(alpha: 0.9),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => ref.refresh(userBadgesProvider(targetUserId)),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.refresh, color: Colors.white, size: 20),
-                        SizedBox(width: 8),
-                        Text('Retry',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildSocialMediaLinks(UserModel? user) {
@@ -1481,27 +1310,6 @@ extension on _ProfileScreenState {
           color: Colors.white.withValues(alpha: 0.35),
           width: 3,
         ),
-        boxShadow: [
-          // Deeper primary shadow for z-depth
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.6),
-            blurRadius: 28,
-            offset: const Offset(0, 12),
-            spreadRadius: 2,
-          ),
-          // Secondary shadow for depth
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-          // Highlight for 3D effect
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.25),
-            blurRadius: 8,
-            offset: const Offset(-4, -4),
-          ),
-        ],
       ),
       padding: const EdgeInsets.all(4),
       child: CircleAvatar(
@@ -2073,8 +1881,8 @@ extension on _ProfileScreenState {
         children: [
           // Level image
           Container(
-            width: 60,
-            height: 60,
+            width: MediaQuery.of(context).size.width * 0.15,
+            height: MediaQuery.of(context).size.width * 0.15,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(

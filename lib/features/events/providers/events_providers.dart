@@ -277,10 +277,29 @@ final userSubmissionsFromUserCollectionProvider =
   return await submissionsService.getUserSubmissionsFromUserCollection(userId);
 });
 
-// User badges provider
-final userBadgesProvider = FutureProvider.family<List<String>, String>((ref, userId) async {
-  final submissionsService = ref.watch(submissionsServiceProvider);
-  return await submissionsService.getUserBadges(userId);
+// User badges provider (derived from submissions - no extra query)
+final userBadgesProvider = Provider.family<List<Map<String, String>>, String>((ref, userId) {
+  final submissionsAsync = ref.watch(userSubmissionsFromUserCollectionProvider(userId));
+
+  return submissionsAsync.maybeWhen(
+    data: (submissions) {
+      final badgeMap = <String, String>{};
+
+      for (final submission in submissions) {
+        final badgeURL = submission.badgeURL;
+        final eventId = submission.eventId;
+
+        if (badgeURL != null && badgeURL.isNotEmpty && eventId.isNotEmpty) {
+          badgeMap[badgeURL] = eventId;
+        }
+      }
+
+      return badgeMap.entries
+          .map((entry) => {'badgeURL': entry.key, 'eventId': entry.value})
+          .toList();
+    },
+    orElse: () => [],
+  );
 });
 
 // User submission count for event provider
