@@ -72,52 +72,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     }
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-        title: Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.25,
-              height: MediaQuery.of(context).size.height * 0.07,
-              child: Image.asset(
-                'assets/app_logo.png',
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.camera_alt,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width * 0.04),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.015),
-                      Text(
-                        'Zink',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: MediaQuery.of(context).size.width * 0.045,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        centerTitle: false,
-        actions: [
-          _buildNotificationButton(context, unreadCountAsync),
-          _buildMessagesButton(context, unreadMessagesCountAsync),
-          _buildProfileButton(context),
-        ],
-      ),
+      backgroundColor: AppColors.midnightGreen,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.midnightGreen.withValues(alpha: 0.95),
@@ -168,129 +123,112 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           ],
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          // Main content area
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * 0.08,
+            ),
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                TimelineTab(key: _timelineKey),
+                EventsTab(key: _eventsKey),
+              ],
+            ),
           ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.auroraRadialGradient,
+          // Notification permission prompt overlay
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * 0.08,
+            ),
+            child: const _NotificationPermissionPrompt(),
           ),
-          child: Stack(
-            children: [
-              // Main content area
-              TabBarView(
-                controller: _tabController,
+          // Top bar with logo and action buttons (on top of everything)
+          SafeArea(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.08,
+              padding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: MediaQuery.of(context).size.height * 0.01,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TimelineTab(key: _timelineKey),
-                  EventsTab(key: _eventsKey),
+                  // App logo on the left
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: Image.asset(
+                      'assets/app_logo.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.camera_alt,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.04),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.015),
+                            Text(
+                              'Zink',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  // Action buttons on the right
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildNotificationButton(context, unreadCountAsync),
+                      _buildMessagesButton(context, unreadMessagesCountAsync),
+                      _buildProfileButton(context),
+                    ],
+                  ),
                 ],
               ),
-              // Notification permission prompt overlay
-              const _NotificationPermissionPrompt(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-        title: Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.25,
-              height: MediaQuery.of(context).size.height * 0.07,
-              child: Image.asset(
-                'assets/app_logo.png',
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.camera_alt,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width * 0.04),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.015),
-                      Text(
-                        'Zink',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: MediaQuery.of(context).size.width * 0.045,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        centerTitle: false,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.auroraRadialGradient,
-          ),
-          child: const Center(
-            child: CircularProgressIndicator(
-              color: AppColors.rosyBrown,
-              strokeWidth: 4,
-            ),
-          ),
+    return const Scaffold(
+      backgroundColor: AppColors.midnightGreen,
+      body: Center(
+        child: CircularProgressIndicator(
+          color: AppColors.rosyBrown,
+          strokeWidth: 4,
         ),
       ),
     );
   }
 
   Widget _buildNotificationButton(BuildContext context, AsyncValue<int> unreadCountAsync) {
-    return Container(
-      margin: const EdgeInsets.only(right: 6, left: 0, bottom: 3, top: 3),
-      decoration: BoxDecoration(
-        color: AppColors.primaryOrange.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.primaryOrange.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          IconButton(
-            onPressed: () => context.push('/notifications'),
-            icon: Icon(
-              Icons.notifications_outlined,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          onPressed: () => context.push('/notifications'),
+          icon: Icon(
+            Icons.notifications_none_rounded,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
           ),
-          unreadCountAsync.when(
+          padding: EdgeInsets.zero,
+        ),
+        unreadCountAsync.when(
             data: (count) => count > 0
                 ? Positioned(
                     right: -2,
@@ -330,42 +268,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                     ),
                   )
                 : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 
   Widget _buildMessagesButton(BuildContext context, AsyncValue<int> unreadMessagesCountAsync) {
-    return Container(
-      margin: const EdgeInsets.only(right: 6, left: 0, bottom: 3, top: 3),
-      decoration: BoxDecoration(
-        color: AppColors.rosyBrown.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.rosyBrown.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          IconButton(
-            onPressed: () => context.push('/chats'),
-            icon: Icon(
-              Icons.chat_bubble_outline,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          onPressed: () => context.push('/chats'),
+          icon: Icon(
+            Icons.mail_outline_rounded,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
           ),
-          unreadMessagesCountAsync.when(
+          padding: EdgeInsets.zero,
+        ),
+        unreadMessagesCountAsync.when(
             data: (count) => count > 0
                 ? Positioned(
                     right: -2,
@@ -405,38 +328,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                     ),
                   )
                 : const SizedBox.shrink(),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 
   Widget _buildProfileButton(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12, bottom: 3, top: 3),
-      decoration: BoxDecoration(
-        color: AppColors.pineGreen.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.pineGreen.withValues(alpha: 0.3),
-          width: 1,
-        ),
+    return IconButton(
+      onPressed: () => context.push('/profile'),
+      icon: Icon(
+        Icons.person_outline_rounded,
+        color: Colors.white,
+        size: MediaQuery.of(context).size.width * 0.07,
       ),
-      child: IconButton(
-        onPressed: () => context.push('/profile'),
-        icon: Icon(
-          Icons.person_outline,
-          color: Colors.white,
-          size: MediaQuery.of(context).size.width * 0.04,
-        ),
-        constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width * 0.08,
-          minHeight: MediaQuery.of(context).size.width * 0.08,
-        ),
-        padding: EdgeInsets.zero,
-      ),
+      padding: EdgeInsets.zero,
     );
   }
 }

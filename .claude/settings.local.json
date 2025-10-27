@@ -68,7 +68,8 @@
       "Bash(claude --version)",
       "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter analyze:*)",
       "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter pub:*)",
-      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter gen-l10n:*)"
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter gen-l10n:*)",
+      "WebSearch"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

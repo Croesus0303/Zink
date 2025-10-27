@@ -114,64 +114,56 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.025,
-        vertical: MediaQuery.of(context).size.height * 0.008,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0xFF247c6d).withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF247c6d).withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Like/Unlike button
-          InkWell(
-            onTap: _isLoading ? null : _toggleLike,
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.all(2),
-              child: _isLoading
-                  ? SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.04,
-                      height: MediaQuery.of(context).size.width * 0.04,
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Icon(
-                      _isLiked ? Icons.favorite : Icons.favorite_border,
-                      size: MediaQuery.of(context).size.width * 0.04,
-                      color: _isLiked ? const Color(0xFFbf988a) : Colors.white,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Like/Unlike button
+        InkWell(
+          onTap: _isLoading ? null : _toggleLike,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: _isLoading
+                ? SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.055,
+                    height: MediaQuery.of(context).size.width * 0.055,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
                     ),
-            ),
+                  )
+                : Icon(
+                    _isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    size: MediaQuery.of(context).size.width * 0.06,
+                    color: _isLiked ? const Color(0xFFbf988a) : Colors.white,
+                  ),
           ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-          // Clickable like count
-          InkWell(
-            onTap: _likeCount > 0 ? _showLikesList : null,
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-              child: Text(
-                _likeCount.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: MediaQuery.of(context).size.width * 0.032,
-                  decoration: TextDecoration.none,
-                ),
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        // Clickable like count
+        InkWell(
+          onTap: _likeCount > 0 ? _showLikesList : null,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            child: Text(
+              _likeCount.toString(),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: MediaQuery.of(context).size.width * 0.04,
+                decoration: TextDecoration.none,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
