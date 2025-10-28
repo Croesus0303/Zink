@@ -21,7 +21,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final currentUserDataAsync = ref.watch(currentUserDataProvider);
 
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: authState.valueOrNull == null ? '/login' : '/',
     debugLogDiagnostics: true,
     errorBuilder: AppRouter.errorPageBuilder,
     redirect: (context, state) {
