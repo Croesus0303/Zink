@@ -211,11 +211,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       ],
                     ),
                     borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
-                        color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                        color: AppColors.rosyBrown,
                         blurRadius: 20,
-                        offset: const Offset(0, 8),
+                        offset: Offset(0, 8),
                       ),
                     ],
                   ),
@@ -255,7 +255,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.4),
+                        color: AppColors.primaryOrange.withValues(alpha: 0.9),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -547,9 +547,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   fontSize: MediaQuery.of(context).size.width * 0.043,
                   fontWeight: FontWeight.w500,
                   color: Colors.white.withValues(alpha: 0.7),
-                  shadows: [
+                  shadows: const [
                     Shadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                      color: AppColors.rosyBrown,
                       blurRadius: 8,
                     ),
                   ],
@@ -798,10 +798,10 @@ extension on _ProfileScreenState {
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
-                      AppColors.rosyBrown.withValues(alpha: 0.8),
-                      AppColors.rosyBrown.withValues(alpha: 0.9),
+                      AppColors.rosyBrown,
+                      AppColors.rosyBrown,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
@@ -809,11 +809,11 @@ extension on _ProfileScreenState {
                     color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
+                      color: AppColors.rosyBrown,
                       blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      offset: Offset(0, 6),
                     ),
                   ],
                 ),
@@ -959,14 +959,14 @@ extension on _ProfileScreenState {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                color: AppColors.rosyBrown,
                 width: 1.5,
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.1),
+                  color: AppColors.rosyBrown,
                   blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -1057,7 +1057,7 @@ extension on _ProfileScreenState {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color:
-                                    AppColors.rosyBrown.withValues(alpha: 0.6),
+                                    AppColors.rosyBrown,
                                 border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.15),
                                   width: 1,
@@ -1105,8 +1105,8 @@ extension on _ProfileScreenState {
                     fontSize: MediaQuery.of(context).size.width * 0.053,
                     fontWeight: FontWeight.w600,
                     shadows: [
-                      Shadow(
-                        color: AppColors.rosyBrown.withValues(alpha: 0.6),
+                      const Shadow(
+                        color: AppColors.rosyBrown,
                         blurRadius: 12,
                       ),
                       Shadow(
@@ -1237,7 +1237,7 @@ extension on _ProfileScreenState {
                     gradient: LinearGradient(
                       colors: [
                         AppColors.primaryOrange.withValues(alpha: 0.4),
-                        AppColors.rosyBrown.withValues(alpha: 0.4),
+                        AppColors.rosyBrown,
                       ],
                     ),
                   ),
@@ -1360,7 +1360,7 @@ extension on _ProfileScreenState {
           height: MediaQuery.of(context).size.width * 0.12,
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
           decoration: BoxDecoration(
-            color: AppColors.rosyBrown.withValues(alpha: 0.6),
+            color: AppColors.rosyBrown,
             borderRadius: BorderRadius.circular(10),
           ),
           child: socialData.containsKey('image')
@@ -1658,7 +1658,7 @@ extension on _ProfileScreenState {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
             decoration: BoxDecoration(
-              color: AppColors.rosyBrown.withValues(alpha: 0.6),
+              color: AppColors.rosyBrown,
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 // Soft drop shadow
@@ -1756,14 +1756,14 @@ extension on _ProfileScreenState {
               // Header
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.rosyBrown.withValues(alpha: 0.3),
-                      AppColors.rosyBrown.withValues(alpha: 0.3),
+                      AppColors.rosyBrown,
+                      AppColors.rosyBrown,
                     ],
                   ),
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(22),
                     topRight: Radius.circular(22),
                   ),
@@ -1832,7 +1832,7 @@ extension on _ProfileScreenState {
             ? LinearGradient(
                 colors: [
                   AppColors.primaryOrange.withValues(alpha: 0.3),
-                  AppColors.rosyBrown.withValues(alpha: 0.3),
+                  AppColors.rosyBrown,
                 ],
               )
             : LinearGradient(

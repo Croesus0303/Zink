@@ -975,8 +975,8 @@ class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: GestureDetector(
-                  onTap: () => _showFullScreenImage(
-                      context, widget.submission.imageURL),
+                  onTap: () => context.push(
+                      '/submission/${widget.submission.eventId}/${widget.submission.id}'),
                   onDoubleTap: () async {
                     if (_toggleLike != null) {
                       await _toggleLike!();
@@ -1327,14 +1327,6 @@ class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
     }
   }
 
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
-      ),
-    );
-  }
 }
 
 class _CommentButton extends ConsumerWidget {
@@ -1588,8 +1580,8 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
               children: [
                 // Full photo
                 GestureDetector(
-                  onTap: () => _showFullScreenImage(
-                      context, winnerSubmission.imageURL),
+                  onTap: () => context.push(
+                      '/submission/${winnerSubmission.eventId}/${winnerSubmission.id}'),
                   child: CachedNetworkImage(
                     imageUrl: winnerSubmission.imageURL,
                     fit: BoxFit.cover,
@@ -1887,67 +1879,5 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
     );
   }
 
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
-      ),
-    );
-  }
 }
 
-class _FullScreenImageViewer extends StatelessWidget {
-  final String imageUrl;
-
-  const _FullScreenImageViewer({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.midnightGreen,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-            size: MediaQuery.of(context).size.width * 0.07,
-          ),
-          padding: EdgeInsets.zero,
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: InteractiveViewer(
-              panEnabled: true,
-              scaleEnabled: true,
-              minScale: 0.5,
-              maxScale: 3.0,
-              child: Center(
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  alignment: Alignment.center,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(color: AppColors.pineGreen),
-                  ),
-                  errorWidget: (context, url, error) => const Center(
-                    child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

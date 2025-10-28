@@ -231,7 +231,7 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.rosyBrown.withValues(alpha: 0.4),
+                    AppColors.rosyBrown,
                     AppColors.pineGreen.withValues(alpha: 0.3),
                   ],
                 ),
@@ -250,9 +250,9 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                 color: AppColors.textPrimary,
                 fontSize: MediaQuery.of(context).size.width * 0.05,
                 fontWeight: FontWeight.bold,
-                shadows: [
+                shadows: const [
                   Shadow(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.5),
+                    color: AppColors.rosyBrown,
                     blurRadius: 10,
                   ),
                 ],
@@ -312,13 +312,13 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.rosyBrown.withValues(alpha: 0.8),
+                    AppColors.rosyBrown,
                     AppColors.pineGreen.withValues(alpha: 0.9),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.rosyBrown.withValues(alpha: 0.3),
+                  color: AppColors.rosyBrown,
                   width: 1,
                 ),
               ),
@@ -441,7 +441,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: GestureDetector(
-                onTap: () => _showFullScreenImage(context, widget.post.submission.imageURL),
+                onTap: () => context.push('/submission/${widget.post.submission.eventId}/${widget.post.submission.id}'),
                 onDoubleTap: () async {
                   if (_toggleLike != null) {
                     await _toggleLike!();
@@ -458,7 +458,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                       end: Alignment.bottomRight,
                       colors: [
                         AppColors.midnightGreen.withValues(alpha: 0.4),
-                        AppColors.rosyBrown.withValues(alpha: 0.3),
+                        AppColors.rosyBrown,
                       ],
                     ),
                   ),
@@ -476,7 +476,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                       end: Alignment.bottomRight,
                       colors: [
                         AppColors.midnightGreen.withValues(alpha: 0.4),
-                        AppColors.rosyBrown.withValues(alpha: 0.3),
+                        AppColors.rosyBrown,
                       ],
                     ),
                   ),
@@ -570,7 +570,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: AppColors.rosyBrown.withValues(alpha: 0.9),
+                                color: AppColors.rosyBrown,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
@@ -673,14 +673,6 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
     }
   }
 
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => _FullScreenImageViewer(imageUrl: imageUrl),
-      ),
-    );
-  }
 }
 
 class _CommentButton extends ConsumerWidget {
@@ -754,57 +746,3 @@ class _CommentButton extends ConsumerWidget {
   }
 }
 
-class _FullScreenImageViewer extends StatelessWidget {
-  final String imageUrl;
-
-  const _FullScreenImageViewer({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.midnightGreen,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-            size: MediaQuery.of(context).size.width * 0.07,
-          ),
-          padding: EdgeInsets.zero,
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: InteractiveViewer(
-              panEnabled: true,
-              scaleEnabled: true,
-              minScale: 0.5,
-              maxScale: 3.0,
-              child: Center(
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  alignment: Alignment.center,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(color: AppColors.pineGreen),
-                  ),
-                  errorWidget: (context, url, error) => const Center(
-                    child: Icon(Icons.error, color: AppColors.pineGreen, size: 64),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
