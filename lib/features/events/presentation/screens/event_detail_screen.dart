@@ -15,6 +15,7 @@ import '../../../submissions/data/services/submissions_service.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../shared/widgets/app_colors.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../shared/widgets/separator_line.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -89,22 +90,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   style: const TextStyle(color: AppColors.textPrimary)),
               centerTitle: true,
             ),
-            body: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration:
-                    BoxDecoration(gradient: AppColors.auroraRadialGradient),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.eventNotFound,
-                    style: const TextStyle(color: AppColors.textPrimary),
-                  ),
-                ),
+            body: Center(
+              child: Text(
+                AppLocalizations.of(context)!.eventNotFound,
+                style: const TextStyle(color: AppColors.textPrimary),
               ),
             ),
           );
@@ -118,7 +107,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         return _buildEventDetail(event);
       },
       loading: () => Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -127,25 +116,17 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.pineGreen),
-            ),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.pineGreen,
+            strokeWidth: 4,
           ),
         ),
       ),
       error: (error, stack) {
         AppLogger.e('Error loading event details', error, stack);
         return Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.midnightGreen,
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -154,17 +135,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 style: const TextStyle(color: AppColors.textPrimary)),
             centerTitle: true,
           ),
-          body: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Container(
-              decoration:
-                  BoxDecoration(gradient: AppColors.auroraRadialGradient),
-              child: Center(
+          body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -189,7 +160,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.iceBorder,
+                          color: AppColors.pineGreen.withValues(alpha: 0.3),
                           width: 1,
                         ),
                         boxShadow: [
@@ -235,8 +206,6 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     ),
                   ],
                 ),
-              ),
-            ),
           ),
         );
       },
@@ -252,7 +221,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         return _buildEventDetail(event);
       },
       loading: () => Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.midnightGreen,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -261,18 +230,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.pineGreen),
-            ),
+        body: const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.pineGreen,
+            strokeWidth: 4,
           ),
         ),
       ),
@@ -287,10 +248,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
   Widget _buildEventDetail(EventModel event) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.midnightGreen,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+        backgroundColor: AppColors.midnightGreen,
         elevation: 0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.065,
         title: Text(
@@ -299,72 +260,20 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
             color: Colors.white,
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
-              ),
-            ],
           ),
         ),
         centerTitle: true,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
           ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
-          ),
+          padding: EdgeInsets.zero,
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.auroraRadialGradient,
-          ),
-          child: RefreshIndicator(
+      body: RefreshIndicator(
             color: AppColors.pineGreen,
             onRefresh: _onRefresh,
             edgeOffset: MediaQuery.of(context).padding.top + kToolbarHeight,
@@ -388,6 +297,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.06),
                 ),
+                const SliverToBoxAdapter(
+                  child: SeparatorLine(),
+                ),
                 SliverToBoxAdapter(
                   child:
                       _SubmissionsWidget(event: event, eventId: widget.eventId),
@@ -399,8 +311,6 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               ],
             ),
           ),
-        ),
-      ),
     );
   }
 }
@@ -412,42 +322,13 @@ class _EventDetailWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0),
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: AppColors.iceBorder,
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
-          ),
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.15),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Show reference photo and description unless event is expired AND has submissions
-          _buildReferencePhotoSection(context, event, ref),
-          // Status and Submit Section
-          _buildStatusAndSubmitSection(context, event),
-        ],
-      ),
+    return Column(
+      children: [
+        // Show reference photo and description unless event is expired AND has submissions
+        _buildReferencePhotoSection(context, event, ref),
+        // Status and Submit Section
+        _buildStatusAndSubmitSection(context, event),
+      ],
     );
   }
 
@@ -463,31 +344,9 @@ class _EventDetailWidget extends ConsumerWidget {
 
     return submissionsAsync.when(
       data: (submissions) {
-        // If event has ended and has submissions, show only description (winner widget will be shown below)
+        // If event has ended and has submissions, don't show anything here (winner widget will be shown below with description)
         if (submissions.isNotEmpty) {
-          return Container(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              event.description,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
-                fontSize: MediaQuery.of(context).size.width * 0.037,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
-                letterSpacing: 0.3,
-                shadows: [
-                  Shadow(
-                    color: AppColors.midnightGreen.withValues(alpha: 0.5),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          );
+          return const SizedBox.shrink();
         }
 
         // If event has ended but no submissions, show full reference section
@@ -501,91 +360,46 @@ class _EventDetailWidget extends ConsumerWidget {
   Widget _buildFullReferenceSection(BuildContext context, EventModel event) {
     return Column(
       children: [
-        // Reference photo - matching submissions list dimensions
+        // Reference photo with rounded corners and overlays
         AspectRatio(
           aspectRatio: 1,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.rosyBrown.withValues(alpha: 0.6),
-                  AppColors.pineGreen.withValues(alpha: 0.5),
-                  AppColors.midnightGreen.withValues(alpha: 0.4),
-                ],
-                stops: const [0.0, 0.5, 1.0],
-              ),
-            ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
             child: Stack(
               children: [
-                Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: event.referenceImageURL.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: event.referenceImageURL,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    AppColors.rosyBrown,
-                                    AppColors.pineGreen,
-                                    AppColors.midnightGreen,
-                                  ],
-                                ),
-                              ),
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 4,
-                                ),
+                // Photo filling entire widget
+                event.referenceImageURL.isNotEmpty
+                    ? CachedNetworkImage(
+                          imageUrl: event.referenceImageURL,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          placeholder: (context, url) => Container(
+                            color: AppColors.midnightGreenLight,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.pineGreen,
+                                strokeWidth: 4,
                               ),
                             ),
-                            errorWidget: (context, url, error) => Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    AppColors.rosyBrown,
-                                    AppColors.pineGreen,
-                                    AppColors.midnightGreen,
-                                  ],
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.photo_camera_outlined,
-                                color: Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.15,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppColors.rosyBrown,
-                                  AppColors.pineGreen,
-                                  AppColors.midnightGreen,
-                                ],
-                              ),
-                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: AppColors.midnightGreenLight,
                             child: Icon(
                               Icons.photo_camera_outlined,
-                              color: Colors.white,
+                              color: AppColors.rosyBrown,
                               size: MediaQuery.of(context).size.width * 0.15,
                             ),
                           ),
-                  ),
-                ),
+                        )
+                      : Container(
+                          color: AppColors.midnightGreenLight,
+                          child: Icon(
+                            Icons.photo_camera_outlined,
+                            color: AppColors.rosyBrown,
+                            size: MediaQuery.of(context).size.width * 0.15,
+                          ),
+                        ),
                 // Badge overlay - positioned at top right of reference photo
                 if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
                   Positioned(
@@ -609,15 +423,7 @@ class _EventDetailWidget extends ConsumerWidget {
                           imageUrl: event.badgeURL!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.primaryOrange
-                                      .withValues(alpha: 0.7),
-                                  AppColors.rosyBrown.withValues(alpha: 0.7),
-                                ],
-                              ),
-                            ),
+                            color: AppColors.rosyBrown.withValues(alpha: 0.7),
                             child: const Center(
                               child: SizedBox(
                                 width: 24,
@@ -630,19 +436,117 @@ class _EventDetailWidget extends ConsumerWidget {
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.primaryOrange
-                                      .withValues(alpha: 0.9),
-                                  AppColors.rosyBrown.withValues(alpha: 0.9),
-                                ],
-                              ),
-                            ),
+                            color: AppColors.rosyBrown,
                             child: Icon(
                               Icons.emoji_events,
                               color: Colors.white,
                               size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                // Active/Ended status tag overlay at top left
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: event.isActive
+                          ? AppColors.rosyBrown.withValues(alpha: 0.9)
+                          : AppColors.midnightGreenLight.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          event.isActive
+                              ? AppLocalizations.of(context)!.active
+                              : AppLocalizations.of(context)!.ended,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        if (event.isActive) ...<Widget>[
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                          Icon(
+                            Icons.access_time,
+                            size: MediaQuery.of(context).size.width * 0.035,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                          Text(
+                            _formatTimeRemaining(context, event.endTime),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: MediaQuery.of(context).size.width * 0.032,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                // Submit button overlay at center bottom (only for active events)
+                if (event.isActive)
+                  Positioned(
+                    bottom: 16,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        decoration: BoxDecoration(
+                          color: AppColors.pineGreen,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.pineGreen.withValues(alpha: 0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => context.push('/submit/${event.id}'),
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                                  vertical: MediaQuery.of(context).size.height * 0.015),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.submit,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width * 0.035,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -654,29 +558,30 @@ class _EventDetailWidget extends ConsumerWidget {
           ),
         ),
         // Description below photo
-        Container(
-          padding: const EdgeInsets.only(top: 16),
-          child: Text(
-            event.description,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: MediaQuery.of(context).size.width * 0.037,
-              fontWeight: FontWeight.w500,
-              height: 1.5,
-              letterSpacing: 0.3,
-              shadows: [
-                Shadow(
-                  color: AppColors.midnightGreen.withValues(alpha: 0.5),
-                  blurRadius: 2,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+        if (event.description.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Text(
+              event.description,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: MediaQuery.of(context).size.width * 0.037,
+                fontWeight: FontWeight.w500,
+                height: 1.5,
+                letterSpacing: 0.3,
+                shadows: [
+                  Shadow(
+                    color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
-        ),
       ],
     );
   }
@@ -687,152 +592,8 @@ class _EventDetailWidget extends ConsumerWidget {
       return _WinnerAnnouncementWidget(eventId: event.id);
     }
 
-    // Show regular status and submit section for active events
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      child: Column(
-        children: [
-          // Merged Status and Time Pill
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: event.isActive
-                    ? [
-                        AppColors.pineGreen.withValues(alpha: 0.9),
-                        AppColors.pineGreen.withValues(alpha: 0.8),
-                        AppColors.pineGreen.withValues(alpha: 0.85),
-                      ]
-                    : [
-                        AppColors.midnightGreen.withValues(alpha: 0.9),
-                        AppColors.midnightGreen.withValues(alpha: 0.7),
-                        AppColors.midnightGreen.withValues(alpha: 0.8),
-                      ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  blurRadius: 6,
-                  offset: const Offset(-1, -1),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 6,
-                  offset: const Offset(1, 1),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  event.isActive
-                      ? AppLocalizations.of(context)!.active
-                      : AppLocalizations.of(context)!.ended,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                if (event.isActive) ...<Widget>[
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  Icon(
-                    Icons.access_time,
-                    size: MediaQuery.of(context).size.width * 0.035,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                  Text(
-                    _formatTimeRemaining(context, event.endTime),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: MediaQuery.of(context).size.width * 0.032,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-
-          // Submit Button
-          if (event.isActive)
-            Center(
-              child: Container(
-                margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.02),
-                width: MediaQuery.of(context).size.width * 0.5,
-                height: MediaQuery.of(context).size.height * 0.06,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.rosyBrown.withValues(alpha: 0.9),
-                      AppColors.rosyBrown.withValues(alpha: 0.8),
-                      AppColors.rosyBrown.withValues(alpha: 0.85),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withValues(alpha: 0.1),
-                      blurRadius: 6,
-                      offset: const Offset(-1, -1),
-                    ),
-                    BoxShadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                      blurRadius: 8,
-                      offset: const Offset(2, 2),
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => context.push('/submit/${event.id}'),
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.04,
-                          vertical: MediaQuery.of(context).size.height * 0.015),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.submit,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.035,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+    // For active events, return empty widget since status and submit are now overlaid on reference photo
+    return const SizedBox.shrink();
   }
 
   String _formatTimeRemaining(BuildContext context, DateTime endTime) {
@@ -870,43 +631,9 @@ class _SubmissionsWidget extends ConsumerWidget {
     final submissionsAsync = ref.watch(filteredSubmissionsProvider(eventId));
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0),
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(alpha: 0.08),
-            AppColors.midnightGreen.withValues(alpha: 0.15),
-            Colors.white.withValues(alpha: 0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(-2, -2),
-          ),
-          BoxShadow(
-            color: AppColors.midnightGreen.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(2, 2),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Submissions Section Header
           Text(
@@ -924,7 +651,7 @@ class _SubmissionsWidget extends ConsumerWidget {
               ],
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+          const SizedBox(height: 8),
 
           // Filter Chips
           SingleChildScrollView(
@@ -1044,10 +771,7 @@ class _SubmissionsWidget extends ConsumerWidget {
     return Column(
       children: submissions
           .map(
-            (submission) => Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: _SubmissionCard(submission: submission),
-            ),
+            (submission) => _SubmissionCard(submission: submission),
           )
           .toList(),
     );
@@ -1129,13 +853,13 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.pineGreen
-              : AppColors.midnightGreen.withValues(alpha: 0.3),
+              ? AppColors.rosyBrown
+              : AppColors.pineGreen.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
-                ? AppColors.pineGreen
-                : Colors.white.withValues(alpha: 0.3),
+                ? AppColors.rosyBrown
+                : AppColors.pineGreen.withValues(alpha: 0.8),
             width: 1.5,
           ),
         ),
@@ -1213,239 +937,221 @@ class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
       bool isLikedByCurrentUser,
       int currentLikeCount,
       int currentCommentCount) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 2.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: AppColors.pineGreen.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.pineGreen.withValues(alpha: 0.3),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // User info header
-          Row(
-            children: [
-              ClickableUserAvatar(
-                user: user,
-                userId: widget.submission.uid,
-                radius: MediaQuery.of(context).size.width * 0.035,
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        ClickableUserName(
-                          user: user,
-                          userId: widget.submission.uid,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                            fontSize: MediaQuery.of(context).size.width * 0.035,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.02),
-                        Text(
-                          _formatSubmissionTime(
-                              context, widget.submission.createdAt),
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: MediaQuery.of(context).size.width * 0.028,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Show delete option if current user owns the submission
-              if (currentUser != null &&
-                  currentUser.uid == widget.submission.uid)
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.pineGreen.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: () async {
-                      await _showDeleteConfirmationDialog(
-                          context, ref, widget.submission);
-                    },
-                    icon: Icon(
-                      Icons.delete,
-                      color: AppColors.rosyBrown.withValues(alpha: 0.8),
-                      size: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width * 0.08,
-                      minHeight: MediaQuery.of(context).size.width * 0.08,
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
-            ],
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-          // Submission image
-          AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.rosyBrown.withValues(alpha: 0.6),
-                    AppColors.pineGreen.withValues(alpha: 0.5),
-                    AppColors.midnightGreen.withValues(alpha: 0.4),
-                  ],
-                  stops: const [0.0, 0.5, 1.0],
-                ),
+    return Column(
+      children: [
+        Stack(
+          children: [
+            // Full width image
+            AspectRatio(
+              aspectRatio: 0.85,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-              ),
-              child: Container(
-                margin: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: GestureDetector(
-                    onTap: () => _showFullScreenImage(
-                        context, widget.submission.imageURL),
-                    onDoubleTap: () async {
-                      if (_toggleLike != null) {
-                        await _toggleLike!();
-                      }
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: widget.submission.imageURL,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.midnightGreen.withValues(alpha: 0.4),
-                              AppColors.rosyBrown.withValues(alpha: 0.3),
-                            ],
-                          ),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 4,
-                          ),
+                child: GestureDetector(
+                  onTap: () => _showFullScreenImage(
+                      context, widget.submission.imageURL),
+                  onDoubleTap: () async {
+                    if (_toggleLike != null) {
+                      await _toggleLike!();
+                    }
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: widget.submission.imageURL,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.midnightGreen.withValues(alpha: 0.4),
+                            AppColors.rosyBrown.withValues(alpha: 0.3),
+                          ],
                         ),
                       ),
-                      errorWidget: (context, url, error) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.midnightGreen.withValues(alpha: 0.4),
-                              AppColors.rosyBrown.withValues(alpha: 0.3),
-                            ],
-                          ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4,
                         ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.midnightGreen.withValues(alpha: 0.4),
+                            AppColors.rosyBrown.withValues(alpha: 0.3),
+                          ],
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.broken_image,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.1,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-          // Actions
-          Row(
-            children: [
-              LikeButton(
-                eventId: widget.submission.eventId,
-                submissionId: widget.submission.id,
-                initialLikeCount: currentLikeCount,
-                initialIsLiked: isLikedByCurrentUser,
-                onLikeController: (toggleLike) {
-                  _toggleLike = toggleLike;
-                },
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.015),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    useSafeArea: true,
-                    enableDrag: true,
-                    builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: CommentSheet(
-                        eventId: widget.submission.eventId,
-                        submissionId: widget.submission.id,
-                      ),
-                    ),
-                  );
-                },
+            // Top overlay with user info
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.03,
-                    vertical: MediaQuery.of(context).size.height * 0.01,
-                  ),
+                  padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: AppColors.pineGreen.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      width: 1.5,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.6),
+                        Colors.black.withValues(alpha: 0.3),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.comment_outlined,
-                        size: MediaQuery.of(context).size.width * 0.04,
-                        color: Colors.white,
+                      // Profile photo
+                      ClickableUserAvatar(
+                        user: user,
+                        userId: widget.submission.uid,
+                        radius: MediaQuery.of(context).size.width * 0.05,
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                      Text(
-                        '$currentCommentCount',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: MediaQuery.of(context).size.width * 0.032,
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                      // Username and date
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClickableUserName(
+                              user: user,
+                              userId: widget.submission.uid,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: MediaQuery.of(context).size.width * 0.04,
+                                decoration: TextDecoration.none,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.8),
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              _formatSubmissionTime(
+                                  context, widget.submission.createdAt),
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontSize: MediaQuery.of(context).size.width * 0.032,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.8),
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      // Delete button for own submissions
+                      if (currentUser != null &&
+                          currentUser.uid == widget.submission.uid)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            onPressed: () async {
+                              await _showDeleteConfirmationDialog(
+                                  context, ref, widget.submission);
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: AppColors.rosyBrown,
+                              size: MediaQuery.of(context).size.width * 0.05,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Bottom overlay with action buttons
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.6),
+                        Colors.black.withValues(alpha: 0.3),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      LikeButton(
+                        eventId: widget.submission.eventId,
+                        submissionId: widget.submission.id,
+                        initialLikeCount: currentLikeCount,
+                        initialIsLiked: isLikedByCurrentUser,
+                        onLikeController: (toggleLike) {
+                          _toggleLike = toggleLike;
+                        },
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.015),
+                      _CommentButton(
+                        eventId: widget.submission.eventId,
+                        submissionId: widget.submission.id,
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+        // Separator line with padding
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Container(
+            height: 1,
+            color: AppColors.midnightGreenLight,
           ),
-        ]),
-      ),
+        ),
+      ],
     );
   }
 
@@ -1478,7 +1184,7 @@ class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
             color: AppColors.midnightGreen.withValues(alpha: 0.95),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: AppColors.iceBorder,
+              color: AppColors.pineGreen.withValues(alpha: 0.3),
               width: 1.5,
             ),
             boxShadow: [
@@ -1603,6 +1309,77 @@ class _SubmissionCardState extends ConsumerState<_SubmissionCard> {
   }
 }
 
+class _CommentButton extends ConsumerWidget {
+  final String eventId;
+  final String submissionId;
+
+  const _CommentButton({
+    required this.eventId,
+    required this.submissionId,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final commentCountAsync = ref.watch(commentCountProvider(
+        (eventId: eventId, submissionId: submissionId)));
+
+    int currentCommentCount = 0;
+    commentCountAsync.whenData((count) {
+      currentCommentCount = count;
+    });
+
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          useSafeArea: true,
+          enableDrag: true,
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: CommentSheet(
+              eventId: eventId,
+              submissionId: submissionId,
+            ),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.chat_bubble_outline_rounded,
+              size: MediaQuery.of(context).size.width * 0.06,
+              color: Colors.white,
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Text(
+              '$currentCommentCount',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: MediaQuery.of(context).size.width * 0.04,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _WinnerAnnouncementWidget extends ConsumerWidget {
   final String eventId;
 
@@ -1611,6 +1388,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final submissionsAsync = ref.watch(submissionsProvider(eventId));
+    final eventAsync = ref.watch(eventProvider(eventId));
 
     return submissionsAsync.when(
       data: (submissions) {
@@ -1624,30 +1402,13 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.midnightGreen.withValues(alpha: 0.9),
-                    AppColors.midnightGreen.withValues(alpha: 0.7),
-                    AppColors.midnightGreen.withValues(alpha: 0.8),
-                  ],
-                ),
+                color: AppColors.midnightGreenLight.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  width: 1,
-                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    blurRadius: 6,
-                    offset: const Offset(-1, -1),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 6,
-                    offset: const Offset(1, 1),
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -1671,7 +1432,11 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
         // Determine winner synchronously since submissions are already loaded
         try {
           final winnerSubmission = _determineWinnerSync(submissions, ref);
-          return _buildWinnerWidget(context, ref, winnerSubmission);
+          return eventAsync.when(
+            data: (event) => _buildWinnerWidget(context, ref, winnerSubmission, event),
+            loading: () => _buildWinnerWidget(context, ref, winnerSubmission, null),
+            error: (_, __) => _buildWinnerWidget(context, ref, winnerSubmission, null),
+          );
         } catch (e) {
           // If there's an error determining the winner, show ended status
           return Container(
@@ -1682,20 +1447,15 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.midnightGreen.withValues(alpha: 0.9),
-                    AppColors.midnightGreen.withValues(alpha: 0.7),
-                    AppColors.midnightGreen.withValues(alpha: 0.8),
-                  ],
-                ),
+                color: AppColors.midnightGreenLight.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -1786,157 +1546,95 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
   }
 
   Widget _buildWinnerWidget(
-      BuildContext context, WidgetRef ref, SubmissionModel winnerSubmission) {
+      BuildContext context, WidgetRef ref, SubmissionModel winnerSubmission, EventModel? event) {
     final userDataAsync = ref.watch(userDataProvider(winnerSubmission.uid));
 
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFF004D40).withValues(alpha: 0.3),
-              const Color(0xFF002B36).withValues(alpha: 0.25),
-              const Color(0xFFFFB300).withValues(alpha: 0.1),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFF004D40).withValues(alpha: 0.6),
-            width: 2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFFFB300).withValues(alpha: 0.2),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(-2, -2),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            // Winner announcement header
-            Center(
-              child: Text(
-                AppLocalizations.of(context)!.spotlight,
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = const LinearGradient(
-                      colors: [Color(0xFFFFD54F), Color(0xFFFFB300)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
-                  fontSize: MediaQuery.of(context).size.width * 0.045,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  shadows: [
-                    Shadow(
-                      color: const Color(0xFFFFB300).withValues(alpha: 0.5),
-                      blurRadius: 8,
-                      offset: const Offset(0, 0),
-                    ),
-                    Shadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      blurRadius: 4,
-                      offset: const Offset(1, 1),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-
-            // Winner photo - matching submissions list dimensions
-            AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFFFFB300).withValues(alpha: 0.6),
-                      AppColors.rosyBrown.withValues(alpha: 0.5),
-                      const Color(0xFF004D40).withValues(alpha: 0.4),
-                    ],
-                    stops: const [0.0, 0.5, 1.0],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: const Color(0xFF1E1E1E).withValues(alpha: 0.8),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFFFB300).withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: GestureDetector(
-                      onTap: () => _showFullScreenImage(
-                          context, winnerSubmission.imageURL),
-                      child: CachedNetworkImage(
-                        imageUrl: winnerSubmission.imageURL,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.primaryOrange.withValues(alpha: 0.4),
-                                AppColors.rosyBrown.withValues(alpha: 0.3),
-                              ],
-                            ),
-                          ),
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 4,
-                            ),
-                          ),
+    return Column(
+      children: [
+        // Winner photo with overlays - matching reference photo dimensions
+        AspectRatio(
+          aspectRatio: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              children: [
+                // Full photo
+                GestureDetector(
+                  onTap: () => _showFullScreenImage(
+                      context, winnerSubmission.imageURL),
+                  child: CachedNetworkImage(
+                    imageUrl: winnerSubmission.imageURL,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    placeholder: (context, url) => Container(
+                      color: AppColors.midnightGreenLight,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.pineGreen,
+                          strokeWidth: 4,
                         ),
-                        errorWidget: (context, url, error) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.primaryOrange.withValues(alpha: 0.4),
-                                AppColors.rosyBrown.withValues(alpha: 0.3),
-                              ],
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.broken_image,
-                            color: Colors.white,
-                            size: MediaQuery.of(context).size.width * 0.15,
-                          ),
-                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: AppColors.midnightGreenLight,
+                      child: Icon(
+                        Icons.broken_image,
+                        color: AppColors.rosyBrown,
+                        size: MediaQuery.of(context).size.width * 0.15,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-
-            // User info
-            userDataAsync.when(
+                // Dark overlay for text readability
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.3),
+                          Colors.black.withValues(alpha: 0.5),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Spotlight label at top
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.spotlight.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.032,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ),
+                // User info at bottom
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: userDataAsync.when(
               data: (user) => Row(
                 children: [
                   ClickableUserAvatar(
@@ -2056,7 +1754,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.3),
+                          color: AppColors.rosyBrown.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -2112,7 +1810,7 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                           AppLocalizations.of(context)!.championOfEvent,
                           style: TextStyle(
                             color:
-                                AppColors.primaryOrange.withValues(alpha: 0.9),
+                                AppColors.rosyBrown.withValues(alpha: 0.9),
                             fontSize: MediaQuery.of(context).size.width * 0.03,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
@@ -2127,9 +1825,37 @@ class _WinnerAnnouncementWidget extends ConsumerWidget {
                 ],
               ),
             ),
+          ),
           ],
         ),
       ),
+        ),
+        // Description below photo
+        if (event != null && event.description.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Text(
+              event.description,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: MediaQuery.of(context).size.width * 0.037,
+                fontWeight: FontWeight.w500,
+                height: 1.5,
+                letterSpacing: 0.3,
+                shadows: [
+                  Shadow(
+                    color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ],
     );
   }
 
@@ -2169,7 +1895,7 @@ class _FullScreenImageViewer extends StatelessWidget {
               ],
             ),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.iceBorder, width: 1),
+            border: Border.all(color: AppColors.pineGreen.withValues(alpha: 0.3), width: 1),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.06),

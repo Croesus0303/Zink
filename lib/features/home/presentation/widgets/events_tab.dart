@@ -904,7 +904,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                                 color: event.isExpired
                                     ? AppColors.midnightGreen
                                         .withValues(alpha: 0.8)
-                                    : AppColors.pineGreen
+                                    : AppColors.rosyBrown
                                         .withValues(alpha: 0.8),
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
