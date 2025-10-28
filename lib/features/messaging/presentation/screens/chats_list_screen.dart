@@ -20,243 +20,75 @@ class ChatsListScreen extends ConsumerWidget {
     final chatsAsync = ref.watch(userChatsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+        backgroundColor: AppColors.midnightGreen,
         elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
+          ),
+          padding: EdgeInsets.zero,
+        ),
         title: Text(
           AppLocalizations.of(context)!.messages,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
             color: Colors.white,
-            shadows: [
-              Shadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
           ),
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
+      body: chatsAsync.when(
+        data: (chats) => _buildChatsList(context, ref, chats),
+        loading: () => const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.rosyBrown,
+            strokeWidth: 4,
           ),
         ),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.12),
-              Expanded(
-                child: chatsAsync.when(
-                  data: (chats) => _buildChatsList(context, ref, chats),
-                  loading: () => const Center(
-                      child: CircularProgressIndicator(
-                          color: AppColors.pineGreen)),
-                  error: (error, stack) {
-                    AppLogger.e('Error loading chats', error, stack);
-                    return Center(
-                      child: Container(
-                        margin: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.08),
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * 0.06),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.iceGlassGradient,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                              color: AppColors.iceBorder, width: 1.5),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withValues(alpha: 0.08),
-                              blurRadius: 15,
-                              offset: const Offset(-2, -2),
-                            ),
-                            BoxShadow(
-                              color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                              blurRadius: 15,
-                              offset: const Offset(2, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              height: MediaQuery.of(context).size.width * 0.2,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.rosyBrown.withValues(alpha: 0.8),
-                                    AppColors.rosyBrown.withValues(alpha: 0.6),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.error,
-                                size: MediaQuery.of(context).size.width * 0.1,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.025),
-                            Text(
-                              AppLocalizations.of(context)!.errorLoadingChats,
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                                shadows: [
-                                  Shadow(
-                                    color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.02),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.pineGreen.withValues(alpha: 0.8),
-                                    AppColors.pineGreen.withValues(alpha: 0.9),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 1,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.pineGreen.withValues(alpha: 0.4),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () => ref.refresh(userChatsProvider),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          MediaQuery.of(context).size.width *
-                                              0.06,
-                                      vertical:
-                                          MediaQuery.of(context).size.height *
-                                              0.015,
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.refresh,
-                                          color: Colors.white,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                        ),
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!.retry,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.04,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+        error: (error, stack) {
+          AppLogger.e('Error loading chats', error, stack);
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: MediaQuery.of(context).size.width * 0.2,
+                  color: AppColors.rosyBrown,
                 ),
-              ),
-            ],
-          ),
-        ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
+                  AppLocalizations.of(context)!.errorLoadingChats,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                ElevatedButton.icon(
+                  onPressed: () => ref.refresh(userChatsProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(AppLocalizations.of(context)!.retry),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.pineGreen,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.06,
+                      vertical: MediaQuery.of(context).size.height * 0.015,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -265,88 +97,41 @@ class ChatsListScreen extends ConsumerWidget {
       BuildContext context, WidgetRef ref, List<ChatModel> chats) {
     if (chats.isEmpty) {
       return Center(
-        child: Container(
-          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
-          decoration: BoxDecoration(
-            gradient: AppColors.iceGlassGradient,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.iceBorder, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(-2, -2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.chat_bubble_outline_rounded,
+              size: MediaQuery.of(context).size.width * 0.2,
+              color: Colors.white.withValues(alpha: 0.3),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Text(
+              AppLocalizations.of(context)!.noConversationsYet,
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.045,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              BoxShadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                blurRadius: 15,
-                offset: const Offset(2, 2),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Text(
+              AppLocalizations.of(context)!.noConversationsDescription,
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.035,
+                color: Colors.white.withValues(alpha: 0.6),
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.2,
-                height: MediaQuery.of(context).size.width * 0.2,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.pineGreen.withValues(alpha: 0.8),
-                      AppColors.rosyBrown.withValues(alpha: 0.6),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.chat_bubble_outline,
-                  size: MediaQuery.of(context).size.width * 0.1,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-              Text(
-                AppLocalizations.of(context)!.noConversationsYet,
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.045,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              Text(
-                AppLocalizations.of(context)!.noConversationsDescription,
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.035,
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       );
     }
 
     return ListView.builder(
       padding: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width * 0.04,
-        right: MediaQuery.of(context).size.width * 0.04,
+        left: MediaQuery.of(context).size.width * 0.02,
+        right: MediaQuery.of(context).size.width * 0.02,
         top: MediaQuery.of(context).size.height * 0.02,
         bottom: MediaQuery.of(context).size.width * 0.04,
       ),
@@ -393,49 +178,20 @@ class _ChatListItem extends ConsumerWidget {
     final hasUnread = chat.hasUnreadMessages(currentUser.uid);
 
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
       decoration: BoxDecoration(
-        gradient: hasUnread 
-          ? LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.rosyBrown.withValues(alpha: 0.3),
-                AppColors.rosyBrown.withValues(alpha: 0.25),
-                AppColors.primaryOrange.withValues(alpha: 0.2),
-                AppColors.rosyBrown.withValues(alpha: 0.15),
-              ],
-            )
-          : AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: hasUnread 
-            ? AppColors.rosyBrown.withValues(alpha: 0.6)
-            : AppColors.iceBorder, 
-          width: hasUnread ? 2.5 : 1.5,
+        color: hasUnread
+            ? AppColors.midnightGreenLight.withValues(alpha: 0.5)
+            : Colors.transparent,
+        border: const Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: hasUnread 
-              ? AppColors.rosyBrown.withValues(alpha: 0.25)
-              : Colors.white.withValues(alpha: 0.08),
-            blurRadius: hasUnread ? 20 : 15,
-            offset: const Offset(-2, -2),
-          ),
-          BoxShadow(
-            color: hasUnread 
-              ? AppColors.rosyBrown.withValues(alpha: 0.3)
-              : AppColors.rosyBrown.withValues(alpha: 0.15),
-            blurRadius: hasUnread ? 20 : 15,
-            offset: const Offset(2, 2),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
           onTap: () {
             context.push('/chat/$otherUserId');
           },
@@ -443,29 +199,21 @@ class _ChatListItem extends ConsumerWidget {
             _showChatOptions(context, ref);
           },
           child: Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
             child: Row(
               children: [
                 Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                     gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                       colors: [
-                        AppColors.pineGreen.withValues(alpha: 0.3),
-                        AppColors.rosyBrown.withValues(alpha: 0.2),
+                        AppColors.rosyBrown,
+                        AppColors.pineGreen,
+                        AppColors.midnightGreen,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: AppColors.iceBorder,
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.pineGreen.withValues(alpha: 0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: CircleAvatar(
                     radius: MediaQuery.of(context).size.width * 0.06,
@@ -489,7 +237,7 @@ class _ChatListItem extends ConsumerWidget {
                         : null,
                   ),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,12 +248,6 @@ class _ChatListItem extends ConsumerWidget {
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
-                          shadows: [
-                            Shadow(
-                              color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                              blurRadius: 8,
-                            ),
-                          ],
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -516,28 +258,16 @@ class _ChatListItem extends ConsumerWidget {
                               children: [
                                 if (chat.lastMessage!.senderId ==
                                     currentUser.uid)
-                                  Container(
-                                    margin: EdgeInsets.only(
+                                  Padding(
+                                    padding: EdgeInsets.only(
                                         right:
                                             MediaQuery.of(context).size.width *
                                                 0.015),
-                                    padding: EdgeInsets.all(
-                                        MediaQuery.of(context).size.width *
-                                            0.005),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          AppColors.pineGreen.withValues(alpha: 0.6),
-                                          AppColors.rosyBrown.withValues(alpha: 0.4),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
                                     child: Icon(
                                       Icons.arrow_forward,
                                       size: MediaQuery.of(context).size.width *
                                           0.03,
-                                      color: Colors.white,
+                                      color: AppColors.textSecondary,
                                     ),
                                   ),
                                 Expanded(
@@ -571,31 +301,12 @@ class _ChatListItem extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.02,
-                          vertical: MediaQuery.of(context).size.height * 0.005,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.pineGreen.withValues(alpha: 0.2),
-                              AppColors.rosyBrown.withValues(alpha: 0.1),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: AppColors.iceBorder,
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          _formatTime(chat.lastMessage!.createdAt),
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: MediaQuery.of(context).size.width * 0.028,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      Text(
+                        _formatTime(chat.lastMessage!.createdAt),
+                        style: TextStyle(
+                          color: AppColors.textSecondary.withValues(alpha: 0.7),
+                          fontSize: MediaQuery.of(context).size.width * 0.028,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                       // Unread count badge
@@ -604,27 +315,16 @@ class _ChatListItem extends ConsumerWidget {
                         builder: (context) {
                           final count = chat.getUnreadCount(currentUser.uid);
                           
-                          return count > 0 
+                          return count > 0
                             ? Container(
                                 width: MediaQuery.of(context).size.width * 0.05,
                                 height: MediaQuery.of(context).size.width * 0.05,
                                 constraints: BoxConstraints(
                                   minWidth: MediaQuery.of(context).size.width * 0.05,
                                 ),
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: AppColors.rosyBrown,
                                   shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
                                 ),
                                 child: Center(
                                   child: Text(
@@ -654,116 +354,97 @@ class _ChatListItem extends ConsumerWidget {
 
   Widget _buildLoadingItem(BuildContext context) {
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.iceBorder, width: 1.5),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
+        ),
       ),
-      child: Container(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.12,
-              height: MediaQuery.of(context).size.width * 0.12,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.midnightGreen.withValues(alpha: 0.3),
-                    AppColors.midnightGreen.withValues(alpha: 0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: AppColors.iceBorder,
-                  width: 1,
-                ),
-              ),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.midnightGreen.withValues(alpha: 0.3),
-                          AppColors.midnightGreen.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.015,
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.midnightGreen.withValues(alpha: 0.2),
-                          AppColors.midnightGreen.withValues(alpha: 0.05),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown.withValues(alpha: 0.3),
+                  AppColors.pineGreen.withValues(alpha: 0.3),
+                  AppColors.midnightGreen.withValues(alpha: 0.3),
                 ],
               ),
             ),
-          ],
-        ),
+            child: CircleAvatar(
+              radius: MediaQuery.of(context).size.width * 0.06,
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  decoration: BoxDecoration(
+                    color: AppColors.midnightGreenLight.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  decoration: BoxDecoration(
+                    color: AppColors.midnightGreenLight.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildErrorItem(BuildContext context, String otherUserId) {
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
           onTap: () {
             context.push('/chat/$otherUserId');
           },
           child: Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
             child: Row(
               children: [
                 Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                     gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                       colors: [
-                        AppColors.rosyBrown.withValues(alpha: 0.8),
-                        AppColors.rosyBrown.withValues(alpha: 0.6),
+                        AppColors.rosyBrown,
+                        AppColors.pineGreen,
+                        AppColors.midnightGreen,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: AppColors.iceBorder,
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: CircleAvatar(
                     radius: MediaQuery.of(context).size.width * 0.06,
@@ -775,7 +456,7 @@ class _ChatListItem extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

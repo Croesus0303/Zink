@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../features/auth/data/models/user_model.dart';
 import '../../features/events/providers/events_providers.dart';
+import '../widgets/app_colors.dart';
 
 class ClickableUserAvatar extends ConsumerWidget {
   final UserModel? user;
@@ -26,15 +27,31 @@ class ClickableUserAvatar extends ConsumerWidget {
     final targetUserId = userId ?? user?.uid;
 
     if (targetUserId == null) {
-      return CircleAvatar(
-        radius: radius,
-        child: Text(
-          username?.isNotEmpty == true
-              ? username!.substring(0, 1).toUpperCase()
-              : '?',
-          style: TextStyle(
-            fontSize: radius * 0.8,
-            fontWeight: FontWeight.bold,
+      return Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.rosyBrown,
+              AppColors.pineGreen,
+              AppColors.midnightGreen,
+            ],
+          ),
+        ),
+        child: CircleAvatar(
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          child: Text(
+            username?.isNotEmpty == true
+                ? username!.substring(0, 1).toUpperCase()
+                : '?',
+            style: TextStyle(
+              fontSize: radius * 0.8,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       );
@@ -50,27 +67,59 @@ class ClickableUserAvatar extends ConsumerWidget {
 
     return userAsync.when(
       data: (fetchedUser) => _buildAvatar(context, fetchedUser, targetUserId),
-      loading: () => CircleAvatar(
-        radius: radius,
-        child: Text(
-          username?.isNotEmpty == true
-              ? username!.substring(0, 1).toUpperCase()
-              : '?',
-          style: TextStyle(
-            fontSize: radius * 0.8,
-            fontWeight: FontWeight.bold,
+      loading: () => Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.rosyBrown,
+              AppColors.pineGreen,
+              AppColors.midnightGreen,
+            ],
+          ),
+        ),
+        child: CircleAvatar(
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          child: Text(
+            username?.isNotEmpty == true
+                ? username!.substring(0, 1).toUpperCase()
+                : '?',
+            style: TextStyle(
+              fontSize: radius * 0.8,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
-      error: (_, __) => CircleAvatar(
-        radius: radius,
-        child: Text(
-          username?.isNotEmpty == true
-              ? username!.substring(0, 1).toUpperCase()
-              : '?',
-          style: TextStyle(
-            fontSize: radius * 0.8,
-            fontWeight: FontWeight.bold,
+      error: (_, __) => Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.rosyBrown,
+              AppColors.pineGreen,
+              AppColors.midnightGreen,
+            ],
+          ),
+        ),
+        child: CircleAvatar(
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          child: Text(
+            username?.isNotEmpty == true
+                ? username!.substring(0, 1).toUpperCase()
+                : '?',
+            style: TextStyle(
+              fontSize: radius * 0.8,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -82,20 +131,36 @@ class ClickableUserAvatar extends ConsumerWidget {
       onTap: () => context.push('/profile/$targetUserId'),
       child: Stack(
         children: [
-          CircleAvatar(
-            radius: radius,
-            backgroundImage: userData?.photoURL != null
-                ? CachedNetworkImageProvider(userData!.photoURL!)
-                : null,
-            child: userData?.photoURL == null
-                ? Text(
-                    _getDisplayText(userData),
-                    style: TextStyle(
-                      fontSize: radius * 0.8,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                : null,
+          Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown,
+                  AppColors.pineGreen,
+                  AppColors.midnightGreen,
+                ],
+              ),
+            ),
+            child: CircleAvatar(
+              radius: radius,
+              backgroundColor: Colors.transparent,
+              backgroundImage: userData?.photoURL != null
+                  ? CachedNetworkImageProvider(userData!.photoURL!)
+                  : null,
+              child: userData?.photoURL == null
+                  ? Text(
+                      _getDisplayText(userData),
+                      style: TextStyle(
+                        fontSize: radius * 0.8,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+            ),
           ),
           if (showNavigateIcon)
             Positioned(

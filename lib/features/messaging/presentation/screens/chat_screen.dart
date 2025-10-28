@@ -135,12 +135,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final otherUserAsync = ref.watch(userDataProvider(widget.otherUserId));
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+        backgroundColor: AppColors.midnightGreen,
         elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
+        centerTitle: false,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
+          ),
+          padding: EdgeInsets.zero,
+        ),
         title: otherUserAsync.when(
           data: (user) => _buildAppBarTitle(user),
           loading: () => Text(
@@ -158,86 +166,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
           ),
         ),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: Column(
-            children: [
-              SizedBox(
-                height:
-                    MediaQuery.of(context).padding.top + kToolbarHeight + 20,
-              ),
-              // Messages list
-              Expanded(
-                child: _chatId != null
-                    ? otherUserAsync.when(
-                        data: (otherUser) =>
-                            _buildPaginatedMessagesList(currentUser, otherUser),
-                        loading: () => const Center(
-                            child: CircularProgressIndicator(
-                                color: AppColors.pineGreen)),
-                        error: (_, __) => _buildPaginatedMessagesList(currentUser, null),
-                      )
-                    : const Center(
+      body: Column(
+        children: [
+          // Messages list
+          Expanded(
+            child: _chatId != null
+                ? otherUserAsync.when(
+                    data: (otherUser) =>
+                        _buildPaginatedMessagesList(currentUser, otherUser),
+                    loading: () => const Center(
                         child: CircularProgressIndicator(
-                            color: AppColors.pineGreen)),
-              ),
-              // Message input
-              _buildMessageInput(),
-            ],
+                            color: AppColors.rosyBrown,
+                            strokeWidth: 4)),
+                    error: (_, __) => _buildPaginatedMessagesList(currentUser, null),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(
+                        color: AppColors.rosyBrown,
+                        strokeWidth: 4)),
           ),
-        ),
+          // Message input
+          _buildMessageInput(),
+        ],
       ),
     );
   }
@@ -245,37 +196,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget _buildAppBarTitle(UserModel? user) {
     return Row(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.pineGreen.withValues(alpha: 0.3),
-                AppColors.rosyBrown.withValues(alpha: 0.2),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.pineGreen.withValues(alpha: 0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+        GestureDetector(
+          onTap: () {
+            if (user != null) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(userId: user.uid),
+                ),
+              );
+            }
+          },
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.rosyBrown,
+                  AppColors.pineGreen,
+                  AppColors.midnightGreen,
+                ],
               ),
-            ],
-          ),
-          child: GestureDetector(
-            onTap: () {
-              if (user != null) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ProfileScreen(userId: user.uid),
-                  ),
-                );
-              }
-            },
+            ),
             child: CircleAvatar(
               radius: MediaQuery.of(context).size.width * 0.04,
               backgroundColor: Colors.transparent,
@@ -564,17 +507,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         final message = paginatedState.messages[reverseIndex];
                         final isMe = currentUser?.uid == message.senderId;
                         final isLastMessage = reverseIndex == paginatedState.messages.length - 1;
-                        final nextMessage = reverseIndex < paginatedState.messages.length - 1 
-                            ? paginatedState.messages[reverseIndex + 1] 
+                        final nextMessage = reverseIndex < paginatedState.messages.length - 1
+                            ? paginatedState.messages[reverseIndex + 1]
                             : null;
                         final showAvatar = isLastMessage ||
                             (nextMessage != null &&
                                 nextMessage.senderId != message.senderId);
 
+                        // Show timestamp based on sender, date, and time (for today's messages)
+                        final showTimestamp = _shouldShowTimestamp(
+                          message.createdAt,
+                          nextMessage?.createdAt,
+                          message.senderId,
+                          nextMessage?.senderId,
+                        );
+
                         return _MessageBubble(
                           message: message,
                           isMe: isMe,
                           showAvatar: showAvatar && !isMe,
+                          showTimestamp: showTimestamp,
                           otherUser: otherUser,
                           chat: chat,
                           currentUserId: currentUser?.uid,
@@ -724,12 +676,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return _isSameDay(date, now);
+  }
+
+  bool _isSameTime(DateTime date1, DateTime date2) {
+    return date1.hour == date2.hour && date1.minute == date2.minute;
+  }
+
+  bool _shouldShowTimestamp(DateTime currentMessageTime, DateTime? nextMessageTime, String currentSenderId, String? nextSenderId) {
+    // Always show timestamp if it's the last message
+    if (nextMessageTime == null || nextSenderId == null) {
+      return true;
+    }
+
+    // Always show timestamp if next message is from different sender
+    if (nextSenderId != currentSenderId) {
+      return true;
+    }
+
+    // If messages are from different days, show timestamp
+    if (!_isSameDay(currentMessageTime, nextMessageTime)) {
+      return true;
+    }
+
+    // For messages from today, check if they're from different minutes
+    if (_isToday(currentMessageTime) && _isToday(nextMessageTime)) {
+      return !_isSameTime(currentMessageTime, nextMessageTime);
+    }
+
+    // For older messages on the same day, don't show timestamp (already handled by same day check)
+    return false;
+  }
 }
 
 class _MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
   final bool showAvatar;
+  final bool showTimestamp;
   final UserModel? otherUser;
   final ChatModel? chat;
   final String? currentUserId;
@@ -738,6 +731,7 @@ class _MessageBubble extends StatelessWidget {
     required this.message,
     required this.isMe,
     required this.showAvatar,
+    required this.showTimestamp,
     this.otherUser,
     this.chat,
     this.currentUserId,
@@ -764,38 +758,30 @@ class _MessageBubble extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.width * 0.01),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.3),
-                          AppColors.rosyBrown.withValues(alpha: 0.2),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: AppColors.iceBorder,
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pineGreen.withValues(alpha: 0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (otherUser != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProfileScreen(userId: otherUser!.uid),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.rosyBrown,
+                            AppColors.pineGreen,
+                            AppColors.midnightGreen,
+                          ],
                         ),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (otherUser != null) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProfileScreen(userId: otherUser!.uid),
-                            ),
-                          );
-                        }
-                      },
+                      ),
                       child: CircleAvatar(
                         radius: MediaQuery.of(context).size.width * 0.04,
                         backgroundColor: Colors.transparent,
@@ -841,8 +827,8 @@ class _MessageBubble extends StatelessWidget {
                           )
                         : LinearGradient(
                             colors: [
-                              AppColors.midnightGreen.withValues(alpha: 0.2),
-                              AppColors.midnightGreen.withValues(alpha: 0.1),
+                              AppColors.rosyBrown.withValues(alpha: 0.8),
+                              AppColors.rosyBrown.withValues(alpha: 0.9),
                             ],
                           ),
                     borderRadius: BorderRadius.circular(15).copyWith(
@@ -853,7 +839,7 @@ class _MessageBubble extends StatelessWidget {
                     border: Border.all(
                       color: isMe
                           ? Colors.white.withValues(alpha: 0.2)
-                          : AppColors.midnightGreen.withValues(alpha: 0.3),
+                          : AppColors.rosyBrown.withValues(alpha: 0.3),
                       width: 1,
                     ),
                     boxShadow: [
@@ -886,39 +872,41 @@ class _MessageBubble extends StatelessWidget {
               ],
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.003),
-          Padding(
-            padding: EdgeInsets.only(
-              left: !isMe && showAvatar
-                  ? MediaQuery.of(context).size.width * 0.13
-                  : !isMe
-                      ? MediaQuery.of(context).size.width * 0.16
-                      : 0,
-              right: isMe ? MediaQuery.of(context).size.width * 0.02 : 0,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _formatTime(message.createdAt),
-                  style: TextStyle(
-                    color: AppColors.rosyBrown.withValues(alpha: 0.8),
-                    fontSize: MediaQuery.of(context).size.width * 0.025,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                if (isMe && _shouldShowReadReceipt())
-                  Container(
-                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
-                    child: Icon(
-                      _getReadReceiptIcon(),
-                      size: MediaQuery.of(context).size.width * 0.03,
-                      color: _getReadReceiptColor(),
+          if (showTimestamp) ...[
+            SizedBox(height: MediaQuery.of(context).size.height * 0.003),
+            Padding(
+              padding: EdgeInsets.only(
+                left: !isMe && showAvatar
+                    ? MediaQuery.of(context).size.width * 0.13
+                    : !isMe
+                        ? MediaQuery.of(context).size.width * 0.16
+                        : 0,
+                right: isMe ? MediaQuery.of(context).size.width * 0.02 : 0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _formatTime(message.createdAt),
+                    style: TextStyle(
+                      color: AppColors.rosyBrown.withValues(alpha: 0.8),
+                      fontSize: MediaQuery.of(context).size.width * 0.025,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-              ],
+                  if (isMe && _shouldShowReadReceipt())
+                    Container(
+                      margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+                      child: Icon(
+                        _getReadReceiptIcon(),
+                        size: MediaQuery.of(context).size.width * 0.03,
+                        color: _getReadReceiptColor(),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
