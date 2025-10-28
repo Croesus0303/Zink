@@ -108,17 +108,31 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       },
       loading: () => Scaffold(
         backgroundColor: AppColors.midnightGreen,
-        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.midnightGreen,
           elevation: 0,
-          title: Text(AppLocalizations.of(context)!.loading,
-              style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.07,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.loading,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         body: const Center(
           child: CircularProgressIndicator(
-            color: AppColors.pineGreen,
+            color: AppColors.rosyBrown,
             strokeWidth: 4,
           ),
         ),
@@ -222,17 +236,31 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       },
       loading: () => Scaffold(
         backgroundColor: AppColors.midnightGreen,
-        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.midnightGreen,
           elevation: 0,
-          title: Text(AppLocalizations.of(context)!.loading,
-              style: const TextStyle(color: AppColors.textPrimary)),
           centerTitle: true,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.07,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.loading,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: MediaQuery.of(context).size.width * 0.045,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         body: const Center(
           child: CircularProgressIndicator(
-            color: AppColors.pineGreen,
+            color: AppColors.rosyBrown,
             strokeWidth: 4,
           ),
         ),
