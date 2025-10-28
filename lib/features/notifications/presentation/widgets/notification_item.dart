@@ -44,23 +44,11 @@ class NotificationItem extends StatelessWidget {
       direction: DismissDirection.endToStart,
       onDismissed: (_) => onDismiss(),
       background: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.04,
-          vertical: MediaQuery.of(context).size.height * 0.005,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.rosyBrown.withValues(alpha: 0.3),
-              AppColors.rosyBrown.withValues(alpha: 0.6),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(0),
-        ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.06,
         ),
+        color: AppColors.rosyBrown,
         child: Icon(
           Icons.delete_outline,
           color: Colors.white,
@@ -68,44 +56,21 @@ class NotificationItem extends StatelessWidget {
         ),
       ),
       child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.04,
-          vertical: MediaQuery.of(context).size.height * 0.006,
-        ),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isUnread
-                ? [
-                    Colors.white.withValues(alpha: 0.16),
-                    AppColors.pineGreen.withValues(alpha: 0.06),
-                    Colors.white.withValues(alpha: 0.04),
-                  ]
-                : [
-                    Colors.white.withValues(alpha: 0.08),
-                    AppColors.pineGreen.withValues(alpha: 0.03),
-                    Colors.white.withValues(alpha: 0.02),
-                  ],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: AppColors.iceBorder.withValues(alpha: 0.2),
-            width: 0.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 4,
-              offset: const Offset(0, 1),
+          color: isUnread
+              ? AppColors.midnightGreenLight.withValues(alpha: 0.5)
+              : Colors.transparent,
+          border: const Border(
+            bottom: BorderSide(
+              color: AppColors.midnightGreenLight,
+              width: 1,
             ),
-          ],
+          ),
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.04,
@@ -222,22 +187,15 @@ class NotificationItem extends StatelessWidget {
                   if (isUnread)
                     Container(
                       margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-                      width: MediaQuery.of(context).size.width * 0.022,
-                      height: MediaQuery.of(context).size.width * 0.022,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryOrangeDark,
+                      width: MediaQuery.of(context).size.width * 0.025,
+                      height: MediaQuery.of(context).size.width * 0.025,
+                      decoration: const BoxDecoration(
+                        color: AppColors.rosyBrown,
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryOrangeDark.withValues(alpha: 0.4),
-                            blurRadius: 4,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
                       ),
                     )
                   else
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.022),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                 ],
               ),
             ),
