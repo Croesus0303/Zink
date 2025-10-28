@@ -24,92 +24,50 @@ class LikesListScreen extends ConsumerWidget {
     )));
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
-        elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.065,
-        title: Text(
-          'Likes',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: MediaQuery.of(context).size.width * 0.045,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
+      backgroundColor: AppColors.midnightGreen,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom header with back button and title
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.04,
+                vertical: MediaQuery.of(context).size.height * 0.015,
               ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(
-          margin: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.03,
-              top: 3,
-              bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.width * 0.07,
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Likes',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.045,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.07),
+                ],
               ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
             ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.auroraRadialGradient,
-          ),
-          child: SafeArea(
-            child: likesAsync.when(
+            Expanded(
+              child: likesAsync.when(
               data: (likes) => likes.isNotEmpty
                   ? ListView.builder(
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width * 0.04),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.04,
+                        vertical: MediaQuery.of(context).size.height * 0.01,
+                      ),
                       itemCount: likes.length,
                       itemBuilder: (context, index) {
                         final like = likes[index];
@@ -155,7 +113,10 @@ class LikesListScreen extends ConsumerWidget {
                       ),
                     ),
               loading: () => const Center(
-                child: CircularProgressIndicator(color: AppColors.pineGreen),
+                child: CircularProgressIndicator(
+                  color: AppColors.rosyBrown,
+                  strokeWidth: 4,
+                ),
               ),
               error: (error, stack) {
                 AppLogger.e(
@@ -191,45 +152,19 @@ class LikesListScreen extends ConsumerWidget {
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.pineGreen.withValues(alpha: 0.8),
-                              AppColors.pineGreen.withValues(alpha: 0.9),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => ref.refresh(likesStreamProvider((
-                              eventId: eventId,
-                              submissionId: submissionId,
-                            ))),
-                            borderRadius: BorderRadius.circular(16),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.06,
-                                vertical:
-                                    MediaQuery.of(context).size.height * 0.015,
-                              ),
-                              child: Text(
-                                'Retry',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.04,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                      ElevatedButton.icon(
+                        onPressed: () => ref.refresh(likesStreamProvider((
+                          eventId: eventId,
+                          submissionId: submissionId,
+                        ))),
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Retry'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.pineGreen,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.06,
+                            vertical: MediaQuery.of(context).size.height * 0.015,
                           ),
                         ),
                       ),
@@ -239,8 +174,9 @@ class LikesListScreen extends ConsumerWidget {
               },
             ),
           ),
-        ),
+        ],
       ),
+    ),
     );
   }
 }
@@ -267,29 +203,15 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildListItem(BuildContext context, UserModel? user) {
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.iceBorder,
-          width: 1,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
-          ),
-          BoxShadow(
-            color: AppColors.rosyBrown.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
-          ),
-        ],
       ),
+      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.015),
       child: Row(
         children: [
           // User avatar
@@ -306,7 +228,7 @@ class _LikeListItem extends ConsumerWidget {
               userId: userId,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: Colors.white,
                 fontSize: MediaQuery.of(context).size.width * 0.035,
                 decoration: TextDecoration.none,
               ),
@@ -319,17 +241,15 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildLoadingItem(BuildContext context) {
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.iceBorder,
-          width: 1,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
         ),
       ),
+      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.015),
       child: Row(
         children: [
           // Loading avatar
@@ -365,17 +285,15 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildErrorItem(BuildContext context) {
     return Container(
-      margin:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.008),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.rosyBrown.withValues(alpha: 0.3),
-          width: 1,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
+          ),
         ),
       ),
+      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.015),
       child: Row(
         children: [
           // Error avatar
@@ -399,7 +317,7 @@ class _LikeListItem extends ConsumerWidget {
               'User not found',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: Colors.white,
                 fontSize: MediaQuery.of(context).size.width * 0.035,
               ),
             ),

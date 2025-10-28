@@ -91,39 +91,9 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.midnightGreen.withValues(alpha: 1.0),
-                AppColors.pineGreen.withValues(alpha: 0.85),
-                AppColors.midnightGreen.withValues(alpha: 0.98),
-              ],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 20,
-                offset: const Offset(-3, -3),
-              ),
-              BoxShadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                blurRadius: 20,
-                offset: const Offset(3, 3),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 30,
-                offset: const Offset(0, -8),
-              ),
-            ],
+          decoration: const BoxDecoration(
+            color: AppColors.midnightGreen,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -139,21 +109,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                     width: MediaQuery.of(context).size.width * 0.12,
                     height: MediaQuery.of(context).size.height * 0.006,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: 0.35),
-                          Colors.transparent,
-                        ],
-                      ),
+                      color: Colors.white.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
                     ),
                   ),
                   // Header
@@ -165,111 +122,42 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           data: (comments) => Text(
                             'Comments (${comments.length})',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: Colors.white,
                               fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                  blurRadius: 8,
-                                ),
-                              ],
                             ),
                           ),
                           loading: () => Text(
                             'Comments',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: Colors.white,
                               fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                  blurRadius: 8,
-                                ),
-                              ],
                             ),
                           ),
                           error: (_, __) => Text(
                             'Comments',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: Colors.white,
                               fontSize: MediaQuery.of(context).size.width * 0.045,
                               fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                                  blurRadius: 8,
-                                ),
-                              ],
                             ),
                           ),
                         ),
                         const Spacer(),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.white.withValues(alpha: 0.15),
-                                AppColors.pineGreen.withValues(alpha: 0.08),
-                                Colors.white.withValues(alpha: 0.05),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.iceBorder,
-                              width: 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withValues(alpha: 0.08),
-                                blurRadius: 8,
-                                offset: const Offset(-1, -1),
-                              ),
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
-                                blurRadius: 8,
-                                offset: const Offset(1, 1),
-                              ),
-                            ],
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.06,
                           ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => Navigator.of(context).pop(),
-                              borderRadius: BorderRadius.circular(16),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Icon(
-                                  Icons.close_rounded,
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  size: MediaQuery.of(context).size.width * 0.05,
-                                ),
-                              ),
-                            ),
-                          ),
+                          padding: EdgeInsets.zero,
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    height: 1,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.04,
-                      vertical: MediaQuery.of(context).size.height * 0.008,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: 0.3),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   // Comments list - flexible
                   Flexible(
                     child: commentsAsync.when(
@@ -305,7 +193,10 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         )
                       : ListView.builder(
                           controller: scrollController,
-                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.04,
+                            vertical: MediaQuery.of(context).size.height * 0.01,
+                          ),
                           itemCount: comments.length,
                           itemBuilder: (context, index) {
                             final comment = comments[index];
@@ -315,7 +206,10 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           },
                         ),
                   loading: () => const Center(
-                    child: CircularProgressIndicator(color: AppColors.pineGreen),
+                    child: CircularProgressIndicator(
+                      color: AppColors.rosyBrown,
+                      strokeWidth: 4,
+                    ),
                   ),
                   error: (error, stack) {
                     AppLogger.e('Error loading comments', error, stack);
@@ -332,43 +226,20 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.pineGreen.withValues(alpha: 0.8),
-                                  AppColors.pineGreen.withValues(alpha: 0.9),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () => ref.refresh(
-                                    commentsStreamProvider((
-                                  eventId: widget.eventId,
-                                  submissionId: widget.submissionId
-                                ))),
-                                borderRadius: BorderRadius.circular(16),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: MediaQuery.of(context).size.width * 0.06,
-                                    vertical: MediaQuery.of(context).size.height * 0.015,
-                                  ),
-                                  child: Text(
-                                    'Retry',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                          ElevatedButton.icon(
+                            onPressed: () => ref.refresh(
+                                commentsStreamProvider((
+                              eventId: widget.eventId,
+                              submissionId: widget.submissionId
+                            ))),
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Retry'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.pineGreen,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.06,
+                                vertical: MediaQuery.of(context).size.height * 0.015,
                               ),
                             ),
                           ),
@@ -378,22 +249,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                     },
                   ),
                   ),
-                  Container(
-                    height: 1,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.04,
-                      vertical: MediaQuery.of(context).size.height * 0.008,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: 0.3),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   // Comment input - fixed at bottom
                   Container(
                     padding: EdgeInsets.only(
@@ -407,24 +263,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              gradient: AppColors.iceGlassGradient,
+                              color: AppColors.midnightGreenLight,
                               borderRadius: BorderRadius.circular(28),
-                              border: Border.all(
-                                color: AppColors.iceBorder,
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.white.withValues(alpha: 0.06),
-                                  blurRadius: 6,
-                                  offset: const Offset(-1, -1),
-                                ),
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
-                                  blurRadius: 6,
-                                  offset: const Offset(1, 1),
-                                ),
-                              ],
                             ),
                             child: TextField(
                               controller: _commentController,
@@ -441,7 +281,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 ),
                               ),
                               style: TextStyle(
-                                color: AppColors.textPrimary,
+                                color: Colors.white,
                                 fontSize: MediaQuery.of(context).size.width * 0.035,
                               ),
                               maxLines: 3,
@@ -456,32 +296,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                         Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.rosyBrown.withValues(alpha: 0.9),
-                                AppColors.rosyBrown.withValues(alpha: 0.8),
-                                AppColors.rosyBrown.withValues(alpha: 0.85),
-                              ],
-                            ),
+                            color: AppColors.rosyBrown,
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.white.withValues(alpha: 0.1),
-                                blurRadius: 6,
-                                offset: const Offset(-1, -1),
-                              ),
-                              BoxShadow(
-                                color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                                blurRadius: 8,
-                                offset: const Offset(2, 2),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: _isSubmitting ? null : _addComment,
@@ -497,7 +313,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 : Icon(
                                     Icons.send,
                                     color: Colors.white,
-                                    size: MediaQuery.of(context).size.width * 0.04,
+                                    size: MediaQuery.of(context).size.width * 0.05,
                                   ),
                           ),
                         ),
@@ -534,24 +350,15 @@ class _CommentItem extends ConsumerWidget {
 
   Widget _buildCommentItem(BuildContext context, UserModel? user) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.008),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
-      decoration: BoxDecoration(
-        gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.midnightGreenLight,
+            width: 1,
           ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
-          ),
-        ],
+        ),
       ),
+      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.015),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -573,7 +380,7 @@ class _CommentItem extends ConsumerWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: MediaQuery.of(context).size.width * 0.035,
-                        color: AppColors.textPrimary,
+                        color: Colors.white,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -592,7 +399,7 @@ class _CommentItem extends ConsumerWidget {
                   comment.text,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.035,
-                    color: AppColors.textPrimary,
+                    color: Colors.white,
                     height: 1.4,
                   ),
                 ),

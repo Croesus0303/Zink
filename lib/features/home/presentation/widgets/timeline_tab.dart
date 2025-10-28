@@ -764,40 +764,16 @@ class _FullScreenImageViewer extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.pineGreen,
+        backgroundColor: AppColors.midnightGreen,
         elevation: 0,
-        leading: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.iceBorder, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.06),
-                blurRadius: 6,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 6,
-                offset: const Offset(1, 1),
-              ),
-            ],
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
           ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close, color: AppColors.pineGreen),
-          ),
+          padding: EdgeInsets.zero,
         ),
       ),
       body: SafeArea(
