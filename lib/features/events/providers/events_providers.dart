@@ -53,20 +53,30 @@ final pastEventsProvider = FutureProvider<List<EventModel>>((ref) async {
 // Paginated past events state notifier
 class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventModel>>> {
   final EventsService _eventsService;
+  final Ref _ref;
   DocumentSnapshot? _lastDocument;
   bool _hasMoreData = true;
   bool _isLoadingMore = false;
   EventModel? _cachedActiveEvent;
 
-  PaginatedPastEventsNotifier(this._eventsService) : super(const AsyncValue.loading()) {
+  PaginatedPastEventsNotifier(this._eventsService, this._ref) : super(const AsyncValue.loading()) {
     loadInitialEvents();
   }
 
   Future<void> loadInitialEvents() async {
     try {
       state = const AsyncValue.loading();
-      // Cache the active event to avoid duplicate queries
-      _cachedActiveEvent = await _eventsService.getActiveEvent();
+
+      // Use the shared activeEventProvider to avoid duplicate queries
+      // Wait for the future to complete to get the cached result
+      final activeEventAsync = _ref.read(activeEventProvider);
+      if (activeEventAsync is AsyncData<EventModel?>) {
+        _cachedActiveEvent = activeEventAsync.value;
+      } else {
+        // If not loaded yet, wait for it
+        _cachedActiveEvent = await _ref.read(activeEventProvider.future);
+      }
+
       final events = await _eventsService.getPaginatedPastEvents(
         limit: 5,
         activeEvent: _cachedActiveEvent,
@@ -128,15 +138,15 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
 // Paginated past events provider
 final paginatedPastEventsProvider = StateNotifierProvider<PaginatedPastEventsNotifier, AsyncValue<List<EventModel>>>((ref) {
   final eventsService = ref.watch(eventsServiceProvider);
-  final notifier = PaginatedPastEventsNotifier(eventsService);
-  
+  final notifier = PaginatedPastEventsNotifier(eventsService, ref);
+
   // Listen to auth state changes and refresh when user signs in/out
   ref.listen<AsyncValue<User?>>(authStateProvider, (previous, next) {
     if (previous?.value != next.value) {
       notifier.refresh();
     }
   });
-  
+
   return notifier;
 });
 
