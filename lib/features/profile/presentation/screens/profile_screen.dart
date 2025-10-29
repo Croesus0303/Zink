@@ -544,15 +544,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     : user.username,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.043,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.7),
-                  shadows: const [
-                    Shadow(
-                      color: AppColors.rosyBrown,
-                      blurRadius: 8,
-                    ),
-                  ],
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),

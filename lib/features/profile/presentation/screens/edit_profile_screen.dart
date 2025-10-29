@@ -68,7 +68,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (e) {
       AppLogger.e('Error picking image', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Error selecting image: ${e.toString()}');
+        CustomSnackBar.showError(
+            context, 'Error selecting image: ${e.toString()}');
       }
     }
   }
@@ -90,7 +91,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (e) {
       AppLogger.e('Error taking photo', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Error taking photo: ${e.toString()}');
+        CustomSnackBar.showError(
+            context, 'Error taking photo: ${e.toString()}');
       }
     }
   }
@@ -168,7 +170,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     } catch (e) {
       AppLogger.e('Error updating profile', e);
       if (mounted) {
-        CustomSnackBar.showError(context, 'Error updating profile: ${e.toString()}');
+        CustomSnackBar.showError(
+            context, 'Error updating profile: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -182,115 +185,42 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppColors.midnightGreen,
       appBar: AppBar(
-        backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.9),
+        backgroundColor: AppColors.midnightGreen,
         elevation: 0,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.07,
+          ),
+          padding: EdgeInsets.zero,
+        ),
         title: Text(
           AppLocalizations.of(context)!.editProfile,
           style: TextStyle(
             color: Colors.white,
             fontSize: MediaQuery.of(context).size.width * 0.045,
             fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 12, top: 3, bottom: 3),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withValues(alpha: 0.15),
-                AppColors.pineGreen.withValues(alpha: 0.08),
-                Colors.white.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: AppColors.iceBorder,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(-1, -1),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(1, 1),
-              ),
-            ],
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: MediaQuery.of(context).size.width * 0.04,
-            ),
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width * 0.08,
-              minHeight: MediaQuery.of(context).size.width * 0.08,
-            ),
-            padding: EdgeInsets.zero,
           ),
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 12, top: 6, bottom: 6),
-            height: 48, // Minimum accessible tap target
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.pineGreen.withValues(alpha: 0.9),
-                  AppColors.pineGreen.withValues(alpha: 1.0),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.pineGreen.withValues(alpha: 0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+            margin: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
             child: ElevatedButton(
               onPressed: _isLoading ? null : _saveProfile,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
+                backgroundColor: AppColors.pineGreen,
                 foregroundColor: Colors.white,
-                shadowColor: Colors.transparent,
                 padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.05,
                   vertical: MediaQuery.of(context).size.height * 0.01,
                 ),
-                minimumSize: Size(MediaQuery.of(context).size.width * 0.2, 48),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: _isLoading
@@ -308,231 +238,137 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         color: Colors.white,
                         fontSize: MediaQuery.of(context).size.width * 0.04,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
                       ),
                     ),
             ),
           ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(
+            MediaQuery.of(context).size.width * 0.06,
           ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.midnightGreen.withValues(alpha: 0.85),
-                AppColors.midnightGreen.withValues(alpha: 0.75),
-              ],
-            ),
-          ),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width * 0.06,
-                MediaQuery.of(context).size.height * 0.12,
-                MediaQuery.of(context).size.width * 0.06,
-                MediaQuery.of(context).size.height * 0.08,
-              ),
-              children: [
-                // Profile Picture Section
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.02,
-                    ),
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.iceGlassGradient,
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(
-                        color: AppColors.iceBorder,
-                        width: 2,
+          children: [
+            // Profile Picture Section
+            Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.rosyBrown,
+                            AppColors.pineGreen,
+                            AppColors.midnightGreen,
+                          ],
+                        ),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          blurRadius: 20,
-                          offset: const Offset(-3, -3),
-                        ),
-                        BoxShadow(
-                          color: AppColors.rosyBrown.withValues(alpha: 0.2),
-                          blurRadius: 20,
-                          offset: const Offset(3, 3),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.pineGreen.withValues(alpha: 0.2),
-                                AppColors.rosyBrown.withValues(alpha: 0.15),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(80),
-                            border: Border.all(
-                              color: AppColors.iceBorder,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: MediaQuery.of(context).size.width * 0.15,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage: _selectedImage != null
-                                ? FileImage(_selectedImage!) as ImageProvider
-                                : (widget.user.photoURL != null
-                                    ? CachedNetworkImageProvider(widget.user.photoURL!)
-                                        as ImageProvider
-                                    : null),
-                            child: _selectedImage == null && widget.user.photoURL == null
-                                ? Text(
-                                    widget.user.username
-                                        .substring(0, 1)
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                      fontSize: MediaQuery.of(context).size.width * 0.08,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.pineGreen,
-                                    ),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.pineGreen.withValues(alpha: 0.9),
-                                  AppColors.pineGreen.withValues(alpha: 0.8),
-                                ],
-                              ),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
-                                width: 2,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.pineGreen.withValues(alpha: 0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                      child: CircleAvatar(
+                        radius: MediaQuery.of(context).size.width * 0.18,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: _selectedImage != null
+                            ? FileImage(_selectedImage!) as ImageProvider
+                            : (widget.user.photoURL != null
+                                ? CachedNetworkImageProvider(
+                                    widget.user.photoURL!) as ImageProvider
+                                : null),
+                        child: _selectedImage == null &&
+                                widget.user.photoURL == null
+                            ? Text(
+                                widget.user.username
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
-                              ],
-                            ),
-                            child: GestureDetector(
-                              onTap: _showImagePickerOptions,
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.04,
-                              ),
-                            ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.025),
+                        decoration: const BoxDecoration(
+                          color: AppColors.pineGreen,
+                          shape: BoxShape.circle,
+                        ),
+                        child: GestureDetector(
+                          onTap: _showImagePickerOptions,
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-
-                // Social Links Section
-                _buildSectionTitle(AppLocalizations.of(context)!.socialLinks),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-                _buildSocialLinkField(
-                  controller: _instagramController,
-                  label: 'Instagram',
-                  hint: '@username',
-                  imagePath: 'assets/icons/instagram_logo.png',
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-
-                _buildSocialLinkField(
-                  controller: _twitterController,
-                  label: 'Twitter',
-                  hint: '@handle',
-                  imagePath: 'assets/icons/x_logo.png',
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-
-                _buildSocialLinkField(
-                  controller: _facebookController,
-                  label: 'Facebook',
-                  hint: 'Profile name',
-                  imagePath: 'assets/icons/facebook_logo.png',
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-              ],
+              ),
             ),
-          ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+
+            // Social Links Section
+            _buildSectionTitle(AppLocalizations.of(context)!.socialLinks),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+            _buildSocialLinkField(
+              controller: _instagramController,
+              label: 'Instagram',
+              hint: 'username',
+              imagePath: 'assets/icons/instagram_logo.png',
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+
+            _buildSocialLinkField(
+              controller: _twitterController,
+              label: 'Twitter',
+              hint: 'username',
+              imagePath: 'assets/icons/x_logo.png',
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+
+            _buildSocialLinkField(
+              controller: _facebookController,
+              label: 'Facebook',
+              hint: 'username',
+              imagePath: 'assets/icons/facebook_logo.png',
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(
+    return Padding(
+      padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.height * 0.01,
         top: MediaQuery.of(context).size.height * 0.015,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.06,
-        vertical: MediaQuery.of(context).size.height * 0.022,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.pineGreen.withValues(alpha: 0.8),
-            AppColors.pineGreen.withValues(alpha: 0.6),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.pineGreen.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: MediaQuery.of(context).size.width * 0.055,
+          fontSize: MediaQuery.of(context).size.width * 0.05,
           fontWeight: FontWeight.bold,
           color: Colors.white,
           letterSpacing: 1.2,
-          shadows: [
-            Shadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
       ),
     );
@@ -568,30 +404,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         // Input Field
         Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.midnightGreen.withValues(alpha: 0.5),
-                AppColors.midnightGreen.withValues(alpha: 0.4),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.midnightGreen.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: AppColors.pineGreen.withValues(alpha: 0.4),
+              color: Colors.white.withValues(alpha: 0.2),
               width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: TextFormField(
             controller: controller,
             style: TextStyle(
               color: Colors.white,
-              fontSize: MediaQuery.of(context).size.width * 0.042, // Minimum 16px equivalent
+              fontSize: MediaQuery.of(context).size.width *
+                  0.042, // Minimum 16px equivalent
               fontWeight: FontWeight.w500,
               height: 1.4, // Better line spacing
             ),
@@ -599,33 +424,31 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               hintText: hint,
               hintStyle: TextStyle(
                 color: Colors.white.withValues(alpha: 0.7), // Better contrast
-                fontSize: MediaQuery.of(context).size.width * 0.038, // Larger hint text
+                fontSize: MediaQuery.of(context).size.width *
+                    0.038, // Larger hint text
                 fontWeight: FontWeight.w400,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: AppColors.pineGreen,
-                  width: 2,
-                ),
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: const BorderSide(
                   color: AppColors.rosyBrown,
                   width: 2,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 borderSide: const BorderSide(
                   color: AppColors.rosyBrown,
                   width: 2,
@@ -633,18 +456,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               prefixIcon: imagePath != null
                   ? Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.035),
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.035),
                       child: Image.asset(
                         imagePath,
                         width: MediaQuery.of(context).size.width * 0.045,
                         height: MediaQuery.of(context).size.width * 0.045,
-                        color: AppColors.pineGreen,
+                        color: Colors.white,
                         fit: BoxFit.contain,
                       ),
                     )
                   : Icon(
                       icon,
-                      color: AppColors.pineGreen,
+                      color: Colors.white,
                       size: MediaQuery.of(context).size.width * 0.045,
                     ),
               contentPadding: EdgeInsets.symmetric(
