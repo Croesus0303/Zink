@@ -56,15 +56,21 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
   DocumentSnapshot? _lastDocument;
   bool _hasMoreData = true;
   bool _isLoadingMore = false;
-  
+  EventModel? _cachedActiveEvent;
+
   PaginatedPastEventsNotifier(this._eventsService) : super(const AsyncValue.loading()) {
     loadInitialEvents();
   }
-  
+
   Future<void> loadInitialEvents() async {
     try {
       state = const AsyncValue.loading();
-      final events = await _eventsService.getPaginatedPastEvents(limit: 5);
+      // Cache the active event to avoid duplicate queries
+      _cachedActiveEvent = await _eventsService.getActiveEvent();
+      final events = await _eventsService.getPaginatedPastEvents(
+        limit: 5,
+        activeEvent: _cachedActiveEvent,
+      );
       _hasMoreData = events.length == 5;
       if (events.isNotEmpty) {
         final snapshot = await FirebaseFirestore.instance
@@ -78,18 +84,19 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
       state = AsyncValue.error(error, stackTrace);
     }
   }
-  
+
   Future<void> loadMoreEvents() async {
     if (_isLoadingMore || !_hasMoreData || state.value == null) return;
-    
+
     try {
       _isLoadingMore = true;
       final currentEvents = state.value!;
       final newEvents = await _eventsService.getPaginatedPastEvents(
-        limit: 5, 
-        lastDocument: _lastDocument
+        limit: 5,
+        lastDocument: _lastDocument,
+        activeEvent: _cachedActiveEvent,
       );
-      
+
       _hasMoreData = newEvents.length == 5;
       if (newEvents.isNotEmpty) {
         final snapshot = await FirebaseFirestore.instance
@@ -105,14 +112,15 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
       _isLoadingMore = false;
     }
   }
-  
+
   Future<void> refresh() async {
     _lastDocument = null;
     _hasMoreData = true;
     _isLoadingMore = false;
+    _cachedActiveEvent = null; // Clear cache on refresh
     await loadInitialEvents();
   }
-  
+
   bool get hasMoreData => _hasMoreData;
   bool get isLoadingMore => _isLoadingMore;
 }

@@ -82,10 +82,10 @@ class EventsService {
     }
   }
 
-  Future<List<EventModel>> getPastEvents() async {
+  Future<List<EventModel>> getPastEvents({EventModel? activeEvent}) async {
     try {
       final now = Timestamp.now();
-      final activeEvent = await getActiveEvent();
+      activeEvent ??= await getActiveEvent();
 
       Query query = _firestore
           .collection(EventModel.collectionPath);
@@ -112,10 +112,10 @@ class EventsService {
     }
   }
 
-  Future<List<EventModel>> getAllPastEvents() async {
+  Future<List<EventModel>> getAllPastEvents({EventModel? activeEvent}) async {
     try {
       final now = Timestamp.now();
-      final activeEvent = await getActiveEvent();
+      activeEvent ??= await getActiveEvent();
 
       Query query = _firestore
           .collection(EventModel.collectionPath);
@@ -142,10 +142,10 @@ class EventsService {
     }
   }
 
-  Future<List<EventModel>> getPaginatedPastEvents({int limit = 5, DocumentSnapshot? lastDocument}) async {
+  Future<List<EventModel>> getPaginatedPastEvents({int limit = 5, DocumentSnapshot? lastDocument, EventModel? activeEvent}) async {
     try {
       final now = Timestamp.now();
-      final activeEvent = await getActiveEvent();
+      activeEvent ??= await getActiveEvent();
 
       Query query = _firestore
           .collection(EventModel.collectionPath);
