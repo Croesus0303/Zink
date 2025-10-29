@@ -6,6 +6,7 @@ class SubmissionModel {
   final String uid;
   final String imageURL;
   final String? badgeURL;
+  final String? category;
   final DateTime createdAt;
   final int likeCount;
 
@@ -15,6 +16,7 @@ class SubmissionModel {
     required this.uid,
     required this.imageURL,
     this.badgeURL,
+    this.category,
     required this.createdAt,
     this.likeCount = 0,
   });
@@ -27,6 +29,7 @@ class SubmissionModel {
       uid: data['uid'] ?? '',
       imageURL: data['imageURL'] ?? '',
       badgeURL: data['badgeURL'],
+      category: data['category'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       likeCount: data['likeCount'] ?? 0,
     );
@@ -39,6 +42,7 @@ class SubmissionModel {
       'uid': uid,
       'imageURL': imageURL,
       if (badgeURL != null) 'badgeURL': badgeURL,
+      if (category != null) 'category': category,
       'createdAt': FieldValue.serverTimestamp(),
       'likeCount': likeCount,
     };
@@ -50,6 +54,7 @@ class SubmissionModel {
     String? uid,
     String? imageURL,
     String? badgeURL,
+    String? category,
     DateTime? createdAt,
     int? likeCount,
   }) {
@@ -59,6 +64,7 @@ class SubmissionModel {
       uid: uid ?? this.uid,
       imageURL: imageURL ?? this.imageURL,
       badgeURL: badgeURL ?? this.badgeURL,
+      category: category ?? this.category,
       createdAt: createdAt ?? this.createdAt,
       likeCount: likeCount ?? this.likeCount,
     );

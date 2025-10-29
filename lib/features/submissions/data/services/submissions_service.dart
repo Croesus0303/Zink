@@ -134,16 +134,18 @@ class SubmissionsService {
       // Upload image first
       final imageUrl = await uploadImage(imageFile, eventId, userId);
 
-      // Get event data to retrieve badgeURL
+      // Get event data to retrieve badgeURL and category
       final eventDoc = await _firestore
           .collection('events')
           .doc(eventId)
           .get();
-      
+
       String? badgeURL;
+      String? category;
       if (eventDoc.exists) {
         final eventData = eventDoc.data() as Map<String, dynamic>;
         badgeURL = eventData['badgeURL'];
+        category = eventData['category'];
       }
 
       // Use batch to create both submission and user reference
@@ -158,6 +160,7 @@ class SubmissionsService {
         'uid': userId,
         'imageURL': imageUrl,
         if (badgeURL != null) 'badgeURL': badgeURL,
+        if (category != null) 'category': category,
         'createdAt': FieldValue.serverTimestamp(),
         'likeCount': 0,
       };
@@ -174,6 +177,7 @@ class SubmissionsService {
         'submissionId': submissionRef.id,
         'imageURL': imageUrl,
         if (badgeURL != null) 'badgeURL': badgeURL,
+        if (category != null) 'category': category,
         'createdAt': FieldValue.serverTimestamp(),
       };
       batch.set(userSubmissionRef, userSubmissionData);

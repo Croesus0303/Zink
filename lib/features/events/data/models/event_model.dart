@@ -6,6 +6,7 @@ class EventModel {
   final String description;
   final String referenceImageURL;
   final String? badgeURL;
+  final String? category;
   final DateTime startTime;
   final DateTime endTime;
 
@@ -15,6 +16,7 @@ class EventModel {
     required this.description,
     required this.referenceImageURL,
     this.badgeURL,
+    this.category,
     required this.startTime,
     required this.endTime,
   });
@@ -27,6 +29,7 @@ class EventModel {
       description: data['description'] ?? '',
       referenceImageURL: data['referenceImageURL'] ?? '',
       badgeURL: data['badgeURL'],
+      category: data['category'],
       startTime: _parseTimestamp(data['startTime']),
       endTime: _parseTimestamp(data['endTime']),
     );
@@ -52,6 +55,7 @@ class EventModel {
       'description': description,
       'referenceImageURL': referenceImageURL,
       if (badgeURL != null) 'badgeURL': badgeURL,
+      if (category != null) 'category': category,
       'startTime': Timestamp.fromDate(startTime),
       'endTime': Timestamp.fromDate(endTime),
     };
@@ -82,6 +86,7 @@ class EventModel {
     String? description,
     String? referenceImageURL,
     String? badgeURL,
+    String? category,
     DateTime? startTime,
     DateTime? endTime,
   }) {
@@ -91,6 +96,7 @@ class EventModel {
       description: description ?? this.description,
       referenceImageURL: referenceImageURL ?? this.referenceImageURL,
       badgeURL: badgeURL ?? this.badgeURL,
+      category: category ?? this.category,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
     );
