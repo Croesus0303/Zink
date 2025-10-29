@@ -240,24 +240,25 @@ class AuthRepository {
         throw Exception('Username is already taken');
       }
 
-      // Get FCM token (optional - don't fail onboarding if this fails)
+      // Always get FCM token and subscribe to topic (don't fail onboarding if this fails)
       String? fcmToken;
       try {
         fcmToken = await _messaging.getToken();
         if (fcmToken != null) {
           AppLogger.i('FCM token retrieved during onboarding: ${fcmToken.substring(0, 20)}...');
-
-          // Subscribe to all_users topic if we have a token
-          try {
-            await _messaging.subscribeToTopic('all_users');
-            AppLogger.i('Subscribed to all_users topic during onboarding');
-          } catch (topicError) {
-            AppLogger.w('Failed to subscribe to all_users topic (non-critical): $topicError');
-          }
+        } else {
+          AppLogger.w('FCM token is null during onboarding');
         }
       } catch (e) {
         AppLogger.w('Failed to get FCM token during onboarding (continuing anyway): $e');
-        // Continue with onboarding even if FCM token fails
+      }
+
+      // Always subscribe to all_users topic regardless of token status
+      try {
+        await _messaging.subscribeToTopic('all_users');
+        AppLogger.i('Subscribed to all_users topic during onboarding');
+      } catch (topicError) {
+        AppLogger.w('Failed to subscribe to all_users topic (non-critical): $topicError');
       }
 
       // Create the complete user document
@@ -592,28 +593,30 @@ class AuthRepository {
     try {
       AppLogger.i('Updating FCM token for user: $userId');
 
-      // Get FCM token
+      // Always get and save FCM token regardless of permission status
+      // This ensures the token is available if user grants permission later
       final fcmToken = await _messaging.getToken();
 
       if (fcmToken == null) {
-        AppLogger.w('FCM token is null, skipping update');
-        return;
+        AppLogger.w('FCM token is null, attempting to continue anyway');
+        // Continue to subscribe to topic even if token is null
+      } else {
+        // Update the user document with FCM token
+        await _firestore
+            .collection(UserModel.collectionPath)
+            .doc(userId)
+            .set({
+          'fcmToken': fcmToken,
+        }, SetOptions(merge: true));
+
+        AppLogger.i('FCM token updated successfully: ${fcmToken.substring(0, 20)}...');
       }
 
-      // Update the user document with FCM token
-      await _firestore
-          .collection(UserModel.collectionPath)
-          .doc(userId)
-          .set({
-        'fcmToken': fcmToken,
-      }, SetOptions(merge: true));
-
-      AppLogger.i('FCM token updated successfully: ${fcmToken.substring(0, 20)}...');
-
-      // Subscribe to all_users topic
+      // Always subscribe to all_users topic regardless of token or permission status
+      // FCM will handle the subscription when permission is granted
       try {
         await _messaging.subscribeToTopic('all_users');
-        AppLogger.i('Subscribed to all_users topic after token update');
+        AppLogger.i('Subscribed to all_users topic after login');
       } catch (topicError) {
         AppLogger.w('Failed to subscribe to all_users topic (non-critical): $topicError');
         // Continue even if topic subscription fails
