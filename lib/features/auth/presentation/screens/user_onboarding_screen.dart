@@ -106,49 +106,24 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
+        backgroundColor: AppColors.midnightGreen,
         resizeToAvoidBottomInset: true,
-        body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.auroraRadialGradient),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
-              child: Form(
-                key: _formKey,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        MediaQuery.of(context).padding.bottom -
-                        MediaQuery.of(context).size.width * 0.12,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: AppColors.iceGlassGradient,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: AppColors.iceBorder.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.04),
-                    child: IntrinsicHeight(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
+            child: Form(
+              key: _formKey,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      MediaQuery.of(context).padding.bottom -
+                      MediaQuery.of(context).size.width * 0.12,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(
+                      MediaQuery.of(context).size.width * 0.04),
+                  child: IntrinsicHeight(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -160,17 +135,10 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                             AppLocalizations.of(context)!.welcomeToZink,
                             style: TextStyle(
                               fontSize:
-                                  MediaQuery.of(context).size.width * 0.055,
+                                  MediaQuery.of(context).size.width * 0.06,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.2,
-                              shadows: [
-                                Shadow(
-                                  color: AppColors.pineGreen
-                                      .withValues(alpha: 0.6),
-                                  blurRadius: 8,
-                                ),
-                              ],
                             ),
                           ),
                           SizedBox(
@@ -206,11 +174,10 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                   MediaQuery.of(context).size.height * 0.005),
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color:
-                                    AppColors.iceBorder.withValues(alpha: 0.3),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 width: 1,
                               ),
                             ),
@@ -230,7 +197,7 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                 ),
                                 prefixIcon: const Icon(
                                   Icons.alternate_email,
-                                  color: AppColors.pineGreen,
+                                  color: Colors.white,
                                 ),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.all(20),
@@ -259,11 +226,10 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                   MediaQuery.of(context).size.height * 0.005),
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.midnightGreen.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color:
-                                    AppColors.iceBorder.withValues(alpha: 0.3),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 width: 1,
                               ),
                             ),
@@ -288,7 +254,7 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                                 ),
                                 prefixIcon: const Icon(
                                   Icons.cake,
-                                  color: AppColors.rosyBrown,
+                                  color: Colors.white,
                                 ),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.all(20),
@@ -307,21 +273,8 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                             width: double.infinity,
                             height: 52,
                             decoration: BoxDecoration(
-                              color: AppColors.pineGreen.withValues(alpha: 0.9),
+                              color: AppColors.pineGreen,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color:
-                                    AppColors.pineGreen.withValues(alpha: 0.4),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.pineGreen
-                                      .withValues(alpha: 0.35),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
                             ),
                             child: Material(
                               color: Colors.transparent,
@@ -385,12 +338,10 @@ class _UserOnboardingScreenState extends ConsumerState<UserOnboardingScreen> {
                       ),
                     ),
                   ),
-                ),
               ),
             ),
           ),
         ),
-      ),
       ),
     );
   }

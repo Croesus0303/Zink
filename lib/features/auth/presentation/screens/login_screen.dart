@@ -520,7 +520,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             width: double.infinity,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.midnightGreen.withValues(alpha: 0.8),
+              color: Colors.black,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Material(
@@ -789,7 +789,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             width: double.infinity,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.midnightGreen.withValues(alpha: 0.8),
+              color: Colors.black,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Material(
