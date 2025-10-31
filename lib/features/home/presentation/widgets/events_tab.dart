@@ -10,7 +10,14 @@ import '../../../../shared/widgets/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class EventsTab extends ConsumerStatefulWidget {
-  const EventsTab({super.key});
+  final Function(double)? onScrollUpdate;
+  final VoidCallback? onScrollToTopTapped;
+
+  const EventsTab({
+    super.key,
+    this.onScrollUpdate,
+    this.onScrollToTopTapped,
+  });
 
   @override
   ConsumerState<EventsTab> createState() => EventsTabState();
@@ -34,14 +41,18 @@ class EventsTabState extends ConsumerState<EventsTab> {
   }
 
   void _onScroll() {
+    final currentPosition = _scrollController.position.pixels;
+
+    // Notify parent about scroll position changes
+    widget.onScrollUpdate?.call(currentPosition);
+
     // Load more events when near bottom
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    if (currentPosition >= _scrollController.position.maxScrollExtent - 200) {
       ref.read(paginatedPastEventsProvider.notifier).loadMoreEvents();
     }
 
     // Show/hide scroll to top button
-    final shouldShow = _scrollController.position.pixels > 300;
+    final shouldShow = currentPosition > 300;
     if (shouldShow != _showScrollToTop) {
       setState(() {
         _showScrollToTop = shouldShow;
@@ -50,6 +61,9 @@ class EventsTabState extends ConsumerState<EventsTab> {
   }
 
   void scrollToTop() {
+    // Notify parent that scroll-to-top was tapped
+    widget.onScrollToTopTapped?.call();
+
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         0,

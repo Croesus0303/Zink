@@ -16,22 +16,35 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStateMixin {
   late TabController _tabController;
+  late AnimationController _tabBarAnimationController;
   final GlobalKey<TimelineTabState> _timelineKey = GlobalKey<TimelineTabState>();
   final GlobalKey<EventsTabState> _eventsKey = GlobalKey<EventsTabState>();
+
+  bool _isTabBarVisible = true;
+  double _lastScrollPosition = 0;
+  static const double _scrollThreshold = 100.0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabChanged);
+
+    // Animation controller for tab bar slide animation
+    _tabBarAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+      value: 1.0, // Start visible
+    );
   }
 
   @override
   void dispose() {
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
+    _tabBarAnimationController.dispose();
     super.dispose();
   }
 
@@ -41,13 +54,61 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
   void _handleTabTap(int index) {
     if (_tabController.index == index) {
+      // Show tab bar before scrolling to top
+      _showTabBar();
+
       // User tapped on the already active tab - scroll to top
       if (index == 0) {
         _timelineKey.currentState?.scrollToTop();
       } else if (index == 1) {
         _eventsKey.currentState?.scrollToTop();
       }
+    } else {
+      // Always show tab bar when switching tabs
+      _showTabBar();
     }
+  }
+
+  void _onScrollUpdate(double currentScrollPosition) {
+    final scrollDelta = currentScrollPosition - _lastScrollPosition;
+    _lastScrollPosition = currentScrollPosition;
+
+    // At the top of the page, always show tab bar
+    if (currentScrollPosition <= 0) {
+      _showTabBar();
+      return;
+    }
+
+    // Scrolling down (delta > 0) and past threshold - hide tab bar
+    if (scrollDelta > 5 && currentScrollPosition > _scrollThreshold) {
+      _hideTabBar();
+    }
+    // Scrolling up (delta < 0) - show tab bar immediately
+    else if (scrollDelta < -5) {
+      _showTabBar();
+    }
+  }
+
+  void _showTabBar() {
+    if (!_isTabBarVisible) {
+      setState(() {
+        _isTabBarVisible = true;
+      });
+      _tabBarAnimationController.forward();
+    }
+  }
+
+  void _hideTabBar() {
+    if (_isTabBarVisible) {
+      setState(() {
+        _isTabBarVisible = false;
+      });
+      _tabBarAnimationController.reverse();
+    }
+  }
+
+  void _onScrollToTopTapped() {
+    _showTabBar();
   }
 
   @override
@@ -68,56 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
 
     return Scaffold(
       backgroundColor: AppColors.midnightGreen,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.midnightGreen.withValues(alpha: 0.95),
-          border: Border(
-            top: BorderSide(
-              color: AppColors.iceBorder.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: TabBar(
-          controller: _tabController,
-          onTap: _handleTabTap,
-          labelColor: AppColors.primaryOrange,
-          unselectedLabelColor: Colors.white.withValues(alpha: 0.6),
-          indicatorColor: AppColors.primaryOrange,
-          indicatorWeight: 3,
-          labelStyle: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.032,
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.03,
-            fontWeight: FontWeight.w500,
-          ),
-          tabs: [
-            Tab(
-              icon: Icon(
-                Icons.timeline,
-                size: MediaQuery.of(context).size.width * 0.06,
-              ),
-              text: AppLocalizations.of(context)!.timeline,
-            ),
-            Tab(
-              icon: Icon(
-                Icons.event,
-                size: MediaQuery.of(context).size.width * 0.06,
-              ),
-              text: AppLocalizations.of(context)!.events,
-            ),
-          ],
-        ),
-      ),
       body: Stack(
         children: [
           // Main content area
@@ -128,9 +139,90 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             child: TabBarView(
               controller: _tabController,
               children: [
-                TimelineTab(key: _timelineKey),
-                EventsTab(key: _eventsKey),
+                TimelineTab(
+                  key: _timelineKey,
+                  onScrollUpdate: _onScrollUpdate,
+                  onScrollToTopTapped: _onScrollToTopTapped,
+                ),
+                EventsTab(
+                  key: _eventsKey,
+                  onScrollUpdate: _onScrollUpdate,
+                  onScrollToTopTapped: _onScrollToTopTapped,
+                ),
               ],
+            ),
+          ),
+          // Animated bottom tab bar
+          AnimatedBuilder(
+            animation: _tabBarAnimationController,
+            builder: (context, child) {
+              final slideOffset = (1.0 - _tabBarAnimationController.value) * 100.0;
+              return Positioned(
+                left: 0,
+                right: 0,
+                bottom: -slideOffset,
+                child: child!,
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.midnightGreen.withValues(alpha: 0.98),
+                    AppColors.midnightGreen,
+                  ],
+                ),
+                border: Border(
+                  top: BorderSide(
+                    color: AppColors.auroraBorder.withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+              child: TabBar(
+                controller: _tabController,
+                onTap: _handleTabTap,
+                labelColor: AppColors.rosyBrown,
+                unselectedLabelColor: AppColors.textSecondary,
+                indicatorColor: AppColors.rosyBrown,
+                indicatorWeight: 3,
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelStyle: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.032,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.03,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.3,
+                ),
+                tabs: [
+                  Tab(
+                    icon: Icon(
+                      Icons.home_rounded,
+                      size: MediaQuery.of(context).size.width * 0.065,
+                    ),
+                    text: 'Home Page',
+                  ),
+                  Tab(
+                    icon: Icon(
+                      Icons.event_rounded,
+                      size: MediaQuery.of(context).size.width * 0.065,
+                    ),
+                    text: AppLocalizations.of(context)!.events,
+                  ),
+                ],
+              ),
             ),
           ),
           // Top bar with logo and action buttons (on top of everything)

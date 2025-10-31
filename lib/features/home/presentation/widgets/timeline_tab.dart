@@ -9,10 +9,18 @@ import '../../../social/presentation/widgets/comment_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/clickable_user_avatar.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/tiny_separator_line.dart';
 import '../providers/timeline_providers.dart';
 
 class TimelineTab extends ConsumerStatefulWidget {
-  const TimelineTab({super.key});
+  final Function(double)? onScrollUpdate;
+  final VoidCallback? onScrollToTopTapped;
+
+  const TimelineTab({
+    super.key,
+    this.onScrollUpdate,
+    this.onScrollToTopTapped,
+  });
 
   @override
   ConsumerState<TimelineTab> createState() => TimelineTabState();
@@ -35,14 +43,18 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   }
 
   void _onScroll() {
+    final currentPosition = _scrollController.position.pixels;
+
+    // Notify parent about scroll position changes
+    widget.onScrollUpdate?.call(currentPosition);
+
     // Load more posts when near bottom
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+    if (currentPosition >= _scrollController.position.maxScrollExtent - 200) {
       ref.read(timelinePostsProvider.notifier).loadMorePosts();
     }
 
     // Show/hide scroll to top button
-    final shouldShow = _scrollController.position.pixels > 300;
+    final shouldShow = currentPosition > 300;
     if (shouldShow != _showScrollToTop) {
       setState(() {
         _showScrollToTop = shouldShow;
@@ -51,6 +63,9 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   }
 
   void scrollToTop() {
+    // Notify parent that scroll-to-top was tapped
+    widget.onScrollToTopTapped?.call();
+
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         0,
@@ -433,229 +448,172 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
 
     return Column(
       children: [
-        Stack(
-        children: [
-          // Full width image
-          AspectRatio(
-            aspectRatio: 0.85,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: GestureDetector(
-                onTap: () => context.push('/submission/${widget.post.submission.eventId}/${widget.post.submission.id}'),
-                onDoubleTap: () async {
-                  if (_toggleLike != null) {
-                    await _toggleLike!();
-                  }
-                },
-                child: CachedNetworkImage(
-                  imageUrl: widget.post.submission.imageURL,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  placeholder: (context, url) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.midnightGreen.withValues(alpha: 0.4),
-                        AppColors.rosyBrown,
-                      ],
+        // Main image with user info overlay on top
+        AspectRatio(
+          aspectRatio: 0.92,
+          child: GestureDetector(
+            onTap: () => context.push('/submission/${widget.post.submission.eventId}/${widget.post.submission.id}'),
+            onDoubleTap: () async {
+              if (_toggleLike != null) {
+                await _toggleLike!();
+              }
+            },
+            child: Stack(
+              children: [
+                // Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.post.submission.imageURL,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.rosyBrown,
+                        strokeWidth: 4,
+                      ),
                     ),
-                  ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 4,
+                    errorWidget: (context, url, error) => const Center(
+                      child: Icon(
+                        Icons.error,
+                        color: AppColors.rosyBrown,
+                        size: 64,
+                      ),
                     ),
                   ),
                 ),
-                errorWidget: (context, url, error) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.midnightGreen.withValues(alpha: 0.4),
-                        AppColors.rosyBrown,
-                      ],
+                // User info overlay on top
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: Icon(
-                    Icons.broken_image,
-                    color: Colors.white,
-                    size: MediaQuery.of(context).size.width * 0.1,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          ),
-
-          // Top overlay with user info and event
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.6),
-                      Colors.black.withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-                child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Profile photo
-                  ClickableUserAvatar(
-                    user: userDataAsync.value!,
-                    userId: widget.post.submission.uid,
-                    radius: MediaQuery.of(context).size.width * 0.05,
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  // Username and date
-                  Expanded(
-                    child: Column(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClickableUserName(
+                        // Profile photo
+                        ClickableUserAvatar(
                           user: userDataAsync.value!,
                           userId: widget.post.submission.uid,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            decoration: TextDecoration.none,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black.withValues(alpha: 0.8),
-                                blurRadius: 4,
+                          radius: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        // Username and date
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClickableUserName(
+                                user: userDataAsync.value!,
+                                userId: widget.post.submission.uid,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                                  decoration: TextDecoration.none,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: 0.8),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                _formatSubmissionTime(context, widget.post.submission.createdAt),
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: MediaQuery.of(context).size.width * 0.032,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: 0.8),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Text(
-                          _formatSubmissionTime(context, widget.post.submission.createdAt),
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: MediaQuery.of(context).size.width * 0.032,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black.withValues(alpha: 0.8),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
+                        // Event name
+                        eventDataAsync.when(
+                          data: (event) => event != null
+                              ? InkWell(
+                                  onTap: () => context.push('/event/${event.id}'),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.rosyBrown,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      event.title,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: MediaQuery.of(context).size.width * 0.032,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
                         ),
                       ],
                     ),
                   ),
-                  // Event name
-                  eventDataAsync.when(
-                    data: (event) => event != null
-                        ? InkWell(
-                            onTap: () => context.push('/event/${event.id}'),
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: AppColors.rosyBrown,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                event.title,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: MediaQuery.of(context).size.width * 0.032,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    loading: () => const SizedBox.shrink(),
-                    error: (_, __) => const SizedBox.shrink(),
-                  ),
-                ],
-              ),
-            ),
-            ),
-          ),
-
-          // Bottom overlay with action buttons
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.6),
-                      Colors.black.withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
-                  ),
                 ),
-                child: Row(
-                children: [
-                  LikeButton(
-                    eventId: widget.post.submission.eventId,
-                    submissionId: widget.post.submission.id,
-                    initialLikeCount: currentLikeCount,
-                    initialIsLiked: isLikedByCurrentUser,
-                    onLikeController: (toggleLike) {
-                      _toggleLike = toggleLike;
-                    },
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.015),
-                  _CommentButton(
-                    eventId: widget.post.submission.eventId,
-                    submissionId: widget.post.submission.id,
-                  ),
-                ],
-              ),
-            ),
+              ],
             ),
           ),
-        ],
-      ),
-      // Separator line with padding
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Container(
-          height: 1,
-          color: AppColors.midnightGreenLight,
         ),
-      ),
+        const SizedBox(height: 12),
+        // Action buttons below image
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            children: [
+              LikeButton(
+                eventId: widget.post.submission.eventId,
+                submissionId: widget.post.submission.id,
+                initialLikeCount: currentLikeCount,
+                initialIsLiked: isLikedByCurrentUser,
+                onLikeController: (toggleLike) {
+                  _toggleLike = toggleLike;
+                },
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.015),
+              _CommentButton(
+                eventId: widget.post.submission.eventId,
+                submissionId: widget.post.submission.id,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Separator line between objects
+        const TinySeparatorLine(),
+        const SizedBox(height: 12),
       ],
     );
   }
