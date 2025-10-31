@@ -1034,145 +1034,141 @@ extension on _ProfileScreenState {
 
     return userDataAsync.when(
       data: (user) {
-        // TESTING: Multiply badge count by 100
-        final badgeCount = badges.length * 100;
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 48),
-                // Profile picture with edit button
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _buildSimpleAvatar(context, user),
-                    if (isOwnProfile)
-                      Positioned(
-                        bottom: 4,
-                        right: 4,
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              if (user != null) {
-                                Navigator.of(context)
-                                    .push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditProfileScreen(user: user),
-                                  ),
-                                )
-                                    .then((_) {
-                                  _refreshProfileData();
-                                });
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(100),
-                            splashColor:
-                                AppColors.primaryOrange.withValues(alpha: 0.3),
-                            highlightColor:
-                                AppColors.primaryOrange.withValues(alpha: 0.15),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.092,
-                              height: MediaQuery.of(context).size.width * 0.092,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                    AppColors.rosyBrown,
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.15),
-                                  width: 1,
-                                ),
-                                boxShadow: [
-                                  // Primary shadow
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.35),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                  // White rim light
-                                  BoxShadow(
-                                    color: Colors.white.withValues(alpha: 0.15),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 0),
-                                    spreadRadius: 0.5,
-                                  ),
-                                  // Coral glow for accent
-                                  BoxShadow(
-                                    color: AppColors.primaryOrange
-                                        .withValues(alpha: 0.25),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
+            // Profile picture with edit button
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                _buildSimpleAvatar(context, user),
+                if (isOwnProfile)
+                  Positioned(
+                    bottom: 4,
+                    right: 4,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (user != null) {
+                            Navigator.of(context)
+                                .push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditProfileScreen(user: user),
                               ),
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.041,
-                              ),
+                            )
+                                .then((_) {
+                              _refreshProfileData();
+                            });
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(100),
+                        splashColor:
+                            AppColors.primaryOrange.withValues(alpha: 0.3),
+                        highlightColor:
+                            AppColors.primaryOrange.withValues(alpha: 0.15),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.092,
+                          height: MediaQuery.of(context).size.width * 0.092,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.rosyBrown,
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              width: 1,
                             ),
+                            boxShadow: [
+                              // Primary shadow
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.35),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                              // White rim light
+                              BoxShadow(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                blurRadius: 4,
+                                offset: const Offset(0, 0),
+                                spreadRadius: 0.5,
+                              ),
+                              // Coral glow for accent
+                              BoxShadow(
+                                color: AppColors.primaryOrange
+                                    .withValues(alpha: 0.25),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: MediaQuery.of(context).size.width * 0.041,
                           ),
                         ),
                       ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  user?.username ?? 'Unknown User',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: MediaQuery.of(context).size.width * 0.053,
-                    fontWeight: FontWeight.w600,
-                    shadows: [
-                      const Shadow(
-                        color: AppColors.rosyBrown,
-                        blurRadius: 12,
-                      ),
-                      Shadow(
-                        color: AppColors.pineGreen.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        offset: const Offset(2, 2),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Social media buttons
-                _buildSocialMediaLinks(user),
-                const SizedBox(height: 32),
-
-                // Divider line
-                const TinySeparatorLine(),
-                const SizedBox(height: 24),
-
-                // Badges title
-                Text(
-                  'Badges',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.045,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Badge showcase
-                Column(
-                  children: [
-                    // Animated badge showcase - fixed height for page-based scrolling with 3 rows
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.65,
-                      child: AnimatedBadgeShowcase(
-                        badges: badges,
-                        currentUserId: targetUserId,
-                      ),
                     ),
-                  ],
+                  ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              user?.username ?? 'Unknown User',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: MediaQuery.of(context).size.width * 0.053,
+                fontWeight: FontWeight.w600,
+                shadows: [
+                  const Shadow(
+                    color: AppColors.rosyBrown,
+                    blurRadius: 12,
+                  ),
+                  Shadow(
+                    color: AppColors.pineGreen.withValues(alpha: 0.4),
+                    blurRadius: 8,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Social media buttons
+            _buildSocialMediaLinks(user),
+            const SizedBox(height: 32),
+
+            // Divider line
+            const TinySeparatorLine(),
+            const SizedBox(height: 24),
+
+            // Badges title
+            Text(
+              'Badges',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.045,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Badge showcase
+            Column(
+              children: [
+                // Animated badge showcase - fixed height for page-based scrolling with 3 rows
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.65,
+                  child: AnimatedBadgeShowcase(
+                    badges: badges,
+                    currentUserId: targetUserId,
+                  ),
                 ),
+              ],
+            ),
           ],
         );
       },

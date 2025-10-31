@@ -37,7 +37,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
     // Entrance animation controller
     _entranceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1600), // Covers all staggered animations
+      duration:
+          const Duration(milliseconds: 1600), // Covers all staggered animations
     );
 
     // Glow animation controller (for sequential badge glowing)
@@ -78,7 +79,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
     int nextIndex;
     do {
       nextIndex = startIndex + _random.nextInt(endIndex - startIndex);
-    } while (nextIndex == _currentGlowingBadgeIndex && (endIndex - startIndex) > 1);
+    } while (
+        nextIndex == _currentGlowingBadgeIndex && (endIndex - startIndex) > 1);
 
     setState(() {
       _currentGlowingBadgeIndex = nextIndex;
@@ -160,8 +162,6 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
 
     // Calculate badge size for 3 rows x 5 columns
     final badgeSize = MediaQuery.of(context).size.width * 0.12;
-    final horizontalSpacing = MediaQuery.of(context).size.width * 0.025;
-    final verticalSpacing = MediaQuery.of(context).size.width * 0.02;
 
     // Group badges into pages of 15
     final pages = <List<Map<String, String>>>[];
@@ -193,12 +193,14 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
               }
 
               return Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(columns.length, (columnIndex) {
                     final column = columns[columnIndex];
-                    final globalStartIndex = (pageIndex * _badgesPerPage) + (columnIndex * 3);
+                    final globalStartIndex =
+                        (pageIndex * _badgesPerPage) + (columnIndex * 3);
 
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -207,7 +209,9 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
                         return _buildAnimatedBadge(
                           context,
                           column[rowIndex],
-                          rowIndex + (columnIndex * 3), // Local index for animation stagger
+                          rowIndex +
+                              (columnIndex *
+                                  3), // Local index for animation stagger
                           globalIndex,
                           badgeSize,
                           isCurrentPage, // Pass whether this is current page
@@ -275,7 +279,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
 
         // Calculate progress with stagger delay
         final delayFraction = delay / 1600.0;
-        final adjustedProgress = (_entranceController.value - delayFraction) / (1.0 - delayFraction);
+        final adjustedProgress =
+            (_entranceController.value - delayFraction) / (1.0 - delayFraction);
         final progress = adjustedProgress.clamp(0.0, 1.0);
 
         // Start from invisible (0) and animate to visible (1)
@@ -294,7 +299,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
           ),
         );
       },
-      child: _buildGlowingBadge(context, badgeURL, eventId, badgeSize, globalIndex),
+      child: _buildGlowingBadge(
+          context, badgeURL, eventId, badgeSize, globalIndex),
     );
   }
 
@@ -340,8 +346,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
             // 0.5 - 1.0: fade out (1 -> 0)
             final rawValue = _glowController.value;
             final glowValue = rawValue <= 0.5
-                ? rawValue * 2.0  // Fade in: 0.0-0.5 maps to 0.0-1.0
-                : (1.0 - rawValue) * 2.0;  // Fade out: 0.5-1.0 maps to 1.0-0.0
+                ? rawValue * 2.0 // Fade in: 0.0-0.5 maps to 0.0-1.0
+                : (1.0 - rawValue) * 2.0; // Fade out: 0.5-1.0 maps to 1.0-0.0
 
             final shadowBlur = 12.0 + (10.0 * glowValue);
             final shadowSpread = 1.0 + (2.0 * glowValue);
@@ -379,9 +385,8 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(badgeSize / 2),
-        onTap: eventId.isNotEmpty
-            ? () => context.push('/event/$eventId')
-            : null,
+        onTap:
+            eventId.isNotEmpty ? () => context.push('/event/$eventId') : null,
         child: Container(
           width: badgeSize,
           height: badgeSize,
