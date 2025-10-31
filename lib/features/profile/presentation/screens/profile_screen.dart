@@ -14,6 +14,8 @@ import '../../../../shared/widgets/app_colors.dart';
 import '../../../../core/utils/logger.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/glassy_button.dart';
+import '../../../../shared/widgets/tiny_separator_line.dart';
+import '../widgets/animated_badge_showcase.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   final String? userId;
@@ -30,15 +32,26 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _hasLoadedLikes = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
 
     // Listen to tab animation for smooth transitions
     _tabController.animation!.addListener(() {
       setState(() {});
+    });
+
+    // Listen to tab changes to load likes lazily
+    _tabController.addListener(() {
+      if (_tabController.index == 2 && !_hasLoadedLikes) {
+        // Tab index 2 is the Likes tab
+        setState(() {
+          _hasLoadedLikes = true;
+        });
+      }
     });
 
     // Reload profile data when entering the screen
@@ -318,11 +331,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     padding: const EdgeInsets.only(top: 60),
                     child: TabBarView(
                       controller: _tabController,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         _buildHomeTab(context, ref, targetUserId, isOwnProfile),
                         _buildUserSubmissions(context, ref, targetUserId),
                         _buildLikedSubmissions(context, ref, targetUserId),
-                        _buildBadgesTab(context, ref, targetUserId),
                       ],
                     ),
                   ),
@@ -587,7 +600,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           _buildTabBubble(context, 0, Icons.home),
           _buildTabBubble(context, 1, Icons.grid_on),
           _buildTabBubble(context, 2, Icons.favorite),
-          _buildTabBubble(context, 3, Icons.emoji_events),
         ],
       ),
     );
@@ -767,6 +779,19 @@ extension on _ProfileScreenState {
 
   Widget _buildLikedSubmissions(
       BuildContext context, WidgetRef ref, String targetUserId) {
+    // Only load liked submissions if the tab has been accessed
+    if (!_hasLoadedLikes) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.primaryOrange,
+            strokeWidth: 3,
+          ),
+        ),
+      );
+    }
+
     final likedSubmissionsAsync =
         ref.watch(userLikedSubmissionsProvider(targetUserId));
 
@@ -775,10 +800,15 @@ extension on _ProfileScreenState {
         padding: const EdgeInsets.only(top: 16),
         child: _buildLikedSubmissionGrid(submissions),
       ),
-      loading: () => Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: _buildLikedSubmissionGrid([]),
-      ), // Show empty grid while loading
+      loading: () => const Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.primaryOrange,
+            strokeWidth: 3,
+          ),
+        ),
+      ),
       error: (error, stack) => Padding(
         padding: const EdgeInsets.only(top: 16),
         child: Center(
@@ -1004,16 +1034,13 @@ extension on _ProfileScreenState {
 
     return userDataAsync.when(
       data: (user) {
-        // Get badge count for level calculation
-        final badgeCount = badges.length;
+        // TESTING: Multiply badge count by 100
+        final badgeCount = badges.length * 100;
 
-        return Stack(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Main content
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 48),
+            const SizedBox(height: 48),
                 // Profile picture with edit button
                 Stack(
                   clipBehavior: Clip.none,
@@ -1115,16 +1142,37 @@ extension on _ProfileScreenState {
 
                 // Social media buttons
                 _buildSocialMediaLinks(user),
+                const SizedBox(height: 32),
+
+                // Divider line
+                const TinySeparatorLine(),
                 const SizedBox(height: 24),
 
-                // Level badge - flexible to fit available space
-                Expanded(
-                  child: Center(
-                    child: _buildLevelBadge(context, badgeCount),
+                // Badges title
+                Text(
+                  'Badges',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.045,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              ],
-            ),
+                const SizedBox(height: 20),
+
+                // Badge showcase
+                Column(
+                  children: [
+                    // Animated badge showcase - fixed height for page-based scrolling with 3 rows
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.65,
+                      child: AnimatedBadgeShowcase(
+                        badges: badges,
+                        currentUserId: targetUserId,
+                      ),
+                    ),
+                  ],
+                ),
           ],
         );
       },
@@ -1142,124 +1190,6 @@ extension on _ProfileScreenState {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildBadgesTab(
-      BuildContext context, WidgetRef ref, String targetUserId) {
-    final badges = ref.watch(userBadgesProvider(targetUserId));
-
-    // Calculate level for empty state display
-    final levelInfo = _getLevelInfo(badges.length);
-    final level = levelInfo['level'] as int;
-
-    if (badges.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: MediaQuery.of(context).size.width * 0.3,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                    width: 2,
-                  ),
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/levels/level_$level.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'No badges yet',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1,
-      ),
-      itemCount: badges.length,
-      itemBuilder: (context, index) {
-        final badgeData = badges[index];
-        final badgeURL = badgeData['badgeURL'] ?? '';
-        final eventId = badgeData['eventId'] ?? '';
-        return GestureDetector(
-          onTap: () {
-            if (eventId.isNotEmpty) {
-              context.push('/event/$eventId');
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: badgeURL,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryOrange.withValues(alpha: 0.4),
-                        AppColors.rosyBrown,
-                      ],
-                    ),
-                  ),
-                  child: const Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: AppColors.primaryOrange,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) {
-                  // Show level image for error state
-                  final levelInfo = _getLevelInfo(badges.length);
-                  final level = levelInfo['level'] as int;
-                  return Image.asset(
-                    'assets/levels/level_$level.png',
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 
@@ -1577,391 +1507,5 @@ extension on _ProfileScreenState {
       username = username.substring(1);
     }
     return username;
-  }
-
-  // Level system helper methods
-  String _getLevelName(BuildContext context, int level) {
-    switch (level) {
-      case 1:
-        return AppLocalizations.of(context)!.levelCurious;
-      case 2:
-        return AppLocalizations.of(context)!.levelSharing;
-      case 3:
-        return AppLocalizations.of(context)!.levelConnecting;
-      case 4:
-        return AppLocalizations.of(context)!.levelContributing;
-      case 5:
-        return AppLocalizations.of(context)!.levelSupporting;
-      case 6:
-        return AppLocalizations.of(context)!.levelTrusted;
-      case 7:
-        return AppLocalizations.of(context)!.levelGuide;
-      default:
-        return AppLocalizations.of(context)!.levelCurious;
-    }
-  }
-
-  Map<String, dynamic> _getLevelInfo(int badgeCount) {
-    // Level thresholds: 1:0, 2:5, 3:12, 4:20, 5:30, 6:42, 7:56
-    const levels = [
-      {'level': 1, 'threshold': 0},
-      {'level': 2, 'threshold': 5},
-      {'level': 3, 'threshold': 12},
-      {'level': 4, 'threshold': 20},
-      {'level': 5, 'threshold': 30},
-      {'level': 6, 'threshold': 42},
-      {'level': 7, 'threshold': 56},
-    ];
-
-    for (int i = levels.length - 1; i >= 0; i--) {
-      if (badgeCount >= (levels[i]['threshold'] as int)) {
-        return levels[i];
-      }
-    }
-    return levels[0];
-  }
-
-  Widget _buildLevelBadge(BuildContext context, int badgeCount) {
-    final levelInfo = _getLevelInfo(badgeCount);
-    final level = levelInfo['level'] as int;
-    final levelName = _getLevelName(context, level);
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => _showLevelTooltip(context, badgeCount),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.48,
-            height: MediaQuery.of(context).size.width * 0.48,
-            child: Image.asset(
-              'assets/levels/level_$level.png',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
-            decoration: BoxDecoration(
-              color: AppColors.rosyBrown,
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                // Soft drop shadow
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                // Reflection highlight overlay - top third
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 12,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.1),
-                          Colors.transparent,
-                        ],
-                      ),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-                // Text content
-                Text(
-                  levelName,
-                  style: TextStyle(
-                    color: const Color(0xFFFFF4F0), // Off-white #FFF4F0
-                    fontSize: MediaQuery.of(context).size.width * 0.037,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.5,
-                    shadows: [
-                      // Soft drop shadow
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLevelTooltip(BuildContext context, int currentBadgeCount) {
-    final currentLevelInfo = _getLevelInfo(currentBadgeCount);
-    final currentLevel = currentLevelInfo['level'] as int;
-
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.7),
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.7,
-          ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.midnightGreen.withValues(alpha: 0.95),
-                AppColors.midnightGreen.withValues(alpha: 0.98),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.rosyBrown,
-                      AppColors.rosyBrown,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(22),
-                    topRight: Radius.circular(22),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        AppLocalizations.of(context)!.levelSystem,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close,
-                          color: AppColors.textSecondary),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
-              // Levels list
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _buildLevelRow(
-                        context, 1, 0, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 2, 5, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 3, 12, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 4, 20, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 5, 30, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 6, 42, currentLevel, currentBadgeCount),
-                    _buildLevelRow(
-                        context, 7, 56, currentLevel, currentBadgeCount),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLevelRow(BuildContext context, int level, int threshold,
-      int currentLevel, int currentBadgeCount) {
-    final isUnlocked = level <= currentLevel;
-    final isCurrent = level == currentLevel;
-    final name = _getLevelName(context, level);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        gradient: isCurrent
-            ? LinearGradient(
-                colors: [
-                  AppColors.primaryOrange.withValues(alpha: 0.3),
-                  AppColors.rosyBrown,
-                ],
-              )
-            : LinearGradient(
-                colors: [
-                  AppColors.midnightGreen.withValues(alpha: 0.3),
-                  AppColors.midnightGreen.withValues(alpha: 0.2),
-                ],
-              ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isCurrent
-              ? AppColors.primaryOrange.withValues(alpha: 0.5)
-              : isUnlocked
-                  ? AppColors.pineGreen.withValues(alpha: 0.3)
-                  : AppColors.textSecondary.withValues(alpha: 0.2),
-          width: 2,
-        ),
-        boxShadow: isCurrent
-            ? [
-                BoxShadow(
-                  color: AppColors.primaryOrange.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
-      ),
-      child: Row(
-        children: [
-          // Level image
-          Container(
-            width: MediaQuery.of(context).size.width * 0.15,
-            height: MediaQuery.of(context).size.width * 0.15,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isUnlocked
-                    ? AppColors.primaryOrange.withValues(alpha: 0.5)
-                    : AppColors.textSecondary.withValues(alpha: 0.3),
-                width: 2,
-              ),
-            ),
-            child: ClipOval(
-              child: isUnlocked
-                  ? Image.asset(
-                      'assets/levels/level_$level.png',
-                      fit: BoxFit.cover,
-                    )
-                  : ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        Colors.grey.withValues(alpha: 0.7),
-                        BlendMode.saturation,
-                      ),
-                      child: Image.asset(
-                        'assets/levels/level_$level.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Level info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.levelNumber(level),
-                      style: TextStyle(
-                        color: isUnlocked
-                            ? AppColors.textPrimary
-                            : AppColors.textSecondary.withValues(alpha: 0.6),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    if (isCurrent)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.currentLevel,
-                          style: const TextStyle(
-                            color: AppColors.primaryOrange,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  name,
-                  style: TextStyle(
-                    color: isUnlocked
-                        ? AppColors.primaryOrange
-                        : AppColors.textSecondary.withValues(alpha: 0.5),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  threshold == 0
-                      ? AppLocalizations.of(context)!.startingLevel
-                      : AppLocalizations.of(context)!.requiresBadges(threshold),
-                  style: TextStyle(
-                    color: isUnlocked
-                        ? AppColors.textSecondary
-                        : AppColors.textSecondary.withValues(alpha: 0.5),
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Lock/Check icon
-          Icon(
-            isUnlocked ? Icons.check_circle : Icons.lock,
-            color: isUnlocked
-                ? AppColors.pineGreen
-                : AppColors.textSecondary.withValues(alpha: 0.4),
-            size: 28,
-          ),
-        ],
-      ),
-    );
   }
 }

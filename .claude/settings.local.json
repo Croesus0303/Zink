@@ -72,7 +72,10 @@
       "WebSearch",
       "Bash(cat:*)",
       "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter clean:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(/Users/bugragorgulu/developer/flutter/bin/flutter run:*)",
+      "Bash(nc:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
