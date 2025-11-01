@@ -5,6 +5,7 @@ import '../../../auth/providers/auth_providers.dart';
 import '../../../notifications/providers/notifications_providers.dart';
 import '../../../messaging/providers/messaging_providers.dart';
 import '../../../../shared/widgets/app_colors.dart';
+import '../../../../shared/widgets/category_filter_chips.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../widgets/timeline_tab.dart';
 import '../widgets/events_tab.dart';
@@ -131,25 +132,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
       backgroundColor: AppColors.midnightGreen,
       body: Stack(
         children: [
-          // Main content area
-          Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.08,
-            ),
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                TimelineTab(
-                  key: _timelineKey,
-                  onScrollUpdate: _onScrollUpdate,
-                  onScrollToTopTapped: _onScrollToTopTapped,
+          // Main content area with animated padding
+          AnimatedBuilder(
+            animation: _tabBarAnimationController,
+            builder: (context, child) {
+              final filterChipsHeight = 56.0 * _tabBarAnimationController.value;
+              return Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.08 + filterChipsHeight,
                 ),
-                EventsTab(
-                  key: _eventsKey,
-                  onScrollUpdate: _onScrollUpdate,
-                  onScrollToTopTapped: _onScrollToTopTapped,
-                ),
-              ],
+                child: child!,
+              );
+            },
+            child: MediaQuery.removePadding(
+              context: context,
+              removeLeft: true,
+              removeRight: true,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  TimelineTab(
+                    key: _timelineKey,
+                    onScrollUpdate: _onScrollUpdate,
+                    onScrollToTopTapped: _onScrollToTopTapped,
+                  ),
+                  EventsTab(
+                    key: _eventsKey,
+                    onScrollUpdate: _onScrollUpdate,
+                    onScrollToTopTapped: _onScrollToTopTapped,
+                  ),
+                ],
+              ),
             ),
           ),
           // Animated bottom tab bar
@@ -225,15 +238,109 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
               ),
             ),
           ),
+          // Category filter chips (animated with tab bar)
+          AnimatedBuilder(
+            animation: _tabBarAnimationController,
+            builder: (context, child) {
+              final opacity = _tabBarAnimationController.value;
+              final slideOffset = (1.0 - _tabBarAnimationController.value) * 56.0; // Full chip height
+              final topBarHeight = MediaQuery.of(context).padding.top +
+                                   MediaQuery.of(context).size.height * 0.08;
+              return Positioned(
+                left: 0,
+                right: 0,
+                top: topBarHeight - slideOffset,
+                child: Opacity(
+                  opacity: opacity,
+                  child: child!,
+                ),
+              );
+            },
+            child: const CategoryFilterChips(),
+          ),
+          // Scroll to top button (positioned at filter chips level, appears in front)
+          AnimatedBuilder(
+            animation: _tabBarAnimationController,
+            builder: (context, child) {
+              final topBarHeight = MediaQuery.of(context).padding.top +
+                                   MediaQuery.of(context).size.height * 0.08;
+              final showButton = _tabController.index == 0
+                  ? _timelineKey.currentState?.showScrollToTop ?? false
+                  : _eventsKey.currentState?.showScrollToTop ?? false;
+
+              return Positioned(
+                top: topBarHeight + 8,
+                right: MediaQuery.of(context).size.width * 0.05,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: showButton ? 1.0 : 0.0,
+                  child: IgnorePointer(
+                    ignoring: !showButton,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.pineGreen.withValues(alpha: 0.95),
+                              AppColors.pineGreenDark.withValues(alpha: 0.95),
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.pineGreen.withValues(alpha: 0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            if (_tabController.index == 0) {
+                              _timelineKey.currentState?.scrollToTop();
+                            } else {
+                              _eventsKey.currentState?.scrollToTop();
+                            }
+                          },
+                          customBorder: const CircleBorder(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
           // Top bar with logo and action buttons (on top of everything)
-          SafeArea(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.08,
-              padding: EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: MediaQuery.of(context).size.height * 0.01,
-              ),
-              child: Row(
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.08,
+                color: AppColors.midnightGreen,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: MediaQuery.of(context).size.height * 0.01,
+                ),
+                child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // App logo on the left
@@ -276,6 +383,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                   ),
                 ],
               ),
+            ),
             ),
           ),
         ],

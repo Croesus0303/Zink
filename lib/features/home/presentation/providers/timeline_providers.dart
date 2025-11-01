@@ -4,6 +4,7 @@ import '../../../events/data/models/event_model.dart';
 import '../../../submissions/data/models/submission_model.dart';
 import '../../../auth/providers/auth_providers.dart';
 import '../../../../core/utils/logger.dart';
+import 'category_filter_provider.dart';
 
 // Timeline post model - combines submission with event info
 class TimelinePost {
@@ -18,12 +19,14 @@ class TimelinePost {
 
 // Timeline posts state notifier
 class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>> {
+  final Ref _ref;
   final int _pageSize = 5;
   DocumentSnapshot? _lastDocument;
   bool _hasMoreData = true;
   bool _isLoadingMore = false;
-  
-  TimelinePostsNotifier() : super(const AsyncValue.loading()) {
+  List<String>? _currentCategories;
+
+  TimelinePostsNotifier(this._ref) : super(const AsyncValue.loading()) {
     loadInitialPosts();
   }
   
@@ -33,6 +36,11 @@ class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>
       if (!keepCache) {
         state = const AsyncValue.loading();
       }
+
+      // Get current category filter
+      final selectedCategories = _ref.read(categoryFilterProvider);
+      _currentCategories = selectedCategories.isEmpty ? null : selectedCategories.toList();
+
       final posts = await _fetchTimelinePosts(limit: _pageSize);
       // Set hasMoreData based on whether we got a full page
       _hasMoreData = posts.length == _pageSize;
@@ -86,19 +94,26 @@ class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>
   }) async {
     final timelinePosts = <TimelinePost>[];
     DocumentSnapshot? currentLastDoc = startAfter;
-    
+
     // Keep fetching until we have enough valid timeline posts OR run out of data
     while (timelinePosts.length < limit) {
       try {
         Query query = FirebaseFirestore.instance
-            .collectionGroup('submissions')
+            .collectionGroup('submissions');
+
+        // Add category filter if specified
+        if (_currentCategories != null && _currentCategories!.isNotEmpty) {
+          query = query.where('category', whereIn: _currentCategories);
+        }
+
+        query = query
             .orderBy('createdAt', descending: true)
             .limit(limit * 2); // Fetch more docs to account for filtering
-        
+
         if (currentLastDoc != null) {
           query = query.startAfterDocument(currentLastDoc);
         }
-        
+
         final querySnapshot = await query.get();
         if (querySnapshot.docs.isEmpty) {
           break; // No more data available
@@ -154,15 +169,22 @@ class TimelinePostsNotifier extends StateNotifier<AsyncValue<List<TimelinePost>>
 
 // Timeline posts provider
 final timelinePostsProvider = StateNotifierProvider<TimelinePostsNotifier, AsyncValue<List<TimelinePost>>>((ref) {
-  final notifier = TimelinePostsNotifier();
-  
+  final notifier = TimelinePostsNotifier(ref);
+
   // Listen to auth state changes and refresh when user signs in/out
   ref.listen<AsyncValue<dynamic>>(authStateProvider, (previous, next) {
     if (previous?.value != next.value) {
       notifier.refresh();
     }
   });
-  
+
+  // Listen to category filter changes and refresh
+  ref.listen<Set<String>>(categoryFilterProvider, (previous, next) {
+    if (previous != next) {
+      notifier.refresh();
+    }
+  });
+
   return notifier;
 });
 

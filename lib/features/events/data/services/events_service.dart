@@ -58,13 +58,20 @@ class EventsService {
     }
   }
 
-  Future<EventModel?> getActiveEvent() async {
+  Future<EventModel?> getActiveEvent({List<String>? categories}) async {
     try {
       final now = Timestamp.now();
-      final snapshot = await _firestore
+      Query query = _firestore
           .collection(EventModel.collectionPath)
           .where('startTime', isLessThanOrEqualTo: now)
-          .where('endTime', isGreaterThan: now)
+          .where('endTime', isGreaterThan: now);
+
+      // Add category filter if specified
+      if (categories != null && categories.isNotEmpty) {
+        query = query.where('category', whereIn: categories);
+      }
+
+      final snapshot = await query
           .orderBy('startTime', descending: true)
           .limit(1)
           .get();
@@ -142,10 +149,15 @@ class EventsService {
     }
   }
 
-  Future<List<EventModel>> getPaginatedPastEvents({int limit = 5, DocumentSnapshot? lastDocument, EventModel? activeEvent}) async {
+  Future<List<EventModel>> getPaginatedPastEvents({
+    int limit = 5,
+    DocumentSnapshot? lastDocument,
+    EventModel? activeEvent,
+    List<String>? categories,
+  }) async {
     try {
       final now = Timestamp.now();
-      activeEvent ??= await getActiveEvent();
+      activeEvent ??= await getActiveEvent(categories: categories);
 
       Query query = _firestore
           .collection(EventModel.collectionPath);
@@ -156,6 +168,11 @@ class EventsService {
       } else {
         // If no active event, show only ended events
         query = query.where('endTime', isLessThan: now);
+      }
+
+      // Add category filter if specified
+      if (categories != null && categories.isNotEmpty) {
+        query = query.where('category', whereIn: categories);
       }
 
       query = query

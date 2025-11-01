@@ -83,76 +83,25 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: RefreshIndicator(
-              color: AppColors.rosyBrown,
-              onRefresh: _onRefresh,
-              child: CustomScrollView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: const [
-                  _TimelineContent(),
-                  SliverToBoxAdapter(child: SizedBox(height: 20)),
-                ],
-              ),
-            ),
-          ),
-          // Scroll to top button
-          if (_showScrollToTop)
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.02,
-              right: MediaQuery.of(context).size.width * 0.05,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: _showScrollToTop ? 1.0 : 0.0,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.95),
-                          AppColors.pineGreenDark.withValues(alpha: 0.95),
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pineGreen.withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: scrollToTop,
-                      customBorder: const CircleBorder(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Icon(
-                          Icons.arrow_upward,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width * 0.06,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
+      left: false,
+      right: false,
+      top: false,
+      bottom: false,
+      child: RefreshIndicator(
+        color: AppColors.rosyBrown,
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: const [
+            _TimelineContent(),
+          ],
+        ),
       ),
     );
   }
+
+  bool get showScrollToTop => _showScrollToTop;
 
   Widget _buildTimeline(BuildContext context, List<TimelinePost> posts, TimelinePostsNotifier notifier) {
     if (posts.isEmpty) {
@@ -169,7 +118,7 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
             }
 
             return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+              margin: const EdgeInsets.symmetric(vertical: 24.0),
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 gradient: AppColors.iceGlassGradient,
@@ -213,7 +162,6 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   Widget _buildEmptyTimeline(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
         padding: const EdgeInsets.all(32.0),
         decoration: BoxDecoration(
           gradient: AppColors.iceGlassGradient,
@@ -294,7 +242,6 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   Widget _buildErrorWidget(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
         padding: const EdgeInsets.all(32.0),
         decoration: BoxDecoration(
           gradient: AppColors.iceGlassGradient,

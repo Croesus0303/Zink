@@ -76,80 +76,31 @@ class EventsTabState extends ConsumerState<EventsTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: RefreshIndicator(
-              color: AppColors.rosyBrown,
-              onRefresh: () async {
-                ref.invalidate(activeEventProvider);
-                ref.invalidate(pastEventsProvider);
-                await Future.delayed(const Duration(seconds: 1));
-              },
-              child: CustomScrollView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: const [
-                  SliverToBoxAdapter(child: _WelcomeSection()),
-                  SliverToBoxAdapter(child: _PastEventsHeader()),
-                  _PaginatedPastChallengesList(),
-                  SliverToBoxAdapter(child: SizedBox(height: 20)),
-                ],
-              ),
-            ),
-          ),
-          // Scroll to top button
-          if (_showScrollToTop)
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.02,
-              right: MediaQuery.of(context).size.width * 0.05,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: _showScrollToTop ? 1.0 : 0.0,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.pineGreen.withValues(alpha: 0.95),
-                          AppColors.pineGreen.withValues(alpha: 0.85),
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pineGreen.withValues(alpha: 0.4),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: InkWell(
-                      onTap: scrollToTop,
-                      customBorder: const CircleBorder(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Icon(
-                          Icons.arrow_upward,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width * 0.06,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
+      left: false,
+      right: false,
+      top: false,
+      bottom: false,
+      child: RefreshIndicator(
+        color: AppColors.rosyBrown,
+        onRefresh: () async {
+          ref.invalidate(activeEventProvider);
+          ref.invalidate(pastEventsProvider);
+          await Future.delayed(const Duration(seconds: 1));
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: const [
+            SliverToBoxAdapter(child: _WelcomeSection()),
+            SliverToBoxAdapter(child: _PastEventsHeader()),
+            _PaginatedPastChallengesList(),
+          ],
+        ),
       ),
     );
   }
+
+  bool get showScrollToTop => _showScrollToTop;
 }
 
 class _WelcomeSection extends ConsumerWidget {
@@ -387,7 +338,7 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildWelcomeSection(BuildContext context, user) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -441,7 +392,7 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildLoadingSection(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
@@ -512,7 +463,7 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildErrorSection(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
       padding: const EdgeInsets.all(32.0),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
@@ -578,7 +529,7 @@ class _PastEventsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 12.0),
+      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 12.0),
       child: Text(
         AppLocalizations.of(context)!.pastTasks,
         style: TextStyle(
@@ -644,7 +595,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
     if (pastEvents.isEmpty) {
       return SliverToBoxAdapter(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          margin: const EdgeInsets.symmetric(vertical: 16.0),
           padding: const EdgeInsets.all(32.0),
           decoration: BoxDecoration(
             gradient: AppColors.iceGlassGradient,
@@ -717,8 +668,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
         (context, index) {
           if (index >= pastEvents.length) {
             return Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              margin: const EdgeInsets.symmetric(vertical: 16.0),
               child: Center(
                 child: notifier.isLoadingMore
                     ? const CircularProgressIndicator(

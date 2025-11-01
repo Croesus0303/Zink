@@ -11,6 +11,7 @@ import '../../social/data/services/social_service.dart';
 import '../../auth/data/models/user_model.dart';
 import '../../auth/data/repositories/auth_repository.dart';
 import '../../auth/providers/auth_providers.dart';
+import '../../home/presentation/providers/category_filter_provider.dart';
 import '../../../../core/utils/logger.dart';
 
 // Filter for submission feed
@@ -38,8 +39,11 @@ final eventsProvider = FutureProvider<List<EventModel>>((ref) async {
 final activeEventProvider = FutureProvider<EventModel?>((ref) async {
   // Watch auth state to ensure this provider refreshes when user signs in/out
   ref.watch(authStateProvider);
+  // Watch category filter
+  final selectedCategories = ref.watch(categoryFilterProvider);
   final eventsService = ref.watch(eventsServiceProvider);
-  return await eventsService.getActiveEvent();
+  final categories = selectedCategories.isEmpty ? null : selectedCategories.toList();
+  return await eventsService.getActiveEvent(categories: categories);
 });
 
 // Past events provider
@@ -58,6 +62,7 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
   bool _hasMoreData = true;
   bool _isLoadingMore = false;
   EventModel? _cachedActiveEvent;
+  List<String>? _currentCategories;
 
   PaginatedPastEventsNotifier(this._eventsService, this._ref) : super(const AsyncValue.loading()) {
     loadInitialEvents();
@@ -66,6 +71,10 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
   Future<void> loadInitialEvents() async {
     try {
       state = const AsyncValue.loading();
+
+      // Get current category filter
+      final selectedCategories = _ref.read(categoryFilterProvider);
+      _currentCategories = selectedCategories.isEmpty ? null : selectedCategories.toList();
 
       // Use the shared activeEventProvider to avoid duplicate queries
       // Wait for the future to complete to get the cached result
@@ -80,6 +89,7 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
       final events = await _eventsService.getPaginatedPastEvents(
         limit: 5,
         activeEvent: _cachedActiveEvent,
+        categories: _currentCategories,
       );
       _hasMoreData = events.length == 5;
       if (events.isNotEmpty) {
@@ -105,6 +115,7 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
         limit: 5,
         lastDocument: _lastDocument,
         activeEvent: _cachedActiveEvent,
+        categories: _currentCategories,
       );
 
       _hasMoreData = newEvents.length == 5;
@@ -143,6 +154,13 @@ final paginatedPastEventsProvider = StateNotifierProvider<PaginatedPastEventsNot
   // Listen to auth state changes and refresh when user signs in/out
   ref.listen<AsyncValue<User?>>(authStateProvider, (previous, next) {
     if (previous?.value != next.value) {
+      notifier.refresh();
+    }
+  });
+
+  // Listen to category filter changes and refresh
+  ref.listen<Set<String>>(categoryFilterProvider, (previous, next) {
+    if (previous != next) {
       notifier.refresh();
     }
   });
