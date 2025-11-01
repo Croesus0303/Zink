@@ -159,10 +159,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           },
         );
       },
-      loading: () => const Center(
+      loading: () => Center(
         child: CircularProgressIndicator(
           color: AppColors.rosyBrown,
-          strokeWidth: 4,
+          strokeWidth: MediaQuery.of(context).size.width * 0.01,
         ),
       ),
       error: (error, stack) {

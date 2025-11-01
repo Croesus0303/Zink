@@ -60,10 +60,10 @@ class NotificationItem extends StatelessWidget {
           color: isUnread
               ? AppColors.midnightGreenLight.withValues(alpha: 0.5)
               : Colors.transparent,
-          border: const Border(
+          border: Border(
             bottom: BorderSide(
               color: AppColors.midnightGreenLight,
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
         ),
@@ -91,10 +91,10 @@ class NotificationItem extends StatelessWidget {
                       ),
                       // Badge icon (like/comment indicator)
                       Positioned(
-                        right: -2,
-                        bottom: -2,
+                        right: -MediaQuery.of(context).size.width * 0.005,
+                        bottom: -MediaQuery.of(context).size.width * 0.005,
                         child: Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
                           decoration: BoxDecoration(
                             color: notification.type == NotificationType.like
                                 ? AppColors.rosyBrown
@@ -102,13 +102,13 @@ class NotificationItem extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: Colors.white.withValues(alpha: 0.9),
-                              width: 2,
+                              width: MediaQuery.of(context).size.width * 0.005,
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 1),
+                                blurRadius: MediaQuery.of(context).size.width * 0.01,
+                                offset: Offset(0, MediaQuery.of(context).size.height * 0.00125),
                               ),
                             ],
                           ),
