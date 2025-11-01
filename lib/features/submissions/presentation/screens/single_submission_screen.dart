@@ -94,10 +94,10 @@ class _SingleSubmissionScreenState
             ),
           ),
         ),
-        body: const Center(
+        body: Center(
           child: CircularProgressIndicator(
             color: AppColors.rosyBrown,
-            strokeWidth: 4,
+            strokeWidth: MediaQuery.of(context).size.width * 0.01,
           ),
         ),
       ),
@@ -149,7 +149,10 @@ class _SingleSubmissionScreenState
                   eventId: widget.eventId,
                   submissionId: widget.submissionId
                 ))),
-                icon: const Icon(Icons.refresh),
+                icon: Icon(
+                  Icons.refresh,
+                  size: MediaQuery.of(context).size.width * 0.05,
+                ),
                 label: Text(AppLocalizations.of(context)!.retry),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pineGreen,
@@ -240,7 +243,7 @@ class _SingleSubmissionScreenState
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             // Main image with rounded corners
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
               child: CachedNetworkImage(
                 imageUrl: submission.imageURL,
                 fit: BoxFit.cover,
@@ -248,18 +251,21 @@ class _SingleSubmissionScreenState
                 height: MediaQuery.of(context).size.height * 0.7,
                 placeholder: (context, url) => SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,
-                  child: const Center(
+                  child: Center(
                     child: CircularProgressIndicator(
                       color: AppColors.rosyBrown,
-                      strokeWidth: 4,
+                      strokeWidth: MediaQuery.of(context).size.width * 0.01,
                     ),
                   ),
                 ),
                 errorWidget: (context, url, error) => SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,
-                  child: const Center(
-                    child:
-                        Icon(Icons.error, color: AppColors.rosyBrown, size: 64),
+                  child: Center(
+                    child: Icon(
+                      Icons.error,
+                      color: AppColors.rosyBrown,
+                      size: MediaQuery.of(context).size.width * 0.16,
+                    ),
                   ),
                 ),
               ),
@@ -285,7 +291,12 @@ class _SubmissionInfoTop extends ConsumerWidget {
     final eventAsync = ref.watch(eventProvider(submission.eventId));
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      padding: EdgeInsets.fromLTRB(
+        MediaQuery.of(context).size.width * 0.04,
+        MediaQuery.of(context).size.height * 0.01,
+        MediaQuery.of(context).size.width * 0.04,
+        MediaQuery.of(context).size.height * 0.005,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -296,16 +307,16 @@ class _SubmissionInfoTop extends ConsumerWidget {
                 ClickableUserAvatar(
                   user: user,
                   userId: submission.uid,
-                  radius: 20,
+                  radius: MediaQuery.of(context).size.width * 0.05,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                 ClickableUserName(
                   user: user,
                   userId: submission.uid,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     decoration: TextDecoration.none,
                   ),
                 ),
@@ -316,16 +327,16 @@ class _SubmissionInfoTop extends ConsumerWidget {
                 ClickableUserAvatar(
                   user: null,
                   userId: submission.uid,
-                  radius: 20,
+                  radius: MediaQuery.of(context).size.width * 0.05,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                 ClickableUserName(
                   user: null,
                   userId: submission.uid,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     decoration: TextDecoration.none,
                   ),
                 ),
@@ -336,16 +347,16 @@ class _SubmissionInfoTop extends ConsumerWidget {
                 ClickableUserAvatar(
                   user: null,
                   userId: submission.uid,
-                  radius: 20,
+                  radius: MediaQuery.of(context).size.width * 0.05,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                 ClickableUserName(
                   user: null,
                   userId: submission.uid,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     decoration: TextDecoration.none,
                   ),
                 ),
@@ -358,21 +369,25 @@ class _SubmissionInfoTop extends ConsumerWidget {
             data: (event) => event != null
                 ? InkWell(
                     onTap: () => context.push('/event/${event.id}'),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.03,
+                        vertical: MediaQuery.of(context).size.height * 0.01,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.rosyBrown,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                       ),
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 150),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.375,
+                        ),
                         child: Text(
                           event.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
                             fontWeight: FontWeight.bold,
                           ),
                           maxLines: 1,
@@ -413,7 +428,12 @@ class _SubmissionInfoBottom extends ConsumerWidget {
     });
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: EdgeInsets.fromLTRB(
+        MediaQuery.of(context).size.width * 0.04,
+        MediaQuery.of(context).size.height * 0.01,
+        MediaQuery.of(context).size.width * 0.04,
+        0,
+      ),
       child: Row(
         children: [
           // Like and comment buttons
@@ -423,7 +443,7 @@ class _SubmissionInfoBottom extends ConsumerWidget {
             initialLikeCount: currentLikeCount,
             initialIsLiked: isLikedByCurrentUser,
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.04),
           InkWell(
             onTap: () {
               showModalBottomSheet(
@@ -443,9 +463,9 @@ class _SubmissionInfoBottom extends ConsumerWidget {
                 ),
               );
             },
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             child: Padding(
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -500,9 +520,9 @@ class _SubmissionInfoBottom extends ConsumerWidget {
               onTap: () async {
                 await _showDeleteConfirmationDialog(context, ref, submission);
               },
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               child: Padding(
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
                 child: Icon(
                   Icons.delete_outline,
                   color: Colors.white,
@@ -524,65 +544,65 @@ class _SubmissionInfoBottom extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
         ),
         content: Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Delete Post',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
                   'Are you sure you want to delete this post? This action cannot be undone.',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text(
+                      child: Text(
                         'Cancel',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(true),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.rosyBrown,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05,
+                          vertical: MediaQuery.of(context).size.height * 0.015,
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Delete',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                         ),
                       ),
                     ),
