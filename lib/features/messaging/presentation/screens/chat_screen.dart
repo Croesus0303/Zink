@@ -175,16 +175,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ? otherUserAsync.when(
                     data: (otherUser) =>
                         _buildPaginatedMessagesList(currentUser, otherUser),
-                    loading: () => const Center(
+                    loading: () => Center(
                         child: CircularProgressIndicator(
                             color: AppColors.rosyBrown,
-                            strokeWidth: 4)),
+                            strokeWidth: MediaQuery.of(context).size.width * 0.01)),
                     error: (_, __) => _buildPaginatedMessagesList(currentUser, null),
                   )
-                : const Center(
+                : Center(
                     child: CircularProgressIndicator(
                         color: AppColors.rosyBrown,
-                        strokeWidth: 4)),
+                        strokeWidth: MediaQuery.of(context).size.width * 0.01)),
           ),
           // Message input
           _buildMessageInput(),
@@ -276,18 +276,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
           decoration: BoxDecoration(
             gradient: AppColors.iceGlassGradient,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: MediaQuery.of(context).size.width * 0.004,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(-2, -2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
               ),
               BoxShadow(
                 color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                blurRadius: 15,
-                offset: const Offset(2, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
               ),
             ],
           ),
@@ -304,12 +307,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       AppColors.rosyBrown.withValues(alpha: 0.6),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
+                      blurRadius: MediaQuery.of(context).size.width * 0.038,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.006),
                     ),
                   ],
                 ),
@@ -355,18 +358,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
           decoration: BoxDecoration(
             gradient: AppColors.iceGlassGradient,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: MediaQuery.of(context).size.width * 0.004,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(-2, -2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
               ),
               BoxShadow(
                 color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                blurRadius: 15,
-                offset: const Offset(2, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
               ),
             ],
           ),
@@ -383,7 +389,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       AppColors.rosyBrown.withValues(alpha: 0.6),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.rosyBrown.withValues(alpha: 0.3),
@@ -422,16 +428,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       AppColors.pineGreen.withValues(alpha: 0.9),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
+                    width: MediaQuery.of(context).size.width * 0.0025,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.pineGreen.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      blurRadius: MediaQuery.of(context).size.width * 0.03,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                     ),
                   ],
                 ),
@@ -486,7 +492,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             // Invisible spacer for loading indicator
             if (paginatedState.isLoading && paginatedState.messages.isNotEmpty && paginatedState.isInitialized)
-              const SizedBox(height: 40),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             
             Expanded(
               child: paginatedState.messages.isEmpty && !paginatedState.isInitialized
@@ -540,31 +546,34 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         // Floating loading indicator at the top (where older messages load)
         if (paginatedState.isLoading && paginatedState.messages.isNotEmpty && paginatedState.isInitialized)
           Positioned(
-            top: 10,
+            top: MediaQuery.of(context).size.height * 0.0125,
             left: 0,
             right: 0,
             child: Container(
-              height: 30,
+              height: MediaQuery.of(context).size.height * 0.0375,
               alignment: Alignment.center,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  vertical: MediaQuery.of(context).size.height * 0.0075,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.pineGreen.withValues(alpha: 0.9),
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.038),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+                      blurRadius: MediaQuery.of(context).size.width * 0.01,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                     ),
                   ],
                 ),
-                child: const SizedBox(
-                  width: 16,
-                  height: 16,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.04,
+                  height: MediaQuery.of(context).size.width * 0.04,
                   child: CircularProgressIndicator(
                     color: Colors.white,
-                    strokeWidth: 2,
+                    strokeWidth: MediaQuery.of(context).size.width * 0.005,
                   ),
                 ),
               ),
@@ -588,12 +597,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-            color: AppColors.midnightGreen.withValues(alpha: 0.3), width: 1),
+            color: AppColors.midnightGreen.withValues(alpha: 0.3),
+            width: MediaQuery.of(context).size.width * 0.0025),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+            blurRadius: MediaQuery.of(context).size.width * 0.01,
+            offset: Offset(0, MediaQuery.of(context).size.height * 0.00125),
           ),
         ],
       ),
@@ -606,7 +616,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.midnightGreen.withValues(alpha: 0.2),
-                  width: 0.5,
+                  width: MediaQuery.of(context).size.width * 0.00125,
                 ),
               ),
               child: TextField(
@@ -642,16 +652,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   AppColors.pineGreen.withValues(alpha: 0.9),
                 ],
               ),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.045),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.2),
-                width: 1,
+                width: MediaQuery.of(context).size.width * 0.0025,
               ),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.pineGreen.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
@@ -831,16 +841,16 @@ class _MessageBubble extends StatelessWidget {
                               AppColors.rosyBrown.withValues(alpha: 0.9),
                             ],
                           ),
-                    borderRadius: BorderRadius.circular(15).copyWith(
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.038).copyWith(
                       bottomLeft:
-                          !isMe && showAvatar ? const Radius.circular(3) : null,
-                      bottomRight: isMe ? const Radius.circular(3) : null,
+                          !isMe && showAvatar ? Radius.circular(MediaQuery.of(context).size.width * 0.0075) : null,
+                      bottomRight: isMe ? Radius.circular(MediaQuery.of(context).size.width * 0.0075) : null,
                     ),
                     border: Border.all(
                       color: isMe
                           ? Colors.white.withValues(alpha: 0.2)
                           : AppColors.rosyBrown.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                     boxShadow: [
                       BoxShadow(
