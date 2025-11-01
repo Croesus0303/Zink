@@ -133,7 +133,7 @@ class _WelcomeSection extends ConsumerWidget {
         margin: const EdgeInsets.only(bottom: 0.0),
         height: MediaQuery.of(context).size.height * 0.45,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
           child: Stack(
             children: [
               // Full background image
@@ -154,10 +154,10 @@ class _WelcomeSection extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: CircularProgressIndicator(
                               color: Colors.white,
-                              strokeWidth: 4,
+                              strokeWidth: MediaQuery.of(context).size.width * 0.01,
                             ),
                           ),
                         ),
@@ -218,8 +218,8 @@ class _WelcomeSection extends ConsumerWidget {
               if (activeEvent.badgeURL != null &&
                   activeEvent.badgeURL!.isNotEmpty)
                 Positioned(
-                  top: 16,
-                  right: 16,
+                  top: MediaQuery.of(context).size.height * 0.02,
+                  right: MediaQuery.of(context).size.width * 0.04,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.12,
                     height: MediaQuery.of(context).size.width * 0.12,
@@ -228,8 +228,8 @@ class _WelcomeSection extends ConsumerWidget {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
+                          blurRadius: MediaQuery.of(context).size.width * 0.02,
+                          offset: Offset(0, MediaQuery.of(context).size.height * 0.005),
                         ),
                       ],
                     ),
@@ -246,13 +246,13 @@ class _WelcomeSection extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: SizedBox(
-                              width: 20,
-                              height: 20,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              height: MediaQuery.of(context).size.width * 0.05,
                               child: CircularProgressIndicator(
                                 color: Colors.white,
-                                strokeWidth: 2.5,
+                                strokeWidth: MediaQuery.of(context).size.width * 0.006,
                               ),
                             ),
                           ),
@@ -282,7 +282,7 @@ class _WelcomeSection extends ConsumerWidget {
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -296,7 +296,7 @@ class _WelcomeSection extends ConsumerWidget {
                           shadows: [
                             Shadow(
                               color: Colors.black.withValues(alpha: 0.8),
-                              blurRadius: 8,
+                              blurRadius: MediaQuery.of(context).size.width * 0.02,
                             ),
                           ],
                         ),
@@ -317,7 +317,7 @@ class _WelcomeSection extends ConsumerWidget {
                           shadows: [
                             Shadow(
                               color: Colors.black.withValues(alpha: 0.7),
-                              blurRadius: 6,
+                              blurRadius: MediaQuery.of(context).size.width * 0.015,
                             ),
                           ],
                         ),
@@ -338,8 +338,11 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildWelcomeSection(BuildContext context, user) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.05,
+        vertical: MediaQuery.of(context).size.height * 0.015,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -350,18 +353,21 @@ class _WelcomeSection extends ConsumerWidget {
             Colors.white.withValues(alpha: 0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.iceBorder, width: 1),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
+        border: Border.all(
+          color: AppColors.iceBorder,
+          width: MediaQuery.of(context).size.width * 0.0025,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(-MediaQuery.of(context).size.width * 0.0025, -MediaQuery.of(context).size.width * 0.0025),
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(MediaQuery.of(context).size.width * 0.0025, MediaQuery.of(context).size.width * 0.0025),
           ),
         ],
       ),
@@ -392,25 +398,25 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildLoadingSection(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16.0),
-      padding: const EdgeInsets.all(32.0),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(28.0),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.07),
         border: Border.all(
           color: AppColors.iceBorder,
-          width: 1.5,
+          width: MediaQuery.of(context).size.width * 0.004,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
+            blurRadius: MediaQuery.of(context).size.width * 0.038,
+            offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
+            blurRadius: MediaQuery.of(context).size.width * 0.038,
+            offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
           ),
         ],
       ),
@@ -425,19 +431,19 @@ class _WelcomeSection extends ConsumerWidget {
                 end: Alignment.bottomRight,
                 colors: [AppColors.rosyBrown, AppColors.pineGreen],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
+                  blurRadius: MediaQuery.of(context).size.width * 0.05,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.01),
                 ),
               ],
             ),
-            child: const Center(
+            child: Center(
               child: CircularProgressIndicator(
                 color: Colors.white,
-                strokeWidth: 4,
+                strokeWidth: MediaQuery.of(context).size.width * 0.01,
               ),
             ),
           ),
@@ -451,7 +457,7 @@ class _WelcomeSection extends ConsumerWidget {
               shadows: [
                 Shadow(
                   color: AppColors.rosyBrown.withValues(alpha: 0.5),
-                  blurRadius: 10,
+                  blurRadius: MediaQuery.of(context).size.width * 0.025,
                 ),
               ],
             ),
@@ -463,25 +469,25 @@ class _WelcomeSection extends ConsumerWidget {
 
   Widget _buildErrorSection(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16.0),
-      padding: const EdgeInsets.all(32.0),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
       decoration: BoxDecoration(
         gradient: AppColors.iceGlassGradient,
-        borderRadius: BorderRadius.circular(28.0),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.07),
         border: Border.all(
           color: AppColors.iceBorder,
-          width: 1.5,
+          width: MediaQuery.of(context).size.width * 0.004,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
+            blurRadius: MediaQuery.of(context).size.width * 0.038,
+            offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
+            blurRadius: MediaQuery.of(context).size.width * 0.038,
+            offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
           ),
         ],
       ),
@@ -499,7 +505,7 @@ class _WelcomeSection extends ConsumerWidget {
                   AppColors.pineGreen.withValues(alpha: 0.3),
                 ],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
             ),
             child: Icon(
               Icons.error_outline,
@@ -529,7 +535,12 @@ class _PastEventsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 12.0),
+      padding: EdgeInsets.fromLTRB(
+        MediaQuery.of(context).size.width * 0.03,
+        MediaQuery.of(context).size.height * 0.01,
+        MediaQuery.of(context).size.width * 0.03,
+        MediaQuery.of(context).size.height * 0.015,
+      ),
       child: Text(
         AppLocalizations.of(context)!.pastTasks,
         style: TextStyle(
@@ -595,25 +606,25 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
     if (pastEvents.isEmpty) {
       return SliverToBoxAdapter(
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 16.0),
-          padding: const EdgeInsets.all(32.0),
+          margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
           decoration: BoxDecoration(
             gradient: AppColors.iceGlassGradient,
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.08),
             border: Border.all(
               color: AppColors.iceBorder,
-              width: 1.5,
+              width: MediaQuery.of(context).size.width * 0.004,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(-2, -2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
               ),
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 15,
-                offset: const Offset(2, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.038,
+                offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
               ),
             ],
           ),
@@ -631,7 +642,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                       AppColors.pineGreen.withValues(alpha: 0.3),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.075),
                 ),
                 child: Icon(
                   Icons.history,
@@ -649,7 +660,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                   shadows: [
                     Shadow(
                       color: AppColors.rosyBrown.withValues(alpha: 0.5),
-                      blurRadius: 10,
+                      blurRadius: MediaQuery.of(context).size.width * 0.025,
                     ),
                   ],
                 ),
@@ -668,11 +679,13 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
         (context, index) {
           if (index >= pastEvents.length) {
             return Container(
-              margin: const EdgeInsets.symmetric(vertical: 16.0),
+              margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
               child: Center(
                 child: notifier.isLoadingMore
-                    ? const CircularProgressIndicator(
-                        color: AppColors.rosyBrown)
+                    ? CircularProgressIndicator(
+                        color: AppColors.rosyBrown,
+                        strokeWidth: MediaQuery.of(context).size.width * 0.01,
+                      )
                     : const SizedBox.shrink(),
               ),
             );
@@ -680,12 +693,12 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
 
           final event = pastEvents[index];
           return Container(
-            margin: const EdgeInsets.only(bottom: 8.0),
+            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.01),
             height: MediaQuery.of(context).size.height * 0.25,
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -695,7 +708,7 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                   );
                 },
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
                   child: Stack(
                     children: [
                       // Full background image
@@ -717,13 +730,13 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                                       ],
                                     ),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                     child: SizedBox(
-                                      width: 32,
-                                      height: 32,
+                                      width: MediaQuery.of(context).size.width * 0.08,
+                                      height: MediaQuery.of(context).size.width * 0.08,
                                       child: CircularProgressIndicator(
                                         color: Colors.white,
-                                        strokeWidth: 3,
+                                        strokeWidth: MediaQuery.of(context).size.width * 0.0075,
                                       ),
                                     ),
                                   ),
@@ -788,8 +801,8 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                       // Badge overlay at top-right
                       if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
                         Positioned(
-                          top: 12,
-                          right: 12,
+                          top: MediaQuery.of(context).size.height * 0.015,
+                          right: MediaQuery.of(context).size.width * 0.03,
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.1,
                             height: MediaQuery.of(context).size.width * 0.1,
@@ -798,8 +811,8 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                                 ),
                               ],
                             ),
@@ -818,13 +831,13 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                                       ],
                                     ),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                     child: SizedBox(
-                                      width: 16,
-                                      height: 16,
+                                      width: MediaQuery.of(context).size.width * 0.04,
+                                      height: MediaQuery.of(context).size.width * 0.04,
                                       child: CircularProgressIndicator(
                                         color: Colors.white,
-                                        strokeWidth: 2,
+                                        strokeWidth: MediaQuery.of(context).size.width * 0.005,
                                       ),
                                     ),
                                   ),
@@ -853,29 +866,31 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                         ),
                       // Status tag and content at bottom
                       Positioned(
-                        bottom: 12,
-                        left: 12,
-                        right: 12,
+                        bottom: MediaQuery.of(context).size.height * 0.015,
+                        left: MediaQuery.of(context).size.width * 0.03,
+                        right: MediaQuery.of(context).size.width * 0.03,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // Active/Ended tag
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.025,
+                                vertical: MediaQuery.of(context).size.height * 0.006,
+                              ),
                               decoration: BoxDecoration(
                                 color: event.isExpired
                                     ? AppColors.midnightGreen
                                         .withValues(alpha: 0.8)
                                     : AppColors.rosyBrown
                                         .withValues(alpha: 0.8),
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
+                                    blurRadius: MediaQuery.of(context).size.width * 0.01,
+                                    offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                                   ),
                                 ],
                               ),
@@ -905,8 +920,8 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                                 shadows: [
                                   Shadow(
                                     color: Colors.black.withValues(alpha: 0.8),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
+                                    blurRadius: MediaQuery.of(context).size.width * 0.02,
+                                    offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                                   ),
                                 ],
                               ),
@@ -927,8 +942,8 @@ class _PaginatedPastChallengesList extends ConsumerWidget {
                                 shadows: [
                                   Shadow(
                                     color: Colors.black.withValues(alpha: 0.8),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 1),
+                                    blurRadius: MediaQuery.of(context).size.width * 0.015,
+                                    offset: Offset(0, MediaQuery.of(context).size.height * 0.00125),
                                   ),
                                 ],
                               ),

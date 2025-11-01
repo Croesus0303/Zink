@@ -118,25 +118,25 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
             }
 
             return Container(
-              margin: const EdgeInsets.symmetric(vertical: 24.0),
-              padding: const EdgeInsets.all(20.0),
+              margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.03),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
                 gradient: AppColors.iceGlassGradient,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                 border: Border.all(
                   color: AppColors.iceBorder,
-                  width: 1.5,
+                  width: MediaQuery.of(context).size.width * 0.004,
                 ),
               ),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircularProgressIndicator(
+                    CircularProgressIndicator(
                       color: AppColors.rosyBrown,
-                      strokeWidth: 3,
+                      strokeWidth: MediaQuery.of(context).size.width * 0.0075,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                     Text(
                       'Loading more posts...',
                       style: TextStyle(
@@ -162,24 +162,24 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   Widget _buildEmptyTimeline(BuildContext context) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
         decoration: BoxDecoration(
           gradient: AppColors.iceGlassGradient,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.08),
           border: Border.all(
             color: AppColors.iceBorder,
-            width: 1.5,
+            width: MediaQuery.of(context).size.width * 0.004,
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.white.withValues(alpha: 0.08),
-              blurRadius: 15,
-              offset: const Offset(-2, -2),
+              blurRadius: MediaQuery.of(context).size.width * 0.038,
+              offset: Offset(-MediaQuery.of(context).size.width * 0.005, -MediaQuery.of(context).size.width * 0.005),
             ),
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 15,
-              offset: const Offset(2, 2),
+              blurRadius: MediaQuery.of(context).size.width * 0.038,
+              offset: Offset(MediaQuery.of(context).size.width * 0.005, MediaQuery.of(context).size.width * 0.005),
             ),
           ],
         ),
@@ -198,7 +198,7 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                     AppColors.pineGreen.withValues(alpha: 0.3),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.075),
               ),
               child: Icon(
                 Icons.timeline,
@@ -213,10 +213,10 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                 color: AppColors.textPrimary,
                 fontSize: MediaQuery.of(context).size.width * 0.05,
                 fontWeight: FontWeight.bold,
-                shadows: const [
+                shadows: [
                   Shadow(
                     color: AppColors.rosyBrown,
-                    blurRadius: 10,
+                    blurRadius: MediaQuery.of(context).size.width * 0.025,
                   ),
                 ],
               ),
@@ -242,13 +242,13 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
   Widget _buildErrorWidget(BuildContext context) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
         decoration: BoxDecoration(
           gradient: AppColors.iceGlassGradient,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.08),
           border: Border.all(
             color: AppColors.iceBorder,
-            width: 1.5,
+            width: MediaQuery.of(context).size.width * 0.004,
           ),
         ),
         child: Column(
@@ -278,29 +278,36 @@ class TimelineTabState extends ConsumerState<TimelineTab> {
                     AppColors.pineGreen.withValues(alpha: 0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                 border: Border.all(
                   color: AppColors.rosyBrown,
-                  width: 1,
+                  width: MediaQuery.of(context).size.width * 0.0025,
                 ),
               ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => ref.read(timelinePostsProvider.notifier).refresh(),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.06,
+                      vertical: MediaQuery.of(context).size.height * 0.015,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.refresh, color: Colors.white, size: 20),
-                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.refresh,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                         Text(
                           AppLocalizations.of(context)!.retry,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -333,12 +340,12 @@ class _TimelineContent extends ConsumerWidget {
         }
         return parentState._buildTimeline(context, posts, notifier);
       },
-      loading: () => const SliverFillRemaining(
+      loading: () => SliverFillRemaining(
         hasScrollBody: false,
         child: Center(
           child: CircularProgressIndicator(
             color: AppColors.rosyBrown,
-            strokeWidth: 4,
+            strokeWidth: MediaQuery.of(context).size.width * 0.01,
           ),
         ),
       ),
@@ -409,23 +416,23 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
               children: [
                 // Image
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   child: CachedNetworkImage(
                     imageUrl: widget.post.submission.imageURL,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
-                    placeholder: (context, url) => const Center(
+                    placeholder: (context, url) => Center(
                       child: CircularProgressIndicator(
                         color: AppColors.rosyBrown,
-                        strokeWidth: 4,
+                        strokeWidth: MediaQuery.of(context).size.width * 0.01,
                       ),
                     ),
-                    errorWidget: (context, url, error) => const Center(
+                    errorWidget: (context, url, error) => Center(
                       child: Icon(
                         Icons.error,
                         color: AppColors.rosyBrown,
-                        size: 64,
+                        size: MediaQuery.of(context).size.width * 0.16,
                       ),
                     ),
                   ),
@@ -445,12 +452,15 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                           Colors.transparent,
                         ],
                       ),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(MediaQuery.of(context).size.width * 0.04),
+                        topRight: Radius.circular(MediaQuery.of(context).size.width * 0.04),
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.03,
+                      vertical: MediaQuery.of(context).size.height * 0.015,
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -477,7 +487,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                                   shadows: [
                                     Shadow(
                                       color: Colors.black.withValues(alpha: 0.8),
-                                      blurRadius: 4,
+                                      blurRadius: MediaQuery.of(context).size.width * 0.01,
                                     ),
                                   ],
                                 ),
@@ -490,7 +500,7 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                                   shadows: [
                                     Shadow(
                                       color: Colors.black.withValues(alpha: 0.8),
-                                      blurRadius: 4,
+                                      blurRadius: MediaQuery.of(context).size.width * 0.01,
                                     ),
                                   ],
                                 ),
@@ -503,12 +513,15 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
                           data: (event) => event != null
                               ? InkWell(
                                   onTap: () => context.push('/event/${event.id}'),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width * 0.025,
+                                      vertical: MediaQuery.of(context).size.height * 0.0075,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: AppColors.rosyBrown,
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                                     ),
                                     child: Text(
                                       event.title,
@@ -534,10 +547,10 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
         // Action buttons below image
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.03),
           child: Row(
             children: [
               LikeButton(
@@ -557,10 +570,10 @@ class _TimelinePostCardState extends ConsumerState<TimelinePostCard> {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
         // Separator line between objects
         const TinySeparatorLine(),
-        const SizedBox(height: 12),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
       ],
     );
   }
@@ -618,9 +631,9 @@ class _CommentButton extends ConsumerWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
