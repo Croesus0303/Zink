@@ -266,31 +266,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           children: [
                             // Tab Bar - Segmented Control
                             Container(
-                              height: 44,
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              height: MediaQuery.of(context).size.height * 0.055,
+                              margin: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.02,
+                              ),
                               decoration: BoxDecoration(
                                 color: AppColors.midnightGreen.withValues(alpha: 0.6),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                               ),
                               child: TabBar(
                                 controller: _tabController,
                                 indicator: BoxDecoration(
                                   color: AppColors.rosyBrown,
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.025),
                                 ),
                                 indicatorSize: TabBarIndicatorSize.tab,
-                                indicatorPadding: const EdgeInsets.all(3),
+                                indicatorPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.0075),
                                 dividerColor: Colors.transparent,
                                 labelColor: Colors.white,
                                 unselectedLabelColor:
                                     Colors.white.withValues(alpha: 0.75),
-                                labelStyle: const TextStyle(
+                                labelStyle: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                                  fontSize: MediaQuery.of(context).size.width * 0.035,
                                 ),
-                                unselectedLabelStyle: const TextStyle(
+                                unselectedLabelStyle: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 14,
+                                  fontSize: MediaQuery.of(context).size.width * 0.035,
                                 ),
                                 tabs: const [
                                   Tab(text: 'Sign In'),
@@ -298,7 +300,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
                             // Tab Bar View - Fixed Height
                             Expanded(
@@ -328,10 +330,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -349,7 +351,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   fontWeight: FontWeight.w500),
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -363,16 +365,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
 
         // Password field
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -400,7 +402,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   fontWeight: FontWeight.w500),
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -410,18 +412,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
         // Forgot password link
         Align(
           alignment: Alignment.centerRight,
           child: SizedBox(
-            height: 44,
+            height: MediaQuery.of(context).size.height * 0.055,
             child: TextButton(
               style: TextButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                minimumSize: const Size(88, 44),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  vertical: MediaQuery.of(context).size.height * 0.01,
+                ),
+                minimumSize: Size(
+                  MediaQuery.of(context).size.width * 0.22,
+                  MediaQuery.of(context).size.height * 0.055,
+                ),
               ),
               onPressed: _sendPasswordReset,
               child: Text(
@@ -429,42 +436,48 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.9),
                   fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  fontSize: MediaQuery.of(context).size.width * 0.035,
                 ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
         // Sign in button
         Container(
           width: double.infinity,
-          height: 56,
+          height: MediaQuery.of(context).size.height * 0.07,
           decoration: BoxDecoration(
             color: AppColors.pineGreen,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               onTap: _isLoading ? null : _signInWithEmailPassword,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.06,
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (!_isLoading) ...[
-                      const Icon(Icons.login, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.login,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     ],
                     Text(
                       _isLoading ? 'Signing in...' : 'Sign In',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -474,35 +487,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
         // Google sign in button (only on Android)
         if (!Platform.isIOS)
           Container(
             width: double.infinity,
-            height: 56,
+            height: MediaQuery.of(context).size.height * 0.07,
             decoration: BoxDecoration(
               color: AppColors.midnightGreen.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                 onTap: _isLoading ? null : _signInWithGoogle,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.06,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.g_mobiledata, color: Colors.white, size: 24),
-                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.g_mobiledata,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                       Text(
                         AppLocalizations.of(context)!.continueWithGoogle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -515,32 +534,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
         // Apple sign in button (only on iOS)
         if (Platform.isIOS) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Container(
             width: double.infinity,
-            height: 56,
+            height: MediaQuery.of(context).size.height * 0.07,
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                 onTap: _isLoading ? null : _signInWithApple,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.06,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.apple, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.apple,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                       Text(
                         AppLocalizations.of(context)!.continueWithApple,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -564,10 +589,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -585,7 +610,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   fontWeight: FontWeight.w500),
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -599,16 +624,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
 
         // Password field
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -636,7 +661,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   fontWeight: FontWeight.w500),
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -649,16 +674,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
 
         // Confirm password field
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -689,7 +714,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   fontWeight: FontWeight.w500),
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -702,37 +727,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
         // Sign up button
         Container(
           width: double.infinity,
-          height: 56,
+          height: MediaQuery.of(context).size.height * 0.07,
           decoration: BoxDecoration(
             color: AppColors.pineGreen,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               onTap: _isLoading ? null : _signUpWithEmailPassword,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.06,
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (!_isLoading) ...[
-                      const Icon(Icons.person_add,
-                          color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.person_add,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     ],
                     Text(
                       _isLoading ? 'Signing up...' : 'Sign Up',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -742,21 +772,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
         // Google sign in button (only on Android)
         if (!Platform.isIOS)
           Container(
             width: double.infinity,
-            height: 56,
+            height: MediaQuery.of(context).size.height * 0.07,
             decoration: BoxDecoration(
               color: AppColors.midnightGreen.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                 onTap: _isLoading ? null : _signInWithGoogle,
                 child: Container(
                   padding:
@@ -784,32 +814,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
         // Apple sign in button (only on iOS)
         if (Platform.isIOS) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           Container(
             width: double.infinity,
-            height: 56,
+            height: MediaQuery.of(context).size.height * 0.07,
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                 onTap: _isLoading ? null : _signInWithApple,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.06,
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.apple, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.apple,
+                        color: Colors.white,
+                        size: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                       Text(
                         AppLocalizations.of(context)!.continueWithApple,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
