@@ -113,12 +113,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
     // Show loading screen while essential data loads
     if (isLoading) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: AppColors.midnightGreen,
         body: Center(
           child: CircularProgressIndicator(
             color: AppColors.pineGreen,
-            strokeWidth: 4,
+            strokeWidth: MediaQuery.of(context).size.width * 0.01,
           ),
         ),
       );
@@ -145,7 +145,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 style: const TextStyle(color: AppColors.textPrimary),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -154,37 +154,39 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       AppColors.pineGreen.withValues(alpha: 0.9),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
+                    width: MediaQuery.of(context).size.width * 0.0025,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.pineGreen.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      blurRadius: MediaQuery.of(context).size.width * 0.03,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                     ),
                   ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     onTap: () => ref.refresh(userDataProvider(targetUserId)),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.06,
+                          vertical: MediaQuery.of(context).size.height * 0.02),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.refresh,
-                              color: Colors.white, size: 20),
-                          const SizedBox(width: 8),
+                          Icon(Icons.refresh,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.05),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(AppLocalizations.of(context)!.retry,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04,
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -223,12 +225,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         AppColors.midnightGreen,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const [
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.075),
+                    boxShadow: [
                       BoxShadow(
                         color: AppColors.rosyBrown,
-                        blurRadius: 20,
-                        offset: Offset(0, 8),
+                        blurRadius: MediaQuery.of(context).size.width * 0.05,
+                        offset: Offset(0, MediaQuery.of(context).size.height * 0.01),
                       ),
                     ],
                   ),
@@ -238,25 +240,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Text(
                   AppLocalizations.of(context)!.profileNotSetUp,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 22,
+                    fontSize: MediaQuery.of(context).size.width * 0.055,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                 Text(
                   AppLocalizations.of(context)!.pleaseCompleteProfileSetup,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -265,33 +267,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         AppColors.primaryOrangeDark
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primaryOrange.withValues(alpha: 0.9),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                        blurRadius: MediaQuery.of(context).size.width * 0.03,
+                        offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                       ),
                     ],
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: () => context.go('/onboarding'),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 18),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.08,
+                            vertical: MediaQuery.of(context).size.height * 0.0225),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.edit,
-                                color: Colors.white, size: 20),
-                            const SizedBox(width: 12),
+                            Icon(Icons.edit,
+                                color: Colors.white,
+                                size: MediaQuery.of(context).size.width * 0.05),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                             Text(AppLocalizations.of(context)!.completeSetup,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: MediaQuery.of(context).size.width * 0.04,
                                     fontWeight: FontWeight.bold)),
                           ],
                         ),
@@ -304,12 +308,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
         );
       } else {
-        return const Scaffold(
+        return Scaffold(
           backgroundColor: AppColors.midnightGreen,
           body: Center(
             child: Text(
               'User not found',
-              style: TextStyle(color: AppColors.textPrimary, fontSize: 18),
+              style: TextStyle(color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.045),
             ),
           ),
         );
@@ -328,7 +333,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 child: SafeArea(
                   bottom: false,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 60),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.075),
                     child: TabBarView(
                       controller: _tabController,
                       physics: const NeverScrollableScrollPhysics(),
@@ -343,7 +348,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
               // Spacer between content and tabs
               Container(
-                height: 8,
+                height: MediaQuery.of(context).size.height * 0.01,
                 color: AppColors.midnightGreen,
               ),
               // Bottom tab bar
@@ -352,7 +357,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
           // Back button (top left) - moved to top of stack for proper click handling
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
+            top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.01,
             left: MediaQuery.of(context).size.width * 0.04,
             child: IconButton(
               icon: Icon(
@@ -368,7 +373,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           // Message or Settings button (top right) - moved to top of stack for proper click handling
           if (!isOwnProfile)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
+              top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.01,
               right: MediaQuery.of(context).size.width * 0.04,
               child: IconButton(
                 icon: Icon(
@@ -384,7 +389,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
           if (isOwnProfile)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
+              top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.01,
               right: MediaQuery.of(context).size.width * 0.04,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -400,7 +405,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                   // Sign Out button
                   IconButton(
                     onPressed: () async {
@@ -411,49 +416,49 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           backgroundColor: Colors.transparent,
                           contentPadding: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
                           ),
                           content: Container(
                             decoration: BoxDecoration(
                               color: AppColors.midnightGreen
                                   .withValues(alpha: 0.95),
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
                               border: Border.all(
                                 color: Colors.white.withValues(alpha: 0.3),
-                                width: 1.5,
+                                width: MediaQuery.of(context).size.width * 0.00375,
                               ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.3),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
+                                  blurRadius: MediaQuery.of(context).size.width * 0.05,
+                                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
                                 ),
                               ],
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(24),
+                              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     AppLocalizations.of(context)!.signOut,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.textPrimary,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20,
+                                      fontSize: MediaQuery.of(context).size.width * 0.05,
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                                   Text(
                                     AppLocalizations.of(context)!
                                         .signOutConfirmation,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.textSecondary,
-                                      fontSize: 16,
+                                      fontSize: MediaQuery.of(context).size.width * 0.04,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  const SizedBox(height: 24),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -462,13 +467,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                             Navigator.of(context).pop(false),
                                         child: Text(
                                           AppLocalizations.of(context)!.cancel,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: AppColors.textSecondary,
-                                            fontSize: 16,
+                                            fontSize: MediaQuery.of(context).size.width * 0.04,
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                                       Container(
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
@@ -479,27 +484,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                             ],
                                           ),
                                           borderRadius:
-                                              BorderRadius.circular(12),
+                                              BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                                         ),
                                         child: Material(
                                           color: Colors.transparent,
                                           child: InkWell(
                                             borderRadius:
-                                                BorderRadius.circular(12),
+                                                BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                                             onTap: () =>
                                                 Navigator.of(context).pop(true),
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 12,
+                                                  EdgeInsets.symmetric(
+                                                horizontal: MediaQuery.of(context).size.width * 0.05,
+                                                vertical: MediaQuery.of(context).size.height * 0.015,
                                               ),
                                               child: Text(
                                                 AppLocalizations.of(context)!
                                                     .signOut,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: AppColors.textPrimary,
-                                                  fontSize: 16,
+                                                  fontSize: MediaQuery.of(context).size.width * 0.04,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
@@ -545,7 +550,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           // Centered Profile text - moved to top of stack
           Positioned(
             top: MediaQuery.of(context).padding.top +
-                8 +
+                MediaQuery.of(context).size.height * 0.01 +
                 (MediaQuery.of(context).size.width * 0.08 / 2) -
                 (MediaQuery.of(context).size.width * 0.045 / 2),
             left: 0,
@@ -571,10 +576,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildBottomTabBar(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.025),
       padding: EdgeInsets.symmetric(
         horizontal: MediaQuery.of(context).size.width * 0.08,
-        vertical: 8,
+        vertical: MediaQuery.of(context).size.height * 0.01,
       ),
       height: MediaQuery.of(context).size.height * 0.065,
       decoration: BoxDecoration(
@@ -582,15 +587,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         border: Border(
           top: BorderSide(
             color: Colors.white.withValues(alpha: 0.15),
-            width: 1.5,
+            width: MediaQuery.of(context).size.width * 0.00375,
           ),
         ),
         boxShadow: [
           // Sharper upward shadow for depth
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, -4),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(0, -MediaQuery.of(context).size.height * 0.005),
           ),
         ],
       ),
@@ -622,9 +627,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             final width = baseWidth + (activeWidth - baseWidth) * progress;
 
             // Animate between pine green and rosy brown
+            final borderRadius = MediaQuery.of(context).size.width * 0.05;
             final decoration = BoxDecoration.lerp(
-              createPineGreenDecoration(borderRadius: 20),
-              createRosyBrownDecoration(borderRadius: 20),
+              createPineGreenDecoration(borderRadius: borderRadius),
+              createRosyBrownDecoration(borderRadius: borderRadius),
               progress,
             );
 
@@ -634,7 +640,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
             // Calculate icon opacity and size - consistent 0.8 for inactive
             final iconAlpha = 0.8 + (0.2 * progress);
-            final iconSize = 22.0 + (2.0 * progress);
+            final iconSize = MediaQuery.of(context).size.width * 0.055 + (MediaQuery.of(context).size.width * 0.005 * progress);
 
             // Unified coral accent - rgba(230, 120, 90, 0.25)
             const coralGlow = Color(0xFFE6785A); // rgb(230, 120, 90)
@@ -648,8 +654,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     if (progress > 0.1)
                       BoxShadow(
                         color: coralGlow.withValues(alpha: 0.25 * progress),
-                        blurRadius: 16 * progress,
-                        spreadRadius: 2 * progress,
+                        blurRadius: MediaQuery.of(context).size.width * 0.04 * progress,
+                        spreadRadius: MediaQuery.of(context).size.width * 0.005 * progress,
                       ),
                     ...(decoration.boxShadow ?? []),
                   ],
@@ -659,7 +665,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     // Glassy shine overlay - always present for crystalline effect
                     Positioned.fill(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(borderRadius),
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
@@ -704,24 +710,25 @@ extension on _ProfileScreenState {
 
     return submissionsAsync.when(
       data: (submissions) => Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: _buildSubmissionGrid(submissions),
       ),
       loading: () => Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: _buildSubmissionGrid([]),
       ), // Show empty grid while loading
       error: (error, stack) => Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Error loading submissions',
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.textPrimary,
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -730,39 +737,41 @@ extension on _ProfileScreenState {
                       AppColors.pineGreen.withValues(alpha: 0.9),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
+                    width: MediaQuery.of(context).size.width * 0.0025,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.pineGreen.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      blurRadius: MediaQuery.of(context).size.width * 0.03,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                     ),
                   ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     onTap: () => ref.refresh(
                         userSubmissionsFromUserCollectionProvider(
                             targetUserId)),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.06,
+                          vertical: MediaQuery.of(context).size.height * 0.02),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.refresh,
-                              color: Colors.white, size: 20),
-                          const SizedBox(width: 8),
+                          Icon(Icons.refresh,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.05),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(AppLocalizations.of(context)!.retry,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04,
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -781,12 +790,12 @@ extension on _ProfileScreenState {
       BuildContext context, WidgetRef ref, String targetUserId) {
     // Only load liked submissions if the tab has been accessed
     if (!_hasLoadedLikes) {
-      return const Padding(
-        padding: EdgeInsets.only(top: 16),
+      return Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: Center(
           child: CircularProgressIndicator(
             color: AppColors.primaryOrange,
-            strokeWidth: 3,
+            strokeWidth: MediaQuery.of(context).size.width * 0.0075,
           ),
         ),
       );
@@ -797,29 +806,30 @@ extension on _ProfileScreenState {
 
     return likedSubmissionsAsync.when(
       data: (submissions) => Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: _buildLikedSubmissionGrid(submissions),
       ),
-      loading: () => const Padding(
-        padding: EdgeInsets.only(top: 16),
+      loading: () => Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: Center(
           child: CircularProgressIndicator(
             color: AppColors.primaryOrange,
-            strokeWidth: 3,
+            strokeWidth: MediaQuery.of(context).size.width * 0.0075,
           ),
         ),
       ),
       error: (error, stack) => Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Error loading liked submissions',
-                style: TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(color: AppColors.textPrimary,
+                    fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -828,38 +838,40 @@ extension on _ProfileScreenState {
                       AppColors.rosyBrown,
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3),
-                    width: 1,
+                    width: MediaQuery.of(context).size.width * 0.0025,
                   ),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
                       color: AppColors.rosyBrown,
-                      blurRadius: 12,
-                      offset: Offset(0, 6),
+                      blurRadius: MediaQuery.of(context).size.width * 0.03,
+                      offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                     ),
                   ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     onTap: () =>
                         ref.refresh(userLikedSubmissionsProvider(targetUserId)),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.06,
+                          vertical: MediaQuery.of(context).size.height * 0.02),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.refresh,
-                              color: Colors.white, size: 20),
-                          const SizedBox(width: 8),
+                          Icon(Icons.refresh,
+                              color: Colors.white,
+                              size: MediaQuery.of(context).size.width * 0.05),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                           Text(AppLocalizations.of(context)!.retry,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04,
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -876,20 +888,25 @@ extension on _ProfileScreenState {
 
   Widget _buildSubmissionGrid(List<SubmissionModel> submissions) {
     if (submissions.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No submissions yet',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+          style: TextStyle(color: AppColors.textSecondary,
+              fontSize: MediaQuery.of(context).size.width * 0.04),
         ),
       );
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      padding: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.width * 0.01,
+          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.width * 0.01,
+          MediaQuery.of(context).size.height * 0.01),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        crossAxisSpacing: MediaQuery.of(context).size.width * 0.005,
+        mainAxisSpacing: MediaQuery.of(context).size.width * 0.005,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -907,21 +924,21 @@ extension on _ProfileScreenState {
           },
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               border: Border.all(
                 color: AppColors.pineGreen.withValues(alpha: 0.3),
-                width: 1.5,
+                width: MediaQuery.of(context).size.width * 0.00375,
               ),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.pineGreen.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               child: CachedNetworkImage(
                 imageUrl: submission.imageURL,
                 fit: BoxFit.cover,
@@ -949,20 +966,25 @@ extension on _ProfileScreenState {
 
   Widget _buildLikedSubmissionGrid(List<Map<String, dynamic>> submissions) {
     if (submissions.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
           'No liked submissions yet',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+          style: TextStyle(color: AppColors.textSecondary,
+              fontSize: MediaQuery.of(context).size.width * 0.04),
         ),
       );
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      padding: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.width * 0.01,
+          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.width * 0.01,
+          MediaQuery.of(context).size.height * 0.01),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        crossAxisSpacing: MediaQuery.of(context).size.width * 0.005,
+        mainAxisSpacing: MediaQuery.of(context).size.width * 0.005,
       ),
       itemCount: submissions.length,
       itemBuilder: (context, index) {
@@ -981,21 +1003,21 @@ extension on _ProfileScreenState {
           },
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               border: Border.all(
                 color: AppColors.rosyBrown,
-                width: 1.5,
+                width: MediaQuery.of(context).size.width * 0.00375,
               ),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
                   color: AppColors.rosyBrown,
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
               child: Stack(
                 children: [
                   CachedNetworkImage(
@@ -1034,19 +1056,20 @@ extension on _ProfileScreenState {
 
     return userDataAsync.when(
       data: (user) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 48),
-            // Profile picture with edit button
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _buildSimpleAvatar(context, user),
-                if (isOwnProfile)
-                  Positioned(
-                    bottom: 4,
-                    right: 4,
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+              // Profile picture with edit button
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _buildSimpleAvatar(context, user),
+                  if (isOwnProfile)
+                    Positioned(
+                      bottom: MediaQuery.of(context).size.width * 0.01,
+                      right: MediaQuery.of(context).size.width * 0.01,
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -1064,7 +1087,7 @@ extension on _ProfileScreenState {
                             });
                           }
                         },
-                        borderRadius: BorderRadius.circular(100),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.25),
                         splashColor:
                             AppColors.primaryOrange.withValues(alpha: 0.3),
                         highlightColor:
@@ -1077,28 +1100,28 @@ extension on _ProfileScreenState {
                             color: AppColors.rosyBrown,
                             border: Border.all(
                               color: Colors.white.withValues(alpha: 0.15),
-                              width: 1,
+                              width: MediaQuery.of(context).size.width * 0.0025,
                             ),
                             boxShadow: [
                               // Primary shadow
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.35),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
+                                blurRadius: MediaQuery.of(context).size.width * 0.015,
+                                offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                               ),
                               // White rim light
                               BoxShadow(
                                 color: Colors.white.withValues(alpha: 0.15),
-                                blurRadius: 4,
+                                blurRadius: MediaQuery.of(context).size.width * 0.01,
                                 offset: const Offset(0, 0),
-                                spreadRadius: 0.5,
+                                spreadRadius: MediaQuery.of(context).size.width * 0.00125,
                               ),
                               // Coral glow for accent
                               BoxShadow(
                                 color: AppColors.primaryOrange
                                     .withValues(alpha: 0.25),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
+                                blurRadius: MediaQuery.of(context).size.width * 0.025,
+                                offset: Offset(0, MediaQuery.of(context).size.height * 0.00375),
                               ),
                             ],
                           ),
@@ -1113,7 +1136,7 @@ extension on _ProfileScreenState {
                   ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
             Text(
               user?.username ?? 'Unknown User',
               textAlign: TextAlign.center,
@@ -1122,27 +1145,28 @@ extension on _ProfileScreenState {
                 fontSize: MediaQuery.of(context).size.width * 0.053,
                 fontWeight: FontWeight.w600,
                 shadows: [
-                  const Shadow(
+                  Shadow(
                     color: AppColors.rosyBrown,
-                    blurRadius: 12,
+                    blurRadius: MediaQuery.of(context).size.width * 0.03,
                   ),
                   Shadow(
                     color: AppColors.pineGreen.withValues(alpha: 0.4),
-                    blurRadius: 8,
-                    offset: const Offset(2, 2),
+                    blurRadius: MediaQuery.of(context).size.width * 0.02,
+                    offset: Offset(MediaQuery.of(context).size.width * 0.005,
+                        MediaQuery.of(context).size.height * 0.0025),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
             // Social media buttons
             _buildSocialMediaLinks(user),
-            const SizedBox(height: 32),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
             // Divider line
             const TinySeparatorLine(),
-            const SizedBox(height: 24),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
             // Badges title
             Text(
@@ -1154,7 +1178,7 @@ extension on _ProfileScreenState {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
 
             // Badge showcase
             Column(
@@ -1169,20 +1193,22 @@ extension on _ProfileScreenState {
                 ),
               ],
             ),
-          ],
+            ],
+          ),
         );
       },
-      loading: () => const Center(
+      loading: () => Center(
         child: CircularProgressIndicator(
           color: AppColors.pineGreen,
+          strokeWidth: MediaQuery.of(context).size.width * 0.01,
         ),
       ),
-      error: (error, stack) => const Center(
+      error: (error, stack) => Center(
         child: Text(
           'Error loading profile',
           style: TextStyle(
             color: AppColors.textSecondary,
-            fontSize: 16,
+            fontSize: MediaQuery.of(context).size.width * 0.04,
           ),
         ),
       ),
@@ -1205,8 +1231,8 @@ extension on _ProfileScreenState {
     }
 
     return Wrap(
-      spacing: 24,
-      runSpacing: 12,
+      spacing: MediaQuery.of(context).size.width * 0.06,
+      runSpacing: MediaQuery.of(context).size.height * 0.015,
       alignment: WrapAlignment.center,
       children: validSocialLinks.map((entry) {
         return _buildSocialMediaButton(entry.key, entry.value);
@@ -1234,10 +1260,10 @@ extension on _ProfileScreenState {
         ),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.35),
-          width: 3,
+          width: MediaQuery.of(context).size.width * 0.0075,
         ),
       ),
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
       child: CircleAvatar(
         radius: MediaQuery.of(context).size.width * 0.171,
         backgroundColor: Colors.transparent,
@@ -1252,7 +1278,7 @@ extension on _ProfileScreenState {
                   shadows: [
                     Shadow(
                       color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 8,
+                      blurRadius: MediaQuery.of(context).size.width * 0.02,
                     ),
                   ],
                 ),
@@ -1272,7 +1298,7 @@ extension on _ProfileScreenState {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _launchURL(url, platform),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.025),
         splashColor: coralTint.withValues(alpha: 0.1),
         highlightColor: coralTint.withValues(alpha: 0.1),
         child: Container(
@@ -1281,7 +1307,7 @@ extension on _ProfileScreenState {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.025),
           decoration: BoxDecoration(
             color: AppColors.rosyBrown,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.025),
           ),
           child: socialData.containsKey('image')
               ? Image.asset(
