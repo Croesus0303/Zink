@@ -10,7 +10,7 @@ class GlassyButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final BoxConstraints? constraints;
 
-  GlassyButton({
+  const GlassyButton({
     super.key,
     required this.child,
     double? borderRadius,
@@ -41,7 +41,9 @@ class GlassyButton extends StatelessWidget {
                 ],
                 stops: const [0.0, 0.5, 1.0],
               ),
-              borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
+              borderRadius: shape == BoxShape.circle
+                  ? null
+                  : BorderRadius.circular(borderRadius),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.3),
                 width: shape == BoxShape.circle
@@ -68,7 +70,8 @@ class GlassyButton extends StatelessWidget {
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: MediaQuery.of(context).size.width * 0.015,
-                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
+                  offset:
+                      Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
@@ -138,7 +141,7 @@ class GlassyIconButton extends StatelessWidget {
   final double buttonSize;
   final BoxShape shape;
 
-  GlassyIconButton({
+  const GlassyIconButton({
     super.key,
     required this.icon,
     this.onPressed,
@@ -246,10 +249,12 @@ BoxDecoration createRosyBrownDecoration({
       ],
       stops: const [0.0, 0.5, 1.0],
     ),
-    borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
+    borderRadius:
+        shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
     border: Border.all(
       color: Colors.white.withValues(alpha: 0.3),
-      width: shape == BoxShape.circle ? borderRadius * 0.13 : borderRadius * 0.1,
+      width:
+          shape == BoxShape.circle ? borderRadius * 0.13 : borderRadius * 0.1,
     ),
     boxShadow: [
       BoxShadow(
@@ -288,7 +293,8 @@ BoxDecoration createPineGreenDecoration({
       ],
       stops: const [0.0, 0.5, 1.0],
     ),
-    borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
+    borderRadius:
+        shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
     border: Border.all(
       color: AppColors.pineGreen.withValues(alpha: 0.4),
       width: borderRadius * 0.067,

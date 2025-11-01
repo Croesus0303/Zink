@@ -13,7 +13,7 @@ class ClickableUserAvatar extends ConsumerWidget {
   final double radius;
   final bool showNavigateIcon;
 
-  ClickableUserAvatar({
+  const ClickableUserAvatar({
     super.key,
     this.user,
     this.userId,
@@ -126,7 +126,8 @@ class ClickableUserAvatar extends ConsumerWidget {
     );
   }
 
-  Widget _buildAvatar(BuildContext context, UserModel? userData, String targetUserId) {
+  Widget _buildAvatar(
+      BuildContext context, UserModel? userData, String targetUserId) {
     return GestureDetector(
       onTap: () => context.push('/profile/$targetUserId'),
       child: Stack(
@@ -167,7 +168,8 @@ class ClickableUserAvatar extends ConsumerWidget {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.005),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.005),
                 decoration: const BoxDecoration(
                   color: Colors.blue,
                   shape: BoxShape.circle,
@@ -200,7 +202,7 @@ class ClickableUserName extends StatelessWidget {
   final UserModel? user;
   final String? userId;
   final TextStyle? style;
-  
+
   const ClickableUserName({
     super.key,
     this.user,
