@@ -70,6 +70,7 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
 
   Future<void> loadInitialEvents() async {
     try {
+      if (!mounted) return;
       state = const AsyncValue.loading();
 
       // Get current category filter
@@ -86,11 +87,16 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
         _cachedActiveEvent = await _ref.read(activeEventProvider.future);
       }
 
+      if (!mounted) return;
+
       final events = await _eventsService.getPaginatedPastEvents(
         limit: 5,
         activeEvent: _cachedActiveEvent,
         categories: _currentCategories,
       );
+
+      if (!mounted) return;
+
       _hasMoreData = events.length == 5;
       if (events.isNotEmpty) {
         final snapshot = await FirebaseFirestore.instance
@@ -99,14 +105,17 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
             .get();
         _lastDocument = snapshot;
       }
+
+      if (!mounted) return;
       state = AsyncValue.data(events);
     } catch (error, stackTrace) {
+      if (!mounted) return;
       state = AsyncValue.error(error, stackTrace);
     }
   }
 
   Future<void> loadMoreEvents() async {
-    if (_isLoadingMore || !_hasMoreData || state.value == null) return;
+    if (_isLoadingMore || !_hasMoreData || state.value == null || !mounted) return;
 
     try {
       _isLoadingMore = true;
@@ -118,6 +127,8 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
         categories: _currentCategories,
       );
 
+      if (!mounted) return;
+
       _hasMoreData = newEvents.length == 5;
       if (newEvents.isNotEmpty) {
         final snapshot = await FirebaseFirestore.instance
@@ -125,6 +136,8 @@ class PaginatedPastEventsNotifier extends StateNotifier<AsyncValue<List<EventMod
             .doc(newEvents.last.id)
             .get();
         _lastDocument = snapshot;
+
+        if (!mounted) return;
         state = AsyncValue.data([...currentEvents, ...newEvents]);
       }
     } catch (error, stackTrace) {
