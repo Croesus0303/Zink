@@ -17,19 +17,19 @@ class SettingsScreen extends ConsumerWidget {
           ListView(
             padding: EdgeInsets.fromLTRB(
               0,
-              MediaQuery.of(context).padding.top + 60,
+              MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.075,
               0,
               MediaQuery.of(context).size.width * 0.04,
             ),
             children: [
               _buildAppSection(context, ref),
-              const SizedBox(height: 32),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               _buildDangerZone(context, ref),
             ],
           ),
           // Back button (top left)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
+            top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.01,
             left: MediaQuery.of(context).size.width * 0.04,
             child: IconButton(
               icon: Icon(
@@ -44,7 +44,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           // Title (top center)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
+            top: MediaQuery.of(context).padding.top + MediaQuery.of(context).size.height * 0.02,
             left: 0,
             right: 0,
             child: Center(
@@ -59,7 +59,7 @@ class SettingsScreen extends ConsumerWidget {
                     shadows: [
                       Shadow(
                         color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                        blurRadius: 8,
+                        blurRadius: MediaQuery.of(context).size.width * 0.02,
                       ),
                     ],
                   ),
@@ -84,8 +84,8 @@ class SettingsScreen extends ConsumerWidget {
           onTap: () => _showAboutDialog(context),
         ),
         Divider(
-          height: 1,
-          thickness: 1,
+          height: MediaQuery.of(context).size.width * 0.0025,
+          thickness: MediaQuery.of(context).size.width * 0.0025,
           color: Colors.white.withValues(alpha: 0.2),
           indent: 0,
           endIndent: 0,
@@ -99,8 +99,8 @@ class SettingsScreen extends ConsumerWidget {
           onTap: () => _showPrivacyPolicy(context),
         ),
         Divider(
-          height: 1,
-          thickness: 1,
+          height: MediaQuery.of(context).size.width * 0.0025,
+          thickness: MediaQuery.of(context).size.width * 0.0025,
           color: Colors.white.withValues(alpha: 0.2),
           indent: 0,
           endIndent: 0,
@@ -119,7 +119,7 @@ class SettingsScreen extends ConsumerWidget {
 
   Widget _buildDangerZone(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.025),
       child: _buildSettingsListTile(
         context,
         icon: Icons.delete_outline,
@@ -162,7 +162,7 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 2),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.0025),
                 child: Icon(
                   icon,
                   color: iconColor,
@@ -185,8 +185,8 @@ class SettingsScreen extends ConsumerWidget {
                             ? [
                                 Shadow(
                                   color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                                 ),
                               ]
                             : null,
@@ -230,64 +230,70 @@ class SettingsScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
         ),
         content: Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
             border: Border.all(
               color: AppColors.iceBorder,
-              width: 1.5,
+              width: MediaQuery.of(context).size.width * 0.00375,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                blurRadius: MediaQuery.of(context).size.width * 0.05,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'About Zink',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 22,
+                    fontSize: MediaQuery.of(context).size.width * 0.055,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Image.asset(
                   'assets/app_logo.png',
-                  width: 80,
-                  height: 80,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  height: MediaQuery.of(context).size.width * 0.2,
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
                   'Zink',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Text(
                   'Version 1.0.0',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: MediaQuery.of(context).size.width * 0.038,
+                  ),
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
                   'A social photo sharing app for events and moments.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.textPrimary),
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                  ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -296,24 +302,24 @@ class SettingsScreen extends ConsumerWidget {
                         AppColors.rosyBrown,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                       onTap: () => Navigator.of(context).pop(),
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 12,
+                          horizontal: MediaQuery.of(context).size.width * 0.08,
+                          vertical: MediaQuery.of(context).size.height * 0.015,
                         ),
                         child: Text(
                           'Close',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
                           ),
                         ),
                       ),
@@ -340,79 +346,86 @@ class SettingsScreen extends ConsumerWidget {
         ),
         content: Container(
           width: double.maxFinite,
-          constraints: const BoxConstraints(maxHeight: 500),
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.625),
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
             border: Border.all(
               color: AppColors.iceBorder,
-              width: 1.5,
+              width: MediaQuery.of(context).size.width * 0.00375,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                blurRadius: MediaQuery.of(context).size.width * 0.05,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Privacy Policy',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 22,
+                    fontSize: MediaQuery.of(context).size.width * 0.055,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Zink Privacy Policy',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text(
                           'Last updated: ${DateTime.now().year}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontStyle: FontStyle.italic,
                             color: AppColors.textSecondary,
+                            fontSize: MediaQuery.of(context).size.width * 0.038,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                         _buildPrivacySection(
+                          context,
                           'Information We Collect',
                           'We collect information you provide directly to us, such as when you create an account, post photos, or communicate with others through our service.',
                         ),
                         _buildPrivacySection(
+                          context,
                           'How We Use Your Information',
                           'We use the information we collect to provide, maintain, and improve our services, process transactions, and communicate with you.',
                         ),
                         _buildPrivacySection(
+                          context,
                           'Information Sharing',
                           'We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.',
                         ),
                         _buildPrivacySection(
+                          context,
                           'Data Security',
                           'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
                         ),
                         _buildPrivacySection(
+                          context,
                           'Your Rights',
                           'You have the right to access, update, or delete your personal information. You can do this through your account settings or by contacting us.',
                         ),
                         _buildPrivacySection(
+                          context,
                           'Contact Us',
                           'If you have any questions about this Privacy Policy, please contact us through the Help & Support section.',
                         ),
@@ -420,7 +433,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
@@ -430,24 +443,24 @@ class SettingsScreen extends ConsumerWidget {
                           AppColors.rosyBrown,
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     ),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                         onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 12,
+                            horizontal: MediaQuery.of(context).size.width * 0.08,
+                            vertical: MediaQuery.of(context).size.height * 0.015,
                           ),
                           child: Text(
                             'Close',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: MediaQuery.of(context).size.width * 0.04,
                             ),
                           ),
                         ),
@@ -463,25 +476,25 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildPrivacySection(String title, String content) {
+  Widget _buildPrivacySection(BuildContext context, String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: MediaQuery.of(context).size.width * 0.04,
               color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Text(
             content,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.035,
               color: AppColors.textSecondary,
             ),
           ),
@@ -503,36 +516,36 @@ class SettingsScreen extends ConsumerWidget {
         ),
         content: Container(
           width: double.maxFinite,
-          constraints: const BoxConstraints(maxHeight: 500),
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.625),
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
             border: Border.all(
               color: AppColors.iceBorder,
-              width: 1.5,
+              width: MediaQuery.of(context).size.width * 0.00375,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                blurRadius: MediaQuery.of(context).size.width * 0.05,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Help & Support',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 22,
+                    fontSize: MediaQuery.of(context).size.width * 0.055,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
@@ -548,7 +561,7 @@ class SettingsScreen extends ConsumerWidget {
                             'How do I edit my profile?\nGo to Profile > Menu > Edit Profile.',
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                         _buildHelpSection(
                           context,
                           'Contact Support',
@@ -558,7 +571,7 @@ class SettingsScreen extends ConsumerWidget {
                             'For urgent issues, please include "URGENT" in your subject line.',
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                         _buildHelpSection(
                           context,
                           'App Version',
@@ -568,7 +581,7 @@ class SettingsScreen extends ConsumerWidget {
                             'Platform: Mobile App',
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                         _buildHelpSection(
                           context,
                           'Report a Bug',
@@ -583,7 +596,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
@@ -593,24 +606,24 @@ class SettingsScreen extends ConsumerWidget {
                           AppColors.rosyBrown,
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     ),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                         onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 12,
+                            horizontal: MediaQuery.of(context).size.width * 0.08,
+                            vertical: MediaQuery.of(context).size.height * 0.015,
                           ),
                           child: Text(
                             'Close',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: MediaQuery.of(context).size.width * 0.04,
                             ),
                           ),
                         ),
@@ -633,19 +646,19 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: MediaQuery.of(context).size.width * 0.04,
             color: AppColors.textPrimary,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.01),
               child: Text(
                 item,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.035,
                   color: AppColors.textSecondary,
                 ),
               ),
