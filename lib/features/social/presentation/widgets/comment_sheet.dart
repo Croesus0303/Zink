@@ -91,9 +91,9 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
       expand: false,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: AppColors.midnightGreen,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(MediaQuery.of(context).size.width * 0.05)),
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -110,7 +110,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                     height: MediaQuery.of(context).size.height * 0.006,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.01),
                     ),
                   ),
                   // Header
@@ -205,10 +205,10 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                             );
                           },
                         ),
-                  loading: () => const Center(
+                  loading: () => Center(
                     child: CircularProgressIndicator(
                       color: AppColors.rosyBrown,
-                      strokeWidth: 4,
+                      strokeWidth: MediaQuery.of(context).size.width * 0.01,
                     ),
                   ),
                   error: (error, stack) {
@@ -264,7 +264,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppColors.midnightGreenLight,
-                              borderRadius: BorderRadius.circular(28),
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.07),
                             ),
                             child: TextField(
                               controller: _commentController,
@@ -297,7 +297,7 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                         Container(
                           decoration: BoxDecoration(
                             color: AppColors.rosyBrown,
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
                           ),
                           child: IconButton(
                             onPressed: _isSubmitting ? null : _addComment,
@@ -305,8 +305,8 @@ class _CommentSheetState extends ConsumerState<CommentSheet> {
                                 ? SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.04,
                                     height: MediaQuery.of(context).size.width * 0.04,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: MediaQuery.of(context).size.width * 0.005,
                                       color: Colors.white,
                                     ),
                                   )
@@ -350,11 +350,11 @@ class _CommentItem extends ConsumerWidget {
 
   Widget _buildCommentItem(BuildContext context, UserModel? user) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),

@@ -120,15 +120,15 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
         // Like/Unlike button
         InkWell(
           onTap: _isLoading ? null : _toggleLike,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
           child: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
             child: _isLoading
                 ? SizedBox(
                     width: MediaQuery.of(context).size.width * 0.055,
                     height: MediaQuery.of(context).size.width * 0.055,
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 2,
+                    child: CircularProgressIndicator(
+                      strokeWidth: MediaQuery.of(context).size.width * 0.005,
                       color: Colors.white,
                     ),
                   )
@@ -143,9 +143,12 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
         // Clickable like count
         InkWell(
           onTap: _likeCount > 0 ? _showLikesList : null,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.005,
+              vertical: MediaQuery.of(context).size.width * 0.005,
+            ),
             child: Text(
               _likeCount.toString(),
               style: TextStyle(
@@ -156,7 +159,7 @@ class _LikeButtonState extends ConsumerState<LikeButton> {
                 shadows: [
                   Shadow(
                     color: Colors.black.withValues(alpha: 0.8),
-                    blurRadius: 4,
+                    blurRadius: MediaQuery.of(context).size.width * 0.01,
                   ),
                 ],
               ),
