@@ -19,12 +19,12 @@ class CategoryFilterChips extends ConsumerWidget {
     return Container(
       height: filterChipsHeight,
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.midnightGreen,
         border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),
@@ -32,7 +32,7 @@ class CategoryFilterChips extends ConsumerWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(
-          horizontal: 16,
+          horizontal: MediaQuery.of(context).size.width * 0.04,
           vertical: filterChipsHeight * 0.15,
         ),
         children: [
@@ -40,7 +40,7 @@ class CategoryFilterChips extends ConsumerWidget {
           if (hasFilters) ...[
             ...selectedCategories.take(3).map((category) {
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
                 child: _SelectedCategoryChip(
                   category: category,
                   onTap: () => CategoryFilterBottomSheet.show(context, ref),
@@ -51,7 +51,7 @@ class CategoryFilterChips extends ConsumerWidget {
             // Show "+X more" if more than 3 selected
             if (selectedCategories.length > 3)
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
                 child: _CountChip(
                   count: selectedCategories.length - 3,
                   onTap: () => CategoryFilterBottomSheet.show(context, ref),
@@ -86,15 +86,18 @@ class _SelectedCategoryChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.0025,
+          ),
           decoration: BoxDecoration(
             color: AppColors.rosyBrown,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: AppColors.midnightGreenLight,
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: Row(
@@ -102,17 +105,17 @@ class _SelectedCategoryChip extends StatelessWidget {
             children: [
               Icon(
                 CategoryConstants.getIcon(category),
-                size: 14,
+                size: MediaQuery.of(context).size.width * 0.035,
                 color: Colors.white,
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               Text(
                 CategoryConstants.getDisplayName(category),
-                style: const TextStyle(
-                  fontSize: 11,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.0275,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
-                  letterSpacing: 0.2,
+                  letterSpacing: MediaQuery.of(context).size.width * 0.0005,
                 ),
               ),
             ],
@@ -139,37 +142,40 @@ class _CountChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.025,
+            vertical: MediaQuery.of(context).size.height * 0.0025,
+          ),
           decoration: BoxDecoration(
             color: AppColors.primaryOrange.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.3),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.02,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
               ),
             ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.add_rounded,
-                size: 14,
+                size: MediaQuery.of(context).size.width * 0.035,
                 color: Colors.white,
               ),
-              const SizedBox(width: 2),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.005),
               Text(
                 count.toString(),
-                style: const TextStyle(
-                  fontSize: 11,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.0275,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -198,15 +204,18 @@ class _FilterActionChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.0025,
+          ),
           decoration: BoxDecoration(
             color: AppColors.midnightGreenLight,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: AppColors.midnightGreenLight,
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: Row(
@@ -214,21 +223,21 @@ class _FilterActionChip extends StatelessWidget {
             children: [
               Icon(
                 Icons.tune_rounded,
-                size: 14,
+                size: MediaQuery.of(context).size.width * 0.035,
                 color: hasFilters
                     ? AppColors.primaryOrange
                     : Colors.white.withValues(alpha: 0.9),
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               Text(
                 hasFilters ? 'Edit Filters' : 'Add Filters',
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: MediaQuery.of(context).size.width * 0.0275,
                   fontWeight: FontWeight.w600,
                   color: hasFilters
                       ? AppColors.primaryOrange
                       : Colors.white.withValues(alpha: 0.9),
-                  letterSpacing: 0.2,
+                  letterSpacing: MediaQuery.of(context).size.width * 0.0005,
                 ),
               ),
             ],

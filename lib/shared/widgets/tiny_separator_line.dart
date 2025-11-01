@@ -15,7 +15,7 @@ class TinySeparatorLine extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: margin),
-      height: 1,
+      height: MediaQuery.of(context).size.width * 0.0025,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [

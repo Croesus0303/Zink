@@ -17,37 +17,45 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
     final pendingCategories = filterNotifier.getPendingState();
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.midnightGreen,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(MediaQuery.of(context).size.width * 0.07),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Handle bar
           Container(
-            margin: const EdgeInsets.only(top: 12, bottom: 8),
-            width: 40,
-            height: 4,
+            margin: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * 0.015,
+              bottom: MediaQuery.of(context).size.height * 0.01,
+            ),
+            width: MediaQuery.of(context).size.width * 0.1,
+            height: MediaQuery.of(context).size.height * 0.005,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.005),
             ),
           ),
 
           // Header
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.06,
+              vertical: MediaQuery.of(context).size.height * 0.015,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Filter by Category',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: MediaQuery.of(context).size.width * 0.055,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -57,15 +65,15 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
                         onPressed: () => filterNotifier.clearPending(),
                         style: TextButton.styleFrom(
                           foregroundColor: AppColors.primaryOrange,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.03,
+                            vertical: MediaQuery.of(context).size.height * 0.0075,
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Clear All',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: MediaQuery.of(context).size.width * 0.035,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -73,11 +81,11 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
                   ],
                 ),
                 if (pendingCategories.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                   Text(
                     '${pendingCategories.length} ${pendingCategories.length == 1 ? 'category' : 'categories'} selected',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: MediaQuery.of(context).size.width * 0.0325,
                       color: Colors.white.withValues(alpha: 0.6),
                       fontWeight: FontWeight.w500,
                     ),
@@ -89,10 +97,12 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
 
           // Category chips
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.04,
+            ),
             child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: MediaQuery.of(context).size.width * 0.02,
+              runSpacing: MediaQuery.of(context).size.height * 0.01,
               children: CategoryConstants.allCategories.map((category) {
                 final isSelected = pendingCategories.contains(category);
                 return _CategoryChip(
@@ -104,11 +114,16 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
           // Apply button
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+            padding: EdgeInsets.fromLTRB(
+              MediaQuery.of(context).size.width * 0.06,
+              0,
+              MediaQuery.of(context).size.width * 0.06,
+              MediaQuery.of(context).size.height * 0.04,
+            ),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -119,9 +134,13 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.rosyBrown,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * 0.04,
+                    ),
                   ),
                   elevation: 0,
                 ),
@@ -129,8 +148,8 @@ class CategoryFilterBottomSheet extends ConsumerWidget {
                   pendingCategories.isEmpty
                       ? 'Show All'
                       : 'Apply ${pendingCategories.length} ${pendingCategories.length == 1 ? 'Filter' : 'Filters'}',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -174,21 +193,24 @@ class _CategoryChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.04,
+            vertical: MediaQuery.of(context).size.height * 0.0125,
+          ),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.rosyBrown
                 : Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
             border: Border.all(
               color: isSelected
                   ? AppColors.midnightGreenLight
                   : AppColors.midnightGreenLight,
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: Row(
@@ -196,16 +218,16 @@ class _CategoryChip extends StatelessWidget {
             children: [
               Icon(
                 CategoryConstants.getIcon(category),
-                size: 18,
+                size: MediaQuery.of(context).size.width * 0.045,
                 color: Colors.white.withValues(
                   alpha: isSelected ? 1.0 : 0.7,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               Text(
                 CategoryConstants.getDisplayName(category),
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: MediaQuery.of(context).size.width * 0.035,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: Colors.white.withValues(
                     alpha: isSelected ? 1.0 : 0.8,
@@ -213,10 +235,10 @@ class _CategoryChip extends StatelessWidget {
                 ),
               ),
               if (isSelected) ...[
-                const SizedBox(width: 6),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.015),
                 Icon(
                   Icons.check_circle,
-                  size: 16,
+                  size: MediaQuery.of(context).size.width * 0.04,
                   color: Colors.white.withValues(alpha: 0.9),
                 ),
               ],

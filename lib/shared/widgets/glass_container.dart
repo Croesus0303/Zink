@@ -86,18 +86,18 @@ class GlassContainer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
                   color: borderColor,
-                  width: 1.5,
+                  width: MediaQuery.of(context).size.width * 0.00375,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    blurRadius: MediaQuery.of(context).size.width * 0.05,
+                    offset: Offset(0, MediaQuery.of(context).size.height * 0.01),
                   ),
                   BoxShadow(
                     color: borderColor.withValues(alpha: 0.1),
-                    blurRadius: 40,
-                    offset: const Offset(0, 16),
+                    blurRadius: MediaQuery.of(context).size.width * 0.1,
+                    offset: Offset(0, MediaQuery.of(context).size.height * 0.02),
                   ),
                 ],
               ),
@@ -142,7 +142,10 @@ class GlassButton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(
+            sigmaX: MediaQuery.of(context).size.width * 0.025,
+            sigmaY: MediaQuery.of(context).size.width * 0.025,
+          ),
           child: Container(
             padding: padding,
             decoration: BoxDecoration(
@@ -158,14 +161,16 @@ class GlassButton extends StatelessWidget {
                   ),
               border: Border.all(
                 color: borderColor,
-                width: isOutlined ? 2 : 1,
+                width: isOutlined
+                    ? MediaQuery.of(context).size.width * 0.005
+                    : MediaQuery.of(context).size.width * 0.0025,
               ),
               borderRadius: BorderRadius.circular(borderRadius),
               boxShadow: [
                 BoxShadow(
                   color: primaryColor.withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
+                  blurRadius: MediaQuery.of(context).size.width * 0.0375,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.00625),
                 ),
               ],
             ),
@@ -177,15 +182,15 @@ class GlassButton extends StatelessWidget {
                   Icon(
                     icon,
                     color: isOutlined ? primaryColor : Colors.white,
-                    size: 20,
+                    size: MediaQuery.of(context).size.width * 0.05,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 ],
                 Text(
                   text,
                   style: TextStyle(
                     color: isOutlined ? primaryColor : Colors.white,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

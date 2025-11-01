@@ -18,7 +18,7 @@ class LanguageSelector extends ConsumerWidget {
             Icons.language,
             color: Theme.of(context).colorScheme.onSurface,
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
             locale.languageCode.toUpperCase(),
             style: Theme.of(context).textTheme.labelMedium,
@@ -34,7 +34,7 @@ class LanguageSelector extends ConsumerWidget {
           child: Row(
             children: [
               const Text('🇬🇧'),
-              const SizedBox(width: 8),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               Text(
                 'English',
                 style: TextStyle(
@@ -44,9 +44,9 @@ class LanguageSelector extends ConsumerWidget {
                 ),
               ),
               if (locale.languageCode == 'en')
-                const Padding(
-                  padding: EdgeInsets.only(left: 8),
-                  child: Icon(Icons.check, size: 16),
+                Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+                  child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.04),
                 ),
             ],
           ),
@@ -56,7 +56,7 @@ class LanguageSelector extends ConsumerWidget {
           child: Row(
             children: [
               const Text('🇹🇷'),
-              const SizedBox(width: 8),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               Text(
                 'Türkçe',
                 style: TextStyle(
@@ -66,9 +66,9 @@ class LanguageSelector extends ConsumerWidget {
                 ),
               ),
               if (locale.languageCode == 'tr')
-                const Padding(
-                  padding: EdgeInsets.only(left: 8),
-                  child: Icon(Icons.check, size: 16),
+                Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+                  child: Icon(Icons.check, size: MediaQuery.of(context).size.width * 0.04),
                 ),
             ],
           ),
@@ -86,8 +86,8 @@ class LanguageToggleButton extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
 
     return Container(
-      width: 44,
-      height: 44,
+      width: MediaQuery.of(context).size.width * 0.11,
+      height: MediaQuery.of(context).size.width * 0.11,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -98,28 +98,30 @@ class LanguageToggleButton extends ConsumerWidget {
             Colors.white.withValues(alpha: 0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
         border: Border.all(
           color: AppColors.iceBorder,
-          width: 1,
+          width: MediaQuery.of(context).size.width * 0.0025,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(-1, -1),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(-MediaQuery.of(context).size.width * 0.0025,
+                -MediaQuery.of(context).size.width * 0.0025),
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(1, 1),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(MediaQuery.of(context).size.width * 0.0025,
+                MediaQuery.of(context).size.width * 0.0025),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
           onTap: () {
             ref.read(localeProvider.notifier).toggleLocale();
           },
@@ -128,13 +130,13 @@ class LanguageToggleButton extends ConsumerWidget {
             children: [
               Text(
                 locale.languageCode == 'en' ? '🇬🇧' : '🇹🇷',
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.0025),
               Text(
                 locale.languageCode.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 10,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.025,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),

@@ -10,15 +10,15 @@ class GlassyButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final BoxConstraints? constraints;
 
-  const GlassyButton({
+  GlassyButton({
     super.key,
     required this.child,
-    this.borderRadius = 15,
+    double? borderRadius,
     this.shape = BoxShape.rectangle,
     this.onPressed,
     this.padding,
     this.constraints,
-  });
+  }) : borderRadius = borderRadius ?? 15;
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +44,31 @@ class GlassyButton extends StatelessWidget {
               borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.3),
-                width: shape == BoxShape.circle ? 2 : 1.5,
+                width: shape == BoxShape.circle
+                    ? MediaQuery.of(context).size.width * 0.005
+                    : MediaQuery.of(context).size.width * 0.00375,
               ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.white.withValues(alpha: 0.2),
-                  blurRadius: 4,
-                  offset: const Offset(-2, -2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.01,
+                  offset: Offset(
+                    -MediaQuery.of(context).size.width * 0.005,
+                    -MediaQuery.of(context).size.width * 0.005,
+                  ),
                 ),
                 BoxShadow(
                   color: AppColors.midnightGreen.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(2, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.02,
+                  offset: Offset(
+                    MediaQuery.of(context).size.width * 0.005,
+                    MediaQuery.of(context).size.width * 0.005,
+                  ),
                 ),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.015,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
@@ -130,23 +138,24 @@ class GlassyIconButton extends StatelessWidget {
   final double buttonSize;
   final BoxShape shape;
 
-  const GlassyIconButton({
+  GlassyIconButton({
     super.key,
     required this.icon,
     this.onPressed,
     this.size,
     this.tooltip,
-    this.iconSize = 20,
-    this.buttonSize = 48,
+    double? iconSize,
+    double? buttonSize,
     this.shape = BoxShape.rectangle,
-  });
+  })  : iconSize = iconSize ?? 20,
+        buttonSize = buttonSize ?? 48;
 
   @override
   Widget build(BuildContext context) {
     final effectiveSize = size ?? buttonSize;
     final button = GlassyButton(
       shape: shape,
-      borderRadius: 15,
+      borderRadius: MediaQuery.of(context).size.width * 0.0375,
       onPressed: onPressed,
       constraints: BoxConstraints.tightFor(
         width: effectiveSize,
@@ -213,7 +222,7 @@ class _GlassyTabIndicatorPainter extends BoxPainter {
 
     final shineRect = RRect.fromRectAndRadius(
       rect,
-      const Radius.circular(16),
+      Radius.circular(configuration.size!.width * 0.04),
     );
 
     canvas.drawRRect(shineRect, shinePaint);
@@ -240,23 +249,23 @@ BoxDecoration createRosyBrownDecoration({
     borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
     border: Border.all(
       color: Colors.white.withValues(alpha: 0.3),
-      width: shape == BoxShape.circle ? 2 : 1.5,
+      width: shape == BoxShape.circle ? borderRadius * 0.13 : borderRadius * 0.1,
     ),
     boxShadow: [
       BoxShadow(
         color: Colors.white.withValues(alpha: 0.2),
-        blurRadius: 4,
-        offset: const Offset(-2, -2),
+        blurRadius: borderRadius * 0.27,
+        offset: Offset(-borderRadius * 0.13, -borderRadius * 0.13),
       ),
       BoxShadow(
         color: AppColors.rosyBrown.withValues(alpha: 0.3),
-        blurRadius: 8,
-        offset: const Offset(2, 2),
+        blurRadius: borderRadius * 0.53,
+        offset: Offset(borderRadius * 0.13, borderRadius * 0.13),
       ),
       BoxShadow(
         color: Colors.black.withValues(alpha: 0.1),
-        blurRadius: 6,
-        offset: const Offset(0, 2),
+        blurRadius: borderRadius * 0.4,
+        offset: Offset(0, borderRadius * 0.13),
       ),
     ],
   );
@@ -282,18 +291,18 @@ BoxDecoration createPineGreenDecoration({
     borderRadius: shape == BoxShape.circle ? null : BorderRadius.circular(borderRadius),
     border: Border.all(
       color: AppColors.pineGreen.withValues(alpha: 0.4),
-      width: 1,
+      width: borderRadius * 0.067,
     ),
     boxShadow: [
       BoxShadow(
         color: Colors.white.withValues(alpha: 0.1),
-        blurRadius: 3,
-        offset: const Offset(-1, -1),
+        blurRadius: borderRadius * 0.2,
+        offset: Offset(-borderRadius * 0.067, -borderRadius * 0.067),
       ),
       BoxShadow(
         color: AppColors.pineGreen.withValues(alpha: 0.2),
-        blurRadius: 6,
-        offset: const Offset(1, 1),
+        blurRadius: borderRadius * 0.4,
+        offset: Offset(borderRadius * 0.067, borderRadius * 0.067),
       ),
     ],
   );

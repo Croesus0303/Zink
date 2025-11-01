@@ -22,7 +22,7 @@ class CustomSnackBar {
         margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
         duration: duration,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         ),
       ),
     );
@@ -95,26 +95,32 @@ class _GlassmorphismSnackBarContent extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         gradient: _glassmorphismGradient,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         border: Border.all(
           color: _primaryColor.withValues(alpha: 0.4),
-          width: 1.2,
+          width: MediaQuery.of(context).size.width * 0.003,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.15),
-            blurRadius: 12,
-            offset: const Offset(-1, -1),
+            blurRadius: MediaQuery.of(context).size.width * 0.03,
+            offset: Offset(
+              -MediaQuery.of(context).size.width * 0.0025,
+              -MediaQuery.of(context).size.width * 0.0025,
+            ),
           ),
           BoxShadow(
             color: _primaryColor.withValues(alpha: 0.25),
-            blurRadius: 12,
-            offset: const Offset(1, 1),
+            blurRadius: MediaQuery.of(context).size.width * 0.03,
+            offset: Offset(
+              MediaQuery.of(context).size.width * 0.0025,
+              MediaQuery.of(context).size.width * 0.0025,
+            ),
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            blurRadius: MediaQuery.of(context).size.width * 0.02,
+            offset: Offset(0, MediaQuery.of(context).size.height * 0.00375),
           ),
         ],
       ),
@@ -130,16 +136,16 @@ class _GlassmorphismSnackBarContent extends StatelessWidget {
                   _primaryColor.withValues(alpha: 0.9),
                 ],
               ),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.3),
-                width: 1,
+                width: MediaQuery.of(context).size.width * 0.0025,
               ),
               boxShadow: [
                 BoxShadow(
                   color: _primaryColor.withValues(alpha: 0.3),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+                  blurRadius: MediaQuery.of(context).size.width * 0.015,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                 ),
               ],
             ),
@@ -160,7 +166,7 @@ class _GlassmorphismSnackBarContent extends StatelessWidget {
                 shadows: [
                   Shadow(
                     color: _primaryColor.withValues(alpha: 0.6),
-                    blurRadius: 4,
+                    blurRadius: MediaQuery.of(context).size.width * 0.01,
                   ),
                 ],
               ),

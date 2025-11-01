@@ -13,14 +13,14 @@ class ClickableUserAvatar extends ConsumerWidget {
   final double radius;
   final bool showNavigateIcon;
 
-  const ClickableUserAvatar({
+  ClickableUserAvatar({
     super.key,
     this.user,
     this.userId,
     this.username,
-    this.radius = 20,
+    double? radius,
     this.showNavigateIcon = false,
-  });
+  }) : radius = radius ?? 20;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -167,7 +167,7 @@ class ClickableUserAvatar extends ConsumerWidget {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: const EdgeInsets.all(2),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.005),
                 decoration: const BoxDecoration(
                   color: Colors.blue,
                   shape: BoxShape.circle,
