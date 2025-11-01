@@ -232,15 +232,24 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
 
   Widget _buildPageIndicator(int pageCount) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20, bottom: 12),
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * 0.025,
+        bottom: MediaQuery.of(context).size.height * 0.015,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(pageCount, (index) {
           final isActive = index == _currentPage;
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: isActive ? 8 : 6,
-            height: isActive ? 8 : 6,
+            margin: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.01,
+            ),
+            width: isActive
+                ? MediaQuery.of(context).size.width * 0.02
+                : MediaQuery.of(context).size.width * 0.015,
+            height: isActive
+                ? MediaQuery.of(context).size.width * 0.02
+                : MediaQuery.of(context).size.width * 0.015,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isActive
@@ -323,7 +332,7 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
           boxShadow: [
             BoxShadow(
               color: AppColors.primaryOrange.withAlpha(60),
-              blurRadius: 8,
+              blurRadius: MediaQuery.of(context).size.width * 0.02,
               spreadRadius: 0,
             ),
           ],
@@ -349,8 +358,10 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
                 ? rawValue * 2.0 // Fade in: 0.0-0.5 maps to 0.0-1.0
                 : (1.0 - rawValue) * 2.0; // Fade out: 0.5-1.0 maps to 1.0-0.0
 
-            final shadowBlur = 12.0 + (10.0 * glowValue);
-            final shadowSpread = 1.0 + (2.0 * glowValue);
+            final shadowBlur = MediaQuery.of(context).size.width * 0.03 +
+                (MediaQuery.of(context).size.width * 0.025 * glowValue);
+            final shadowSpread = MediaQuery.of(context).size.width * 0.0025 +
+                (MediaQuery.of(context).size.width * 0.005 * glowValue);
             final shadowAlpha = (100 + (100 * glowValue)).toInt();
 
             return Container(
@@ -395,7 +406,7 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
             gradient: AppColors.iceGlassGradient,
             border: Border.all(
               color: AppColors.auroraBorder,
-              width: 2,
+              width: MediaQuery.of(context).size.width * 0.005,
             ),
           ),
           child: ClipOval(
@@ -413,13 +424,13 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
                     ],
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: SizedBox(
-                    width: 20,
-                    height: 20,
+                    width: MediaQuery.of(context).size.width * 0.05,
+                    height: MediaQuery.of(context).size.width * 0.05,
                     child: CircularProgressIndicator(
                       color: Colors.white,
-                      strokeWidth: 2,
+                      strokeWidth: MediaQuery.of(context).size.width * 0.005,
                     ),
                   ),
                 ),
@@ -468,7 +479,7 @@ class _AnimatedBadgeShowcaseState extends State<AnimatedBadgeShowcase>
               ),
               border: Border.all(
                 color: AppColors.auroraBorder,
-                width: 2,
+                width: MediaQuery.of(context).size.width * 0.005,
               ),
             ),
             child: Icon(
