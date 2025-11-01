@@ -136,10 +136,10 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.midnightGreen.withValues(alpha: 0.95),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
           side: BorderSide(
             color: AppColors.iceBorder,
-            width: 1.5,
+            width: MediaQuery.of(context).size.width * 0.00375,
           ),
         ),
         title: Text(
@@ -176,19 +176,21 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                   AppColors.pineGreen.withValues(alpha: 0.9),
                 ],
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                 onTap: () {
                   Navigator.of(context).pop();
                   openAppSettings();
                 },
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05,
+                    vertical: MediaQuery.of(context).size.height * 0.015,
+                  ),
                   child: Text(
                     'Open Settings',
                     style: TextStyle(
@@ -359,10 +361,10 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
             ),
           ),
         ),
-        body: const Center(
+        body: Center(
           child: CircularProgressIndicator(
             color: AppColors.rosyBrown,
-            strokeWidth: 4,
+            strokeWidth: MediaQuery.of(context).size.width * 0.01,
           ),
         ),
       ),
@@ -573,16 +575,16 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                               AppColors.rosyBrown.withValues(alpha: 0.8),
                             ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     border: Border.all(
                       color: Colors.white.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.rosyBrown.withValues(alpha: 0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                        blurRadius: MediaQuery.of(context).size.width * 0.03,
+                        offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                       ),
                     ],
                   ),
@@ -594,7 +596,7 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                       padding: EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.02),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       ),
                     ),
                     child: _isSubmitting
@@ -605,8 +607,8 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
                                 width: MediaQuery.of(context).size.width * 0.05,
                                 height:
                                     MediaQuery.of(context).size.width * 0.05,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: MediaQuery.of(context).size.width * 0.005,
                                   color: Colors.white,
                                 ),
                               ),
@@ -667,10 +669,10 @@ class _PhotoSubmissionScreenState extends ConsumerState<PhotoSubmissionScreen> {
           ),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: CircularProgressIndicator(
           color: AppColors.rosyBrown,
-          strokeWidth: 4,
+          strokeWidth: MediaQuery.of(context).size.width * 0.01,
         ),
       ),
     );
@@ -757,19 +759,22 @@ class _SubmissionLimitMessage extends StatelessWidget {
             Colors.white.withValues(alpha: 0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
         border: Border.all(
-            color: AppColors.rosyBrown.withValues(alpha: 0.3), width: 1.5),
+            color: AppColors.rosyBrown.withValues(alpha: 0.3),
+            width: MediaQuery.of(context).size.width * 0.00375),
         boxShadow: [
           BoxShadow(
             color: Colors.white.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(-2, -2),
+            blurRadius: MediaQuery.of(context).size.width * 0.0375,
+            offset: Offset(-MediaQuery.of(context).size.width * 0.005,
+                -MediaQuery.of(context).size.width * 0.005),
           ),
           BoxShadow(
             color: AppColors.rosyBrown.withValues(alpha: 0.15),
-            blurRadius: 15,
-            offset: const Offset(2, 2),
+            blurRadius: MediaQuery.of(context).size.width * 0.0375,
+            offset: Offset(MediaQuery.of(context).size.width * 0.005,
+                MediaQuery.of(context).size.width * 0.005),
           ),
         ],
       ),
@@ -786,12 +791,12 @@ class _SubmissionLimitMessage extends StatelessWidget {
                   AppColors.rosyBrown.withValues(alpha: 0.6),
                 ],
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  blurRadius: MediaQuery.of(context).size.width * 0.03,
+                  offset: Offset(0, MediaQuery.of(context).size.height * 0.005),
                 ),
               ],
             ),
@@ -811,7 +816,7 @@ class _SubmissionLimitMessage extends StatelessWidget {
               shadows: [
                 Shadow(
                   color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                  blurRadius: 8,
+                  blurRadius: MediaQuery.of(context).size.width * 0.02,
                 ),
               ],
             ),
@@ -849,7 +854,7 @@ class _ChallengeInfoSection extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.25,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
         child: Stack(
           children: [
             // Full background image
@@ -869,13 +874,13 @@ class _ChallengeInfoSection extends StatelessWidget {
                             ],
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: SizedBox(
-                            width: 32,
-                            height: 32,
+                            width: MediaQuery.of(context).size.width * 0.08,
+                            height: MediaQuery.of(context).size.width * 0.08,
                             child: CircularProgressIndicator(
                               color: Colors.white,
-                              strokeWidth: 3,
+                              strokeWidth: MediaQuery.of(context).size.width * 0.0075,
                             ),
                           ),
                         ),
@@ -934,8 +939,8 @@ class _ChallengeInfoSection extends StatelessWidget {
             // Badge overlay at top-right
             if (event.badgeURL != null && event.badgeURL!.isNotEmpty)
               Positioned(
-                top: 12,
-                right: 12,
+                top: MediaQuery.of(context).size.height * 0.015,
+                right: MediaQuery.of(context).size.width * 0.03,
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.1,
                   height: MediaQuery.of(context).size.width * 0.1,
@@ -944,8 +949,8 @@ class _ChallengeInfoSection extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                        blurRadius: MediaQuery.of(context).size.width * 0.02,
+                        offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                       ),
                     ],
                   ),
@@ -962,13 +967,13 @@ class _ChallengeInfoSection extends StatelessWidget {
                             ],
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: SizedBox(
-                            width: 16,
-                            height: 16,
+                            width: MediaQuery.of(context).size.width * 0.04,
+                            height: MediaQuery.of(context).size.width * 0.04,
                             child: CircularProgressIndicator(
                               color: Colors.white,
-                              strokeWidth: 2,
+                              strokeWidth: MediaQuery.of(context).size.width * 0.005,
                             ),
                           ),
                         ),
@@ -994,25 +999,26 @@ class _ChallengeInfoSection extends StatelessWidget {
               ),
             // Status tag and content at bottom
             Positioned(
-              bottom: 12,
-              left: 12,
-              right: 12,
+              bottom: MediaQuery.of(context).size.height * 0.015,
+              left: MediaQuery.of(context).size.width * 0.03,
+              right: MediaQuery.of(context).size.width * 0.03,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Active/Ended tag (rosyBrown color as specified)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.025,
+                        vertical: MediaQuery.of(context).size.height * 0.00625),
                     decoration: BoxDecoration(
                       color: AppColors.rosyBrown.withValues(alpha: 0.8),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.3),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+                          blurRadius: MediaQuery.of(context).size.width * 0.01,
+                          offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                         ),
                       ],
                     ),
@@ -1125,7 +1131,7 @@ class _PhotoSection extends StatelessWidget {
           Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.file(
@@ -1169,16 +1175,16 @@ class _PhotoSection extends StatelessWidget {
                         AppColors.pineGreen.withValues(alpha: 0.08),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     border: Border.all(
                       color: AppColors.pineGreen.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: onTakePhoto,
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -1221,16 +1227,16 @@ class _PhotoSection extends StatelessWidget {
                         AppColors.rosyBrown.withValues(alpha: 0.08),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     border: Border.all(
                       color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: onChooseFromGallery,
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -1272,7 +1278,7 @@ class _PhotoSection extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.25,
             decoration: BoxDecoration(
               color: AppColors.midnightGreenLight.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1306,16 +1312,16 @@ class _PhotoSection extends StatelessWidget {
                         AppColors.pineGreen.withValues(alpha: 0.9),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     border: Border.all(
                       color: Colors.white.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: onTakePhoto,
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -1358,16 +1364,16 @@ class _PhotoSection extends StatelessWidget {
                         AppColors.rosyBrown.withValues(alpha: 0.08),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     border: Border.all(
                       color: AppColors.rosyBrown.withValues(alpha: 0.3),
-                      width: 1,
+                      width: MediaQuery.of(context).size.width * 0.0025,
                     ),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: onChooseFromGallery,
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -1423,7 +1429,7 @@ class _GuidelinesSection extends StatelessWidget {
             shadows: [
               Shadow(
                 color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                blurRadius: 8,
+                blurRadius: MediaQuery.of(context).size.width * 0.02,
               ),
             ],
           ),
@@ -1433,18 +1439,23 @@ class _GuidelinesSection extends StatelessWidget {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
           decoration: BoxDecoration(
             gradient: AppColors.iceGlassGradient,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.iceBorder, width: 1.5),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
+            border: Border.all(
+              color: AppColors.iceBorder,
+              width: MediaQuery.of(context).size.width * 0.00375,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.white.withValues(alpha: 0.08),
-                blurRadius: 15,
-                offset: const Offset(-2, -2),
+                blurRadius: MediaQuery.of(context).size.width * 0.0375,
+                offset: Offset(-MediaQuery.of(context).size.width * 0.005,
+                    -MediaQuery.of(context).size.width * 0.005),
               ),
               BoxShadow(
                 color: AppColors.rosyBrown.withValues(alpha: 0.15),
-                blurRadius: 15,
-                offset: const Offset(2, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.0375,
+                offset: Offset(MediaQuery.of(context).size.width * 0.005,
+                    MediaQuery.of(context).size.width * 0.005),
               ),
             ],
           ),
@@ -1497,16 +1508,16 @@ class _GuidelineItem extends StatelessWidget {
                 AppColors.pineGreen.withValues(alpha: 0.9),
               ],
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.3),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.pineGreen.withValues(alpha: 0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+                blurRadius: MediaQuery.of(context).size.width * 0.01,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
               ),
             ],
           ),
