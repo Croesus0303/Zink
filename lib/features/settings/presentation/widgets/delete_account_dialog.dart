@@ -31,82 +31,90 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
       backgroundColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
       ),
       content: Container(
         decoration: BoxDecoration(
           color: AppColors.midnightGreen.withValues(alpha: 0.95),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
           border: Border.all(
             color: AppColors.iceBorder,
-            width: 1.5,
+            width: MediaQuery.of(context).size.width * 0.00375,
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              blurRadius: MediaQuery.of(context).size.width * 0.05,
+              offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Delete Account',
                 style: TextStyle(
                   color: AppColors.rosyBrown,
-                  fontSize: 22,
+                  fontSize: MediaQuery.of(context).size.width * 0.055,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              Text(
                 'This action cannot be undone. This will permanently delete your account and all associated data.',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
                 ),
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              Text(
                 'Please enter your password to confirm:',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: MediaQuery.of(context).size.width * 0.035,
                   color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               TextField(
                 controller: _passwordController,
                 obscureText: !_showPassword,
-                style: const TextStyle(color: AppColors.textPrimary),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: const TextStyle(color: AppColors.textSecondary),
+                  labelStyle: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: MediaQuery.of(context).size.width * 0.038,
+                  ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     borderSide: BorderSide(color: AppColors.iceBorder),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     borderSide: BorderSide(color: AppColors.iceBorder),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.pineGreen, width: 2),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
+                    borderSide: BorderSide(color: AppColors.pineGreen, width: MediaQuery.of(context).size.width * 0.005),
                   ),
                   errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.rosyBrown, width: 2),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
+                    borderSide: BorderSide(color: AppColors.rosyBrown, width: MediaQuery.of(context).size.width * 0.005),
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _showPassword ? Icons.visibility_off : Icons.visibility,
                       color: AppColors.pineGreen,
+                      size: MediaQuery.of(context).size.width * 0.06,
                     ),
                     onPressed: () {
                       setState(() {
@@ -115,25 +123,28 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
                     },
                   ),
                   errorText: _errorMessage,
-                  errorStyle: const TextStyle(color: AppColors.rosyBrown),
+                  errorStyle: TextStyle(
+                    color: AppColors.rosyBrown,
+                    fontSize: MediaQuery.of(context).size.width * 0.035,
+                  ),
                 ),
                 enabled: !_isLoading,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-                    child: const Text(
+                    child: Text(
                       'Cancel',
                       style: TextStyle(
                         color: AppColors.textSecondary,
-                        fontSize: 16,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -142,33 +153,33 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
                           AppColors.rosyBrown,
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                     ),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                         onTap: _isLoading ? null : _deleteAccount,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.05,
+                            vertical: MediaQuery.of(context).size.height * 0.015,
                           ),
                           child: _isLoading
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
+                              ? SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.04,
+                                  height: MediaQuery.of(context).size.width * 0.04,
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    strokeWidth: MediaQuery.of(context).size.width * 0.005,
+                                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
                                 )
-                              : const Text(
+                              : Text(
                                   'Delete Account',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: MediaQuery.of(context).size.width * 0.04,
                                   ),
                                 ),
                         ),
@@ -258,39 +269,39 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
         backgroundColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
         ),
         content: Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
             border: Border.all(
               color: AppColors.iceBorder,
-              width: 1.5,
+              width: MediaQuery.of(context).size.width * 0.00375,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                blurRadius: MediaQuery.of(context).size.width * 0.05,
+                offset: Offset(0, MediaQuery.of(context).size.height * 0.0125),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.06),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Final Confirmation',
                   style: TextStyle(
                     color: AppColors.rosyBrown,
-                    fontSize: 22,
+                    fontSize: MediaQuery.of(context).size.width * 0.055,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
                   'Are you absolutely sure? This action cannot be undone and will permanently delete:\n\n'
                   '• Your profile and account data\n'
                   '• All your posts and submissions\n'
@@ -299,24 +310,24 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
                   'This action is irreversible.',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text(
+                      child: Text(
                         'Cancel',
                         style: TextStyle(
                           color: AppColors.textSecondary,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -325,24 +336,24 @@ class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
                             AppColors.rosyBrown,
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                           onTap: () => Navigator.of(context).pop(true),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
+                              horizontal: MediaQuery.of(context).size.width * 0.05,
+                              vertical: MediaQuery.of(context).size.height * 0.015,
                             ),
                             child: Text(
                               'Yes, Delete My Account',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: MediaQuery.of(context).size.width * 0.04,
                               ),
                             ),
                           ),
