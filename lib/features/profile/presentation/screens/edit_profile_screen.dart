@@ -100,8 +100,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void _showImagePickerOptions() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(MediaQuery.of(context).size.width * 0.05),
+        ),
       ),
       builder: (context) => SafeArea(
         child: Wrap(
@@ -209,7 +211,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 12, top: 8, bottom: 8),
+            margin: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.03,
+              top: MediaQuery.of(context).size.height * 0.01,
+              bottom: MediaQuery.of(context).size.height * 0.01,
+            ),
             child: ElevatedButton(
               onPressed: _isLoading ? null : _saveProfile,
               style: ElevatedButton.styleFrom(
@@ -220,16 +226,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   vertical: MediaQuery.of(context).size.height * 0.01,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * 0.03),
                 ),
               ),
               child: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                      height: MediaQuery.of(context).size.width * 0.05,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: MediaQuery.of(context).size.width * 0.005,
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
                   : Text(
@@ -405,10 +413,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         Container(
           decoration: BoxDecoration(
             color: AppColors.midnightGreen.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
+              width: MediaQuery.of(context).size.width * 0.0025,
             ),
           ),
           child: TextFormField(
@@ -429,7 +438,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 fontWeight: FontWeight.w400,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(
+                    MediaQuery.of(context).size.width * 0.04),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
@@ -441,10 +451,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 borderSide: BorderSide.none,
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
+                borderRadius: BorderRadius.circular(
+                    MediaQuery.of(context).size.width * 0.04),
+                borderSide: BorderSide(
                   color: AppColors.rosyBrown,
-                  width: 2,
+                  width: MediaQuery.of(context).size.width * 0.005,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
