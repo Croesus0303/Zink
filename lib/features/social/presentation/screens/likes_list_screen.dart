@@ -112,10 +112,10 @@ class LikesListScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-              loading: () => const Center(
+              loading: () => Center(
                 child: CircularProgressIndicator(
                   color: AppColors.rosyBrown,
-                  strokeWidth: 4,
+                  strokeWidth: MediaQuery.of(context).size.width * 0.01,
                 ),
               ),
               error: (error, stack) {
@@ -203,11 +203,11 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildListItem(BuildContext context, UserModel? user) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),
@@ -241,11 +241,11 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildLoadingItem(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),
@@ -274,7 +274,7 @@ class _LikeListItem extends ConsumerWidget {
               height: MediaQuery.of(context).size.height * 0.02,
               decoration: BoxDecoration(
                 color: AppColors.textSecondary.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.02),
               ),
             ),
           ),
@@ -285,11 +285,11 @@ class _LikeListItem extends ConsumerWidget {
 
   Widget _buildErrorItem(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),
