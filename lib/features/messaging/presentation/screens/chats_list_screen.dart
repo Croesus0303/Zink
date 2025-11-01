@@ -45,10 +45,10 @@ class ChatsListScreen extends ConsumerWidget {
       ),
       body: chatsAsync.when(
         data: (chats) => _buildChatsList(context, ref, chats),
-        loading: () => const Center(
+        loading: () => Center(
           child: CircularProgressIndicator(
             color: AppColors.rosyBrown,
-            strokeWidth: 4,
+            strokeWidth: MediaQuery.of(context).size.width * 0.01,
           ),
         ),
         error: (error, stack) {
@@ -182,10 +182,10 @@ class _ChatListItem extends ConsumerWidget {
         color: hasUnread
             ? AppColors.midnightGreenLight.withValues(alpha: 0.5)
             : Colors.transparent,
-        border: const Border(
+        border: Border(
           bottom: BorderSide(
             color: AppColors.midnightGreenLight,
-            width: 1,
+            width: MediaQuery.of(context).size.width * 0.0025,
           ),
         ),
       ),
@@ -393,7 +393,7 @@ class _ChatListItem extends ConsumerWidget {
                   width: MediaQuery.of(context).size.width * 0.3,
                   decoration: BoxDecoration(
                     color: AppColors.midnightGreenLight.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.01),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -402,7 +402,7 @@ class _ChatListItem extends ConsumerWidget {
                   width: MediaQuery.of(context).size.width * 0.2,
                   decoration: BoxDecoration(
                     color: AppColors.midnightGreenLight.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.01),
                   ),
                 ),
               ],
@@ -495,19 +495,19 @@ class _ChatListItem extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (context) => SafeArea(
         child: Container(
-          margin: const EdgeInsets.all(16),
+          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
           child: GlassContainer(
-            borderRadius: 20.0,
+            borderRadius: MediaQuery.of(context).size.width * 0.05,
             useOrangeAccent: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                       onTap: () async {
                         Navigator.of(context).pop();
                         final confirmed =
@@ -528,13 +528,15 @@ class _ChatListItem extends ConsumerWidget {
                         }
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.04,
+                          vertical: MediaQuery.of(context).size.height * 0.015,
+                        ),
                         child: Row(
                           children: [
                             Container(
-                              width: 40,
-                              height: 40,
+                              width: MediaQuery.of(context).size.width * 0.1,
+                              height: MediaQuery.of(context).size.width * 0.1,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -543,33 +545,33 @@ class _ChatListItem extends ConsumerWidget {
                                         .withValues(alpha: 0.6),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.03),
                                 border: Border.all(
                                   color:
                                       AppColors.primaryOrange.withValues(alpha: 0.3),
-                                  width: 1,
+                                  width: MediaQuery.of(context).size.width * 0.0025,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.primaryOrange
                                         .withValues(alpha: 0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
+                                    blurRadius: MediaQuery.of(context).size.width * 0.02,
+                                    offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.delete,
                                 color: Colors.white,
-                                size: 20,
+                                size: MediaQuery.of(context).size.width * 0.05,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                             Text(
                               AppLocalizations.of(context)!.deleteChat,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.primaryOrange,
-                                fontSize: 16,
+                                fontSize: MediaQuery.of(context).size.width * 0.04,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -593,17 +595,17 @@ class _ChatListItem extends ConsumerWidget {
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          margin: const EdgeInsets.all(16),
+          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
           child: GlassContainer(
-            borderRadius: 24.0,
+            borderRadius: MediaQuery.of(context).size.width * 0.06,
             useOrangeAccent: true,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  height: MediaQuery.of(context).size.width * 0.15,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -611,49 +613,49 @@ class _ChatListItem extends ConsumerWidget {
                         AppColors.primaryOrangeDark.withValues(alpha: 0.6),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        blurRadius: MediaQuery.of(context).size.width * 0.03,
+                        offset: Offset(0, MediaQuery.of(context).size.height * 0.005),
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.delete,
                     color: Colors.white,
-                    size: 28,
+                    size: MediaQuery.of(context).size.width * 0.07,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                 Text(
                   AppLocalizations.of(context)!.deleteChat,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryOrange,
                     shadows: [
                       Shadow(
                         color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                        blurRadius: 8,
+                        blurRadius: MediaQuery.of(context).size.width * 0.02,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Text(
                     AppLocalizations.of(context)!.sureDeleteChat,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: AppColors.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -667,26 +669,27 @@ class _ChatListItem extends ConsumerWidget {
                                 AppColors.backgroundSecondary.withValues(alpha: 0.6),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                             border: Border.all(
                               color: AppColors.primaryCyan.withValues(alpha: 0.3),
-                              width: 1,
+                              width: MediaQuery.of(context).size.width * 0.0025,
                             ),
                           ),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                               onTap: () => Navigator.of(context).pop(false),
                               child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: MediaQuery.of(context).size.height * 0.015,
+                                ),
                                 child: Center(
                                   child: Text(
                                     AppLocalizations.of(context)!.cancel,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.textPrimary,
-                                      fontSize: 16,
+                                      fontSize: MediaQuery.of(context).size.width * 0.04,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -696,7 +699,7 @@ class _ChatListItem extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -706,33 +709,34 @@ class _ChatListItem extends ConsumerWidget {
                                 AppColors.primaryOrangeDark.withValues(alpha: 0.9),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                             border: Border.all(
                               color: AppColors.primaryOrange.withValues(alpha: 0.3),
-                              width: 1,
+                              width: MediaQuery.of(context).size.width * 0.0025,
                             ),
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.primaryOrange.withValues(alpha: 0.4),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
+                                blurRadius: MediaQuery.of(context).size.width * 0.03,
+                                offset: Offset(0, MediaQuery.of(context).size.height * 0.0075),
                               ),
                             ],
                           ),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.04),
                               onTap: () => Navigator.of(context).pop(true),
                               child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: MediaQuery.of(context).size.height * 0.015,
+                                ),
                                 child: Center(
                                   child: Text(
                                     AppLocalizations.of(context)!.delete,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
+                                      fontSize: MediaQuery.of(context).size.width * 0.04,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -745,7 +749,7 @@ class _ChatListItem extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
               ],
             ),
           ),
