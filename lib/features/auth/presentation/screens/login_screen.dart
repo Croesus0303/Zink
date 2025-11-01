@@ -583,8 +583,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   Widget _buildSignUpTab() {
     return Form(
       key: _signUpFormKey,
-      child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         // Email field
         Container(
           decoration: BoxDecoration(
@@ -624,7 +623,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
         // Password field
         Container(
@@ -674,7 +673,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
         // Confirm password field
         Container(
@@ -727,7 +726,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             },
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
 
         // Sign up button
         Container(
@@ -772,7 +771,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
         // Google sign in button (only on Android)
         if (!Platform.isIOS)
@@ -814,7 +813,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
         // Apple sign in button (only on iOS)
         if (Platform.isIOS) ...[
-          SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.07,
@@ -857,7 +856,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
         ],
       ]),
-      ),
     );
   }
 }
