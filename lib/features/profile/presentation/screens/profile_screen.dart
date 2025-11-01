@@ -709,17 +709,9 @@ extension on _ProfileScreenState {
         ref.watch(userSubmissionsFromUserCollectionProvider(targetUserId));
 
     return submissionsAsync.when(
-      data: (submissions) => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: _buildSubmissionGrid(submissions),
-      ),
-      loading: () => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: _buildSubmissionGrid([]),
-      ), // Show empty grid while loading
-      error: (error, stack) => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: Center(
+      data: (submissions) => _buildSubmissionGrid(submissions),
+      loading: () => _buildSubmissionGrid([]), // Show empty grid while loading
+      error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -782,7 +774,6 @@ extension on _ProfileScreenState {
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -790,13 +781,10 @@ extension on _ProfileScreenState {
       BuildContext context, WidgetRef ref, String targetUserId) {
     // Only load liked submissions if the tab has been accessed
     if (!_hasLoadedLikes) {
-      return Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.primaryOrange,
-            strokeWidth: MediaQuery.of(context).size.width * 0.0075,
-          ),
+      return Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primaryOrange,
+          strokeWidth: MediaQuery.of(context).size.width * 0.0075,
         ),
       );
     }
@@ -805,22 +793,14 @@ extension on _ProfileScreenState {
         ref.watch(userLikedSubmissionsProvider(targetUserId));
 
     return likedSubmissionsAsync.when(
-      data: (submissions) => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: _buildLikedSubmissionGrid(submissions),
-      ),
-      loading: () => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.primaryOrange,
-            strokeWidth: MediaQuery.of(context).size.width * 0.0075,
-          ),
+      data: (submissions) => _buildLikedSubmissionGrid(submissions),
+      loading: () => Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primaryOrange,
+          strokeWidth: MediaQuery.of(context).size.width * 0.0075,
         ),
       ),
-      error: (error, stack) => Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: Center(
+      error: (error, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -882,7 +862,6 @@ extension on _ProfileScreenState {
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -900,7 +879,7 @@ extension on _ProfileScreenState {
     return GridView.builder(
       padding: EdgeInsets.fromLTRB(
           MediaQuery.of(context).size.width * 0.01,
-          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.height * 0.005,
           MediaQuery.of(context).size.width * 0.01,
           MediaQuery.of(context).size.height * 0.01),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -978,7 +957,7 @@ extension on _ProfileScreenState {
     return GridView.builder(
       padding: EdgeInsets.fromLTRB(
           MediaQuery.of(context).size.width * 0.01,
-          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.height * 0.005,
           MediaQuery.of(context).size.width * 0.01,
           MediaQuery.of(context).size.height * 0.01),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -1056,10 +1035,9 @@ extension on _ProfileScreenState {
 
     return userDataAsync.when(
       data: (user) {
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
               SizedBox(height: MediaQuery.of(context).size.height * 0.06),
               // Profile picture with edit button
               Stack(
@@ -1178,23 +1156,16 @@ extension on _ProfileScreenState {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
             // Badge showcase
-            Column(
-              children: [
-                // Animated badge showcase - fixed height for page-based scrolling with 3 rows
-                SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.65,
-                  child: AnimatedBadgeShowcase(
-                    badges: badges,
-                    currentUserId: targetUserId,
-                  ),
-                ),
-              ],
+            Expanded(
+              child: AnimatedBadgeShowcase(
+                badges: badges,
+                currentUserId: targetUserId,
+              ),
             ),
-            ],
-          ),
+          ],
         );
       },
       loading: () => Center(
