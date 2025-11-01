@@ -14,9 +14,10 @@ class CategoryFilterChips extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategories = ref.watch(categoryFilterProvider);
     final hasFilters = selectedCategories.isNotEmpty;
+    final filterChipsHeight = MediaQuery.of(context).size.height * 0.04;
 
     return Container(
-      height: 56,
+      height: filterChipsHeight,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.midnightGreen,
@@ -27,9 +28,13 @@ class CategoryFilterChips extends ConsumerWidget {
           ),
         ),
       ),
+      alignment: Alignment.center,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: filterChipsHeight * 0.15,
+        ),
         children: [
           // Show selected category chips (max 3)
           if (hasFilters) ...[
@@ -81,12 +86,12 @@ class _SelectedCategoryChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           decoration: BoxDecoration(
             color: AppColors.rosyBrown,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: AppColors.midnightGreenLight,
               width: 1,
@@ -97,14 +102,14 @@ class _SelectedCategoryChip extends StatelessWidget {
             children: [
               Icon(
                 CategoryConstants.getIcon(category),
-                size: 16,
+                size: 14,
                 color: Colors.white,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               Text(
                 CategoryConstants.getDisplayName(category),
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                   letterSpacing: 0.2,
@@ -134,12 +139,12 @@ class _CountChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
           decoration: BoxDecoration(
             color: AppColors.primaryOrange.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.3),
               width: 1,
@@ -157,14 +162,14 @@ class _CountChip extends StatelessWidget {
             children: [
               const Icon(
                 Icons.add_rounded,
-                size: 16,
+                size: 14,
                 color: Colors.white,
               ),
               const SizedBox(width: 2),
               Text(
                 count.toString(),
                 style: const TextStyle(
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -193,12 +198,12 @@ class _FilterActionChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           decoration: BoxDecoration(
             color: AppColors.midnightGreenLight,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: AppColors.midnightGreenLight,
               width: 1,
@@ -209,16 +214,16 @@ class _FilterActionChip extends StatelessWidget {
             children: [
               Icon(
                 Icons.tune_rounded,
-                size: 18,
+                size: 14,
                 color: hasFilters
                     ? AppColors.primaryOrange
                     : Colors.white.withValues(alpha: 0.9),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 4),
               Text(
                 hasFilters ? 'Edit Filters' : 'Add Filters',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: hasFilters
                       ? AppColors.primaryOrange

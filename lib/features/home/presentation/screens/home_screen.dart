@@ -136,10 +136,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
           AnimatedBuilder(
             animation: _tabBarAnimationController,
             builder: (context, child) {
-              final filterChipsHeight = 56.0 * _tabBarAnimationController.value;
+              final topBarHeight = MediaQuery.of(context).padding.top +
+                                   MediaQuery.of(context).size.height * 0.08;
+              final filterChipsHeight = MediaQuery.of(context).size.height * 0.04 * _tabBarAnimationController.value;
               return Padding(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.08 + filterChipsHeight,
+                  top: topBarHeight + filterChipsHeight,
                 ),
                 child: child!,
               );
@@ -169,7 +171,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
           AnimatedBuilder(
             animation: _tabBarAnimationController,
             builder: (context, child) {
-              final slideOffset = (1.0 - _tabBarAnimationController.value) * 100.0;
+              final tabBarHeight = MediaQuery.of(context).size.height * 0.055;
+              final slideOffset = (1.0 - _tabBarAnimationController.value) * tabBarHeight;
               return Positioned(
                 left: 0,
                 right: 0,
@@ -178,6 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
               );
             },
             child: Container(
+              height: MediaQuery.of(context).size.height * 0.055,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -190,14 +194,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                 border: Border(
                   top: BorderSide(
                     color: AppColors.auroraBorder.withValues(alpha: 0.3),
-                    width: 1.5,
+                    width: MediaQuery.of(context).size.width * 0.004,
                   ),
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, -3),
+                    blurRadius: MediaQuery.of(context).size.width * 0.04,
+                    offset: Offset(0, -MediaQuery.of(context).size.height * 0.004),
                   ),
                 ],
               ),
@@ -207,32 +211,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                 labelColor: AppColors.rosyBrown,
                 unselectedLabelColor: AppColors.textSecondary,
                 indicatorColor: AppColors.rosyBrown,
-                indicatorWeight: 3,
+                indicatorWeight: MediaQuery.of(context).size.height * 0.003,
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelStyle: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.032,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.03,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                ),
+                labelPadding: EdgeInsets.zero,
                 tabs: [
-                  Tab(
-                    icon: Icon(
-                      Icons.home_rounded,
-                      size: MediaQuery.of(context).size.width * 0.065,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.055,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.home_rounded,
+                          size: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        Text(
+                          'Home Page',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.032,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
                     ),
-                    text: 'Home Page',
                   ),
-                  Tab(
-                    icon: Icon(
-                      Icons.event_rounded,
-                      size: MediaQuery.of(context).size.width * 0.065,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.055,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.event_rounded,
+                          size: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        Text(
+                          AppLocalizations.of(context)!.events,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.032,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
                     ),
-                    text: AppLocalizations.of(context)!.events,
                   ),
                 ],
               ),
@@ -243,7 +266,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
             animation: _tabBarAnimationController,
             builder: (context, child) {
               final opacity = _tabBarAnimationController.value;
-              final slideOffset = (1.0 - _tabBarAnimationController.value) * 56.0; // Full chip height
+              final filterChipsHeight = MediaQuery.of(context).size.height * 0.04;
+              final slideOffset = (1.0 - _tabBarAnimationController.value) * filterChipsHeight;
               final topBarHeight = MediaQuery.of(context).padding.top +
                                    MediaQuery.of(context).size.height * 0.08;
               return Positioned(
@@ -269,7 +293,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                   : _eventsKey.currentState?.showScrollToTop ?? false;
 
               return Positioned(
-                top: topBarHeight + 8,
+                top: topBarHeight + MediaQuery.of(context).size.height * 0.01,
                 right: MediaQuery.of(context).size.width * 0.05,
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
@@ -291,13 +315,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: Colors.white.withValues(alpha: 0.3),
-                            width: 2,
+                            width: MediaQuery.of(context).size.width * 0.005,
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.pineGreen.withValues(alpha: 0.4),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
+                              blurRadius: MediaQuery.of(context).size.width * 0.03,
+                              offset: Offset(0, MediaQuery.of(context).size.height * 0.005),
                             ),
                           ],
                         ),
@@ -311,7 +335,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                           },
                           customBorder: const CircleBorder(),
                           child: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
                             child: Icon(
                               Icons.arrow_upward,
                               color: Colors.white,
@@ -337,7 +361,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                 height: MediaQuery.of(context).size.height * 0.08,
                 color: AppColors.midnightGreen,
                 padding: EdgeInsets.symmetric(
-                  horizontal: 12,
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
                   vertical: MediaQuery.of(context).size.height * 0.01,
                 ),
                 child: Row(
@@ -392,12 +416,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.midnightGreen,
       body: Center(
         child: CircularProgressIndicator(
           color: AppColors.rosyBrown,
-          strokeWidth: 4,
+          strokeWidth: MediaQuery.of(context).size.width * 0.01,
         ),
       ),
     );
@@ -432,13 +456,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: Colors.white,
-                          width: 1.5,
+                          width: MediaQuery.of(context).size.width * 0.004,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.primaryOrange.withValues(alpha: 0.6),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
+                            blurRadius: MediaQuery.of(context).size.width * 0.015,
+                            offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                           ),
                         ],
                       ),
@@ -492,13 +516,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with TickerProviderStat
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: Colors.white,
-                          width: 1.5,
+                          width: MediaQuery.of(context).size.width * 0.004,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.rosyBrown.withValues(alpha: 0.6),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
+                            blurRadius: MediaQuery.of(context).size.width * 0.015,
+                            offset: Offset(0, MediaQuery.of(context).size.height * 0.0025),
                           ),
                         ],
                       ),
